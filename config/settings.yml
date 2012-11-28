@@ -1,0 +1,7 @@
+# Application configuration settings
+shared_assets: [ public/uploads ]
+s3_backups_bucket: journals-backups
+aws_domain: s3-ap-southeast-1.amazonaws.com
+num_local_backups: 5
+email_domain: kairi.in
+email_address: contact@kairi.in
