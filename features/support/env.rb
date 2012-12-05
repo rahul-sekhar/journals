@@ -18,4 +18,5 @@ Spork.each_run do
   ActionController::Base.allow_rescue = false
   DatabaseCleaner.strategy = :transaction
   Cucumber::Rails::Database.javascript_strategy = :truncation
+  load "#{Rails.root}/config/routes.rb"
 end

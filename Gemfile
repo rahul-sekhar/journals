@@ -29,3 +29,5 @@ end
 gem 'jquery-rails', '2.1.4'
 gem 'haml', '3.1.7'
 gem 'yaml_db', '0.2.3'
+gem 'formtastic', '2.2.1'
+gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"

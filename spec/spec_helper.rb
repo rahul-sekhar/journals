@@ -9,6 +9,7 @@ Spork.prefork do
   require 'rspec/rails'
   require 'rspec/autorun'
   require 'capybara/rspec'
+  require "#{Rails.root}/spec/support/capybara_extensions.rb"
 
   RSpec.configure do |config|
     config.use_transactional_fixtures = true
@@ -22,6 +23,9 @@ Spork.prefork do
     config.run_all_when_everything_filtered = true
 
     config.include FactoryGirl::Syntax::Methods
+
+    # Load the view helper
+    config.include RSpec::CapybaraExtensions, type: :view
     
     # Pre-loading for performance:
     require 'rspec/mocks'

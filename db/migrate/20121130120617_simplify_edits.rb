@@ -30,7 +30,7 @@ class SimplifyEdits < ActiveRecord::Migration
         last_edit = post.edits.map{ |edit| edit.updated_at }.max
         p "Last edit at #{last_edit}"
         post.edited_at = last_edit
-        post.save
+        post.save!
       end
     end
 
@@ -40,7 +40,7 @@ class SimplifyEdits < ActiveRecord::Migration
         last_edit = comment.edits.map{ |edit| edit.updated_at }.max
         p "Last edit at #{last_edit}"
         comment.edited_at = last_edit
-        comment.save
+        comment.save!
       end
     end
 
