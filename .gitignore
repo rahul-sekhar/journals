@@ -8,6 +8,8 @@
 /log/*.log
 /tmp
 
+# Ignore best practices output
+/rails_best_practices_output.html
 
 # Sensitive config files
 /config/sensitive.yml

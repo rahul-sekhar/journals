@@ -24,7 +24,6 @@ When I am on the login page
 And I fill in "Username" with "rahul"
 And I fill in "Password" with "pass"
 And I click "Log in"
-Then show me the page
 Then I should be on the home page
 
 Scenario: Log in when accessing a page other than the home page
