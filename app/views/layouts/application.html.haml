@@ -13,4 +13,12 @@
     - if flash[:alert]
       %p= flash[:alert]
 
+    - if flash[:notice]
+      %p= flash[:notice]
+
+    - if logged_in?
+      %p You are signed in as #{current_profile.full_name}
+      %ul
+        %li= link_to "Logout", logout_path
+
     = yield

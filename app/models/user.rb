@@ -4,8 +4,11 @@ class User < ActiveRecord::Base
 
   before_save :encrypt_password
 
-  validates :username, presence: true
+  belongs_to :profile, polymorphic: true
+
+  validates :username, presence: true, format:{ with: /\A\w*\z/ }, uniqueness: true
   validates :password, presence: true
+  validates :profile, presence: true
 
   def self.authenticate(username, password)
     user = find_by_username(username)

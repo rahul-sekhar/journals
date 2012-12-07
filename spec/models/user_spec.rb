@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-  let(:user){ build(:user_rahul) }
+  let(:user){ build(:user, username: "rahul", password: "test-pass") }
 
   it "is valid with valid attributes" do
     user.should be_valid
@@ -10,6 +10,39 @@ describe User do
   it "is invalid without a username" do
     user.username = nil
     user.should be_invalid
+  end
+
+  describe "username" do
+    it "is valid with letters, numbers and underscores" do
+      user.username = "1_2asfzdRc_a2"
+      user.should be_valid
+    end
+
+    it "is invalid with spaces" do
+      user.username = "as bc"
+      user.should be_invalid
+    end
+
+    it "is invalid with symbols" do
+      user.username = "asd#"
+      user.should be_invalid
+    end
+
+    it "is invalid with dots" do
+      user.username = "asd."
+      user.should be_invalid
+    end
+
+    it "is invalid with dashes" do
+      user.username = "asd-"
+      user.should be_invalid
+    end
+
+    it "must be unique" do
+      create(:user, username: "blah")
+      user.username = "blah"
+      user.should be_invalid
+    end
   end
 
   it "cannot be saved without a password" do
@@ -23,8 +56,13 @@ describe User do
     user.password_hash.should be_present
   end
 
+  it "requires a profile" do
+    user.profile = nil
+    user.should be_invalid
+  end
+
   describe "authenticate" do
-    let(:other_user){ build(:user_shalu) }
+    let(:other_user){ build(:user, username: "shalu", password: "other-pass") }
 
     before { user.save }
 
