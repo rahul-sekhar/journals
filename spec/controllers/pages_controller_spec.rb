@@ -14,9 +14,9 @@ describe PagesController do
       response.should redirect_to login_path
     end
 
-    it "has a 200 status code if logged in" do
+    it "redirects to the posts page if logged in" do
       get :home
-      response.status.should eq(200)
+      response.should redirect_to posts_path
     end
   end
 end

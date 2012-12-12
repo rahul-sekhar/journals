@@ -24,7 +24,7 @@ When I am on the login page
 And I fill in "Username" with "rahul"
 And I fill in "Password" with "pass"
 And I click "Log in"
-Then I should be on the home page
+Then I should be on the posts page
 And I should see "You are signed in as Rahul Sekhar"
 
 Scenario: Log in when accessing a page other than the home page

@@ -5,6 +5,9 @@ module NavigationHelpers
     when /the home page/
       '/'
 
+    when /the posts page/
+      '/posts'
+
     when /the login page/
       '/login'
 
