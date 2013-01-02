@@ -2,9 +2,4 @@
 %h2 Viewing posts
 
 - @posts.each do |post|
-  %article
-    %h3= post.title
-    %p= post.content
-    %footer
-      %p.date= post.formatted_created_at
-      %p.author Posted by #{post.author}
+  = render "post", post: post
