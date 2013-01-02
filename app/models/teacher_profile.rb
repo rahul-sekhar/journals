@@ -4,13 +4,28 @@ class TeacherProfile < ActiveRecord::Base
 
   after_create :create_user
 
-  has_one :user, as: :profile
-
+  has_one :user, as: :profile, dependent: :destroy
+ 
   validates :last_name, presence: true
-  validates :password, presence: true, if: :new_record?
+  validates :password, 
+    presence: true, 
+    format: { with: /\A[^ ]*\z/ }, 
+    length: { minimum: 4 },
+    if: :new_record?
+
+  strip_attributes
 
   def create_user
     self.create_user!(username: get_username, password: @password)
+  end
+
+  def name
+    # Check for other teacher profiles with the same name, excluding the current one
+    if TeacherProfile.where{id != my{ id }}.where(first_name: first_name).count > 0
+      return full_name
+    else
+      return first_name
+    end
   end
 
   def full_name
@@ -19,6 +34,10 @@ class TeacherProfile < ActiveRecord::Base
     else
       last_name
     end
+  end
+
+  def self.find_by_name(first_name, last_name)
+    self.where(first_name: first_name, last_name: last_name).first
   end
 
   private

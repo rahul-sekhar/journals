@@ -50,6 +50,18 @@ describe User do
     user.should be_invalid
   end
 
+  describe "password" do
+    it "must have at least four characters" do
+      user.password = "pas"
+      user.should be_invalid
+    end
+
+    it "cannot have spaces" do
+      user.password = "blah blah"
+      user.should be_invalid
+    end
+  end
+
   it "sets the password hash and salt when saved" do
     user.save
     user.password_salt.should be_present
@@ -90,5 +102,25 @@ describe User do
     user.password = ""
     user.save
     User.authenticate("rahul", "test-pass").should == user
+  end
+
+  describe "on destruction" do
+    before { user.save! }
+
+    it "destroys its associated profile" do
+      expect { user.destroy }.to change { TeacherProfile.count }.by(-1)
+    end
+
+    it "destroys any posts" do
+      create(:post, user_id: user.id)
+      expect { user.destroy }.to change { Post.count }.by(-1)
+    end
+  end
+
+  describe "#name" do
+    it "returns the profile name" do
+      user.profile.stub(:name).and_return("Name")
+      user.name.should == "Name"
+    end
   end
 end

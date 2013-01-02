@@ -11,4 +11,9 @@ FactoryGirl.define do
     sequence(:last_name){ |n| "Teacher#{n}" }
     password "pass"
   end
+
+  factory :post do
+    title "Some Post"
+    user
+  end
 end

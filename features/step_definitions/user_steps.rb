@@ -1,6 +1,6 @@
 Given /^a (teacher) profile "(.*?)" with the password "(.*?)" exists$/ do |p_type, p_name, p_pass|
   first_name, last_name = split_name(p_name)
-  TeacherProfile.create(first_name: first_name, last_name: last_name, password: p_pass)
+  TeacherProfile.create!(first_name: first_name, last_name: last_name, password: p_pass)
 end
 
 Given /^I have logged in as a (teacher), "(.*?)"$/ do |p_type, p_name|
