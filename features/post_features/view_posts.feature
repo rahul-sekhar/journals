@@ -1,4 +1,3 @@
-@current
 Feature: View posts on the home page
 
 As a user I should be able to view all posts visible to me on my home page, sorted by their date so that I can quickly see recently added posts

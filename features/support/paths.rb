@@ -8,6 +8,9 @@ module NavigationHelpers
     when /the posts page/
       '/posts'
 
+    when /the create post page/
+      '/posts/new'
+
     when /the login page/
       '/login'
 

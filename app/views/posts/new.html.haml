@@ -1,0 +1,12 @@
+- title "Create a post"
+%h2 Create a post
+
+= semantic_form_for @post do |form|
+  
+  = form.inputs do
+    = form.input :title
+    = form.input :content
+    = form.input :tag_names, label: 'Tags'
+
+  = form.actions do
+    = form.action :submit, label: "Create post"

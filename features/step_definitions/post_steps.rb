@@ -25,3 +25,18 @@ Given /^a post about an ice cream factory visit with extended information exists
     student_ids: [john.id, tim.id]
   )
 end
+
+Then /^a minimal test post should exist$/ do
+  post = Post.where(
+    title: "Test Post",
+    content: "<p>Some <em>HTML</em> content</p>",
+  ).first
+  
+  post.should be_present
+
+  Tag.find_by_name("Test posts").should be_present
+  Tag.find_by_name("Minimal").should be_present
+  
+  post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
+  post.author.should == "Rahul"
+end
