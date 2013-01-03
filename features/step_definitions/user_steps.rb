@@ -1,21 +1,24 @@
-Given /^a (teacher) "(.*?)" exists$/ do |p_type, p_name|
-  first_name, last_name = split_name(p_name)
-  email = mail_from_name(p_name)
-  Teacher.create!(first_name: first_name, last_name: last_name, email: email, password: "pass")
+Given /^a (teacher|student) "(.*?)" exists with the email "(.*?)" and the password "(.*?)"$/ do |p_type, p_name, p_email, p_pass|
+  create_profile(p_type, p_name, p_email, p_pass)
 end
 
-Given /^a (teacher) "(.*?)" exists with the email "(.*?)" and the password "(.*?)"$/ do |p_type, p_name, p_email, p_pass|
-  first_name, last_name = split_name(p_name)
-  Teacher.create!(first_name: first_name, last_name: last_name, email: p_email, password: p_pass)
-end
-
-Given /^I have logged in as a (teacher) "(.*?)"$/ do |p_type, p_name|
+Given /^I have logged in as a (teacher|student) "(.*?)"$/ do |p_type, p_name|
   email = mail_from_name(p_name)
   step "a #{p_type} \"#{p_name}\" exists with the email \"#{email}\" and the password \"pass\""
   step 'I am on the login page'
   step "I fill in \"Email\" with \"#{email}\""
   step 'I fill in "Password" with "pass"'
   step 'I click "Log in"'
+end
+
+def create_profile(type, name, email=nil, password="pass")
+  first_name, last_name = split_name(name)
+  email = mail_from_name(name) if email.nil?
+
+  klass = type.capitalize.constantize
+
+  obj = klass.create!(first_name: first_name, last_name: last_name, email: email, password: password)
+  return obj
 end
 
 def split_name(full_name)

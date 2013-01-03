@@ -1,7 +1,23 @@
 %article
   %h3= post.title
-  %p= post.content
+  %p!= post.content
   %footer
     %p.date= post.formatted_created_at
     %p.author Posted by #{post.author}
-    %p.tags Tags: #{post.tag_names}
+
+    - if post.tags.present?
+      %p.tags Tags: #{post.tag_names}
+
+    - if post.students.present?
+      .students
+        %h4 Students
+        %ul
+          - post.students.each do |student|
+            %li= student.name
+
+    - if post.teachers.present?
+      .teachers
+        %h4 Teachers
+        %ul
+          - post.teachers.each do |teacher|
+            %li= teacher.name

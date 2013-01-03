@@ -1,4 +1,4 @@
-class Teacher < ActiveRecord::Base
+class Student < ActiveRecord::Base
   include Profile
 
   attr_accessible :first_name, :last_name, :email, :password

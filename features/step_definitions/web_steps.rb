@@ -16,6 +16,10 @@ Then /^I should see "(.*?)" within the "(.*?)" block$/ do |p_content, p_context|
   end
 end
 
+Then /^a "(.*?)" block should not be present$/ do |p_css|
+  page.should have_no_css p_css
+end
+
 When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
   fill_in p_field, with: p_value
 end
