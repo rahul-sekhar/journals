@@ -12,12 +12,38 @@ describe Teacher do
     teacher.should be_invalid
   end
 
-  it "is invalid without a password when it is a new record" do
-    teacher.password = nil
-    teacher.should be_invalid
+  describe "email" do
+    it "is required for a new record" do
+      teacher.email = nil
+      teacher.should be_invalid
+    end
+
+    it "must have the correct format" do
+      teacher.email = "blah@gah"
+      teacher.should be_invalid
+      teacher.email = "blah@gah.com"
+      teacher.should be_valid
+    end
+
+    it "must be unique" do
+      create(:teacher, email: "test@mail.com")
+      teacher.email = "test@mail.com"
+      teacher.should be_invalid
+    end
+
+    it "is not required for a saved record" do
+      teacher.save!
+      teacher.email = nil
+      teacher.should be_valid
+    end
   end
 
   describe "password" do
+    it "is required for a new record" do
+      teacher.password = nil
+      teacher.should be_invalid
+    end
+
     it "must have at least four characters" do
       teacher.password = "pas"
       teacher.should be_invalid
@@ -27,12 +53,12 @@ describe Teacher do
       teacher.password = "blah blah"
       teacher.should be_invalid
     end
-  end
 
-  it "is valid without a password when it is not a new record" do
-    teacher.save!
-    teacher.password = nil
-    teacher.should be_valid
+    it "is not required for a saved record" do
+      teacher.save!
+      teacher.password = nil
+      teacher.should be_valid
+    end
   end
 
   it "trims the first name" do
@@ -77,66 +103,13 @@ describe Teacher do
       it "has the password passed to the profile" do
         teacher.password = "pass"
         teacher.save!
-        User.authenticate(user.username, "pass").should eq(user)
+        User.authenticate(user.email, "pass").should eq(user)
       end
 
-      describe "username creation" do
-        it "converts the first name to small letters" do
-          teacher.first_name = "Rahul"
-          teacher.last_name = "Sekhar"
-          teacher.save!
-          user.username.should == "rahul"
-        end
-
-        it "uses the last name if the first name is not present" do
-          teacher.first_name = nil
-          teacher.last_name = "Sekhar"
-          teacher.save!
-          user.username.should == "sekhar"
-        end
-
-        it "converts spaces to underscores" do
-          teacher.first_name = "Blah 1 Gah"
-          teacher.save!
-          user.username.should == "blah_1_gah"
-        end
-
-        it "removes symbols" do
-          teacher.first_name = nil
-          teacher.last_name = "Bl-2a h*ga# &h"
-          teacher.save!
-          user.username.should == "bl2a_hga_h"
-        end
-
-        context "if a duplicate exists" do
-          before do
-            create(:teacher, first_name: "Blah Gah", last_name: "Pah")
-            teacher.first_name = "Bl&ah* ga#&h"
-            teacher.last_name = "Tch&5 ah"
-          end
-
-          it "uses the full name" do
-            teacher.save!
-            user.username.should == "blah_gah_tch5_ah"
-          end
-
-          context "with a duplicate full name" do
-            before{ create(:teacher, first_name: "Blah Gah", last_name: "Tch5 ah") }
-
-            it "appends a number to the end of the username" do
-              teacher.save!
-              user.username.should == "blah_gah_tch5_ah_1"
-            end
-
-            it "increments the number if further duplicates are found" do
-              create(:teacher, first_name: "Blah Gah", last_name: "Tch5 ah")
-              create(:teacher, first_name: "Blah Gah", last_name: "Tch5 ah")
-
-              teacher.save!
-              user.username.should == "blah_gah_tch5_ah_3"
-            end
-          end
-        end
+      it "has the email passed to the profile" do
+        teacher.email = "test@mail.com"
+        teacher.save!
+        user.email.should == "test@mail.com"
       end
     end
   end

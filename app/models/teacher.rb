@@ -1,22 +1,17 @@
 class Teacher < ActiveRecord::Base
-  attr_accessible :first_name, :last_name, :password
-  attr_accessor :password
+  attr_accessible :first_name, :last_name, :email, :password
+  attr_accessor :password, :email
 
-  after_create :create_user
+  before_validation :build_user_if_new_record
 
-  has_one :user, as: :profile, dependent: :destroy
+  has_one :user, as: :profile, dependent: :destroy, validate: true
  
   validates :last_name, presence: true
-  validates :password, 
-    presence: true, 
-    format: { with: /\A[^ ]*\z/ }, 
-    length: { minimum: 4 },
-    if: :new_record?
 
   strip_attributes
 
-  def create_user
-    self.create_user!(username: get_username, password: @password)
+  def build_user_if_new_record
+    self.build_user(email: @email, password: @password) if new_record?
   end
 
   def name
@@ -38,31 +33,5 @@ class Teacher < ActiveRecord::Base
 
   def self.find_by_name(first_name, last_name)
     self.where(first_name: first_name, last_name: last_name).first
-  end
-
-  private
-  def get_username
-    if first_name.present?
-      username = prepare_username(first_name)
-    else
-      username = prepare_username(last_name)
-    end
-
-    if User.exists?(username: username)
-      username = prepare_username(full_name)
-
-      full_username = username
-      i = 0
-      while User.exists?(username: username) do
-        i += 1
-        username = "#{full_username}_#{i}"
-      end
-    end
-
-    return username
-  end
-
-  def prepare_username(unprepared_username)
-    unprepared_username.downcase.gsub(' ', '_').gsub(/\W/, '')
   end
 end

@@ -2,6 +2,6 @@
 %h2 Log in
 
 = semantic_form_for @user, url: login_path do |form|
-  = form.inputs :username, :password
+  = form.inputs :email, :password
   = form.actions do
     = form.action :submit, label: "Log in"

@@ -2,12 +2,12 @@ require 'factory_girl'
 
 FactoryGirl.define do
   factory :user do
-    sequence(:username){ |n| "user#{n}"}
+    sequence(:email){ |n| "email#{n}@server.com"}
     password "pass"
-    association :profile, factory: :teacher
   end
 
   factory :teacher do
+    sequence(:email){ |n| "email#{n}@server.com"}
     sequence(:last_name){ |n| "Teacher#{n}" }
     password "pass"
   end

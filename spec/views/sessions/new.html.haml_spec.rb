@@ -29,8 +29,8 @@ describe "sessions/new.html.haml" do
       form.should have_selector "input[type='submit']"
     end
 
-    it "has a username field" do
-      form.should have_field 'user[username]', type: 'text'
+    it "has a email field" do
+      form.should have_field 'user[email]', type: 'text'
     end
 
     it "has a password field" do

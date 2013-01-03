@@ -25,7 +25,7 @@ describe SessionsController do
 
       it "sets a flash message indicating invalid data" do
         make_request
-        flash[:alert].should == "Invalid username or password"
+        flash[:alert].should == "Invalid email or password"
       end
 
       it "clears the user in the session" do
@@ -37,7 +37,7 @@ describe SessionsController do
 
     context "with an invalid user" do
       before { User.stub(:authenticate).and_return(nil) }
-      let(:make_request){ post :create, user:{ username: "user", password: "pass" } }
+      let(:make_request){ post :create, user:{ email: "user", password: "pass" } }
 
       it "authenticates the sent data" do
         User.should_receive(:authenticate).with("user", "pass")
@@ -51,7 +51,7 @@ describe SessionsController do
 
       it "sets a flash message indicating invalid data" do
         make_request
-        flash[:alert].should == "Invalid username or password"
+        flash[:alert].should == "Invalid email or password"
       end
 
       it "clears the user in the session" do
@@ -68,7 +68,7 @@ describe SessionsController do
         User.stub(:authenticate).and_return(user)
       end
 
-      let(:make_request){ post :create, user:{ username: "user", password: "pass" } }
+      let(:make_request){ post :create, user:{ email: "user", password: "pass" } }
 
       it "authenticates the sent data" do
         User.should_receive(:authenticate).with("user", "pass")

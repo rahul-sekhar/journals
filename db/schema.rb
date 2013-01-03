@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103063037) do
+ActiveRecord::Schema.define(:version => 20130103065345) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -22,7 +22,6 @@ ActiveRecord::Schema.define(:version => 20130103063037) do
   create_table "admins", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "display_name"
@@ -60,7 +59,6 @@ ActiveRecord::Schema.define(:version => 20130103063037) do
     t.string   "last_name"
     t.string   "relationship"
     t.string   "phone_numbers"
-    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "display_name"
@@ -160,7 +158,6 @@ ActiveRecord::Schema.define(:version => 20130103063037) do
   create_table "students", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "date_of_birth"
@@ -224,7 +221,6 @@ ActiveRecord::Schema.define(:version => 20130103063037) do
   create_table "teachers", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "phone_numbers"
@@ -255,17 +251,16 @@ ActiveRecord::Schema.define(:version => 20130103063037) do
   add_index "units", ["student_id", "academic_id"], :name => "student_units_index"
 
   create_table "users", :force => true do |t|
-    t.string   "username"
+    t.string   "email"
     t.string   "password_hash"
     t.string   "password_salt"
-    t.string   "role"
     t.integer  "profile_id"
     t.string   "profile_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "users", ["email"], :name => "index_users_on_username"
   add_index "users", ["profile_id", "profile_type"], :name => "users_profile_index"
-  add_index "users", ["username"], :name => "index_users_on_username"
 
 end

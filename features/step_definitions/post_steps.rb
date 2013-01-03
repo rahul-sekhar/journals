@@ -1,6 +1,6 @@
 Given /^a post about an ice cream factory visit exists$/ do
-  shalini = Teacher.create!(first_name: "Shalini", last_name: "Sekhar", password: "pass")
-  user = shalini.user
+  step 'a teacher "Shalini Sekhar" exists'
+  user = Teacher.find_by_name("Shalini", "Sekhar").user
   
   post = user.posts.build(
     title: "Ice cream factory visit",
