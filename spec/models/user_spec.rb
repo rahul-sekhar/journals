@@ -108,7 +108,7 @@ describe User do
     before { user.save! }
 
     it "destroys its associated profile" do
-      expect { user.destroy }.to change { TeacherProfile.count }.by(-1)
+      expect { user.destroy }.to change { Teacher.count }.by(-1)
     end
 
     it "destroys any posts" do

@@ -1,19 +1,25 @@
-Given /^I am on (.*?)$/ do |arg1|
-  visit path_to(arg1)
+Given /^I am on (.*?)$/ do |page|
+  visit path_to(page)
 end
 
-Then /^I should be on (.*?)$/ do |arg1|
-  current_path.should == path_to(arg1)
+Then /^I should be on (.*?)$/ do |page|
+  current_path.should == path_to(page)
 end
 
-Then /^I should see "(.*?)"$/ do |arg1|
-  page.should have_content arg1
+Then /^I should see "(.*?)"$/ do |content|
+  page.should have_content content
 end
 
-When /^I fill in "(.*?)" with "(.*?)"$/ do |arg1, arg2|
-  fill_in arg1, with: arg2
+Then /^I should see "(.*?)" within the "(.*?)" block$/ do |content, context|
+  within(context) do
+    page.should have_content content
+  end
 end
 
-When /^I click "(.*?)"$/ do |arg1|
-  click_on arg1
+When /^I fill in "(.*?)" with "(.*?)"$/ do |field, value|
+  fill_in field, with: value
+end
+
+When /^I click "(.*?)"$/ do |link|
+  click_on link
 end

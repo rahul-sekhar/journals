@@ -1,4 +1,4 @@
-class TeacherProfile < ActiveRecord::Base
+class Teacher < ActiveRecord::Base
   attr_accessible :first_name, :last_name, :password
   attr_accessor :password
 
@@ -21,7 +21,7 @@ class TeacherProfile < ActiveRecord::Base
 
   def name
     # Check for other teacher profiles with the same name, excluding the current one
-    if TeacherProfile.where{id != my{ id }}.where(first_name: first_name).count > 0
+    if Teacher.where{id != my{ id }}.where(first_name: first_name).count > 0
       return full_name
     else
       return first_name
