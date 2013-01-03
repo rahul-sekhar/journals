@@ -26,7 +26,10 @@ end
 class ChangeLoginSystem < ActiveRecord::Migration
   def up
     execute <<-SQL
-      DELETE FROM users
+      DELETE FROM users WHERE role='guardian';
+      UPDATE users SET profile_type='Student' WHERE profile_type='StudentProfile';
+      UPDATE users SET profile_type='Teacher' WHERE profile_type='TeacherProfile';
+      UPDATE users SET profile_type='Admin' WHERE profile_type='AdminProfile';
     SQL
 
     change_table :users do |t|
@@ -37,45 +40,20 @@ class ChangeLoginSystem < ActiveRecord::Migration
     User.reset_column_information
 
     n = 1
-
-    Admin.all.each do |admin|
-      user = User.new(password: "pass", profile: admin)
-      user.email = admin.email if admin.email.present?
+    User.all.each do |user|
+      user.email = user.profile.email
       if user.invalid?
         user.email = "filler_#{n}@email.com"
         n+= 1
       end
-      user.save!
-    end
-
-    Student.all.each do |student|
-      user = User.new(password: "pass", profile: student)
-      user.email = student.email if student.email.present?
-      if user.invalid?
-        user.email = "filler_#{n}@email.com"
-        n+= 1
-      end
-      user.save!
-    end
-
-    Teacher.all.each do |teacher|
-      user = User.new(password: "pass", profile: teacher)
-      user.email = teacher.email if teacher.email.present?
-      if user.invalid?
-        user.email = "filler_#{n}@email.com"
-        n+= 1
-      end
+      user.password = "pass"
       user.save!
     end
 
     Guardian.all.each do |guardian|
       user = User.new(password: "pass", profile: guardian)
-      user.email = guardian.email if guardian.email.present?
-      if user.invalid?
-        user.email = "filler_#{n}@email.com"
-        n+= 1
-      end
-      user.save!
+      user.email = guardian.email
+      user.save! if user.valid?
     end
 
     remove_column :students, :email
