@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PostsController do
-  let(:user){ mock_model(User) }
+  let(:user){ create(:teacher).user }
   
   before do
     controller.stub(:current_user).and_return(user)
@@ -33,17 +33,29 @@ describe PostsController do
       response.status.should eq(200)
     end
 
-    it "assigns a blank new post" do
+    it "assigns a new post" do
       get :new
       assigns(:post).should be_a Post
       assigns(:post).should be_new_record
     end
+
+    it "assigns post data from the flash if present" do
+      get :new, nil, nil, { post_data: { content: "<p>Preloaded content</p>" } }
+      assigns(:post).content.should == "<p>Preloaded content</p>"
+    end
+
+    it "initalizes the post tag if flash data is not present" do
+      get :new
+      assigns(:post).teachers.should == [user.profile]
+    end
+
+    it "does not initalize the post tag if flash data is present" do
+      get :new, nil, nil, { post_data: { content: "<p>Preloaded content</p>" } }
+      assigns(:post).teachers.should be_empty
+    end
   end
 
   describe "POST create" do
-    # Create a real user so that a post can be built for that user
-    let(:user){ create(:teacher).user }
-
     context "with valid data" do
       let(:make_request){ post :create, post: { title: "lorem ipsum" } }
 
@@ -58,20 +70,25 @@ describe PostsController do
     end
 
     context "with invalid data" do
-      let(:make_request){ post :create }
+      let(:make_request){ post :create, post: { content: "some content" } }
 
       it "does not create a post" do
         expect{ make_request }.to change{ Post.count }.by(0)
       end
       
-      it "renders the new page" do
+      it "redirects to the new page" do
         make_request
-        response.should render_template "new"
+        response.should redirect_to new_post_path
       end
 
       it "displays a flash message indicating invalid data" do
         make_request
         flash[:alert].should == "Invalid post"
+      end
+
+      it "stores already filled data in a flash object" do
+        make_request
+        flash[:post_data].should == { "content" => "some content" }
       end
     end
   end

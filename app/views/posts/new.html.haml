@@ -7,6 +7,10 @@
     = form.input :title
     = form.input :content
     = form.input :tag_names, label: 'Tags'
+  
+  = form.inputs do
+    = form.input :students, label: 'Student tags', member_label: :name
+    = form.input :teachers, label: 'Teacher tags', member_label: :name
 
   = form.actions do
-    = form.action :submit, label: "Create post"
+    = form.action :submit, label: 'Create post'

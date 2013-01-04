@@ -11,6 +11,13 @@ Given /^I have logged in as a (teacher|student) "(.*?)"$/ do |p_type, p_name|
   step 'I click "Log in"'
 end
 
+Given /^some base students and teachers exist$/ do
+  angela
+  aditya
+  ansh
+  sahana
+end
+
 def create_profile(type, name, email=nil, password="pass")
   first_name, last_name = split_name(name)
   email = mail_from_name(name) if email.nil?
@@ -30,4 +37,25 @@ end
 
 def mail_from_name(p_name)
   "#{p_name.downcase.gsub(' ', '.')}@mail.com"
+end
+
+# Set up some standard users
+def shalini
+  @shalini ||= create_profile("teacher", "Shalini Sekhar")
+end
+
+def angela
+  @angela ||= create_profile("teacher", "Angela Jain")
+end
+
+def aditya
+  @aditya ||= create_profile("teacher", "Aditya Pandya")
+end
+
+def ansh
+  @ansh ||= create_profile("student", "Ansh Something")
+end
+
+def sahana
+  @sahana ||= create_profile("student", "Sahana Somethingelse")
 end

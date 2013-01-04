@@ -33,4 +33,12 @@ class User < ActiveRecord::Base
   def name
     profile.name
   end
+
+  def is_teacher?
+    profile_type == "Teacher"
+  end
+
+  def is_student?
+    profile_type == "Student"
+  end
 end

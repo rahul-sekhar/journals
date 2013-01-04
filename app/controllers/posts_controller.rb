@@ -5,6 +5,15 @@ class PostsController < ApplicationController
 
   def new
     @post = current_user.posts.build
+
+    if flash[:post_data]
+      # Pre-load post data if present
+      @post.assign_attributes(flash[:post_data])
+      
+    else
+      # Initialize the teacher or student tag if there is no post data to pre-load
+      @post.initialize_tag
+    end
   end
 
   def create
@@ -12,8 +21,9 @@ class PostsController < ApplicationController
     if @post.save
       redirect_to posts_path
     else
-      flash.now[:alert] = "Invalid post"
-      render "new"
+      flash[:alert] = "Invalid post"
+      flash[:post_data] = params[:post]
+      redirect_to new_post_path
     end
   end
 end

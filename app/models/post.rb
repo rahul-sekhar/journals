@@ -13,8 +13,22 @@ class Post < ActiveRecord::Base
     created_at.strftime "#{created_at.day.ordinalize} %B %Y"
   end
 
-  def author
+  def author_name
     user.name
+  end
+
+  def author_profile
+    user.profile
+  end
+
+  def initialize_tag
+    if user.is_teacher?
+      self.teachers = [author_profile]
+      self.students.clear
+    else
+      self.students = [author_profile]
+      self.teachers.clear
+    end
   end
 
   def tag_names

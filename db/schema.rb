@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103142643) do
+ActiveRecord::Schema.define(:version => 20130104052816) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -53,7 +53,6 @@ ActiveRecord::Schema.define(:version => 20130103142643) do
     t.string   "phone_numbers"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "display_name"
   end
 
   add_index "guardians", ["student_id"], :name => "index_guardians_on_student_profile_id"
@@ -158,10 +157,8 @@ ActiveRecord::Schema.define(:version => 20130103142643) do
     t.text     "address"
     t.string   "application_form_file"
     t.string   "phone_numbers"
-    t.string   "display_name"
   end
 
-  add_index "students", ["display_name"], :name => "index_student_profiles_on_display_name"
   add_index "students", ["first_name", "last_name"], :name => "student_full_name_index"
   add_index "students", ["first_name"], :name => "index_student_profiles_on_first_name"
   add_index "students", ["last_name"], :name => "index_student_profiles_on_last_name"
@@ -220,10 +217,8 @@ ActiveRecord::Schema.define(:version => 20130103142643) do
     t.string   "bloodgroup"
     t.string   "emergency_contact"
     t.text     "address"
-    t.string   "display_name"
   end
 
-  add_index "teachers", ["display_name"], :name => "index_teacher_profiles_on_display_name"
   add_index "teachers", ["first_name", "last_name"], :name => "teacher_full_name_index"
   add_index "teachers", ["first_name"], :name => "index_teacher_profiles_on_first_name"
   add_index "teachers", ["last_name"], :name => "index_teacher_profiles_on_last_name"

@@ -24,10 +24,16 @@ describe Post do
     end
   end
 
-  describe "#author" do
+  describe "#author_name" do
     it "returns the associated users name" do
       post.user.stub(:name).and_return("Some Name")
-      post.author.should eq("Some Name")
+      post.author_name.should eq("Some Name")
+    end
+  end
+
+  describe "#author_profile" do
+    it "returns the associated users profile" do
+      post.author_profile.should eq(post.user.profile)
     end
   end
 
@@ -97,5 +103,22 @@ describe Post do
       post.tags << Tag.new(name: "fourth tag")
       post.tag_names.should == "fourth tag, other bag, other tag, some tag"
     end
+  end
+
+  describe "#initialize_tag" do
+    it "adds a teacher tag if the author is a teacher" do
+      post.initialize_tag
+      post.teachers.should == [post.author_profile]
+      post.students.should be_empty
+    end
+
+    it "adds a student tag if the author is a student" do
+      post.user = create(:student).user
+      post.initialize_tag
+      post.students.should == [post.author_profile]
+      post.teachers.should be_empty
+    end
+
+    it "adds a student tag if the author is a guardian"
   end
 end

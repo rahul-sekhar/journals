@@ -27,3 +27,7 @@ end
 When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
 end
+
+When /^I select "(.*?)" from "(.*?)"$/ do |p_option, p_select|
+  page.select p_option, from: p_select
+end

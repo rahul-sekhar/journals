@@ -3,7 +3,7 @@
   %p!= post.content
   %footer
     %p.date= post.formatted_created_at
-    %p.author Posted by #{post.author}
+    %p.author Posted by #{post.author_name}
 
     - if post.tags.present?
       %p.tags Tags: #{post.tag_names}
