@@ -6,7 +6,7 @@
     = javascript_include_tag "application"
     = csrf_meta_tags
 
-  %body
+  %body{id: content_for(:page_id)}
     %header
       %h1 Journals Demo
 
@@ -20,5 +20,10 @@
       %p You are signed in as #{current_profile.full_name}
       %ul
         %li= link_to "Logout", logout_path
+
+    %navigation
+      %ul
+        %li= link_to "View posts", posts_path
+        %li= link_to "New post", new_post_path
 
     = yield

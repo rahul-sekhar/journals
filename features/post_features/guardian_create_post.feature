@@ -1,4 +1,3 @@
-@current
 Feature: Create a post as a guardian
 
 As a teacher I should be able to create a post so that I can add content to the site

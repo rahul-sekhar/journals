@@ -21,7 +21,7 @@ describe PostsController do
 
     it "finds and assigns all posts" do
       post = mock_model(Post)
-      Post.stub(:all).and_return([post])
+      Post.stub(:limit).and_return([post])
       get :index
       assigns(:posts).should eq([post])
     end

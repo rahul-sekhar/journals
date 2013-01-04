@@ -3,6 +3,10 @@ module ApplicationHelper
     content_for(:title, page_title)
   end
 
+  def page_id(id)
+    content_for(:page_id, id)
+  end
+
   def page_title
     if content_for(:title).present?
       "Journals Demo - #{content_for(:title)}"
