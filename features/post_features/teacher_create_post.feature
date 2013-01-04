@@ -30,3 +30,10 @@ Scenario: Add student and teacher tags to a post
   And I click "Create post"
   Then a post with student and teacher tags should exist
 
+Scenario: Set post permissions
+  Then the checkbox "Guardians" should be unchecked
+  And the checkbox "Students" should be unchecked
+  When I fill in "Title" with "Permissions Post"
+  And I check the checkbox "Guardians"
+  And I click "Create post"
+  Then a post with permissions should exist

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104062645) do
+ActiveRecord::Schema.define(:version => 20130104063041) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -91,8 +91,8 @@ ActiveRecord::Schema.define(:version => 20130104062645) do
     t.string   "title"
     t.text     "content"
     t.integer  "user_id"
-    t.boolean  "students_restricted",  :default => false, :null => false
-    t.boolean  "guardians_restricted", :default => false, :null => false
+    t.boolean  "visible_to_students",  :default => false, :null => false
+    t.boolean  "visible_to_guardians", :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "last_commented_at"
@@ -100,10 +100,10 @@ ActiveRecord::Schema.define(:version => 20130104062645) do
   end
 
   add_index "posts", ["created_at"], :name => "index_posts_on_created_at"
-  add_index "posts", ["guardians_restricted"], :name => "index_posts_on_guardians_restricted"
   add_index "posts", ["last_commented_at"], :name => "index_posts_on_last_commented_at"
-  add_index "posts", ["students_restricted"], :name => "index_posts_on_students_restricted"
   add_index "posts", ["user_id"], :name => "index_posts_on_user_id"
+  add_index "posts", ["visible_to_guardians"], :name => "index_posts_on_guardians_restricted"
+  add_index "posts", ["visible_to_students"], :name => "index_posts_on_students_restricted"
 
   create_table "posts_students", :id => false, :force => true do |t|
     t.integer "post_id"

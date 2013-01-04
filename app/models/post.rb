@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids
+  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students
 
   belongs_to :user
   has_and_belongs_to_many :tags, uniq: true, validate: true

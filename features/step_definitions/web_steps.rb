@@ -31,3 +31,12 @@ end
 When /^I select "(.*?)" from "(.*?)"$/ do |p_option, p_select|
   page.select p_option, from: p_select
 end
+
+Then /^the checkbox "(.*?)" should be unchecked$/ do |p_checkbox|
+  page.find_field(p_checkbox).should_not be_checked
+end
+
+When /^I check the checkbox "(.*?)"$/ do |p_checkbox|
+  page.check(p_checkbox)
+end
+

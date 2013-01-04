@@ -37,3 +37,11 @@ Then /^a post with student and teacher tags should exist$/ do
   post.students.should =~ [ansh, sahana]
   post.teachers.should =~ [Teacher.find_by_name("Rahul", "Sekhar"), angela]
 end
+
+Then /^a post with permissions should exist$/ do
+  post = Post.where(title: "Permissions Post").first
+  post.should be_present
+
+  post.visible_to_guardians.should == true
+  post.visible_to_students.should == false
+end
