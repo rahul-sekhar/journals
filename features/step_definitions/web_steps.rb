@@ -10,6 +10,10 @@ Then /^I should see "(.*?)"$/ do |p_content|
   page.should have_content p_content
 end
 
+Then /^I should not see "(.*?)"$/ do |p_content|
+  page.should have_no_content p_content
+end
+
 Then /^I should see "(.*?)" within the "(.*?)" block$/ do |p_content, p_context|
   within(p_context) do
     page.should have_content p_content
@@ -30,6 +34,10 @@ end
 
 When /^I select "(.*?)" from "(.*?)"$/ do |p_option, p_select|
   page.select p_option, from: p_select
+end
+
+When /^I unselect "(.*?)" from "(.*?)"$/ do |p_option, p_select|
+  page.unselect p_option, from: p_select
 end
 
 Then /^the checkbox "(.*?)" should be unchecked$/ do |p_checkbox|

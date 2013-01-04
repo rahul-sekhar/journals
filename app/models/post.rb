@@ -1,6 +1,8 @@
 class Post < ActiveRecord::Base
   attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students
 
+  before_save :check_self_tag, :check_permissions
+
   belongs_to :user
   has_and_belongs_to_many :tags, uniq: true, validate: true
   has_and_belongs_to_many :teachers, uniq: true
@@ -8,6 +10,16 @@ class Post < ActiveRecord::Base
 
   validates :title, presence: true
   validates :user, presence: true
+
+  def check_self_tag
+    self.students << author_profile if user.is_student?
+    self.students << author_profile.student if user.is_guardian?
+  end
+
+  def check_permissions
+    self.visible_to_students = true if user.is_student?
+    self.visible_to_guardians = true if user.is_student? || user.is_guardian?
+  end
 
   def formatted_created_at
     created_at.strftime "#{created_at.day.ordinalize} %B %Y"
@@ -25,8 +37,11 @@ class Post < ActiveRecord::Base
     if user.is_teacher?
       self.teachers = [author_profile]
       self.students.clear
-    else
+    elsif user.is_student?
       self.students = [author_profile]
+      self.teachers.clear
+    elsif user.is_guardian?
+      self.students = [author_profile.student]
       self.teachers.clear
     end
   end

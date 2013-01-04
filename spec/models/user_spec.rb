@@ -5,6 +5,8 @@ describe User do
   let(:user){ teacher.user }
   let(:student){ create(:student ) }
   let(:student_user){ student.user }
+  let(:guardian){ create(:guardian) }
+  let(:guardian_user){ guardian.user }
 
   it "is valid with valid attributes" do
     user.should be_valid
@@ -116,6 +118,10 @@ describe User do
     it "returns false if the profile is a student" do
       student_user.is_teacher?.should == false
     end
+
+    it "returns false if the profile is a guardian" do
+      guardian_user.is_teacher?.should == false
+    end
   end
 
   describe "#is_student?" do
@@ -125,6 +131,24 @@ describe User do
 
     it "returns false if the profile is a teacher" do
       user.is_student?.should == false
+    end
+
+    it "returns false if the profile is a guardian" do
+      guardian_user.is_student?.should == false
+    end
+  end
+
+  describe "#is_guardian?" do
+    it "returns true if the profile is a guardian" do
+      guardian_user.is_guardian?.should == true
+    end
+
+    it "returns false if the profile is a student" do
+      student_user.is_guardian?.should == false
+    end
+
+    it "returns false if the profile is a teacher" do
+      user.is_guardian?.should == false
     end
   end
 end

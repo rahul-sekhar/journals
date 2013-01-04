@@ -41,4 +41,8 @@ class User < ActiveRecord::Base
   def is_student?
     profile_type == "Student"
   end
+
+  def is_guardian?
+    profile_type == "Guardian"
+  end
 end

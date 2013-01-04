@@ -45,3 +45,27 @@ Then /^a post with permissions should exist$/ do
   post.visible_to_guardians.should == true
   post.visible_to_students.should == false
 end
+
+Then /^a student post with student and teacher tags should exist$/ do
+  post = Post.where(title: "Tagged Student Post").first
+  post.should be_present
+
+  post.students.should =~ [ansh, Student.find_by_name("Rahul", "Sekhar")]
+  post.teachers.should =~ [angela]
+end
+
+Then /^a guardian post with student and teacher tags should exist$/ do
+  post = Post.where(title: "Tagged Guardian Post").first
+  post.should be_present
+
+  post.students.should =~ [ansh, Student.find_by_name("Roly", "Sekhar")]
+  post.teachers.should =~ [angela]
+end
+
+Then /^a guardian post with permissions should exist$/ do
+  post = Post.where(title: "Guardian Permissions Post").first
+  post.should be_present
+
+  post.visible_to_guardians.should == true
+  post.visible_to_students.should == true
+end

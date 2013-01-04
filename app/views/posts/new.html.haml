@@ -12,9 +12,11 @@
     = form.input :students, label: 'Student tags', member_label: :name
     = form.input :teachers, label: 'Teacher tags', member_label: :name
 
-  = form.inputs "Permissions" do
-    = form.input :visible_to_guardians, label: 'Guardians'
-    = form.input :visible_to_students, label: 'Students'
+  - unless current_user.is_student?
+    = form.inputs "Permissions" do
+      - unless current_user.is_guardian?
+        = form.input :visible_to_guardians, label: 'Guardians'
+      = form.input :visible_to_students, label: 'Students'
 
   = form.actions do
     = form.action :submit, label: 'Create post'

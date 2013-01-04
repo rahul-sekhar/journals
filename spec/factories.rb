@@ -8,9 +8,16 @@ FactoryGirl.define do
   end
 
   factory :student do
-    sequence(:email){ |n| "email#{n}@server.com"}
+    sequence(:email){ |n| "student_email#{n}@server.com"}
     sequence(:last_name){ |n| "Student#{n}" }
     password "pass"
+  end
+
+  factory :guardian do
+    sequence(:email){ |n| "guardian_email#{n}@server.com"}
+    sequence(:last_name){ |n| "Guardian#{n}" }
+    password "pass"
+    student
   end
 
   factory :post do

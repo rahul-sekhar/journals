@@ -119,6 +119,60 @@ describe Post do
       post.teachers.should be_empty
     end
 
-    it "adds a student tag if the author is a guardian"
+    it "adds a student tag if the author is a guardian" do
+      student = create(:student)
+      post.user = create(:guardian, student: student).user
+      post.initialize_tag
+      post.students.should == [student]
+      post.teachers.should be_empty
+    end
+  end
+
+  describe "student and teacher tags" do
+    let(:student){ create(:student) }
+    let(:other_student){ create(:student) }
+
+    it "must include the self tag if posted by a student" do
+      post.user = student.user
+      post.students = [other_student]
+      post.teachers = []
+      post.save!
+      post.students.should =~ [other_student, student]
+      post.teachers.should be_empty
+    end
+
+    it "must include the self tag if posted by a guardian" do
+      guardian = create(:guardian, student: student)
+      post.user = guardian.user
+      post.students = [other_student]
+      post.teachers = []
+      post.save!
+      post.students.should =~ [other_student, student]
+      post.teachers.should be_empty
+    end
+
+    it "do not need to include the self tag if posted by a teacher" do
+      post.students = [other_student]
+      post.teachers = []
+      post.save!
+      post.students.should == [other_student]
+      post.teachers.should be_empty
+    end
+  end
+
+  describe "permissions" do
+    it "must be visible to both guardians and students if created by a student" do
+      post.user = create(:student).user
+      post.save
+      post.visible_to_students.should == true
+      post.visible_to_guardians.should == true
+    end
+
+    it "must be visible to guardiansif created by a guardians" do
+      post.user = create(:guardian).user
+      post.save
+      post.visible_to_students.should == false
+      post.visible_to_guardians.should == true
+    end
   end
 end

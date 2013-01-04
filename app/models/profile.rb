@@ -6,8 +6,7 @@ module Profile
   end
 
   def name
-    # Check for other profiles with the same name, excluding the current one
-    if self.class.where{id != my{ id }}.where(first_name: first_name).count > 0
+    if duplicate_name?
       return full_name
     else
       return first_name
@@ -34,5 +33,17 @@ module Profile
     base.has_one :user, as: :profile, dependent: :destroy, validate: true
     base.validates :last_name, presence: true
     base.strip_attributes
+  end
+
+  private
+
+  def duplicate_name?
+    [Teacher, Student, Guardian].each do |klass|
+      duplicates = klass.where(first_name: first_name)
+      duplicates = duplicates.where{id != my{ id }} if klass == self.class
+      return true if duplicates.count > 0
+    end
+
+    return false
   end
 end
