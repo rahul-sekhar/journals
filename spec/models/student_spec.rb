@@ -14,4 +14,12 @@ describe Student do
       expect { profile.destroy }.to change{ Guardian.count }.by(-1)
     end
   end
+
+  describe "#name_with_type" do
+    it "returns the full name along with the profile type" do
+      profile.first_name = "Rahul"
+      profile.last_name = "Sekhar"
+      profile.name_with_type.should == "Rahul Sekhar (student)"
+    end
+  end
 end

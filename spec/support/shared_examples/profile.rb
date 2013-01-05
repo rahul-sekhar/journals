@@ -130,32 +130,6 @@ shared_examples_for "a profile" do
     end
   end
 
-describe "#name" do
-    it "returns the first name if no duplicates exist" do
-      profile.first_name = "Rahul"
-      profile.save
-      profile.name.should == "Rahul"
-    end
-
-    it "returns the full name if another student with the same first name exists" do
-      create(:student, first_name: "Rahul")
-      profile.first_name = "Rahul"
-      profile.name.should == profile.full_name
-    end
-
-    it "returns the full name if another teacher with the same first name exists" do
-      create(:teacher, first_name: "Rahul")
-      profile.first_name = "Rahul"
-      profile.name.should == profile.full_name
-    end
-
-    it "returns the full name if another guardian with the same first name exists" do
-      create(:guardian, first_name: "Rahul")
-      profile.first_name = "Rahul"
-      profile.name.should == profile.full_name
-    end
-  end
-
   describe "##alphabetical" do
     it "orders alphabetically by the first name followed by the last name" do
       profile1 = create(profile_type, first_name: "Some", last_name: "Fellow")

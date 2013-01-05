@@ -4,4 +4,8 @@ class Student < ActiveRecord::Base
   attr_accessible :first_name, :last_name, :email, :password
 
   has_many :guardians, dependent: :destroy
+
+  def name_with_type
+    "#{full_name} (student)"
+  end
 end

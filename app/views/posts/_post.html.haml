@@ -5,14 +5,14 @@
         %h4 Students
         %ul
           - post.students.each do |student|
-            %li= student.name
+            %li= student.first_name
 
     - if post.teachers.present?
       .teachers
         %h4 Teachers
         %ul
           - post.teachers.each do |teacher|
-            %li= teacher.name
+            %li= teacher.first_name
   
   %h3= post.title
 

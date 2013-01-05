@@ -18,9 +18,9 @@ Scenario: Create a minimal post with a title, content and tags
 
 Scenario: Add student and teacher tags to a post, without being able to remove own tag
   When I fill in "Title" with "Tagged Guardian Post"
-  And I unselect "Roly" from "Student tags"
-  And I select "Ansh" from "Student tags"
-  And I select "Angela" from "Teacher tags"
+  And I unselect "Roly Sekhar" from "Student tags"
+  And I select "Ansh Something" from "Student tags"
+  And I select "Angela Jain" from "Teacher tags"
   And I click "Create post"
   Then a guardian post with student and teacher tags should exist
 

@@ -24,9 +24,9 @@ Scenario: Create a post without a title
 
 Scenario: Add student and teacher tags to a post
   When I fill in "Title" with "Tagged Post"
-  And I select "Ansh" from "Student tags"
-  And I select "Sahana" from "Student tags"
-  And I select "Angela" from "Teacher tags"
+  And I select "Ansh Something" from "Student tags"
+  And I select "Sahana Somethingelse" from "Student tags"
+  And I select "Angela Jain" from "Teacher tags"
   And I click "Create post"
   Then a post with student and teacher tags should exist
 

@@ -5,14 +5,6 @@ module Profile
     self.build_user(email: @email, password: @password) if new_record?
   end
 
-  def name
-    if duplicate_name?
-      return full_name
-    else
-      return first_name
-    end
-  end
-
   def full_name
     if first_name.present?
       "#{first_name} #{last_name}"

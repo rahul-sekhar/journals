@@ -110,8 +110,8 @@ describe User do
   end
 
   describe "#name" do
-    it "returns the profile name" do
-      user.profile.stub(:name).and_return("Name")
+    it "returns the profiles first name" do
+      user.profile.stub(:first_name).and_return("Name")
       user.name.should == "Name"
     end
   end

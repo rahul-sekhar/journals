@@ -12,13 +12,13 @@
     = form.input :students, 
       label: 'Student tags',
       collection: Student.alphabetical,
-      member_label: :name,
+      member_label: :full_name,
       input_html: { size: 6 }
 
     = form.input :teachers, 
       label: 'Teacher tags',
       collection: Teacher.alphabetical,
-      member_label: :name,
+      member_label: :full_name,
       input_html: { size: 6 }
 
   - unless current_user.is_student?
