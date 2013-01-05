@@ -5,5 +5,7 @@ Journals::Application.routes.draw do
   post "login" => "sessions#create"
   get "logout" => "sessions#destroy", as: "logout"
 
-  resources :posts
+  resources :posts do
+    resources :comments, only: :create
+  end
 end

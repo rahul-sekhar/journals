@@ -2,10 +2,7 @@ require 'spec_helper'
 
 describe PostsController do
   let(:user){ create(:teacher).user }
-  
-  before do
-    controller.stub(:current_user).and_return(user)
-  end
+  before { controller.stub(:current_user).and_return(user) }
 
   describe "GET index" do
     it "redirects to the login path if not logged in" do
@@ -81,6 +78,16 @@ describe PostsController do
 
       it "creates a post with the data passed" do
         expect{ make_request }.to change{ Post.count }.by(1)
+      end
+
+      it "creates a post with the correct title" do
+        make_request
+        assigns(:post).title.should == "lorem ipsum"
+      end
+
+      it "creates a post with the correct author" do
+        make_request
+        assigns(:post).user.should == user
       end
 
       it "redirects to the posts page" do

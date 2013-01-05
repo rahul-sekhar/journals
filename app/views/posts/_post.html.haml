@@ -25,6 +25,9 @@
       - post.comments.each do |comment|
         = render "comments/comment", comment: comment
 
+  .add-comment
+    = render "comments/fields", comment: post.comments.build
+
   %footer
     %p.date= post.formatted_created_at
     %p.author Posted by #{post.author_name}
