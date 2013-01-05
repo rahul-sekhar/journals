@@ -155,4 +155,14 @@ describe "#name" do
       profile.name.should == profile.full_name
     end
   end
+
+  describe "##alphabetical" do
+    it "orders alphabetically by the first name followed by the last name" do
+      profile1 = create(profile_type, first_name: "Some", last_name: "Fellow")
+      profile2 = create(profile_type, first_name: "Another", last_name: "Fellow")
+      profile3 = create(profile_type, first_name: "Some", last_name: "Chap")
+      profile_class.alphabetical.should == [profile2, profile3, profile1]
+    end    
+  end
+  
 end

@@ -25,6 +25,10 @@ module Profile
     def find_by_name(first_name, last_name)
       self.where(first_name: first_name, last_name: last_name).first
     end
+
+    def alphabetical
+      order(:first_name, :last_name)
+    end
   end
 
   def self.included(base)

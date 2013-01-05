@@ -9,8 +9,17 @@
     = form.input :tag_names, label: 'Tags', placeholder: 'Tags'
   
   = form.inputs nil, class: :tags do
-    = form.input :students, label: 'Student tags', member_label: :name, input_html: { size: 6 }
-    = form.input :teachers, label: 'Teacher tags', member_label: :name, input_html: { size: 6 }
+    = form.input :students, 
+      label: 'Student tags',
+      collection: Student.alphabetical,
+      member_label: :name,
+      input_html: { size: 6 }
+
+    = form.input :teachers, 
+      label: 'Teacher tags',
+      collection: Teacher.alphabetical,
+      member_label: :name,
+      input_html: { size: 6 }
 
   - unless current_user.is_student?
     = form.inputs nil, class: :permissions do
