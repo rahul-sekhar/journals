@@ -1,0 +1,31 @@
+body {
+  background-color: $cream;
+}
+
+header {
+  background-color: $brown;
+  height: 64px;
+  margin-bottom: 34px;
+
+  h1 {
+    font-size: 20px;
+    font-family: sans-serif;
+    font-weight: normal;
+    text-transform: uppercase;
+    color: $light-cream;
+    line-height: 64px;
+    letter-spacing: 2px;
+  }
+}
+
+.wrapper {
+  width: 940px;
+  margin: 0 auto;
+}
+
+h2 {
+  @include myriad;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 27px;
+}

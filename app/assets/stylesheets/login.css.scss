@@ -1,0 +1,64 @@
+#login {
+  header {
+    margin-bottom: 64px;
+  }
+
+  h2 {
+    width: 207px;
+    text-align: right;
+    margin-bottom: 48px;
+  }
+
+  .input {
+    @include clearfix;
+    margin-bottom: 18px;
+
+    label {
+      @include myriad;
+      text-transform: uppercase;
+      color: $gray-1;
+      letter-spacing: 2px;
+      font-weight: 600;
+      font-size: 14px;
+      
+      display: block;
+      float: left;
+      width: 200px;
+      line-height: 23px;
+      text-align: right;
+      margin-right: 7px;
+    }
+
+    input {
+      float: left;
+      @include chaparral;
+      letter-spacing: 1px;
+      border: none;
+      line-height: 23px;
+      padding: 0 4px;
+      width: 160px;
+    }
+  }
+
+  .actions {
+    width: 207px + 160px + 8px;
+
+    input {
+      float: right;
+      @include myriad;
+      font-weight: bold;
+      font-size: 16px;
+      text-transform: lowercase;
+      color: $cream;
+      background-color: $gray-brown;
+      border: none;
+      line-height: 29px;
+      padding: 0 20px;
+      @include border-radius(9px);
+    }
+  }
+
+  .required abbr {
+    display:none;
+  }
+}

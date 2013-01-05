@@ -2,28 +2,28 @@
 %html
   %head
     %title= page_title
-    = stylesheet_link_tag    "application", media: "all"
+    = stylesheet_link_tag    "screen", media: "all"
     = javascript_include_tag "application"
+    \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
+    \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     = csrf_meta_tags
+
 
   %body{id: content_for(:page_id)}
     %header
-      %h1 Journals Demo
+      .wrapper
+        %h1 Journals Demo
+      
+      - if logged_in?
+        %p You are signed in as #{current_profile.full_name}
+        %ul
+          %li= link_to "Logout", logout_path
 
-    - if flash[:alert]
-      %p= flash[:alert]
+    .wrapper
+      - if logged_in?
+        %navigation
+          %ul
+            %li= link_to "View posts", posts_path
+            %li= link_to "New post", new_post_path
 
-    - if flash[:notice]
-      %p= flash[:notice]
-
-    - if logged_in?
-      %p You are signed in as #{current_profile.full_name}
-      %ul
-        %li= link_to "Logout", logout_path
-
-    %navigation
-      %ul
-        %li= link_to "View posts", posts_path
-        %li= link_to "New post", new_post_path
-
-    = yield
+      = yield
