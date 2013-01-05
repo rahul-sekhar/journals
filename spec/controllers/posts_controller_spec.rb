@@ -191,4 +191,30 @@ describe PostsController do
       end
     end
   end
+
+
+  describe "DELETE destroy" do
+    let(:post){ create(:post) }
+    let(:make_request){ delete :destroy, id: post.id }
+
+    it "finds the correct post" do
+      make_request
+      assigns(:post).should eq(post)
+    end
+
+    it "destroys the post" do
+      make_request
+      assigns(:post).should be_destroyed
+    end
+
+    it "redirects to the posts page" do
+      make_request
+      response.should redirect_to posts_path
+    end
+
+    it "sets a flash message" do
+      make_request
+      flash[:notice].should == "The post has been deleted"
+    end
+  end
 end

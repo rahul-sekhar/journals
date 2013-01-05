@@ -1,4 +1,3 @@
-@current
 Feature: Edit a post
 
 Background:

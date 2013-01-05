@@ -25,9 +25,8 @@ class PostsController < ApplicationController
     if @post.save
       redirect_to posts_path
     else
-      flash[:alert] = "Invalid post"
       flash[:post_data] = params[:post]
-      redirect_to new_post_path
+      redirect_to new_post_path, alert: "Invalid post"
     end
   end
 
@@ -44,9 +43,14 @@ class PostsController < ApplicationController
     if @post.update_attributes(params[:post])
       redirect_to @post
     else
-      flash[:alert] = "Invalid post"
       flash[:post_data] = params[:post]
-      redirect_to edit_post_path(@post)
+      redirect_to edit_post_path(@post), alert: "Invalid post"
     end
+  end
+
+  def destroy
+    @post = Post.find(params[:id])
+    @post.destroy
+    redirect_to posts_path, notice: "The post has been deleted"
   end
 end

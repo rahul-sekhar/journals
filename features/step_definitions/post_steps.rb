@@ -1,3 +1,7 @@
+Then /^that post should be destroyed$/ do
+  Post.should_not exist(@post)
+end
+
 Given /^a post about an ice cream factory visit exists$/ do
   @post = shalini.user.posts.build(
     title: 'Ice cream factory visit',
