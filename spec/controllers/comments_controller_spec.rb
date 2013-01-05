@@ -120,4 +120,29 @@ describe CommentsController do
       end
     end
   end
+
+  describe "DELETE destroy" do
+    let(:comment){ create(:comment, post: post_obj) }
+    let(:make_request){ delete :destroy, id: comment.id, post_id: post_obj.id }
+
+    it "finds the correct comment" do
+      make_request
+      assigns(:comment).should eq(comment)
+    end
+
+    it "destroys the comment" do
+      make_request
+      assigns(:comment).should be_destroyed
+    end
+
+    it "redirects to the post page" do
+      make_request
+      response.should redirect_to post_path(post_obj)
+    end
+
+    it "sets a flash message" do
+      make_request
+      flash[:notice].should == "The comment has been deleted"
+    end
+  end
 end

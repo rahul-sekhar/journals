@@ -8,3 +8,7 @@ Given /^a comment on the post "(.*?)" exists with content "(.*?)", date "(.*?)",
   @comment.created_at = Date.strptime(p_date, '%d/%m/%Y')
   @comment.save!
 end
+
+Then /^that comment should be destroyed$/ do
+  Comment.should_not exist(@comment)
+end
