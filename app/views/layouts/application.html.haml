@@ -10,20 +10,34 @@
 
 
   %body{id: content_for(:page_id)}
-    %header
+    %header#page-header
       .wrapper
         %h1 Journals Demo
       
-      - if logged_in?
-        %p You are signed in as #{current_profile.full_name}
-        %ul
-          %li= link_to "Logout", logout_path
+        - if logged_in?
+          .user
+            %p You are signed in as #{current_profile.full_name}
+            .menu
+              %ul
+                %li= link_to "Your profile", '#'
+                %li= link_to "Log out", logout_path
 
     .wrapper
       - if logged_in?
-        %navigation
+        %navigation#page-navigation
           %ul
             %li= link_to "View posts", posts_path
             %li= link_to "New post", new_post_path
 
-      = yield
+      #main-content
+        %h2= content_for :heading
+
+        %section#upper-bar
+          .notice
+          - if flash[:alert]
+            %p.error= flash[:alert]
+            
+          - if flash[:notice]
+            %p= flash[:notice]
+
+        = yield

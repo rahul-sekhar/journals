@@ -28,4 +28,10 @@ FactoryGirl.define do
   factory :tag do
     sequence(:name){ |n| "tag#{n}"}
   end
+
+  factory :comment do
+    post
+    user { create(:teacher).user }
+    content "Some content"
+  end
 end

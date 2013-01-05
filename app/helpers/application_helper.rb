@@ -1,6 +1,7 @@
 module ApplicationHelper
   def title(page_title)
     content_for(:title, page_title)
+    content_for(:heading, page_title)
   end
 
   def page_id(id)

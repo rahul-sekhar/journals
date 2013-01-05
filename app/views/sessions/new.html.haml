@@ -1,14 +1,7 @@
 - page_id 'login'
 - title "Log in"
-%h2 Log in
-
-- if flash[:alert]
-  %p= flash[:alert]
-
-- if flash[:notice]
-  %p= flash[:notice]
 
 = semantic_form_for @user, url: login_path do |form|
   = form.inputs :email, :password
   = form.actions do
-    = form.action :submit, label: "Log in"
+    = form.action :submit, label: "Log in", button_html: { class: :button }

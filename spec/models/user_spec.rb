@@ -98,8 +98,14 @@ describe User do
 
     it "destroys any posts" do
       user.save!
-      create(:post, user_id: user.id)
+      create(:post, user: user)
       expect { user.destroy }.to change { Post.count }.by(-1)
+    end
+
+    it "destroys any comments" do
+      user.save!
+      create(:comment, user: user)
+      expect { user.destroy }.to change { Comment.count }.by(-1)
     end
   end
 

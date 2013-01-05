@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   belongs_to :profile, polymorphic: true, dependent: :destroy
   has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
   validates :email, 
     presence: true, 

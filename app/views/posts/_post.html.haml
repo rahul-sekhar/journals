@@ -1,13 +1,5 @@
-%article
-  %h3= post.title
-  %p!= post.content
-  %footer
-    %p.date= post.formatted_created_at
-    %p.author Posted by #{post.author_name}
-
-    - if post.tags.present?
-      %p.tags Tags: #{post.tag_names}
-
+%article.post
+  %header.tagged-people
     - if post.students.present?
       .students
         %h4 Students
@@ -21,3 +13,21 @@
         %ul
           - post.teachers.each do |teacher|
             %li= teacher.name
+  
+  %h3= post.title
+
+  .content
+    != post.content
+
+  - if post.comments.present?
+    .comments
+      %h4 Comments
+      - post.comments.each do |comment|
+        = render "comments/comment", comment: comment
+
+  %footer
+    %p.date= post.formatted_created_at
+    %p.author Posted by #{post.author_name}
+    - if post.tags.present?
+      %p.tags Tags: #{post.tag_names}
+

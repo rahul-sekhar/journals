@@ -20,6 +20,11 @@ Then /^I should see "(.*?)" within the "(.*?)" block$/ do |p_content, p_context|
   end
 end
 
+Then /^a "(.*?)" block should be present$/ do |p_css|
+  page.should have_css p_css
+end
+
+
 Then /^a "(.*?)" block should not be present$/ do |p_css|
   page.should have_no_css p_css
 end

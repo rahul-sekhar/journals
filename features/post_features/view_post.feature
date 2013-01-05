@@ -1,6 +1,6 @@
-Feature: View posts on the home page
+Feature: View a post on the home page
 
-As a user I should be able to view all posts visible to me on my home page, sorted by their date so that I can quickly see recently added posts
+As a user I should be able to view a post and see all its relevant data
 
 Scenario: View a post with only partial information
   Given a post about an ice cream factory visit exists

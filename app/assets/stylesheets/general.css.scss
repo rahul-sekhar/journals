@@ -1,11 +1,47 @@
-body {
-  background-color: $cream;
+html {
+  height: 100%;
+  overflow-y: scroll;
 }
 
-header {
+body {
+  height: 100%;
+  min-width: 980px;
+  background-color: $cream;
+  @include myriad;
+}
+
+// Link color transition
+a {
+  @include transition(color 200ms ease);
+}
+
+input.button {
+  @include transition(background-color 200ms ease, color 200ms ease);
+}
+
+// Style input placeholders
+@mixin placeholder-style {
+  @include myriad;
+  font-size: 14px;
+  font-style: italic;
+  color: $grey-2;
+}
+::-webkit-input-placeholder {
+  @include placeholder-style;
+}
+:-moz-placeholder,
+::-moz-placeholder {
+  @include placeholder-style;
+}
+:-ms-input-placeholder {
+  @include placeholder-style;
+}
+
+#page-header {
   background-color: $brown;
   height: 64px;
   margin-bottom: 34px;
+  width: 100%;
 
   h1 {
     font-size: 20px;
@@ -15,6 +51,37 @@ header {
     color: $light-cream;
     line-height: 64px;
     letter-spacing: 2px;
+    float: left;
+  }
+
+  .user {
+    float: right;
+    padding-top: 30px;
+
+    p {
+      
+      color: $cream;
+      @include chaparral;
+      font-size: 14px;
+      float: left;
+    }
+
+    .menu {
+      float: left;
+      margin-left: 20px;
+      
+      li {
+        float: left;
+        font-size: 14px;
+        font-weight: bold;
+        margin-left: 15px;
+
+        a {
+          text-decoration: none;
+          @include link-colors($light-cream, darken($light-cream, 20));
+        }
+      }
+    }
   }
 }
 
@@ -24,8 +91,49 @@ header {
 }
 
 h2 {
-  @include myriad;
   font-size: 30px;
   font-weight: 600;
   margin-bottom: 27px;
+  color: $off-black;
+}
+
+#main-content {
+  width: 648px;
+  padding-bottom: 20px;
+  @include new-clearfix;
+}
+
+#upper-bar {
+  min-height: 30px;
+  background-color: $green;
+  margin-bottom: 22px;
+}
+
+#page-navigation {
+  float: right;
+
+  li {
+    color: $light-cream;
+    letter-spacing: 1px;
+    text-transform: lowercase;
+    font-size: 16px;
+    width: 176px;
+    height: 61px;
+    display: table;
+    margin-bottom: 10px;
+
+    a {
+      text-decoration: none;
+      @include link-colors($light-cream);
+      display: table-cell;
+      vertical-align: middle;
+      padding: 10px 40px 10px 70px;
+      background-color: $grey-brown;
+      @include transition(background-color 200ms ease);
+
+      &:hover {
+        background-color: lighten($grey-brown, 5);
+      }
+    }
+  }
 }

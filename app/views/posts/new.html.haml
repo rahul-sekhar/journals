@@ -1,23 +1,26 @@
 - page_id 'create_post'
 - title 'Create a post'
-%h2 Create a post
 
 = semantic_form_for @post do |form|
   
-  = form.inputs do
-    = form.input :title
+  = form.inputs nil, class: :main do
+    = form.input :title, placeholder: 'Title'
     = form.input :content
-    = form.input :tag_names, label: 'Tags'
+    = form.input :tag_names, label: 'Tags', placeholder: 'Tags'
   
-  = form.inputs do
-    = form.input :students, label: 'Student tags', member_label: :name
-    = form.input :teachers, label: 'Teacher tags', member_label: :name
+  = form.inputs nil, class: :tags do
+    = form.input :students, label: 'Student tags', member_label: :name, input_html: { size: 6 }
+    = form.input :teachers, label: 'Teacher tags', member_label: :name, input_html: { size: 6 }
 
   - unless current_user.is_student?
-    = form.inputs "Permissions" do
-      - unless current_user.is_guardian?
-        = form.input :visible_to_guardians, label: 'Guardians'
-      = form.input :visible_to_students, label: 'Students'
+    = form.inputs nil, class: :permissions do
+      %p 
+        %strong Permissions:
+        Visible to&hellip;
+      .options
+        - unless current_user.is_guardian?
+          = form.input :visible_to_guardians, label: 'Guardians'
+        = form.input :visible_to_students, label: 'Students'
 
   = form.actions do
-    = form.action :submit, label: 'Create post'
+    = form.action :submit, label: 'Create post', button_html: { class: [:submit, :button] }

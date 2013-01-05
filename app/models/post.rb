@@ -7,6 +7,7 @@ class Post < ActiveRecord::Base
   has_and_belongs_to_many :tags, uniq: true, validate: true
   has_and_belongs_to_many :teachers, uniq: true
   has_and_belongs_to_many :students, uniq: true
+  has_many :comments, dependent: :destroy
 
   validates :title, presence: true
   validates :user, presence: true

@@ -175,4 +175,12 @@ describe Post do
       post.visible_to_guardians.should == true
     end
   end
+
+  describe "on destruction" do
+    it "destroys any comments" do
+      post.save!
+      create(:comment, post: post)
+      expect { post.destroy }.to change { Comment.count }.by(-1)
+    end
+  end
 end
