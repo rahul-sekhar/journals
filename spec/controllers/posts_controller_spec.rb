@@ -24,6 +24,7 @@ describe PostsController do
     end
   end
 
+
   describe "GET show" do
     let(:post){ mock_model(Post) }
     before { Post.stub(:find).and_return(post) }
@@ -43,6 +44,7 @@ describe PostsController do
       assigns(:post).should == post
     end
   end
+
 
   describe "GET new" do
     it "has a status of 200" do
@@ -71,6 +73,7 @@ describe PostsController do
       assigns(:post).teachers.should be_empty
     end
   end
+
 
   describe "POST create" do
     context "with valid data" do
@@ -116,6 +119,75 @@ describe PostsController do
       it "stores already filled data in a flash object" do
         make_request
         flash[:post_data].should == { "content" => "some content" }
+      end
+    end
+  end
+
+
+  describe "GET edit" do
+    let(:post){ create(:post) }
+    let(:make_request){ get :edit, id: post.id }
+
+    it "has a status of 200" do
+      make_request
+      response.status.should eq(200)
+    end
+
+    it "assigns the post to be edited" do
+      make_request
+      assigns(:post).should eq(post)
+    end
+
+    it "assigns post data from the flash if present" do
+      get :edit, { id: post.id }, nil, { post_data: { content: "<p>Preloaded content</p>" } }
+      assigns(:post).content.should == "<p>Preloaded content</p>"
+    end
+  end
+
+
+  describe "PUT update" do
+    let(:post){ create(:post) }
+
+    context "with valid data" do
+      let(:make_request){ put :update, id: post.id, post: { title: "lorem ipsum" } }
+
+      it "finds the correct post" do
+        make_request
+        assigns(:post).should eq(post)
+      end
+
+      it "edits the post title" do
+        make_request
+        assigns(:post).title.should == "lorem ipsum"
+      end
+
+      it "redirects to the post page" do
+        make_request
+        response.should redirect_to post_path(post)
+      end
+    end
+
+    context "with invalid data" do
+      let(:make_request){ put :update, id: post.id, post: { title: "", content: "some content" } }
+
+      it "does not edit the post" do
+        make_request
+        post.reload.content.should_not == "some content"
+      end
+      
+      it "redirects to the edit page" do
+        make_request
+        response.should redirect_to edit_post_path
+      end
+
+      it "displays a flash message indicating invalid data" do
+        make_request
+        flash[:alert].should == "Invalid post"
+      end
+
+      it "stores already filled data in a flash object" do
+        make_request
+        flash[:post_data].should == { "title" => "", "content" => "some content" }
       end
     end
   end

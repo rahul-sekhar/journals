@@ -4,14 +4,14 @@
       .students
         %h4 Students
         %ul
-          - post.students.each do |student|
+          - post.students.alphabetical.each do |student|
             %li= student.first_name
 
     - if post.teachers.present?
       .teachers
         %h4 Teachers
         %ul
-          - post.teachers.each do |teacher|
+          - post.teachers.alphabetical.each do |teacher|
             %li= teacher.first_name
   
   %h3= post.title
@@ -29,8 +29,12 @@
     = render "comments/fields", comment: post.comments.build
 
   %footer
-    %p.date= post.formatted_created_at
-    %p.author Posted by #{post.author_name}
-    - if post.tags.present?
-      %p.tags Tags: #{post.tag_names}
+    .info
+      %p.date= post.formatted_created_at
+      %p.author Posted by #{post.author_name}
+      - if post.tags.present?
+        %p.tags Tags: #{post.tag_names}
+
+    .options
+      %p= link_to "Edit post", edit_post_path(post)
 

@@ -14,8 +14,11 @@ module NavigationHelpers
     when /the login page/
       login_path
 
-    when /the post page for that post/
+    when /the page for that post/
       post_path(@post)
+
+    when /the edit page for that post/
+      edit_post_path(@post)
 
     else
       begin

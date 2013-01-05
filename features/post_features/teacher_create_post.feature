@@ -21,6 +21,7 @@ Scenario: Create a post without a title
   And I click "Create post"
   Then I should be on the create post page
   And I should see "Invalid post"
+  And "Content" should be filled in with "Content without a title"
 
 Scenario: Add student and teacher tags to a post
   When I fill in "Title" with "Tagged Post"

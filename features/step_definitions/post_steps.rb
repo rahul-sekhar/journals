@@ -14,7 +14,8 @@ Given /^a post about an ice cream factory visit with extended information exists
   @post.update_attributes!(
     tag_names: "icecream, visits",
     teacher_ids: [angela.id, aditya.id],
-    student_ids: [ansh.id, sahana.id]
+    student_ids: [ansh.id, sahana.id],
+    visible_to_students: true
   )
 end
 

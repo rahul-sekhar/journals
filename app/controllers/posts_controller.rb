@@ -30,4 +30,23 @@ class PostsController < ApplicationController
       redirect_to new_post_path
     end
   end
+
+  def edit
+    @post = Post.find(params[:id])
+
+    # Pre-load post data if present
+    @post.assign_attributes(flash[:post_data]) if flash[:post_data]
+  end
+
+  def update
+    @post = Post.find(params[:id])
+
+    if @post.update_attributes(params[:post])
+      redirect_to @post
+    else
+      flash[:alert] = "Invalid post"
+      flash[:post_data] = params[:post]
+      redirect_to edit_post_path(@post)
+    end
+  end
 end

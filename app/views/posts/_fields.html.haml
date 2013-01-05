@@ -1,0 +1,32 @@
+= semantic_form_for post do |form|
+  
+  = form.inputs nil, class: :main do
+    = form.input :title, placeholder: 'Title'
+    = form.input :content
+    = form.input :tag_names, label: 'Tags', placeholder: 'Tags'
+  
+  = form.inputs nil, class: :tags do
+    = form.input :students, 
+      label: 'Student tags',
+      collection: Student.alphabetical,
+      member_label: :full_name,
+      input_html: { size: 6 }
+
+    = form.input :teachers, 
+      label: 'Teacher tags',
+      collection: Teacher.alphabetical,
+      member_label: :full_name,
+      input_html: { size: 6 }
+
+  - unless current_user.is_student?
+    = form.inputs nil, class: :permissions do
+      %p 
+        %strong Permissions:
+        Visible to&hellip;
+      .options
+        - unless current_user.is_guardian?
+          = form.input :visible_to_guardians, label: 'Guardians'
+        = form.input :visible_to_students, label: 'Students'
+
+  = form.actions do
+    = form.action :submit, button_html: { class: [:submit, :button] }
