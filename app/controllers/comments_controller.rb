@@ -9,4 +9,19 @@ class CommentsController < ApplicationController
       redirect_to post, alert: "Invalid comment"
     end
   end
+
+  def edit
+    @comment = Comment.find(params[:id])
+  end
+
+  def update
+    post = Post.find(params[:post_id])
+    @comment = Comment.find(params[:id])
+
+    if @comment.update_attributes(params[:comment])
+      redirect_to post
+    else
+      redirect_to post, alert: "Invalid comment"
+    end
+  end
 end

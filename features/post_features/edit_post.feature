@@ -23,7 +23,7 @@ Scenario: Edit post
   And I unselect "Ansh Something" from "Student tags"
   And I select "Rahul Sekhar" from "Teacher tags"
   And I unselect "Angela Jain" from "Teacher tags"
-  And I click "Edit post"
+  And I click "Save post"
   
   Then I should be on the page for that post
   And I should see "Different Title"
@@ -38,7 +38,7 @@ Scenario: Edit post
 Scenario: Edit post invalidly
   Given I am on the edit page for that post
   And I fill in "Title" with ""
-  When I click "Edit post"
+  When I click "Save post"
   Then I should be on the edit page for that post
   And I should see "Invalid post"
   And "Title" should be filled in with ""

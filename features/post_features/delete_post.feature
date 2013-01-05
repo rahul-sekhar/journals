@@ -1,4 +1,3 @@
-@current
 Feature: Delete a post
 
 Scenario: Delete a post

@@ -53,6 +53,12 @@ When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
 end
 
+When /^I click "(.*?)" within the "(.*?)" block$/ do |p_link, p_context|
+  within(p_context) do
+    click_on p_link
+  end
+end
+
 
 # Select element steps
 When /^I select "(.*?)" from "(.*?)"$/ do |p_option, p_select|

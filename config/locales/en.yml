@@ -3,7 +3,7 @@ en:
     actions:
       post:
         create: "Create post"
-        update: "Edit post"
+        update: "Save post"
       comment:
         create: "Add comment"
-        update: "Edit comment"
+        update: "Save comment"

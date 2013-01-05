@@ -7,3 +7,5 @@
       %span.author= comment.author_name
       on
       %span.date= comment.formatted_created_at
+
+    = link_to "Edit", edit_post_comment_path(comment.post, comment), class: "edit-link"

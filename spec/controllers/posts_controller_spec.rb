@@ -158,7 +158,7 @@ describe PostsController do
 
       it "edits the post title" do
         make_request
-        assigns(:post).title.should == "lorem ipsum"
+        assigns(:post).reload.title.should == "lorem ipsum"
       end
 
       it "redirects to the post page" do

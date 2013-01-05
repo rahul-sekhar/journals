@@ -20,6 +20,9 @@ module NavigationHelpers
     when /the edit page for that post/
       edit_post_path(@post)
 
+    when /the edit page for that comment/
+      edit_post_comment_path(@comment.post, @comment)
+
     else
       begin
         page_name =~ /the (.*) page/
