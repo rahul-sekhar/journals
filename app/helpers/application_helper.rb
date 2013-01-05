@@ -1,7 +1,11 @@
 module ApplicationHelper
-  def title(page_title)
+  def title(page_title, set_heading = true)
     content_for(:title, page_title)
-    content_for(:heading, page_title)
+    content_for(:heading, page_title) if set_heading
+  end
+
+  def page_heading(heading)
+    content_for(:heading, heading)
   end
 
   def page_id(id)

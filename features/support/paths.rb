@@ -6,13 +6,16 @@ module NavigationHelpers
       '/'
 
     when /the posts page/
-      '/posts'
+      posts_path
 
     when /the create post page/
-      '/posts/new'
+      new_post_path
 
     when /the login page/
-      '/login'
+      login_path
+
+    when /the post page for that post/
+      post_path(@post)
 
     else
       begin

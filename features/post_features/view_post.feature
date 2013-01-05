@@ -1,12 +1,11 @@
-Feature: View a post on the home page
+Feature: View a post
 
 As a user I should be able to view a post and see all its relevant data
 
 Scenario: View a post with only partial information
   Given a post about an ice cream factory visit exists
   And I have logged in as a teacher "Rahul Sekhar"
-  And I am on the posts page
-  Then I should see "Viewing posts"
+  And I am on the post page for that post
   And I should see "Ice cream factory visit"
   And I should see "The whole school went to the Daily Dairy"
   And I should see "25th October 2012"
@@ -18,7 +17,7 @@ Scenario: View a post with only partial information
 Scenario: View a post with extended information
   Given a post about an ice cream factory visit with extended information exists
   And I have logged in as a teacher "Rahul Sekhar"
-  And I am on the posts page
+  And I am on the post page for that post
   Then I should see "icecream" within the ".tags" block
   And I should see "visits" within the ".tags" block
   And I should see "Angela" within the ".teachers" block

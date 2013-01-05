@@ -1,17 +1,17 @@
 Given /^a post about an ice cream factory visit exists$/ do
-  post = shalini.user.posts.build(
+  @post = shalini.user.posts.build(
     title: 'Ice cream factory visit',
     content: 'The whole school went to the Daily Dairy factory for a visit. It was a very small factory and a quick quick quick visit...'
   )
-  post.created_at = Date.new(2012, 10, 25)
-  post.save!
+  @post.created_at = Date.new(2012, 10, 25)
+  @post.save!
 end
 
 Given /^a post about an ice cream factory visit with extended information exists$/ do
   step 'a post about an ice cream factory visit exists'
-  post = Post.find_by_title('Ice cream factory visit')
+  @post = Post.find_by_title('Ice cream factory visit')
 
-  post.update_attributes!(
+  @post.update_attributes!(
     tag_names: "icecream, visits",
     teacher_ids: [angela.id, aditya.id],
     student_ids: [ansh.id, sahana.id]

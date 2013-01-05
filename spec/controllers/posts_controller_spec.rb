@@ -27,6 +27,26 @@ describe PostsController do
     end
   end
 
+  describe "GET show" do
+    let(:post){ mock_model(Post) }
+    before { Post.stub(:find).and_return(post) }
+    
+    it "has a status of 200" do
+      get :show, id: 5
+      response.status.should eq(200)
+    end
+
+    it "finds the post given by the passed ID" do
+      Post.should_receive(:find).with("5")
+      get :show, id: 5
+    end
+
+    it "assigns the found post" do
+      get :show, id: 5
+      assigns(:post).should == post
+    end
+  end
+
   describe "GET new" do
     it "has a status of 200" do
       get :new
