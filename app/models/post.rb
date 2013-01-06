@@ -1,8 +1,8 @@
 class Post < ActiveRecord::Base
   attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students, :student_observations_attributes
 
-  before_save :check_self_tag, :check_permissions
-  before_validation :check_student_observations
+  before_save :check_permissions
+  before_validation :check_student_observations, :check_self_tag
 
   belongs_to :user
   has_and_belongs_to_many :tags, uniq: true, validate: true
@@ -13,7 +13,7 @@ class Post < ActiveRecord::Base
 
   accepts_nested_attributes_for :student_observations
 
-  validates :title, presence: true
+  validates :title, presence: { message: "Please enter a post title" }
   validates :user, presence: true
 
   def check_student_observations
@@ -25,8 +25,18 @@ class Post < ActiveRecord::Base
   end
 
   def check_self_tag
-    self.students << author_profile if user.is_student?
-    self.students << author_profile.student if user.is_guardian?
+    return if user.blank?
+
+    # Automatically set the tag if the author is a student
+    if user.is_student?
+      self.students << author_profile unless students.exists?(author_profile)
+    end
+
+    # If the author is a guardian and none of their students are tagged, invalidate the post
+    if user.is_guardian? && (user.profile.students & students).empty?
+      errors.add(:students, "You must tag at least one of your own students")
+    end
+
     return nil
   end
 
@@ -48,7 +58,7 @@ class Post < ActiveRecord::Base
     user.profile
   end
 
-  def initialize_tag
+  def initialize_tags
     if user.is_teacher?
       self.teachers = [author_profile]
       self.students.clear
@@ -56,7 +66,7 @@ class Post < ActiveRecord::Base
       self.students = [author_profile]
       self.teachers.clear
     elsif user.is_guardian?
-      self.students = [author_profile.student]
+      self.students = author_profile.students
       self.teachers.clear
     end
   end

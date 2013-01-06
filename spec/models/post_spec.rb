@@ -105,24 +105,24 @@ describe Post do
     end
   end
 
-  describe "#initialize_tag" do
+  describe "#initialize_tags" do
     it "adds a teacher tag if the author is a teacher" do
-      post.initialize_tag
+      post.initialize_tags
       post.teachers.should == [post.author_profile]
       post.students.should be_empty
     end
 
     it "adds a student tag if the author is a student" do
       post.user = create(:student).user
-      post.initialize_tag
+      post.initialize_tags
       post.students.should == [post.author_profile]
       post.teachers.should be_empty
     end
 
     it "adds a student tag if the author is a guardian" do
       student = create(:student)
-      post.user = create(:guardian, student: student).user
-      post.initialize_tag
+      post.user = create(:guardian, students: [student]).user
+      post.initialize_tags
       post.students.should == [student]
       post.teachers.should be_empty
     end
@@ -177,23 +177,43 @@ describe Post do
     let(:student){ create(:student) }
     let(:other_student){ create(:student) }
 
-    it "must include the self tag if posted by a student" do
-      post.user = student.user
-      post.students = [other_student]
-      post.teachers = []
-      post.save!
-      post.students.should =~ [other_student, student]
-      post.teachers.should be_empty
+    context "if posted by a student" do
+      before { post.user = student.user }
+      
+      it "automatically sets the self tag" do
+        post.students = [other_student]
+        post.teachers = []
+        post.save!
+        post.students.should =~ [other_student, student]
+        post.teachers.should be_empty
+      end
+
+      it "does not duplicate the student tag if present" do
+        post.students = [student]
+        post.save!
+        post.students = [student, other_student]
+        post.save!
+        post.students.should =~ [student, other_student]
+      end
     end
 
-    it "must include the self tag if posted by a guardian" do
-      guardian = create(:guardian, student: student)
-      post.user = guardian.user
-      post.students = [other_student]
-      post.teachers = []
-      post.save!
-      post.students.should =~ [other_student, student]
-      post.teachers.should be_empty
+    context "if posted by a guardian" do
+      let(:guardian){ create(:guardian, students: [student, other_student]) }
+      before { post.user = guardian.user }
+
+      let(:third_student){ create(:student) }
+
+      it "is valid if at least one of the guardian's students are tagged" do
+        post.students = [third_student, other_student]
+        post.should be_valid
+        post.save!
+        post.students.should =~ [third_student, other_student]
+      end
+
+      it "is invalid if none of the guardian's students are tagged" do
+        post.students = [third_student]
+        post.should be_invalid
+      end
     end
 
     it "do not need to include the self tag if posted by a teacher" do
@@ -208,14 +228,15 @@ describe Post do
   describe "permissions" do
     it "must be visible to both guardians and students if created by a student" do
       post.user = create(:student).user
-      post.save
+      post.save!
       post.visible_to_students.should == true
       post.visible_to_guardians.should == true
     end
 
-    it "must be visible to guardiansif created by a guardians" do
+    it "must be visible to guardians if created by a guardians" do
       post.user = create(:guardian).user
-      post.save
+      post.initialize_tags
+      post.save!
       post.visible_to_students.should == false
       post.visible_to_guardians.should == true
     end

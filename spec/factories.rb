@@ -17,7 +17,7 @@ FactoryGirl.define do
     sequence(:email){ |n| "guardian_email#{n}@server.com"}
     sequence(:last_name){ |n| "Guardian#{n}" }
     password "pass"
-    student
+    students { [create(:student)] }
   end
 
   factory :post do

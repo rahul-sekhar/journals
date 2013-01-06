@@ -15,8 +15,8 @@ class PostsController < ApplicationController
       @post.assign_attributes(flash[:post_data])
       
     else
-      # Initialize the teacher or student tag if there is no post data to pre-load
-      @post.initialize_tag
+      # Initialize the teacher or student tags if there is no post data to pre-load
+      @post.initialize_tags
     end
 
     # Initialize student observations that may need to be set up because of
@@ -30,7 +30,7 @@ class PostsController < ApplicationController
       redirect_to posts_path
     else
       flash[:post_data] = params[:post]
-      redirect_to new_post_path, alert: "Invalid post"
+      redirect_to new_post_path, alert: @post.errors.messages.first
     end
   end
 
@@ -51,7 +51,7 @@ class PostsController < ApplicationController
       redirect_to @post
     else
       flash[:post_data] = params[:post]
-      redirect_to edit_post_path(@post), alert: "Invalid post"
+      redirect_to edit_post_path(@post), alert: @post.errors.messages.first
     end
   end
 

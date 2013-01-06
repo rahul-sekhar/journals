@@ -119,7 +119,7 @@ describe PostsController do
 
       it "displays a flash message indicating invalid data" do
         make_request
-        flash[:alert].should == "Invalid post"
+        flash[:alert].should be_present
       end
 
       it "stores already filled data in a flash object" do
@@ -195,7 +195,7 @@ describe PostsController do
 
       it "displays a flash message indicating invalid data" do
         make_request
-        flash[:alert].should == "Invalid post"
+        flash[:alert].should be_present
       end
 
       it "stores already filled data in a flash object" do

@@ -1,4 +1,3 @@
-@current
 Feature: View individual student observations on a post and add them to a post
 
 Teacher posts should allow the editing of student observations. Student and guardian posts should not allow or show student observations.

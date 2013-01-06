@@ -2,6 +2,13 @@ Given /^a (teacher|student) "(.*?)" exists with the email "(.*?)" and the passwo
   create_profile(p_type, p_name, p_email, p_pass)
 end
 
+Given /^the guardian "(.*?)" has a student "(.*?)"$/ do |p_name, p_student_name|
+  first_name, last_name = split_name(p_name)
+  guardian = Guardian.find_by_name(first_name, last_name)
+
+  guardian.students << create_profile("student", p_student_name)
+end
+
 Given /^I have logged in as a (teacher|student) "(.*?)"$/ do |p_type, p_name|
   email = mail_from_name(p_name)
   step "a #{p_type} \"#{p_name}\" exists with the email \"#{email}\" and the password \"pass\""

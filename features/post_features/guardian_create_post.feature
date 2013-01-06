@@ -1,6 +1,6 @@
 Feature: Create a post as a guardian
 
-As a teacher I should be able to create a post so that I can add content to the site
+Guardians should be able to create posts and set only student permissions on the post. They should have all their students tagged initially, and must save the post with at least one tagged.
 
 Background:
   Given some base students and teachers exist
@@ -16,13 +16,20 @@ Scenario: Create a minimal post with a title, content and tags
   And I should be on the posts page
   And I should see "Test Post"
 
-Scenario: Add student and teacher tags to a post, without being able to remove own tag
+Scenario: Add student and teacher tags to a post
   When I fill in "Title" with "Tagged Guardian Post"
-  And I unselect "Roly Sekhar" from "Student tags"
   And I select "Ansh Something" from "Student tags"
   And I select "Angela Jain" from "Teacher tags"
   And I click "Create post"
   Then a guardian post with student and teacher tags should exist
+
+Scenario: Create a post without own students tag
+  When I fill in "Title" with "Tagged Guardian Post"
+  And I select "Ansh Something" from "Student tags"
+  And I unselect "Roly Sekhar" from "Student tags"
+  And I click "Create post"
+  Then I should be on the create post page
+  And I should see "You must tag at least one of your own students"
 
 Scenario: Set post permissions
   Then I should not see "Guardians"
@@ -31,3 +38,22 @@ Scenario: Set post permissions
   And I check the checkbox "Students"
   And I click "Create post"
   Then a guardian post with permissions should exist
+
+Scenario: Create a post as a guardian with multiple students
+  Given the guardian "Rahul Sekhar" has a student "Lucky Sekhar"
+  When I am on the create post page
+  Then "Student tags" should have "Roly Sekhar, Lucky Sekhar" selected
+  When I fill in "Title" with "Guardian Post with Lucky"
+  And I unselect "Roly Sekhar" from "Student tags"
+  And I click "Create post"
+  Then a guardian post with lucky should exist
+
+Scenario: Untag all students as a guardian with multiple students
+  Given the guardian "Rahul Sekhar" has a student "Lucky Sekhar"
+  When I am on the create post page
+  And I fill in "Title" with "Guardian Post with Lucky"
+  And I unselect "Roly Sekhar" from "Student tags"
+  And I unselect "Lucky Sekhar" from "Student tags"
+  And I click "Create post"
+  Then I should be on the create post page
+  And I should see "You must tag at least one of your own students"

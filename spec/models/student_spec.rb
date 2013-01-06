@@ -8,10 +8,23 @@ describe Student do
   it_behaves_like "a profile"
 
   describe "on destruction" do
-    it "destroys any guardians" do
-      profile.save!
-      create(:guardian, student: profile)
-      expect { profile.destroy }.to change{ Guardian.count }.by(-1)
+    it "destroys a guardian without other students" do
+      create(:guardian, students: [profile])
+      expect { profile.destroy }.to change { Guardian.count }.by(-1)
+    end
+
+    it "removes iteslf from a guardian with other students" do
+      guardian = create(:guardian)
+      guardian.students << profile
+      guardian.students.exists?(profile).should == true
+      profile.destroy
+      guardian.students.exists?(profile).should == false
+    end
+
+    it "does not destroy a guardian with other students" do
+      guardian = create(:guardian)
+      guardian.students << profile
+      expect { profile.destroy }.to change { Guardian.count }.by(0)
     end
 
     it "destroys any student observations" do

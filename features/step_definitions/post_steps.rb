@@ -28,6 +28,7 @@ Given /^a (student|guardian) post about an ice cream factory visit with extended
   step 'a post about an ice cream factory visit with extended information exists'
 
   @post.user = FactoryGirl.create(p_type).user
+  @post.initialize_tags
   @post.save!
 end
 
@@ -41,53 +42,60 @@ end
 
 # Testing of posts
 Then /^a minimal test post should exist$/ do
-  post = Post.where(title: "Test Post").first
-  post.should be_present
+  @post = Post.where(title: "Test Post").first
+  @post.should be_present
 
   Tag.find_by_name("Test posts").should be_present
   Tag.find_by_name("Minimal").should be_present
   
-  post.content.should == "<p>Some <em>HTML</em> content</p>"
-  post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
-  post.author_name.should == "Rahul"
+  @post.content.should == "<p>Some <em>HTML</em> content</p>"
+  @post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
+  @post.author_name.should == "Rahul"
 end
 
 Then /^a post with student and teacher tags should exist$/ do
-  post = Post.where(title: "Tagged Post").first
-  post.should be_present
+  @post = Post.where(title: "Tagged Post").first
+  @post.should be_present
 
-  post.students.should =~ [ansh, sahana]
-  post.teachers.should =~ [Teacher.find_by_name("Rahul", "Sekhar"), angela]
+  @post.students.should =~ [ansh, sahana]
+  @post.teachers.should =~ [Teacher.find_by_name("Rahul", "Sekhar"), angela]
 end
 
 Then /^a post with permissions should exist$/ do
-  post = Post.where(title: "Permissions Post").first
-  post.should be_present
+  @post = Post.where(title: "Permissions Post").first
+  @post.should be_present
 
-  post.visible_to_guardians.should == true
-  post.visible_to_students.should == false
+  @post.visible_to_guardians.should == true
+  @post.visible_to_students.should == false
 end
 
 Then /^a student post with student and teacher tags should exist$/ do
-  post = Post.where(title: "Tagged Student Post").first
-  post.should be_present
+  @post = Post.where(title: "Tagged Student Post").first
+  @post.should be_present
 
-  post.students.should =~ [ansh, Student.find_by_name("Rahul", "Sekhar")]
-  post.teachers.should =~ [angela]
+  @post.students.should =~ [ansh, Student.find_by_name("Rahul", "Sekhar")]
+  @post.teachers.should =~ [angela]
 end
 
 Then /^a guardian post with student and teacher tags should exist$/ do
-  post = Post.where(title: "Tagged Guardian Post").first
-  post.should be_present
+  @post = Post.where(title: "Tagged Guardian Post").first
+  @post.should be_present
 
-  post.students.should =~ [ansh, Student.find_by_name("Roly", "Sekhar")]
-  post.teachers.should =~ [angela]
+  @post.students.should =~ [ansh, Student.find_by_name("Roly", "Sekhar")]
+  @post.teachers.should =~ [angela]
 end
 
 Then /^a guardian post with permissions should exist$/ do
-  post = Post.where(title: "Guardian Permissions Post").first
-  post.should be_present
+  @post = Post.where(title: "Guardian Permissions Post").first
+  @post.should be_present
 
-  post.visible_to_guardians.should == true
-  post.visible_to_students.should == true
+  @post.visible_to_guardians.should == true
+  @post.visible_to_students.should == true
+end
+
+Then /^a guardian post with lucky should exist$/ do
+  @post = Post.where(title: "Guardian Post with Lucky").first
+  @post.should be_present
+
+  @post.students.should == [Student.find_by_name("Lucky", "Sekhar")]
 end

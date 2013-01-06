@@ -40,5 +40,5 @@ Scenario: Edit post invalidly
   And I fill in "Title" with ""
   When I click "Save post"
   Then I should be on the edit page for that post
-  And I should see "Invalid post"
+  And I should see "Please enter a post title"
   And "Title" should be filled in with ""
