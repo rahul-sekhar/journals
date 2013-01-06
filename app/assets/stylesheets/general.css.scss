@@ -61,7 +61,6 @@ input.button {
     padding-top: 30px;
 
     p {
-      
       color: $cream;
       @include chaparral;
       font-size: 14px;
@@ -80,7 +79,7 @@ input.button {
 
         a {
           text-decoration: none;
-          @include link-colors($light-cream, darken($light-cream, 20));
+          @include link-colors($light-cream, white);
         }
       }
     }
