@@ -18,6 +18,10 @@ class PostsController < ApplicationController
       # Initialize the teacher or student tag if there is no post data to pre-load
       @post.initialize_tag
     end
+
+    # Initialize student observations that may need to be set up because of
+    # tagged students passed through flash data
+    @post.initialize_observations
   end
 
   def create
@@ -35,6 +39,9 @@ class PostsController < ApplicationController
 
     # Pre-load post data if present
     @post.assign_attributes(flash[:post_data]) if flash[:post_data]
+
+    # Initialize student observations
+    @post.initialize_observations
   end
 
   def update

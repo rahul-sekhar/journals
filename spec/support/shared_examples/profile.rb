@@ -83,6 +83,13 @@ shared_examples_for "a profile" do
     end
   end
 
+  describe "#name" do
+    it "returns the first_name" do
+      profile.first_name = "Rahul"
+      profile.name.should == "Rahul"
+    end
+  end
+
   describe "on creation" do
     it "creates a user" do
       profile

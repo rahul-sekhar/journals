@@ -1,25 +1,39 @@
 class Post < ActiveRecord::Base
-  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students
+  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students, :student_observations_attributes
 
   before_save :check_self_tag, :check_permissions
+  before_validation :check_student_observations
 
   belongs_to :user
   has_and_belongs_to_many :tags, uniq: true, validate: true
   has_and_belongs_to_many :teachers, uniq: true
   has_and_belongs_to_many :students, uniq: true
   has_many :comments, dependent: :destroy
+  has_many :student_observations, inverse_of: :post, dependent: :destroy
+
+  accepts_nested_attributes_for :student_observations
 
   validates :title, presence: true
   validates :user, presence: true
 
+  def check_student_observations
+    student_observations.each do |obs|
+      if obs.content.blank? || !students.include?(obs.student)
+        obs.mark_for_destruction
+      end
+    end
+  end
+
   def check_self_tag
     self.students << author_profile if user.is_student?
     self.students << author_profile.student if user.is_guardian?
+    return nil
   end
 
   def check_permissions
     self.visible_to_students = true if user.is_student?
     self.visible_to_guardians = true if user.is_student? || user.is_guardian?
+    return nil
   end
 
   def formatted_created_at
@@ -44,6 +58,16 @@ class Post < ActiveRecord::Base
     elsif user.is_guardian?
       self.students = [author_profile.student]
       self.teachers.clear
+    end
+  end
+
+  def initialize_observations
+    if user.is_teacher?
+      students.each do |student|
+        if student_observations.where(student_id: student.id).empty?
+          self.student_observations.build(student_id: student.id)
+        end
+      end
     end
   end
 

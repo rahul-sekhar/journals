@@ -18,6 +18,13 @@
       member_label: :full_name,
       input_html: { size: 6 }
 
+  - if form.object.user.is_teacher?
+    = form.inputs nil, class: :"student-observations" do
+      = form.semantic_fields_for :student_observations do |obs_form|
+        = obs_form.input :id, as: :hidden
+        = obs_form.input :student_id, as: :hidden
+        = obs_form.input :content, label: "Observations for #{obs_form.object.student.name}"
+
   - unless current_user.is_student?
     = form.inputs nil, class: :permissions do
       %p 

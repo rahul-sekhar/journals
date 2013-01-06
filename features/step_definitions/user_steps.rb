@@ -28,6 +28,7 @@ Given /^some base students and teachers exist$/ do
   aditya
   ansh
   sahana
+  john
 end
 
 def create_profile(type, name, email=nil, password="pass")
@@ -70,4 +71,8 @@ end
 
 def sahana
   @sahana ||= create_profile("student", "Sahana Somethingelse")
+end
+
+def john
+  @john ||= create_profile("student", "John Doe")
 end

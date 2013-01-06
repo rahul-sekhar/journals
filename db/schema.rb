@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104063041) do
+ActiveRecord::Schema.define(:version => 20130106032648) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -77,16 +77,6 @@ ActiveRecord::Schema.define(:version => 20130104063041) do
   add_index "milestones", ["level"], :name => "index_milestones_on_level"
   add_index "milestones", ["strand_id"], :name => "index_milestones_on_strand_id"
 
-  create_table "post_sections", :force => true do |t|
-    t.text     "content"
-    t.integer  "post_id"
-    t.integer  "student_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "post_sections", ["post_id", "student_id"], :name => "index_post_sections_on_post_id_and_student_profile_id"
-
   create_table "posts", :force => true do |t|
     t.string   "title"
     t.text     "content"
@@ -143,6 +133,16 @@ ActiveRecord::Schema.define(:version => 20130104063041) do
   end
 
   add_index "student_mentors", ["student_id", "teacher_id"], :name => "students_mentors_index", :unique => true
+
+  create_table "student_observations", :force => true do |t|
+    t.text     "content"
+    t.integer  "post_id"
+    t.integer  "student_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "student_observations", ["post_id", "student_id"], :name => "index_post_sections_on_post_id_and_student_profile_id"
 
   create_table "students", :force => true do |t|
     t.string   "first_name"

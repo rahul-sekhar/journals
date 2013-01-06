@@ -5,19 +5,27 @@
         %h4 Students
         %ul
           - post.students.alphabetical.each do |student|
-            %li= student.first_name
+            %li= student.name
 
     - if post.teachers.present?
       .teachers
         %h4 Teachers
         %ul
           - post.teachers.alphabetical.each do |teacher|
-            %li= teacher.first_name
+            %li= teacher.name
   
   %h3= post.title
 
-  .content
+  .post-content
     != post.content
+
+  - if post.student_observations.present?
+    .student-observations
+      - post.student_observations.each do |obs|
+        %section
+          %h4= obs.student.name
+          .observation-content
+            != obs.content
   
   - if post.comments.present?
     .comments

@@ -2,6 +2,8 @@ Then /^that post should be destroyed$/ do
   Post.should_not exist(@post)
 end
 
+
+# Creation of posts
 Given /^a post about an ice cream factory visit exists$/ do
   @post = shalini.user.posts.build(
     title: 'Ice cream factory visit',
@@ -13,7 +15,6 @@ end
 
 Given /^a post about an ice cream factory visit with extended information exists$/ do
   step 'a post about an ice cream factory visit exists'
-  @post = Post.find_by_title('Ice cream factory visit')
 
   @post.update_attributes!(
     tag_names: "icecream, visits",
@@ -23,6 +24,22 @@ Given /^a post about an ice cream factory visit with extended information exists
   )
 end
 
+Given /^a (student|guardian) post about an ice cream factory visit with extended information exists$/ do |p_type|
+  step 'a post about an ice cream factory visit with extended information exists'
+
+  @post.user = FactoryGirl.create(p_type).user
+  @post.save!
+end
+
+Given /^a post about an ice cream factory visit with student observations exists$/ do
+  step 'a post about an ice cream factory visit with extended information exists'
+
+  @post.student_observations.create!(student_id: sahana.id, content: "Some observations about Sahana")
+  @post.save!
+end
+
+
+# Testing of posts
 Then /^a minimal test post should exist$/ do
   post = Post.where(title: "Test Post").first
   post.should be_present

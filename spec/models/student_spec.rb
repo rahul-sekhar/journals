@@ -13,6 +13,12 @@ describe Student do
       create(:guardian, student: profile)
       expect { profile.destroy }.to change{ Guardian.count }.by(-1)
     end
+
+    it "destroys any student observations" do
+      profile.save!
+      create(:student_observation, student: profile)
+      expect { profile.destroy }.to change { StudentObservation.count }.by(-1)
+    end
   end
 
   describe "#name_with_type" do

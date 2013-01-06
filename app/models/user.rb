@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    profile.first_name
+    profile.name
   end
 
   def is_teacher?

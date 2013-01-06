@@ -34,4 +34,10 @@ FactoryGirl.define do
     user { create(:teacher).user }
     content "Some content"
   end
+
+  factory :student_observation do
+    post
+    student
+    content "Some content"
+  end
 end

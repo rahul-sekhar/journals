@@ -5,6 +5,10 @@ module Profile
     self.build_user(email: @email, password: @password) if new_record?
   end
 
+  def name
+    first_name
+  end
+
   def full_name
     if first_name.present?
       "#{first_name} #{last_name}"

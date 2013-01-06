@@ -72,6 +72,12 @@ describe PostsController do
       get :new, nil, nil, { post_data: { content: "<p>Preloaded content</p>" } }
       assigns(:post).teachers.should be_empty
     end
+
+    it "initalizes student observations, if present" do
+      student = create(:student)
+      get :new, nil, nil, { post_data: { student_ids: [student.id] } }
+      assigns(:post).student_observations.first.student.should == student
+    end
   end
 
 
@@ -141,6 +147,13 @@ describe PostsController do
     it "assigns post data from the flash if present" do
       get :edit, { id: post.id }, nil, { post_data: { content: "<p>Preloaded content</p>" } }
       assigns(:post).content.should == "<p>Preloaded content</p>"
+    end
+
+    it "initalizes student observations" do
+      student = create(:student)
+      post.students << student
+      make_request
+      assigns(:post).student_observations.first.student.should == student
     end
   end
 

@@ -22,6 +22,11 @@ describe Comment do
     comment.should be_invalid
   end
 
+  it "is invalid when the content has just spaces" do
+    comment.content = "  "
+    comment.should be_invalid
+  end
+
   describe "#formatted_created_at" do
     it "returns a formatted version of the created date" do
       comment.created_at = Date.new(2012, 1, 1)
