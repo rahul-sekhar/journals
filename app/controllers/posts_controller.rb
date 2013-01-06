@@ -1,10 +1,12 @@
 class PostsController < ApplicationController
+  load_and_authorize_resource
+  skip_load_resource only: [:new, :create]
+
   def index
-    @posts = Post.limit(10)
+    @posts = @posts.limit(10)
   end
 
   def show
-    @post = Post.find(params[:id])
   end
 
   def new
@@ -26,6 +28,7 @@ class PostsController < ApplicationController
 
   def create
     @post = current_user.posts.build(params[:post])
+
     if @post.save
       redirect_to posts_path
     else
@@ -35,8 +38,6 @@ class PostsController < ApplicationController
   end
 
   def edit
-    @post = Post.find(params[:id])
-
     # Pre-load post data if present
     @post.assign_attributes(flash[:post_data]) if flash[:post_data]
 
@@ -45,8 +46,6 @@ class PostsController < ApplicationController
   end
 
   def update
-    @post = Post.find(params[:id])
-
     if @post.update_attributes(params[:post])
       redirect_to @post
     else
@@ -56,7 +55,6 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    @post = Post.find(params[:id])
     @post.destroy
     redirect_to posts_path, notice: "The post has been deleted"
   end

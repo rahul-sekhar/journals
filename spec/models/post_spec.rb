@@ -347,6 +347,25 @@ describe Post do
       end
     end
 
+    describe "##readable_by_guardian" do
+      it "returns posts tagged with the guardians students and visible to the guardian" do
+        student = create(:student)
+        other_student = create(:student)
+        third_student = create(:student)
+
+        guardian = create(:guardian, students: [student, other_student])
+
+        post1 = create(:post)
+        post2 = create(:post, students: [third_student], user: student.user, visible_to_guardians: true)
+        post3 = create(:post, students: [student, other_student, third_student])
+        post4 = create(:post, students: [other_student], visible_to_guardians: true)
+        post5 = create(:post, students: [student])
+        post6 = create(:post, students: [third_student], visible_to_guardians: true)
+
+        Post.readable_by_guardian(guardian).should =~ [post2, post4]
+      end
+    end
+
     it "filters out observations with html tags but no content"
 
     it "does not filter out image tags"

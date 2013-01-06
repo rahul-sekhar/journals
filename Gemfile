@@ -34,3 +34,4 @@ gem 'formtastic', '2.2.1'
 gem 'squeel', '1.0.14'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
 gem 'strip_attributes', '1.1.1'
+gem 'cancan', '1.6.8'

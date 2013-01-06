@@ -1,5 +1,5 @@
 Given /^a (teacher|student) "(.*?)" exists with the email "(.*?)" and the password "(.*?)"$/ do |p_type, p_name, p_email, p_pass|
-  create_profile(p_type, p_name, p_email, p_pass)
+  @profile = create_profile(p_type, p_name, p_email, p_pass)
 end
 
 Given /^the guardian "(.*?)" has a student "(.*?)"$/ do |p_name, p_student_name|
@@ -16,17 +16,21 @@ Given /^I have logged in as a (teacher|student) "(.*?)"$/ do |p_type, p_name|
   step "I fill in \"Email\" with \"#{email}\""
   step 'I fill in "Password" with "pass"'
   step 'I click "Log in"'
+  
+  @logged_in_user = @profile.user
 end
 
 Given /^I have logged in as a guardian "(.*?)" to the student "(.*?)"$/ do |p_name, p_student_name|
   student = create_profile("student", p_student_name)
   first_name, last_name = split_name(p_name)
   email = mail_from_name(p_name)
-  student.guardians.create!(first_name: first_name, last_name: last_name, email: email, password: "pass")
+  @profile = student.guardians.create!(first_name: first_name, last_name: last_name, email: email, password: "pass")
   step 'I am on the login page'
   step "I fill in \"Email\" with \"#{email}\""
   step 'I fill in "Password" with "pass"'
   step 'I click "Log in"'
+
+  @logged_in_user = @profile.user
 end
 
 

@@ -8,13 +8,13 @@ class User < ActiveRecord::Base
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
 
-  validates :email, 
-    presence: true, 
-    format: { with: /.+@.+\..+/ }, 
+  validates :email,
+    presence: true,
+    format: { with: /.+@.+\..+/ },
     uniqueness: { case_sensitive: false }
-  validates :password, 
-    presence: true, 
-    format: { with: /\A[^ ]*\z/ }, 
+  validates :password,
+    presence: true,
+    format: { with: /\A[^ ]*\z/ },
     length: { minimum: 4 }
 
   def self.authenticate(email, password)

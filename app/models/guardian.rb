@@ -8,7 +8,7 @@ class Guardian < ActiveRecord::Base
   def name_with_type
     if students.length == 1
       student_names = students.first.full_name
-    
+
     elsif students.length > 1
       # Get an alphabetically sorted list of names
       student_names = students.alphabetical.map{ |student| student.name }

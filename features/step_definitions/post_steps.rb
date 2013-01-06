@@ -1,9 +1,42 @@
+# General post things
 Then /^that post should be destroyed$/ do
   Post.should_not exist(@post)
 end
 
+Given /^a post titled "(.*?)" created by me exists$/ do |p_title|
+  @post = FactoryGirl.build(:post, title: p_title, user: @logged_in_user)
+  @post.initialize_tags
+  @post.save!
+end
 
-# Creation of posts
+Given /^a post titled "(.*?)" created by a (student|teacher|guardian) exists$/ do |p_title, p_type|
+  profile = FactoryGirl.create(p_type)
+  @post = FactoryGirl.build(:post, title: p_title, user: profile.user)
+  @post.initialize_tags
+  @post.save!
+end
+
+Given /^that post has the students? "(.*?)" tagged$/ do |p_student_names|
+  p_student_names.split(",").each do |student_name|
+    first_name, last_name = split_name(student_name)
+    student = Student.find_by_name(first_name, last_name)
+
+    @post.students << student
+  end
+end
+
+Given /^that post is (visible|not visible) to guardians$/ do |p_visible|
+  @post.visible_to_guardians = (p_visible == "visible")
+  @post.save
+end
+
+Given /^that post is (visible|not visible) to students$/ do |p_visible|
+  @post.visible_to_students = (p_visible == "visible")
+  @post.save
+end
+
+
+# Creation of specific posts
 Given /^a post about an ice cream factory visit exists$/ do
   @post = shalini.user.posts.build(
     title: 'Ice cream factory visit',
@@ -40,7 +73,7 @@ Given /^a post about an ice cream factory visit with student observations exists
 end
 
 
-# Testing of posts
+# Testing of the existence of specific posts
 Then /^a minimal test post should exist$/ do
   @post = Post.where(title: "Test Post").first
   @post.should be_present

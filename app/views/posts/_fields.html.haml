@@ -18,7 +18,7 @@
       member_label: :full_name,
       input_html: { size: 6 }
 
-  - if form.object.user.is_teacher?
+  - if post.user.is_teacher?
     = form.inputs nil, class: :"student-observations" do
       = form.semantic_fields_for :student_observations do |obs_form|
         = obs_form.input :id, as: :hidden
@@ -36,4 +36,9 @@
         = form.input :visible_to_students, label: 'Students'
 
   = form.actions do
+    - unless post.new_record?
+      %p= link_to "Delete post", 
+        post, 
+        method: :delete, 
+        confirm: "Are you sure you want to delete this post?"
     = form.action :submit, button_html: { class: [:submit, :button] }

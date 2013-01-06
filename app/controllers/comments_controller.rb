@@ -1,34 +1,31 @@
 class CommentsController < ApplicationController
+  load_and_authorize_resource :post
+  load_and_authorize_resource :comment, through: :post
+  skip_load_resource :comment, only: :create
+
   def create
-    post = Post.find(params[:post_id])
     @comment = current_user.comments.build(params[:comment])
-    @comment.post_id = post.id
+    @comment.post = @post
     if @comment.save
-      redirect_to post
+      redirect_to @post
     else
-      redirect_to post, alert: "Invalid comment"
+      redirect_to @post, alert: "Invalid comment"
     end
   end
 
   def edit
-    @comment = Comment.find(params[:id])
   end
 
   def update
-    post = Post.find(params[:post_id])
-    @comment = Comment.find(params[:id])
-
     if @comment.update_attributes(params[:comment])
-      redirect_to post
+      redirect_to @post
     else
-      redirect_to post, alert: "Invalid comment"
+      redirect_to @post, alert: "Invalid comment"
     end
   end
 
   def destroy
-    post = Post.find(params[:post_id])
-    @comment = Comment.find(params[:id])
     @comment.destroy
-    redirect_to post, notice: "The comment has been deleted"
+    redirect_to @post, notice: "The comment has been deleted"
   end
 end

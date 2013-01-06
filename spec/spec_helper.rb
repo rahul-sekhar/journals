@@ -9,6 +9,7 @@ Spork.prefork do
   require 'rspec/rails'
   require 'rspec/autorun'
   require 'capybara/rspec'
+  require "cancan/matchers"
   require "#{Rails.root}/spec/support/capybara_extensions.rb"
 
   RSpec.configure do |config|
@@ -26,13 +27,13 @@ Spork.prefork do
 
     # Load the view helper
     config.include RSpec::CapybaraExtensions, type: :view
-    
-    # Pre-loading for performance:
-    require 'rspec/mocks'
-    require 'rspec/expectations'
-    require 'rspec/matchers'
-    require 'rspec/core'
   end
+
+  # Pre-loading for performance:
+  require 'rspec/mocks'
+  require 'rspec/expectations'
+  require 'rspec/matchers'
+  require 'rspec/core'
 end
 
 Spork.each_run do

@@ -4,7 +4,7 @@ class Student < ActiveRecord::Base
   attr_accessible :first_name, :last_name, :email, :password
 
   before_destroy :check_guardians
-  
+
   has_and_belongs_to_many :guardians, uniq: true, join_table: :students_guardians
   has_many :student_observations, dependent: :destroy
 

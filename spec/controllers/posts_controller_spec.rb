@@ -2,9 +2,22 @@ require 'spec_helper'
 
 describe PostsController do
   let(:user){ create(:teacher).user }
-  before { controller.stub(:current_user).and_return(user) }
+  let(:ability) do
+    ability = Object.new
+    ability.extend(CanCan::Ability)
+  end
+  before do 
+    controller.stub(:current_user).and_return(user)
+    controller.stub(:current_ability).and_return(ability)
+    ability.can :manage, Post
+  end
 
   describe "GET index" do
+    it "raises an exception if the user cannot read posts" do
+      ability.cannot :read, Post
+      expect{ get :index }.to raise_exception(CanCan::AccessDenied)
+    end
+
     it "redirects to the login path if not logged in" do
       controller.stub(:current_user) 
       get :index
@@ -16,11 +29,11 @@ describe PostsController do
       response.status.should eq(200)
     end
 
-    it "finds and assigns all posts" do
-      post = mock_model(Post)
-      Post.stub(:limit).and_return([post])
+    it "finds and assigns posts" do
+      post1 = create(:post)
+      post2 = create(:post)
       get :index
-      assigns(:posts).should eq([post])
+      assigns(:posts).should =~ [post1, post2]
     end
   end
 
@@ -28,6 +41,11 @@ describe PostsController do
   describe "GET show" do
     let(:post){ mock_model(Post) }
     before { Post.stub(:find).and_return(post) }
+
+    it "raises an exception if the user cannot read the post" do
+      ability.cannot :read, post
+      expect{ get :show, id: 5 }.to raise_exception(CanCan::AccessDenied)
+    end
     
     it "has a status of 200" do
       get :show, id: 5
@@ -47,6 +65,11 @@ describe PostsController do
 
 
   describe "GET new" do
+    it "raises an exception if the user cannot create a post" do
+      ability.cannot :create, Post
+      expect{ get :new }.to raise_exception(CanCan::AccessDenied)
+    end
+
     it "has a status of 200" do
       get :new
       response.status.should eq(200)
@@ -84,6 +107,11 @@ describe PostsController do
   describe "POST create" do
     context "with valid data" do
       let(:make_request){ post :create, post: { title: "lorem ipsum" } }
+
+      it "raises an exception if the user cannot create a post" do
+        ability.cannot :create, Post
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       it "creates a post with the data passed" do
         expect{ make_request }.to change{ Post.count }.by(1)
@@ -134,6 +162,11 @@ describe PostsController do
     let(:post){ create(:post) }
     let(:make_request){ get :edit, id: post.id }
 
+    it "raises an exception if the user cannot update a post" do
+      ability.cannot :update, post
+      expect{ get :edit, id: post.id }.to raise_exception(CanCan::AccessDenied)
+    end
+
     it "has a status of 200" do
       make_request
       response.status.should eq(200)
@@ -163,6 +196,11 @@ describe PostsController do
 
     context "with valid data" do
       let(:make_request){ put :update, id: post.id, post: { title: "lorem ipsum" } }
+
+      it "raises an exception if the user cannot update a post" do
+        ability.cannot :update, post
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       it "finds the correct post" do
         make_request
@@ -209,6 +247,11 @@ describe PostsController do
   describe "DELETE destroy" do
     let(:post){ create(:post) }
     let(:make_request){ delete :destroy, id: post.id }
+
+    it "raises an exception if the user cannot destroy a post" do
+      ability.cannot :destroy, post
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
 
     it "finds the correct post" do
       make_request

@@ -44,9 +44,5 @@
         %p.tags Tags: #{post.tag_names}
 
     .options
-      %p= link_to "Edit post", edit_post_path(post)
-      %p= link_to "Delete post", 
-        post_path(post), 
-        method: :delete, 
-        confirm: "Are you sure you want to delete this post?"
-
+      - if can? :update, post
+        %p= link_to "Edit post", edit_post_path(post)

@@ -16,6 +16,19 @@ class Post < ActiveRecord::Base
   validates :title, presence: { message: "Please enter a post title" }
   validates :user, presence: true
 
+  # Posts that are either authored by the guardian or that have one of the guardian's students tagged and have guardian permissions allowed
+  def self.readable_by_guardian(guardian)
+    student_ids = guardian.students.map{ |student| student.id }
+    
+    where{
+      ( user_id == guardian.user.id ) |
+      ( 
+        ( visible_to_guardians == true ) &
+        ( id.in ( Post.select{id}.joins{ students }.where{ students.id.in( student_ids )}) )
+      )
+    }
+  end
+
   def check_student_observations
     student_observations.each do |obs|
       if obs.content.blank? || !students.include?(obs.student)

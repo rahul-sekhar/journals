@@ -1,8 +1,8 @@
 class Tag < ActiveRecord::Base
   attr_accessible :name
 
-  validates :name, 
-    presence: true, 
+  validates :name,
+    presence: true,
     uniqueness: { case_sensitive: false },
     length: { maximum: 60 }
 

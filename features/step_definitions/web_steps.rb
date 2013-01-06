@@ -3,6 +3,10 @@ Given /^I am on (.*?)$/ do |p_page|
   visit path_to(p_page)
 end
 
+When /^I go to (.*?)$/ do |p_page|
+  visit path_to(p_page)
+end
+
 Then /^I should be on (.*?)$/ do |p_page|
   current_path.should == path_to(p_page)
 end
@@ -85,4 +89,10 @@ end
 
 When /^I check the checkbox "(.*?)"$/ do |p_checkbox|
   page.check(p_checkbox)
+end
+
+
+# Exception testing steps
+Then /^I should get a forbidden message when (.*)$/ do |p_step|
+  expect{ step p_step }.to raise_exception(CanCan::AccessDenied)
 end
