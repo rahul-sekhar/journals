@@ -84,6 +84,36 @@ shared_examples_for "a profile" do
     end
   end
 
+  describe "#active?" do
+    it "returns the users active? method" do
+      profile.user.stub(:active?).and_return("some val")
+      profile.active?.should == "some val"
+    end
+  end
+
+  describe "#reset_password" do
+    it "generates a password for the user" do
+      profile.user.should_receive(:generate_password)
+      profile.reset_password
+    end
+
+    it "returns the generated password" do
+      profile.user.stub(:generate_password).and_return("generated-pass")
+      profile.reset_password.should == "generated-pass"
+    end
+
+    it "saves the profile" do
+      profile.should_receive(:save)
+      profile.reset_password
+    end
+
+    it "activates an inactive profile" do
+      profile.should_not be_active
+      profile.reset_password
+      profile.should be_active
+    end
+  end
+
   describe "on creation" do
     it "creates a user" do
       profile

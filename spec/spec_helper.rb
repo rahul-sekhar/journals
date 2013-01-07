@@ -11,6 +11,7 @@ Spork.prefork do
   require 'capybara/rspec'
   require "cancan/matchers"
   require "#{Rails.root}/spec/support/capybara_extensions.rb"
+  require 'email_spec'
 
   RSpec.configure do |config|
     config.use_transactional_fixtures = true

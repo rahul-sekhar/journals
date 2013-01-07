@@ -118,4 +118,165 @@ describe GuardiansController do
       end
     end
   end
+
+  describe "DELETE destroy" do
+    context "guardian with one student" do
+      let(:guardian){ create(:guardian) }
+      let(:student){ guardian.students.first }
+      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id }
+
+      it "raises an exception if the user cannot destroy a guardian" do
+        ability.cannot :destroy, guardian
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      it "finds the correct guardian" do
+        make_request
+        assigns(:guardian).should eq(guardian)
+      end
+
+      it "destroys the guardian" do
+        make_request
+        assigns(:guardian).should be_destroyed
+      end
+
+      it "removes the guardian from the student" do
+        make_request
+        student.reload
+        student.guardians.should be_empty
+      end
+
+      it "redirects to the student page" do
+        make_request
+        response.should redirect_to student_path(student)
+      end
+
+      it "sets a flash message" do
+        make_request
+        flash[:notice].should be_present
+      end
+    end
+
+    context "guardian with multiple student" do
+      let(:guardian){ create(:guardian) }
+      let(:student){ create(:student) }
+      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id }
+      before do
+        @other_student = guardian.students.first
+        guardian.students << student
+      end
+
+      it "raises an exception if the user cannot destroy a guardian" do
+        ability.cannot :destroy, guardian
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      it "finds the correct guardian" do
+        make_request
+        assigns(:guardian).should eq(guardian)
+      end
+
+      it "does not destroy the guardian" do
+        make_request
+        assigns(:guardian).should_not be_destroyed
+      end
+
+      it "removes the guardian from the student" do
+        make_request
+        student.reload
+        student.guardians.should be_empty
+      end
+
+      it "does not remove the guardian from the other student" do
+        make_request
+        @other_student.reload
+        @other_student.guardians.should == [guardian]
+      end
+
+      it "redirects to the student page" do
+        make_request
+        response.should redirect_to student_path(student)
+      end
+
+      it "sets a flash message" do
+        make_request
+        flash[:notice].should be_present
+      end
+    end
+  end
+
+  describe "POST reset" do
+    let(:guardian){ create(:guardian) }
+    let(:make_request){ post :reset, id: guardian.id }
+
+    it "raises an exception if the user cannot reset a guardian" do
+      ability.cannot :reset, guardian
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    context "when email is present" do
+      it "finds the correct guardian" do
+        make_request
+        assigns(:guardian).should eq(guardian)
+      end
+
+      it "activates the guardian if the guardian is inactive" do
+        guardian.should_not be_active
+        make_request
+        guardian.reload.should be_active
+      end
+
+      it "redirects to the guardian page" do
+        make_request
+        response.should redirect_to guardian_path(guardian)
+      end
+
+      it "should deliver a user activated mail if the user was inactive" do
+        mock_delay = double('mock_delay')
+        UserMailer.stub(:delay).and_return(mock_delay)
+        mock_delay.should_receive(:activation_mail)
+        make_request
+      end
+
+      it "should deliver a password reset if the user was active" do
+        guardian.user.generate_password
+        guardian.save!
+
+        mock_delay = double('mock_delay')
+        UserMailer.stub(:delay).and_return(mock_delay)
+        mock_delay.should_receive(:reset_password_mail)
+        make_request
+      end
+
+      it "sets a flash message" do
+        make_request
+        flash[:notice].should be_present
+      end
+    end
+
+    context "when email is not present" do
+      let(:guardian){ create(:guardian, email: nil) }
+
+      it "redirects to the guardian page" do
+        make_request
+        response.should redirect_to guardian_path(guardian)
+      end
+
+      it "does not deliver a mail" do
+        UserMailer.should_not_receive(:delay)
+        make_request
+      end
+
+      it "does not activate the guardian" do
+        guardian.should_not be_active
+        make_request
+        guardian.reload.should_not be_active
+      end
+
+      it "sets a flash error" do
+        make_request
+        flash[:alert].should be_present
+      end
+    end
+  end
 end

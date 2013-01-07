@@ -8,6 +8,7 @@ class Guardian < ActiveRecord::Base
   default_scope includes(:user)
 
   before_validation :allow_blank_email
+  after_save :deactivate_user_if_email_blank
 
   def allow_blank_email
     build_user unless user.present?
@@ -22,6 +23,10 @@ class Guardian < ActiveRecord::Base
     else
       user.email
     end
+  end
+
+  def deactivate_user_if_email_blank
+    user.deactivate if email.nil?
   end
 
   def name_with_type

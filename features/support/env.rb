@@ -4,6 +4,9 @@ require 'spork'
 Spork.prefork do
   require 'cucumber/rails'
 
+  require 'email_spec'
+  require 'email_spec/cucumber'
+
   Capybara.default_selector = :css
 
   Before('@javascript') do
@@ -12,6 +15,7 @@ Spork.prefork do
     headless.start
   end
 
+  Delayed::Worker.delay_jobs = false
 end
  
 Spork.each_run do

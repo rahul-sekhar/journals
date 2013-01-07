@@ -118,4 +118,82 @@ describe TeachersController do
       end
     end
   end
+
+  describe "DELETE destroy" do
+    let(:teacher){ create(:teacher) }
+    let(:make_request){ delete :destroy, id: teacher.id }
+
+    it "raises an exception if the user cannot destroy a teacher" do
+      ability.cannot :destroy, teacher
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "finds the correct teacher" do
+      make_request
+      assigns(:teacher).should eq(teacher)
+    end
+
+    it "destroys the teacher" do
+      make_request
+      assigns(:teacher).should be_destroyed
+    end
+
+    it "redirects to the people page" do
+      make_request
+      response.should redirect_to people_path
+    end
+
+    it "sets a flash message" do
+      make_request
+      flash[:notice].should be_present
+    end
+  end
+
+  describe "POST reset" do
+    let(:teacher){ create(:teacher) }
+    let(:make_request){ post :reset, id: teacher.id }
+
+    it "raises an exception if the user cannot reset a teacher" do
+      ability.cannot :reset, teacher
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "finds the correct teacher" do
+      make_request
+      assigns(:teacher).should eq(teacher)
+    end
+
+    it "activates the teacher if the teacher is inactive" do
+      teacher.should_not be_active
+      make_request
+      teacher.reload.should be_active
+    end
+
+    it "redirects to the teacher page" do
+      make_request
+      response.should redirect_to teacher_path(teacher)
+    end
+
+    it "should deliver a user activated mail if the user was inactive" do
+      mock_delay = double('mock_delay')
+      UserMailer.stub(:delay).and_return(mock_delay)
+      mock_delay.should_receive(:activation_mail)
+      make_request
+    end
+
+    it "should deliver a password reset if the user was active" do
+      teacher.user.generate_password
+      teacher.save!
+
+      mock_delay = double('mock_delay')
+      UserMailer.stub(:delay).and_return(mock_delay)
+      mock_delay.should_receive(:reset_password_mail)
+      make_request
+    end
+
+    it "sets a flash message" do
+      make_request
+      flash[:notice].should be_present
+    end
+  end
 end

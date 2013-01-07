@@ -33,7 +33,6 @@ Scenario: Edit a teacher profile
   And I should see "990088"
   And I should not see "Office Phone"
 
-@current
 Scenario: Edit a student profile
   Given a student profile for Parvathy with all information exists
   When I am on the page for that profile

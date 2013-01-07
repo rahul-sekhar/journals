@@ -70,6 +70,27 @@ describe User do
     end
   end
 
+  describe "#deactivate" do
+    before do 
+      user.generate_password
+      user.save!
+    end
+
+    it "sets the password_hash to nil" do
+      user.password_hash.should be_present
+      user.deactivate
+      user.reload.password_hash.should be_nil
+    end
+
+    it "disallows authentication" do
+      user.password = "pass"
+      user.save!
+      User.authenticate("test@mail.com", "pass").should eq(user)
+      user.deactivate
+      User.authenticate("test@mail.com", "pass").should be_nil
+    end
+  end
+
   describe "on initial creation" do
     it "does not set the password hash and salt" do
       user.password_salt.should be_blank

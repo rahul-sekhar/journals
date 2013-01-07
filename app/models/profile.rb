@@ -20,6 +20,16 @@ module Profile
     end
   end
 
+  def active?
+    user.active?
+  end
+
+  def reset_password
+    password = user.generate_password
+    save
+    return password
+  end
+
   module ClassMethods
     def find_by_name(first_name, last_name)
       self.where(first_name: first_name, last_name: last_name).first

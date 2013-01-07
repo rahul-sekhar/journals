@@ -49,5 +49,11 @@ end
 Given /^a guardian Manoj with multiple students exists$/ do
   step 'a student profile for Parvathy exists'
   @profile = @profile.guardians.create!(first_name: "Manoj", last_name: "Jain")
-  @profile.students << FactoryGirl.create(:student, first_name: "Roly", last_name: "Jain", email: "roly@mail.com")
+  @student = FactoryGirl.create(:student, first_name: "Roly", last_name: "Jain", email: "roly@mail.com")
+  @profile.students << @student
+end
+
+Given /^that profile has been activated$/ do
+  @profile.user.generate_password
+  @profile.save!
 end

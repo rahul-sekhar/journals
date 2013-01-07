@@ -42,6 +42,12 @@ class User < ActiveRecord::Base
     password_salt.present? && password_hash.present?
   end
 
+  def deactivate
+    self.password_hash = nil
+    self.password = nil
+    save
+  end
+
   def is_teacher?
     profile_type == "Teacher"
   end

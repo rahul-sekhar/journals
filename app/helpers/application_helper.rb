@@ -35,4 +35,22 @@ module ApplicationHelper
       edit_guardian_path(profile)
     end
   end
+
+  def reset_profile_path(profile)
+    if profile.is_a? Student
+      reset_student_path(profile)
+    elsif profile.is_a? Teacher
+      reset_teacher_path(profile)
+    elsif profile.is_a? Guardian
+      reset_guardian_path(profile)
+    end
+  end
+
+  def archive_profile_path(profile)
+    if profile.is_a? Student
+      archive_student_path(profile)
+    elsif profile.is_a? Teacher
+      archive_teacher_path(profile)
+    end
+  end
 end

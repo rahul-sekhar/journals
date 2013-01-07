@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.9'
 gem 'pg', '0.14.1'
 gem 'thin', '1.5.0'
+gem 'rack', '1.4.1'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -25,6 +26,7 @@ group :test do
   gem 'capybara', '2.0.1'
   gem 'launchy', '2.1.2'
   gem 'headless', '0.3.1'
+  gem 'email_spec', '1.4.0'
 end
 
 gem 'jquery-rails', '2.1.4'
@@ -35,3 +37,4 @@ gem 'squeel', '1.0.14'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
 gem 'strip_attributes', '1.1.1'
 gem 'cancan', '1.6.8'
+gem 'delayed_job_active_record', '0.3.3'

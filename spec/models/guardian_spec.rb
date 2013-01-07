@@ -27,6 +27,21 @@ describe Guardian do
     end
   end
 
+  it "deactivates the user if saved with a blank email" do
+    profile.reset_password
+    profile.reload.should be_active
+    profile.email = nil
+    profile.save!
+    profile.reload.should_not be_active
+  end
+
+  it "does not deactive the user if saved with a non-blank email" do
+    profile.reset_password
+    profile.email = "something@mail.com"
+    profile.save!
+    profile.reload.should be_active
+  end
+
   describe "#name_with_type" do
     context "with one student" do
       it "returns the full name along with the profile type and the associated student" do
