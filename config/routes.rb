@@ -9,7 +9,7 @@ Journals::Application.routes.draw do
     resources :comments, only: [:create, :edit, :update, :destroy]
   end
 
-  resources :students, only: [:show]
-  resources :teachers, only: [:show]
-  resources :guardians, only: [:show]
+  resources :students, only: [:show, :edit, :update, :destroy]
+  resources :teachers, only: [:show, :edit, :update, :destroy]
+  resources :guardians, only: [:show, :edit, :update, :destroy]
 end

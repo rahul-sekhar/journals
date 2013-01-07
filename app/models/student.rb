@@ -1,7 +1,7 @@
 class Student < ActiveRecord::Base
   include Profile
 
-  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address, :birthday, :bloodgroup
+  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address, :bloodgroup, :formatted_birthday
 
   before_destroy :check_guardians
 
@@ -21,7 +21,15 @@ class Student < ActiveRecord::Base
   end
 
   def formatted_birthday
-    birthday.strftime( '%-d-%-m-%Y' ) if birthday.present?
+    birthday.strftime( '%d-%m-%Y' ) if birthday.present?
+  end
+
+  def formatted_birthday=(val)
+    begin
+      self.birthday = Date.strptime( val, '%d-%m-%Y' )
+    rescue
+      self.birthday = nil
+    end
   end
 
   def age
@@ -38,7 +46,7 @@ class Student < ActiveRecord::Base
 
   def self.fields
     [
-      { name: "Birthday", function: :birthday_with_age },
+      { name: "Birthday", function: :birthday_with_age, input: :formatted_birthday },
       { name: "Blood group", function: :bloodgroup },
       { name: "Mobile", function: :mobile },
       { name: "Home Phone", function: :home_phone },

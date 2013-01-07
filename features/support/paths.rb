@@ -29,6 +29,15 @@ module NavigationHelpers
     when /the page for my profile/
       profile_path(@logged_in_user.profile)
 
+    when /the page for the guardian/
+      profile_path(@guardian)
+
+    when /the edit page for that profile/
+      edit_profile_path(@profile)
+
+    when /the edit page for the guardian/
+      edit_profile_path(@guardian)
+
     else
       begin
         page_name =~ /the (.*) page/
@@ -48,6 +57,16 @@ module NavigationHelpers
       teacher_path(profile)
     elsif profile.is_a? Guardian
       guardian_path(profile)
+    end
+  end
+
+  def edit_profile_path(profile)
+    if profile.is_a? Student
+      edit_student_path(profile)
+    elsif profile.is_a? Teacher
+      edit_teacher_path(profile)
+    elsif profile.is_a? Guardian
+      edit_guardian_path(profile)
     end
   end
 end

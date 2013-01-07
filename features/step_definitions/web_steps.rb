@@ -51,6 +51,12 @@ Then /^"(.*?)" should be filled in with "(.*?)"$/ do |p_field, p_value|
   find_field(p_field).value.should == p_value
 end
 
+Then /^"(.*?)" should be filled in with the lines: (.*?)$/ do |p_field, p_lines|
+  p_lines = p_lines[1..-2].split('", "').join("\n")
+  find_field(p_field).value.should == p_lines
+end
+
+
 
 # Link and button steps
 When /^I click "(.*?)"$/ do |p_link|

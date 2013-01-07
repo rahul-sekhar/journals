@@ -6,6 +6,9 @@
   - profile.class.fields.each do |field|
     = render 'shared/profile_field', field_data: field, field_value: profile.send(field[:function])
 
+  - if can? :update, profile
+    = link_to "Edit profile", edit_profile_path(profile)
+
   - if profile.is_a? Student
     .guardians
       - profile.guardians.each do |guardian|

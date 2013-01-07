@@ -31,7 +31,29 @@ describe Student do
 
     it "returns the formatted birthday if present" do
       profile.birthday = Date.new(1955, 7, 12)
-      profile.formatted_birthday.should == '12-7-1955'
+      profile.formatted_birthday.should == '12-07-1955'
+    end
+  end
+
+  describe "#formatted_birthday=" do
+    it "sets the birthday given a string" do
+      profile.formatted_birthday = "12-10-1980"
+      profile.birthday.should == Date.new(1980, 10, 12)
+    end
+
+    it "sets the birthday to nil if invalid" do
+      profile.formatted_birthday = "asdf"
+      profile.birthday.should be_nil
+    end
+
+    it "sets the birthday to nil if blank" do
+      profile.formatted_birthday = ""
+      profile.birthday.should be_nil
+    end
+
+    it "sets the birthday to nil if nil" do
+      profile.formatted_birthday = nil
+      profile.birthday.should be_nil
     end
   end
 
@@ -55,7 +77,7 @@ describe Student do
     it "returns the date of birth and age if the profile is present" do
       profile.birthday = Date.new(1955, 7, 12)
       Date.stub(:now).and_return(Date.new(2013,1,1))
-      profile.birthday_with_age.should == "12-7-1955 (57 yrs)"
+      profile.birthday_with_age.should == "12-07-1955 (57 yrs)"
     end
   end
 

@@ -34,6 +34,14 @@ shared_examples_for "a profile" do
       profile.email = "test@mail.com"
       profile.should be_invalid
     end
+
+    it "can be edited for an already saved profile" do
+      profile.email = "some@mail.com"
+      profile.save!
+      profile.email = "another@mail.com"
+      profile.save!
+      profile.reload.email.should == "another@mail.com"
+    end
   end
 
   describe "#email" do
@@ -139,6 +147,19 @@ shared_examples_for "a profile" do
 
     it "must include email" do
       profile_class.fields.find{ |field| field[:name] == "Email" }.should be_present
+    end
+  end
+
+  describe "##inputs" do
+    before do
+      profile_class.stub(:fields).and_return([
+        { name: "Something", function: :something },
+        { name: "Something Else", function: :something_else, input: :some_input }
+      ])
+    end
+
+    it "returns either the function or the input of the field, giving preference to the input" do
+      profile_class.inputs.should == [:something, :some_input]
     end
   end
 end

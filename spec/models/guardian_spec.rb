@@ -60,7 +60,7 @@ describe Guardian do
     end
   end
 
-  describe "permissions:", :skip do
+  describe "permissions:" do
     let(:student1){ create(:student) }
     let(:student2){ create(:student) }
 

@@ -1,5 +1,8 @@
 en:
   formtastic:
+    labels:
+      formatted_birthday: "Birthday"
+      bloodgroup: "Blood group"
     actions:
       post:
         create: "Create post"
@@ -7,3 +10,9 @@ en:
       comment:
         create: "Add comment"
         update: "Save comment"
+      teacher:
+        update: "Save profile"
+      student:
+        update: "Save profile"
+      guardian:
+        update: "Save profile"

@@ -25,17 +25,17 @@ Given /^a student profile for Parvathy with all information exists$/ do
     address: "Apartment,\nThe hill,\nDarjeeling - 10",
     home_phone: '5678',
     office_phone: '1432',
-    birthday: Date.new(1996, 12, 25),
+    formatted_birthday: '25-12-1996',
     bloodgroup: 'B+'
   )
 end
 
 Given /^a guardian Manoj for that student exists$/ do
-  @profile.guardians.create!(first_name: "Manoj", last_name: "Jain")
+  @guardian = @profile.guardians.create!(first_name: "Manoj", last_name: "Jain")
 end
 
 Given /^a guardian Poonam for that student exists$/ do
-  @profile.guardians.create!(
+  @guardian = @profile.guardians.create!(
     first_name: "Poonam", 
     last_name: "Jain",
     email: "poonam@mail.com",

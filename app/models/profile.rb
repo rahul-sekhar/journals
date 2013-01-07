@@ -28,11 +28,15 @@ module Profile
     def alphabetical
       order(:first_name, :last_name)
     end
+
+    def inputs
+      self.fields.map { |field| field[:input] || field[:function] }
+    end
   end
 
   def self.included(base)
     base.extend ClassMethods
-    base.has_one :user, as: :profile, dependent: :destroy, validate: true, inverse_of: :profile
+    base.has_one :user, as: :profile, dependent: :destroy, autosave: true, inverse_of: :profile
     base.validates :last_name, presence: true
     base.validates :user, presence: true
     base.strip_attributes
