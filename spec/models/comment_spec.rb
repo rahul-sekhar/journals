@@ -34,13 +34,6 @@ describe Comment do
     end
   end
 
-  describe "#author_name" do
-    it "returns the associated users name" do
-      comment.user.stub(:name).and_return("Some Name")
-      comment.author_name.should eq("Some Name")
-    end
-  end
-
   describe "#author_profile" do
     it "returns the associated users profile" do
       comment.author_profile.should eq(comment.user.profile)

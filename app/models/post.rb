@@ -63,10 +63,6 @@ class Post < ActiveRecord::Base
     created_at.strftime "#{created_at.day.ordinalize} %B %Y"
   end
 
-  def author_name
-    user.name
-  end
-
   def author_profile
     user.profile
   end

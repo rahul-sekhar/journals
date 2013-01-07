@@ -15,29 +15,15 @@
         %h1 Journals Demo
       
         - if logged_in?
-          .user
-            %p You are signed in as #{current_profile.full_name}
-            .menu
-              %ul
-                %li= link_to "Your profile", '#'
-                %li= link_to "Log out", logout_path
+          .user= render "general/user_menu"
 
     .wrapper
       - if logged_in?
-        %navigation#page-navigation
-          %ul
-            %li= link_to "View posts", posts_path
-            %li= link_to "New post", new_post_path
+        %navigation#page-navigation= render "general/navigation"
 
       #main-content
         %h2= content_for :heading
 
-        %section#upper-bar
-          .notice
-          - if flash[:alert]
-            %p.error= flash[:alert]
-            
-          - if flash[:notice]
-            %p= flash[:notice]
+        %section#upper-bar= render "general/upper_bar"
 
         = yield

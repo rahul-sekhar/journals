@@ -83,7 +83,7 @@ Then /^a minimal test post should exist$/ do
   
   @post.content.should == "<p>Some <em>HTML</em> content</p>"
   @post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
-  @post.author_name.should == "Rahul"
+  @post.author_profile.full_name.should == "Rahul Sekhar"
 end
 
 Then /^a post with student and teacher tags should exist$/ do

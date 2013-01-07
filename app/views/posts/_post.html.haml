@@ -5,14 +5,14 @@
         %h4 Students
         %ul
           - post.students.alphabetical.each do |student|
-            %li= student.name
+            %li= profile_name(student)
 
     - if post.teachers.present?
       .teachers
         %h4 Teachers
         %ul
           - post.teachers.alphabetical.each do |teacher|
-            %li= teacher.name
+            %li= profile_name(teacher)
   
   %h3= post.title
 
@@ -39,7 +39,10 @@
   %footer
     .info
       %p.date= post.formatted_created_at
-      %p.author Posted by #{post.author_name}
+      %p.author 
+        Posted by 
+        = profile_name(post.author_profile, true)
+      
       - if post.tags.present?
         %p.tags Tags: #{post.tag_names}
 

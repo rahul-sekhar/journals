@@ -11,5 +11,5 @@ Scenario: Add a comment to a post
   And I click "Add comment"
   Then I should see "Comments"
   And I should see "Test comment"
-  And I should see "Posted by Rahul"
+  And I should see "Posted by Rahul Sekhar"
   And I should be on the page for that post

@@ -42,10 +42,6 @@ class User < ActiveRecord::Base
     password_salt.present? && password_hash.present?
   end
 
-  def name
-    profile.name
-  end
-
   def is_teacher?
     profile_type == "Teacher"
   end

@@ -4,7 +4,7 @@
   %footer
     %p
       Posted by
-      %span.author= comment.author_name
+      = profile_name(comment.author_profile, true)
       on
       %span.date= comment.formatted_created_at
 

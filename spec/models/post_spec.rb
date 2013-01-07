@@ -24,13 +24,6 @@ describe Post do
     end
   end
 
-  describe "#author_name" do
-    it "returns the associated users name" do
-      post.user.stub(:name).and_return("Some Name")
-      post.author_name.should eq("Some Name")
-    end
-  end
-
   describe "#author_profile" do
     it "returns the associated users profile" do
       post.author_profile.should eq(post.user.profile)

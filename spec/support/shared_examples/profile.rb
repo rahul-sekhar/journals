@@ -13,7 +13,7 @@ shared_examples_for "a profile" do
     profile.should be_invalid
   end
 
-  describe "#email" do
+  describe "#email=" do
     it "sets the users email" do
       profile.email = "some@mail.com"
       profile.user.email.should == "some@mail.com"
@@ -48,6 +48,13 @@ shared_examples_for "a profile" do
     it "is invalid with a blank email" do
       profile.email = nil
       profile.should be_invalid
+    end
+  end
+
+  describe "#email" do
+    it "returns the users email" do
+      profile.user.stub(:email).and_return("some-email")
+      profile.email.should == "some-email"
     end
   end
 

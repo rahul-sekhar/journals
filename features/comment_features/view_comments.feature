@@ -18,6 +18,6 @@ Scenario: View a post with comments
   And I should see "Comments"
   And a ".comments" block should be present
   And I should see "First comment"
-  And I should see "Posted by Ansh on 25th October 2012"
+  And I should see "Posted by Ansh Something on 25th October 2012"
   And I should see "Another comment"
-  And I should see "Posted by Aditya on 28th November 2012"
+  And I should see "Posted by Aditya Pandya on 28th November 2012"

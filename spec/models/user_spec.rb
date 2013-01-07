@@ -196,13 +196,6 @@ describe User do
     end
   end
 
-  describe "#name" do
-    it "returns the profiles name" do
-      user.profile.stub(:name).and_return("Name")
-      user.name.should == "Name"
-    end
-  end
-
   describe "profile checks:" do
     let(:student){ create(:student ) }
     let(:student_user){ student.user }
