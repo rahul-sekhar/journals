@@ -1,15 +1,11 @@
 module Profile
-  def initialize_user
-    build_user unless user.present?
-  end
-
   def email=(val)
-    initialize_user
+    build_user unless user.present?
     self.user.email = val
   end
 
   def email
-    user.email
+    user.email if user.present?
   end
 
   def name
@@ -39,7 +35,6 @@ module Profile
     base.has_one :user, as: :profile, dependent: :destroy, validate: true, inverse_of: :profile
     base.validates :last_name, presence: true
     base.validates :user, presence: true
-    base.after_initialize :initialize_user
     base.strip_attributes
   end
 
