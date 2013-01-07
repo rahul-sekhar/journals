@@ -7,6 +7,58 @@ describe Student do
 
   it_behaves_like "a profile"
 
+  it "is invalid without a user" do
+    profile.user = nil
+    profile.should be_invalid
+  end
+
+  describe "#email=" do
+    it "is invalid with a nil email" do
+      profile.email = nil
+      profile.should be_invalid
+    end
+
+    it "is invalid with a blank email" do
+      profile.email = " "
+      profile.should be_invalid
+    end
+  end
+
+  describe "#formatted_birthday" do
+    it "returns nil if the birthday is empty" do
+      profile.formatted_birthday.should be_nil
+    end
+
+    it "returns the formatted birthday if present" do
+      profile.birthday = Date.new(1955, 7, 12)
+      profile.formatted_birthday.should == '12-7-1955'
+    end
+  end
+
+  describe "#age" do
+    it "returns nil if the birthday is empty" do
+      profile.age.should be_nil
+    end
+
+    it "returns the age if the profile is present" do
+      profile.birthday = Date.new(1955, 7, 12)
+      Date.stub(:now).and_return(Date.new(2013,1,1))
+      profile.age.should == 57
+    end
+  end
+
+  describe "#birthday_with_age" do
+    it "returns nil if the birthday is empty" do
+      profile.birthday_with_age.should be_nil
+    end
+
+    it "returns the date of birth and age if the profile is present" do
+      profile.birthday = Date.new(1955, 7, 12)
+      Date.stub(:now).and_return(Date.new(2013,1,1))
+      profile.birthday_with_age.should == "12-7-1955 (57 yrs)"
+    end
+  end
+
   describe "on destruction" do
     it "destroys a guardian without other students" do
       create(:guardian, students: [profile])

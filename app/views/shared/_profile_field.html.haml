@@ -1,0 +1,7 @@
+- if field_value
+  %div{class: ["field", field_data[:format]]}
+    %p.field-name= field_data[:name]
+    - if field_data[:format]
+      = simple_format field_value
+    - else
+      %p= field_value

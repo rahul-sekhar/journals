@@ -1,0 +1,4 @@
+- title "Profile: #{@guardian.full_name}"
+
+- @guardian.students.each do |student|
+  = render "shared/profile", profile: student

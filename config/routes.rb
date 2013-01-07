@@ -8,4 +8,8 @@ Journals::Application.routes.draw do
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]
   end
+
+  resources :students, only: [:show]
+  resources :teachers, only: [:show]
+  resources :guardians, only: [:show]
 end

@@ -8,11 +8,6 @@ shared_examples_for "a profile" do
     profile.should be_invalid
   end
 
-  it "is invalid without a user" do
-    profile.user = nil
-    profile.should be_invalid
-  end
-
   describe "#email=" do
     it "sets the users email" do
       profile.email = "some@mail.com"
@@ -37,16 +32,6 @@ shared_examples_for "a profile" do
     it "is invalid with a duplicate email" do
       create(:student, email: "test@mail.com")
       profile.email = "test@mail.com"
-      profile.should be_invalid
-    end
-    
-    it "is invalid with a nil email" do
-      profile.email = nil
-      profile.should be_invalid
-    end
-
-    it "is invalid with a blank email" do
-      profile.email = nil
       profile.should be_invalid
     end
   end
@@ -145,5 +130,15 @@ shared_examples_for "a profile" do
       profile_class.alphabetical.should == [profile2, profile3, profile1]
     end    
   end
-  
+
+  describe "##fields" do
+    it "returns an array of hashes of fields" do
+      profile_class.fields.should be_a Array
+      profile_class.fields.first.should be_a Hash
+    end
+
+    it "must include email" do
+      profile_class.fields.find{ |field| field[:name] == "Email" }.should be_present
+    end
+  end
 end

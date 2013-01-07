@@ -7,6 +7,23 @@ describe Teacher do
 
   it_behaves_like "a profile"
 
+  it "is invalid without a user" do
+    profile.user = nil
+    profile.should be_invalid
+  end
+
+  describe "#email=" do
+    it "is invalid with a nil email" do
+      profile.email = nil
+      profile.should be_invalid
+    end
+
+    it "is invalid with a blank email" do
+      profile.email = " "
+      profile.should be_invalid
+    end
+  end
+
   describe "#name_with_type" do
     it "returns the full name along with the profile type" do
       profile.first_name = "Rahul"

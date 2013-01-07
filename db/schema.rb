@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130106092151) do
+ActiveRecord::Schema.define(:version => 20130107051651) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -48,10 +48,12 @@ ActiveRecord::Schema.define(:version => 20130106092151) do
   create_table "guardians", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "relationship"
-    t.string   "phone_numbers"
+    t.string   "mobile"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "home_phone"
+    t.string   "office_phone"
+    t.text     "address"
   end
 
   create_table "images", :force => true do |t|
@@ -146,12 +148,13 @@ ActiveRecord::Schema.define(:version => 20130106092151) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.date     "date_of_birth"
+    t.date     "birthday"
     t.string   "bloodgroup"
-    t.string   "emergency_contact"
     t.text     "address"
     t.string   "application_form_file"
-    t.string   "phone_numbers"
+    t.string   "home_phone"
+    t.string   "mobile"
+    t.string   "office_phone"
   end
 
   add_index "students", ["first_name", "last_name"], :name => "student_full_name_index"
@@ -212,11 +215,10 @@ ActiveRecord::Schema.define(:version => 20130106092151) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "phone_numbers"
-    t.date     "date_of_birth"
-    t.string   "bloodgroup"
-    t.string   "emergency_contact"
+    t.string   "mobile"
     t.text     "address"
+    t.string   "home_phone"
+    t.string   "office_phone"
   end
 
   add_index "teachers", ["first_name", "last_name"], :name => "teacher_full_name_index"
