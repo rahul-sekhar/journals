@@ -196,4 +196,35 @@ describe StudentsController do
       flash[:notice].should be_present
     end
   end
+
+  describe "POST archive" do
+    let(:student){ create(:student) }
+    let(:make_request){ post :archive, id: student.id }
+
+    it "raises an exception if the user cannot archive a student" do
+      ability.cannot :archive, student
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "finds the correct student" do
+      make_request
+      assigns(:student).should eq(student)
+    end
+
+    it "toggles the students archived state" do
+      Student.stub(:find).and_return(student)
+      student.should_receive(:toggle_archive)
+      make_request
+    end
+
+    it "redirects to the student page" do
+      make_request
+      response.should redirect_to student_path(student)
+    end
+
+    it "sets a flash message" do
+      make_request
+      flash[:notice].should be_present
+    end
+  end
 end

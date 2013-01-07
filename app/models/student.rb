@@ -3,7 +3,7 @@ class Student < ActiveRecord::Base
 
   attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address, :bloodgroup, :formatted_birthday
 
-  before_destroy :check_guardians
+  before_destroy :clear_guardians
 
   has_and_belongs_to_many :guardians, uniq: true, join_table: :students_guardians
   has_many :student_observations, dependent: :destroy
@@ -14,7 +14,14 @@ class Student < ActiveRecord::Base
     "#{full_name} (student)"
   end
 
-  def check_guardians
+  def toggle_archive
+    self.archived = !archived
+    user.deactivate if archived
+    save
+    guardians.each { |guardian| guardian.check_students }
+  end
+
+  def clear_guardians
     guardians_copy = guardians.all
     guardians.clear
     guardians_copy.each { |guardian| guardian.check_students }

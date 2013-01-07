@@ -32,6 +32,34 @@ describe Teacher do
     end
   end
 
+  describe "#toggle_archive" do
+    context "if archived" do
+      before do 
+        profile.archived = true
+        profile.save!
+      end
+
+      it "should not be archived" do
+        profile.toggle_archive
+        profile.reload.archived.should == false
+      end
+    end
+
+    context "if not archived" do
+      before{ profile.save! }
+
+      it "should be archived" do
+        profile.toggle_archive
+        profile.reload.archived.should == true
+      end
+
+      it "should deactivate the user" do
+        profile.user.should_receive(:deactivate)
+        profile.toggle_archive
+      end
+    end
+  end
+
   describe "permissions:" do
     before{ profile.save! }
     let(:ability){ Ability.new(profile.user) }

@@ -35,4 +35,16 @@ class TeachersController < ApplicationController
 
     redirect_to @teacher, notice: "An email has been sent to the user with a randomly generated password"
   end
+
+  def archive
+    @teacher.toggle_archive
+
+    if @teacher.archived
+      message = "The user has been archived and can no longer login"
+    else
+      message = "The user is no longer archived and must be activated to allow a login"
+    end
+
+    redirect_to @teacher, notice: message
+  end
 end

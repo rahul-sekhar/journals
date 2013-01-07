@@ -90,3 +90,26 @@ Scenario: Activate a guardian with an email address
   And "poonam@mail.com" should receive an email
   When they open the email
   Then they should see /^User activation/ in the email subject
+
+Scenario: Archive and unarchive a teacher
+  Given a teacher profile for Shalini exists
+  When I am on the page for that profile
+  And I click "Archive user"
+  Then I should be on the page for that profile
+  And I should see "The user has been archived and can no longer login"
+  When I click "Unarchive user"
+  Then I should be on the page for that profile
+  And I should see "The user is no longer archived and must be activated to allow a login"
+  And I should see "Archive user"
+
+@current
+Scenario: Archive and unarchive a student
+  Given a student profile for Parvathy exists
+  When I am on the page for that profile
+  And I click "Archive user"
+  Then I should be on the page for that profile
+  And I should see "The user has been archived and can no longer login"
+  When I click "Unarchive user"
+  Then I should be on the page for that profile
+  And I should see "The user is no longer archived and must be activated to allow a login"
+  And I should see "Archive user"

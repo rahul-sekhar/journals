@@ -9,6 +9,12 @@ class Teacher < ActiveRecord::Base
     "#{full_name} (teacher)"
   end
 
+  def toggle_archive
+    self.archived = !archived
+    user.deactivate if archived
+    save
+  end
+
   def self.fields
     [
       { name: "Mobile", function: :mobile },

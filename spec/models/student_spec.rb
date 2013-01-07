@@ -116,6 +116,62 @@ describe Student do
     end
   end
 
+  describe "#toggle_archive" do
+    context "if not archived" do
+      let(:guardian1){ create(:guardian, students: [profile]) }
+      let(:guardian2){ create(:guardian, students: [profile, create(:student)]) }
+      let(:guardian3){ create(:guardian, students: [profile, create(:student, archived: true)]) }
+      before{ profile.save! }
+
+      it "should be archived" do
+        profile.toggle_archive
+        profile.reload.archived.should == true
+      end
+
+      it "should deactivate the user" do
+        profile.user.should_receive(:deactivate)
+        profile.toggle_archive
+        profile.reload.should_not be_active
+      end
+
+      it "should deactivate any guardians that are archived" do
+        guardian1.reset_password
+        guardian2.reset_password
+        guardian3.reset_password
+        profile.toggle_archive
+        guardian1.reload.should_not be_active
+        guardian2.reload.should be_active
+        guardian3.reload.should_not be_active
+      end
+    end
+
+    context "if archived" do
+      let(:guardian1){ create(:guardian, students: [profile]) }
+      let(:guardian2){ create(:guardian, students: [profile, create(:student)]) }
+      let(:guardian3){ create(:guardian, students: [profile, create(:student, archived: true)]) }
+
+      before do
+        profile.archived = true
+        profile.save!
+      end
+
+      it "should not be archived" do
+        profile.toggle_archive
+        profile.reload.archived.should == false
+      end
+
+      it "should not bother with guardians" do
+        guardian2.reset_password
+        profile.toggle_archive
+        guardian1.reload.should_not be_active
+        guardian2.reload.should be_active
+        guardian3.reload.should_not be_active
+      end
+    end
+
+    
+  end
+
   describe "permissions:" do
     before{ profile.save! }
     let(:ability){ Ability.new(profile.user) }

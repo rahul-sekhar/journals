@@ -196,4 +196,35 @@ describe TeachersController do
       flash[:notice].should be_present
     end
   end
+
+  describe "POST archive" do
+    let(:teacher){ create(:teacher) }
+    let(:make_request){ post :archive, id: teacher.id }
+
+    it "raises an exception if the user cannot archive a teacher" do
+      ability.cannot :archive, teacher
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "finds the correct teacher" do
+      make_request
+      assigns(:teacher).should eq(teacher)
+    end
+
+    it "toggles the teachers archived state" do
+      Teacher.stub(:find).and_return(teacher)
+      teacher.should_receive(:toggle_archive)
+      make_request
+    end
+
+    it "redirects to the teacher page" do
+      make_request
+      response.should redirect_to teacher_path(teacher)
+    end
+
+    it "sets a flash message" do
+      make_request
+      flash[:notice].should be_present
+    end
+  end
 end

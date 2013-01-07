@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130107145508) do
+ActiveRecord::Schema.define(:version => 20130107162445) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(:version => 20130107145508) do
     t.string   "home_phone"
     t.string   "mobile"
     t.string   "office_phone"
+    t.boolean  "archived"
   end
 
   add_index "students", ["first_name", "last_name"], :name => "student_full_name_index"
@@ -235,6 +236,7 @@ ActiveRecord::Schema.define(:version => 20130107145508) do
     t.text     "address"
     t.string   "home_phone"
     t.string   "office_phone"
+    t.boolean  "archived"
   end
 
   add_index "teachers", ["first_name", "last_name"], :name => "teacher_full_name_index"

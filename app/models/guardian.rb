@@ -45,6 +45,12 @@ class Guardian < ActiveRecord::Base
   end
 
   def check_students
+    # Check if all students are archived
+    if students.all? { |student| student.archived }
+      user.deactivate
+      save
+    end
+
     destroy if students.reload.empty?
   end
 
