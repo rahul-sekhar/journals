@@ -1,5 +1,6 @@
 Given /^a (teacher|student) "(.*?)" exists with the email "(.*?)" and the password "(.*?)"$/ do |p_type, p_name, p_email, p_pass|
-  @profile = create_profile(p_type, p_name, p_email, p_pass)
+  @profile = create_profile(p_type, p_name, p_email)
+  set_profile_password(@profile, p_pass)
 end
 
 Given /^the guardian "(.*?)" has a student "(.*?)"$/ do |p_name, p_student_name|
@@ -24,7 +25,8 @@ Given /^I have logged in as a guardian "(.*?)" to the student "(.*?)"$/ do |p_na
   student = create_profile("student", p_student_name)
   first_name, last_name = split_name(p_name)
   email = mail_from_name(p_name)
-  @profile = student.guardians.create!(first_name: first_name, last_name: last_name, email: email, password: "pass")
+  @profile = student.guardians.create!(first_name: first_name, last_name: last_name, email: email)
+  set_profile_password(@profile, "pass")
   step 'I am on the login page'
   step "I fill in \"Email\" with \"#{email}\""
   step 'I fill in "Password" with "pass"'
@@ -42,13 +44,19 @@ Given /^some base students and teachers exist$/ do
   john
 end
 
-def create_profile(type, name, email=nil, password="pass")
+def set_profile_password(profile, password)
+  user = profile.user
+  user.password = password
+  user.save!
+end
+
+def create_profile(type, name, email=nil)
   first_name, last_name = split_name(name)
   email = mail_from_name(name) if email.nil?
 
   klass = type.capitalize.constantize
 
-  obj = klass.create!(first_name: first_name, last_name: last_name, email: email, password: password)
+  obj = klass.create!(first_name: first_name, last_name: last_name, email: email)
   return obj
 end
 

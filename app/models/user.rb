@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
 
   before_save :encrypt_password
 
-  belongs_to :profile, polymorphic: true, dependent: :destroy
+  belongs_to :profile, polymorphic: true, inverse_of: :user
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
 
@@ -13,9 +13,10 @@ class User < ActiveRecord::Base
     format: { with: /.+@.+\..+/ },
     uniqueness: { case_sensitive: false }
   validates :password,
-    presence: true,
     format: { with: /\A[^ ]*\z/ },
-    length: { minimum: 4 }
+    length: { minimum: 4 },
+    confirmation: true,
+    allow_blank: true
 
   def self.authenticate(email, password)
     user = User.where(email: email).first
@@ -26,9 +27,19 @@ class User < ActiveRecord::Base
     end
   end
 
+  def generate_password
+    self.password = (0...10).map{ ('a'..'z').to_a[rand(26)] }.join
+  end
+
   def encrypt_password
-    self.password_salt = BCrypt::Engine.generate_salt
-    self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
+    if password.present?
+      self.password_salt = BCrypt::Engine.generate_salt
+      self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
+    end
+  end
+
+  def active?
+    password_salt.present? && password_hash.present?
   end
 
   def name

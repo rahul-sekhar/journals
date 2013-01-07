@@ -1,8 +1,15 @@
 module Profile
-  attr_accessor :password, :email
+  def initialize_user
+    build_user unless user.present?
+  end
 
-  def build_user_if_new_record
-    self.build_user(email: @email, password: @password) if new_record?
+  def email=(val)
+    initialize_user
+    self.user.email = val
+  end
+
+  def email
+    user.email
   end
 
   def name
@@ -29,9 +36,10 @@ module Profile
 
   def self.included(base)
     base.extend ClassMethods
-    base.before_validation :build_user_if_new_record
-    base.has_one :user, as: :profile, dependent: :destroy, validate: true
+    base.has_one :user, as: :profile, dependent: :destroy, validate: true, inverse_of: :profile
     base.validates :last_name, presence: true
+    base.validates :user, presence: true
+    base.after_initialize :initialize_user
     base.strip_attributes
   end
 

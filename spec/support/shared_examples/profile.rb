@@ -8,52 +8,46 @@ shared_examples_for "a profile" do
     profile.should be_invalid
   end
 
-  describe "email" do
-    it "is required for a new record" do
-      profile.email = nil
+  it "is invalid without a user" do
+    profile.user = nil
+    profile.should be_invalid
+  end
+
+  describe "#email" do
+    it "sets the users email" do
+      profile.email = "some@mail.com"
+      profile.user.email.should == "some@mail.com"
+    end
+
+    it "can be set on creation of the profile" do
+      prof = profile_class.create!(last_name: "Name", email: "blah@blah.com")
+      prof.user.email.should == "blah@blah.com"
+    end
+
+    it "is invalid with an invalid email" do
+      profile.email = "blah@gah"
       profile.should be_invalid
     end
 
-    it "must have the correct format" do
-      profile.email = "blah@gah"
-      profile.should be_invalid
+    it "is valid with a valid email" do
       profile.email = "blah@gah.com"
       profile.should be_valid
     end
 
-    it "must be unique" do
-      create(profile_type, email: "test@mail.com")
+    it "is invalid with a duplicate email" do
+      create(:student, email: "test@mail.com")
       profile.email = "test@mail.com"
       profile.should be_invalid
     end
-
-    it "is not required for a saved record" do
-      profile.save!
+    
+    it "is invalid with a nil email" do
       profile.email = nil
-      profile.should be_valid
-    end
-  end
-
-  describe "password" do
-    it "is required for a new record" do
-      profile.password = nil
       profile.should be_invalid
     end
 
-    it "must have at least four characters" do
-      profile.password = "pas"
+    it "is invalid with a blank email" do
+      profile.email = nil
       profile.should be_invalid
-    end
-
-    it "cannot have spaces" do
-      profile.password = "blah blah"
-      profile.should be_invalid
-    end
-
-    it "is not required for a saved record" do
-      profile.save!
-      profile.password = nil
-      profile.should be_valid
     end
   end
 
@@ -104,10 +98,9 @@ shared_examples_for "a profile" do
     describe "the created user" do
       let(:user){ profile.user }
 
-      it "has the password passed to the profile" do
-        profile.password = "pass"
+      it "is inactive" do
         profile.save!
-        User.authenticate(user.email, "pass").should eq(user)
+        user.should_not be_active
       end
 
       it "has the email passed to the profile" do
