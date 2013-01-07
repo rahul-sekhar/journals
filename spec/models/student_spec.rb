@@ -7,23 +7,6 @@ describe Student do
 
   it_behaves_like "a profile"
 
-  it "is invalid without a user" do
-    profile.user = nil
-    profile.should be_invalid
-  end
-
-  describe "#email=" do
-    it "is invalid with a nil email" do
-      profile.email = nil
-      profile.should be_invalid
-    end
-
-    it "is invalid with a blank email" do
-      profile.email = " "
-      profile.should be_invalid
-    end
-  end
-
   describe "#formatted_birthday" do
     it "returns nil if the birthday is empty" do
       profile.formatted_birthday.should be_nil
@@ -117,11 +100,15 @@ describe Student do
   end
 
   describe "#toggle_archive" do
+    let(:guardian1){ create(:guardian_with_user, students: [profile]) }
+    let(:guardian2){ create(:guardian_with_user, students: [profile, create(:student)]) }
+    let(:guardian3){ create(:guardian_with_user, students: [profile, create(:student, archived: true)]) }
+    
     context "if not archived" do
-      let(:guardian1){ create(:guardian, students: [profile]) }
-      let(:guardian2){ create(:guardian, students: [profile, create(:student)]) }
-      let(:guardian3){ create(:guardian, students: [profile, create(:student, archived: true)]) }
-      before{ profile.save! }
+      before do 
+        profile.email = "test@mail.com"
+        profile.save!
+      end
 
       it "should be archived" do
         profile.toggle_archive
@@ -146,10 +133,6 @@ describe Student do
     end
 
     context "if archived" do
-      let(:guardian1){ create(:guardian, students: [profile]) }
-      let(:guardian2){ create(:guardian, students: [profile, create(:student)]) }
-      let(:guardian3){ create(:guardian, students: [profile, create(:student, archived: true)]) }
-
       before do
         profile.archived = true
         profile.save!
@@ -169,11 +152,22 @@ describe Student do
       end
     end
 
-    
+    context "with no user" do
+      it "should work" do
+        profile.save!
+        profile.toggle_archive
+        profile.archived.should == true
+        profile.toggle_archive
+        profile.archived.should == false
+      end
+    end
   end
 
   describe "permissions:" do
-    before{ profile.save! }
+    before do 
+      profile.email = "test@mail.com"
+      profile.save!
+    end
     let(:ability){ Ability.new(profile.user) }
 
     describe "posts:" do
@@ -182,29 +176,27 @@ describe Student do
       end
 
       it "can manage its own posts" do
-        own_post = create(:post, user: profile.user)
+        own_post = create(:post, author: profile)
         ability.should be_able_to :manage, own_post
       end
 
       context "when not tagged in the post" do
         it "cannot read, edit or destroy posts created by a teacher" do
-          post = create(:post, user: create(:teacher).user )
+          post = create(:post, author: create(:teacher) )
           ability.should_not be_able_to :read, post
           ability.should_not be_able_to :update, post
           ability.should_not be_able_to :destroy, post
         end
 
         it "cannot read, edit or destroy posts created by another student" do
-          post = create(:post, user: create(:student).user )
+          post = create(:post, author: create(:student) )
           ability.should_not be_able_to :read, post
           ability.should_not be_able_to :update, post
           ability.should_not be_able_to :destroy, post
         end
 
         it "cannot read, edit or destroy posts created by a guardian" do
-          post = build(:post, user: create(:guardian).user )
-          post.initialize_tags
-          post.save!
+          post = create(:post, author: create(:guardian) )
           ability.should_not be_able_to :read, post
           ability.should_not be_able_to :update, post
           ability.should_not be_able_to :destroy, post
@@ -251,26 +243,26 @@ describe Student do
       end
 
       it "can manage its own comments" do
-        own_comment = create(:comment, user: profile.user)
+        own_comment = create(:comment, author: profile)
         ability.should be_able_to :manage, own_comment
       end
 
       it "can only read comments created by a teacher" do
-        comment = create(:comment, user: create(:teacher).user )
+        comment = create(:comment, author: create(:teacher) )
         ability.should be_able_to :read, comment
         ability.should_not be_able_to :update, comment
         ability.should_not be_able_to :destroy, comment
       end
 
       it "can only read comments created by another student" do
-        comment = create(:comment, user: create(:student).user )
+        comment = create(:comment, author: create(:student) )
         ability.should be_able_to :read, comment
         ability.should_not be_able_to :update, comment
         ability.should_not be_able_to :destroy, comment
       end
 
       it "can only read comments created by a guardian" do
-        comment = create(:comment, user: create(:guardian).user )
+        comment = create(:comment, author: create(:guardian) )
         ability.should be_able_to :read, comment
         ability.should_not be_able_to :update, comment
         ability.should_not be_able_to :destroy, comment

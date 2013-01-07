@@ -24,6 +24,11 @@ class StudentsController < ApplicationController
   end
 
   def reset
+    if @student.email.nil?
+      redirect_to @student, alert: "You must add an email address before you can activate the user"
+      return
+    end
+
     was_active = @student.active?
     password = @student.reset_password
 

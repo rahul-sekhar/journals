@@ -2,24 +2,35 @@ require 'factory_girl'
 
 FactoryGirl.define do
   factory :teacher do
-    sequence(:email){ |n| "email#{n}@server.com"}
     sequence(:last_name){ |n| "Teacher#{n}" }
+
+    factory :teacher_with_user do
+      sequence(:email){ |n| "teacher#{n}@mail.com" }
+    end
   end
 
   factory :student do
-    sequence(:email){ |n| "student_email#{n}@server.com"}
     sequence(:last_name){ |n| "Student#{n}" }
+
+    factory :student_with_user do
+      sequence(:email){ |n| "student#{n}@mail.com" }
+    end
   end
 
   factory :guardian do
-    sequence(:email){ |n| "guardian_email#{n}@server.com"}
     sequence(:last_name){ |n| "Guardian#{n}" }
     students { [create(:student)] }
+
+    factory :guardian_with_user do
+      sequence(:email){ |n| "guardian#{n}@mail.com" }
+    end
   end
 
   factory :post do
     title "Some Post"
-    user { create(:teacher).user }
+    association :author, factory: :teacher
+
+    after(:build){ |post| post.initialize_tags if post.invalid? }
   end
 
   factory :tag do
@@ -28,7 +39,7 @@ FactoryGirl.define do
 
   factory :comment do
     post
-    user { create(:teacher).user }
+    association :author, factory: :teacher
     content "Some content"
   end
 

@@ -3,15 +3,13 @@ class Teacher < ActiveRecord::Base
 
   attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address
 
-  default_scope includes(:user)
-
   def name_with_type
     "#{full_name} (teacher)"
   end
 
   def toggle_archive
     self.archived = !archived
-    user.deactivate if archived
+    user.deactivate if (user && archived)
     save
   end
 

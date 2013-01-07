@@ -5,8 +5,6 @@ class User < ActiveRecord::Base
   before_save :encrypt_password
 
   belongs_to :profile, polymorphic: true, inverse_of: :user
-  has_many :posts, dependent: :destroy
-  has_many :comments, dependent: :destroy
 
   validates :email,
     presence: true,

@@ -10,7 +10,7 @@ class PostsController < ApplicationController
   end
 
   def new
-    @post = current_user.posts.build
+    @post = current_profile.posts.build
 
     if flash[:post_data]
       # Pre-load post data if present
@@ -27,7 +27,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = current_user.posts.build(params[:post])
+    @post = current_profile.posts.build(params[:post])
 
     if @post.save
       redirect_to posts_path

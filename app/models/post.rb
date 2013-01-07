@@ -4,7 +4,7 @@ class Post < ActiveRecord::Base
   before_save :check_permissions
   before_validation :check_student_observations, :check_self_tag
 
-  belongs_to :user
+  belongs_to :author, polymorphic: true
   has_and_belongs_to_many :tags, uniq: true, validate: true
   has_and_belongs_to_many :teachers, uniq: true
   has_and_belongs_to_many :students, uniq: true
@@ -14,14 +14,16 @@ class Post < ActiveRecord::Base
   accepts_nested_attributes_for :student_observations
 
   validates :title, presence: { message: "Please enter a post title" }
-  validates :user, presence: true
+  validates :author, presence: true
 
   # Posts that are either authored by the guardian or that have one of the guardian's students tagged and have guardian permissions allowed
   def self.readable_by_guardian(guardian)
     student_ids = guardian.students.map{ |student| student.id }
     
     where{
-      ( user_id == guardian.user.id ) |
+      ( 
+        ( author_id == guardian.id ) & ( author_type == "Guardian" ) 
+      ) |
       ( 
         ( visible_to_guardians == true ) &
         ( id.in ( Post.select{id}.joins{ students }.where{ students.id.in( student_ids )}) )
@@ -38,15 +40,15 @@ class Post < ActiveRecord::Base
   end
 
   def check_self_tag
-    return if user.blank?
+    return if author.blank?
 
     # Automatically set the tag if the author is a student
-    if user.is_student?
-      self.students << author_profile unless students.exists?(author_profile)
+    if author.is_a? Student
+      self.students << author unless students.exists?(author)
     end
 
     # If the author is a guardian and none of their students are tagged, invalidate the post
-    if user.is_guardian? && (user.profile.students & students).empty?
+    if ( author.is_a? Guardian ) && ( author.students & students ).empty?
       errors.add(:students, "You must tag at least one of your own students")
     end
 
@@ -54,8 +56,8 @@ class Post < ActiveRecord::Base
   end
 
   def check_permissions
-    self.visible_to_students = true if user.is_student?
-    self.visible_to_guardians = true if user.is_student? || user.is_guardian?
+    self.visible_to_students = true if author.is_a? Student
+    self.visible_to_guardians = true if ( author.is_a? Student ) || ( author.is_a? Guardian )
     return nil
   end
 
@@ -63,25 +65,21 @@ class Post < ActiveRecord::Base
     created_at.strftime "#{created_at.day.ordinalize} %B %Y"
   end
 
-  def author_profile
-    user.profile
-  end
-
   def initialize_tags
-    if user.is_teacher?
-      self.teachers = [author_profile]
+    if author.is_a? Teacher
+      self.teachers = [author]
       self.students.clear
-    elsif user.is_student?
-      self.students = [author_profile]
+    elsif author.is_a? Student
+      self.students = [author]
       self.teachers.clear
-    elsif user.is_guardian?
-      self.students = author_profile.students
+    elsif author.is_a? Guardian
+      self.students = author.students
       self.teachers.clear
     end
   end
 
   def initialize_observations
-    if user.is_teacher?
+    if author.is_a? Teacher
       students.each do |student|
         if student_observations.where(student_id: student.id).empty?
           self.student_observations.build(student_id: student.id)

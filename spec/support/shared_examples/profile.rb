@@ -42,12 +42,62 @@ shared_examples_for "a profile" do
       profile.save!
       profile.reload.email.should == "another@mail.com"
     end
+
+    it "destroys the user when set with a nil email" do
+      profile.email = "test@mail.com"
+      profile.save!
+      profile.email = nil
+      expect{ profile.save! }.to change{ User.count }.by(-1)
+    end
+
+    it "is valid with a blank email" do
+      profile.email = " "
+      profile.should be_valid
+    end
   end
 
   describe "#email" do
     it "returns the users email" do
-      profile.user.stub(:email).and_return("some-email")
+      user = double('user')
+      profile.stub(:user).and_return(user)
+      user.stub(:email).and_return("some-email")
       profile.email.should == "some-email"
+    end
+
+    it "returns nil if there is no user" do
+      profile.email.should be_nil
+    end
+
+    it "returns nil if set to nil" do
+      profile.email = "some@mail.com"
+      profile.save!
+      profile.email = nil
+      profile.save!
+      profile.reload.email.should be_nil
+    end
+  end
+
+  context "with an active user" do
+    before do
+      profile.email = "test@mail.com"
+      profile.reset_password
+      profile.reload
+    end
+
+    it "should be active" do
+      profile.should be_active
+    end
+
+    it "deactivates the user if saved with a blank email" do
+      profile.email = nil
+      profile.save!
+      profile.reload.should_not be_active
+    end
+
+    it "does not deactivate the user if saved with a non-blank email" do
+      profile.email = "something@mail.com"
+      profile.save!
+      profile.reload.should be_active
     end
   end
 
@@ -85,66 +135,83 @@ shared_examples_for "a profile" do
   end
 
   describe "#active?" do
-    it "returns the users active? method" do
-      profile.user.stub(:active?).and_return("some val")
-      profile.active?.should == "some val"
+    it "is inactive if the user is not present" do
+      profile.should_not be_active
+    end
+
+    it "returns the users active status if the user is present" do
+      user = double('user')
+      profile.stub(:user).and_return(user)
+      user.stub(:active?).and_return("status")
+      profile.active?.should == "status"
     end
   end
 
   describe "#reset_password" do
-    it "generates a password for the user" do
-      profile.user.should_receive(:generate_password)
-      profile.reset_password
+    it "returns false if the user does not exist" do
+      profile.reset_password.should == false
     end
 
-    it "returns the generated password" do
-      profile.user.stub(:generate_password).and_return("generated-pass")
-      profile.reset_password.should == "generated-pass"
-    end
+    context "if the user exists" do
+      before{ profile.email = "test@mail.com" }
 
-    it "saves the profile" do
-      profile.should_receive(:save)
-      profile.reset_password
-    end
+      it "generates a password for the user" do
+        profile.user.should_receive(:generate_password)
+        profile.reset_password
+      end
 
-    it "activates an inactive profile" do
-      profile.should_not be_active
-      profile.reset_password
-      profile.should be_active
+      it "returns the generated password" do
+        profile.user.stub(:generate_password).and_return("generated-pass")
+        profile.reset_password.should == "generated-pass"
+      end
+
+      it "saves the profile" do
+        profile.should_receive(:save)
+        profile.reset_password
+      end
+
+      it "activates an inactive profile" do
+        profile.should_not be_active
+        profile.reset_password
+        profile.should be_active
+      end
     end
   end
 
   describe "on creation" do
-    it "creates a user" do
-      profile
+    it "creates a user if created with an email address" do
+      profile.email = "test@mail.com"
       expect{ profile.save! }.to change{ User.count }.by(1)
     end
 
-    it "has a user" do
-      profile.save!
-      profile.user.should be_present
+    it "does not create a user if created without an email address" do
+      expect{ profile.save! }.to change{ User.count }.by(0)
     end
 
-    describe "the created user" do
-      let(:user){ profile.user }
-
-      it "is inactive" do
-        profile.save!
-        user.should_not be_active
-      end
-
-      it "has the email passed to the profile" do
-        profile.email = "test@mail.com"
-        profile.save!
-        user.email.should == "test@mail.com"
-      end
+    it "the created user is inactive" do
+      profile.email = "test@mail.com"
+      profile.save!
+      profile.user.should_not be_active
     end
   end
 
   describe "on destruction" do
     it "destroys the associated user" do
+      profile.email = "test@mail.com"
       profile.save!
       expect { profile.destroy }.to change{ User.count }.by(-1)
+    end
+
+    it "destroys any posts" do
+      profile.save!
+      post = create(:post, author: profile)
+      expect { profile.destroy }.to change { Post.count }.by(-1)
+    end
+
+    it "destroys any comments" do
+      profile.save!
+      create(:comment, author: profile)
+      expect { profile.destroy }.to change { Comment.count }.by(-1)
     end
   end
 

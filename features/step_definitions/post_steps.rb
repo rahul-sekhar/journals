@@ -4,14 +4,14 @@ Then /^that post should be destroyed$/ do
 end
 
 Given /^a post titled "(.*?)" created by me exists$/ do |p_title|
-  @post = FactoryGirl.build(:post, title: p_title, user: @logged_in_user)
+  @post = FactoryGirl.build(:post, title: p_title, author: @logged_in_user.profile)
   @post.initialize_tags
   @post.save!
 end
 
 Given /^a post titled "(.*?)" created by a (student|teacher|guardian) exists$/ do |p_title, p_type|
   profile = FactoryGirl.create(p_type)
-  @post = FactoryGirl.build(:post, title: p_title, user: profile.user)
+  @post = FactoryGirl.build(:post, title: p_title, author: profile)
   @post.initialize_tags
   @post.save!
 end
@@ -38,7 +38,7 @@ end
 
 # Creation of specific posts
 Given /^a post about an ice cream factory visit exists$/ do
-  @post = shalini.user.posts.build(
+  @post = shalini.posts.build(
     title: 'Ice cream factory visit',
     content: 'The whole school went to the Daily Dairy factory for a visit. It was a very small factory and a quick quick quick visit...'
   )
@@ -60,7 +60,7 @@ end
 Given /^a (student|guardian) post about an ice cream factory visit with extended information exists$/ do |p_type|
   step 'a post about an ice cream factory visit with extended information exists'
 
-  @post.user = FactoryGirl.create(p_type).user
+  @post.author = FactoryGirl.create(p_type)
   @post.initialize_tags
   @post.save!
 end
@@ -83,7 +83,7 @@ Then /^a minimal test post should exist$/ do
   
   @post.content.should == "<p>Some <em>HTML</em> content</p>"
   @post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
-  @post.author_profile.full_name.should == "Rahul Sekhar"
+  @post.author.full_name.should == "Rahul Sekhar"
 end
 
 Then /^a post with student and teacher tags should exist$/ do

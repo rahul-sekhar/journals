@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CommentsController do
-  let(:user){ create(:teacher).user }
+  let(:user){ create(:teacher_with_user).user }
   let(:post_obj){ create(:post) }
   let(:ability) do
     ability = Object.new
@@ -39,7 +39,7 @@ describe CommentsController do
 
       it "creates a comment that belongs to the correct user" do
         make_request
-        assigns(:comment).user.should == user
+        assigns(:comment).author.should == user.profile
       end
 
       it "creates a comment with the correct content" do

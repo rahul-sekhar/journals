@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PostsController do
-  let(:user){ create(:teacher).user }
+  let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new
     ability.extend(CanCan::Ability)
@@ -124,7 +124,7 @@ describe PostsController do
 
       it "creates a post with the correct author" do
         make_request
-        assigns(:post).user.should == user
+        assigns(:post).author.should == user.profile
       end
 
       it "redirects to the posts page" do

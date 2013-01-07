@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130107162445) do
+ActiveRecord::Schema.define(:version => 20130107173643) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -30,14 +30,14 @@ ActiveRecord::Schema.define(:version => 20130107162445) do
   create_table "comments", :force => true do |t|
     t.text     "content"
     t.integer  "post_id"
-    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "edited_at"
+    t.integer  "author_id"
+    t.string   "author_type"
   end
 
   add_index "comments", ["post_id"], :name => "index_comments_on_post_id"
-  add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -95,18 +95,18 @@ ActiveRecord::Schema.define(:version => 20130107162445) do
   create_table "posts", :force => true do |t|
     t.string   "title"
     t.text     "content"
-    t.integer  "user_id"
     t.boolean  "visible_to_students",  :default => false, :null => false
     t.boolean  "visible_to_guardians", :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "last_commented_at"
     t.datetime "edited_at"
+    t.integer  "author_id"
+    t.string   "author_type"
   end
 
   add_index "posts", ["created_at"], :name => "index_posts_on_created_at"
   add_index "posts", ["last_commented_at"], :name => "index_posts_on_last_commented_at"
-  add_index "posts", ["user_id"], :name => "index_posts_on_user_id"
   add_index "posts", ["visible_to_guardians"], :name => "index_posts_on_guardians_restricted"
   add_index "posts", ["visible_to_students"], :name => "index_posts_on_students_restricted"
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe GuardiansController do
-  let(:user){ create(:teacher).user }
+  let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new
     ability.extend(CanCan::Ability)
@@ -206,15 +206,16 @@ describe GuardiansController do
   end
 
   describe "POST reset" do
-    let(:guardian){ create(:guardian) }
     let(:make_request){ post :reset, id: guardian.id }
 
-    it "raises an exception if the user cannot reset a guardian" do
-      ability.cannot :reset, guardian
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
     context "when email is present" do
+      let(:guardian){ create(:guardian_with_user) }
+
+      it "raises an exception if the user cannot reset a guardian" do
+        ability.cannot :reset, guardian
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
       it "finds the correct guardian" do
         make_request
         assigns(:guardian).should eq(guardian)
@@ -255,7 +256,7 @@ describe GuardiansController do
     end
 
     context "when email is not present" do
-      let(:guardian){ create(:guardian, email: nil) }
+      let(:guardian){ create(:guardian) }
 
       it "redirects to the guardian page" do
         make_request

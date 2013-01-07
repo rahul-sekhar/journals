@@ -8,15 +8,13 @@ class Student < ActiveRecord::Base
   has_and_belongs_to_many :guardians, uniq: true, join_table: :students_guardians
   has_many :student_observations, dependent: :destroy
 
-  default_scope includes(:user)
-
   def name_with_type
     "#{full_name} (student)"
   end
 
   def toggle_archive
     self.archived = !archived
-    user.deactivate if archived
+    user.deactivate if (user && archived)
     save
     guardians.each { |guardian| guardian.check_students }
   end

@@ -1,7 +1,11 @@
 module Profile
   def email=(val)
-    build_user unless user.present?
-    self.user.email = val
+    if val.present?
+      build_user unless user
+      self.user.email = val
+    else
+      self.user.mark_for_destruction if user
+    end
   end
 
   def email
@@ -21,10 +25,12 @@ module Profile
   end
 
   def active?
-    user.active?
+    user && user.active?
   end
 
   def reset_password
+    return false if !user
+
     password = user.generate_password
     save
     return password
@@ -47,8 +53,9 @@ module Profile
   def self.included(base)
     base.extend ClassMethods
     base.has_one :user, as: :profile, dependent: :destroy, autosave: true, inverse_of: :profile
+    base.has_many :posts, as: :author, dependent: :destroy, inverse_of: :author
+    base.has_many :comments, as: :author, dependent: :destroy, inverse_of: :author
     base.validates :last_name, presence: true
-    base.validates :user, presence: true
     base.strip_attributes
   end
 

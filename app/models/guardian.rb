@@ -5,30 +5,6 @@ class Guardian < ActiveRecord::Base
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
 
-  default_scope includes(:user)
-
-  before_validation :allow_blank_email
-  after_save :deactivate_user_if_email_blank
-
-  def allow_blank_email
-    build_user unless user.present?
-
-    # Set the user email to a filler address if not set
-    user.email ="blank@blank.blank" if user.email.blank?
-  end
-
-  def email
-    if user.email == "blank@blank.blank"
-      nil
-    else
-      user.email
-    end
-  end
-
-  def deactivate_user_if_email_blank
-    user.deactivate if email.nil?
-  end
-
   def name_with_type
     if students.length == 1
       student_names = students.first.full_name
@@ -47,7 +23,7 @@ class Guardian < ActiveRecord::Base
   def check_students
     # Check if all students are archived
     if students.all? { |student| student.archived }
-      user.deactivate
+      user.deactivate if user
       save
     end
 

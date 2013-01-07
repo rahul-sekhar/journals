@@ -32,7 +32,7 @@ class GuardiansController < ApplicationController
 
   def reset
     if @guardian.email.nil?
-      redirect_to @guardian, alert: "You must add an email address before you can activate this guardian"
+      redirect_to @guardian, alert: "You must add an email address before you can activate the user"
       return
     end
 

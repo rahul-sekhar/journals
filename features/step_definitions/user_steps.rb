@@ -52,8 +52,6 @@ end
 
 def create_profile(type, name, email=nil)
   first_name, last_name = split_name(name)
-  email = mail_from_name(name) if email.nil?
-
   klass = type.capitalize.constantize
 
   obj = klass.create!(first_name: first_name, last_name: last_name, email: email)

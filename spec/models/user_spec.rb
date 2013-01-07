@@ -203,24 +203,10 @@ describe User do
     end
   end
 
-  describe "on destruction" do
-    it "destroys any posts" do
-      user.save!
-      create(:post, user: user)
-      expect { user.destroy }.to change { Post.count }.by(-1)
-    end
-
-    it "destroys any comments" do
-      user.save!
-      create(:comment, user: user)
-      expect { user.destroy }.to change { Comment.count }.by(-1)
-    end
-  end
-
   describe "profile checks:" do
-    let(:student){ create(:student ) }
+    let(:student){ create(:student, email: "student@mail.com" ) }
     let(:student_user){ student.user }
-    let(:guardian){ create(:guardian) }
+    let(:guardian){ create(:guardian, email: "guardian@mail.com" ) }
     let(:guardian_user){ guardian.user }
     
     describe "#is_teacher?" do

@@ -75,7 +75,7 @@ Scenario: Activate a guardian with no email address
   When I am on the page for that profile
   And I click "Activate user" within the ".guardians" block
   Then I should be on the page for the guardian
-  And I should see "You must add an email address before you can activate this guardian"
+  And I should see "You must add an email address before you can activate the user"
   And I should see "Activate user"
   And "manoj@mail.com" should receive no emails
 

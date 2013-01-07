@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe StudentsController do
-  let(:user){ create(:teacher).user }
+  let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new
     ability.extend(CanCan::Ability)
@@ -95,7 +95,7 @@ describe StudentsController do
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: student.id, student: { first_name: "Rahul", last_name: "Sekhar", email: "" } }
+      let(:make_request){ put :update, id: student.id, student: { first_name: "Rahul", last_name: "" } }
 
       it "does not edit the student" do
         make_request
@@ -114,7 +114,7 @@ describe StudentsController do
 
       it "stores already filled data in a flash object" do
         make_request
-        flash[:student_data].should == { 'first_name' => 'Rahul', 'last_name' => 'Sekhar', 'email' => '' }
+        flash[:student_data].should == { 'first_name' => 'Rahul', 'last_name' => '' }
       end
     end
   end
@@ -150,50 +150,75 @@ describe StudentsController do
   end
 
   describe "POST reset" do
-    let(:student){ create(:student) }
     let(:make_request){ post :reset, id: student.id }
 
-    it "raises an exception if the user cannot reset a student" do
-      ability.cannot :reset, student
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    context "when email is present" do
+      let(:student){ create(:student_with_user) }
+
+      it "raises an exception if the user cannot reset a student" do
+        ability.cannot :reset, student
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      it "finds the correct student" do
+        make_request
+        assigns(:student).should eq(student)
+      end
+
+      it "activates the student if the student is inactive" do
+        student.should_not be_active
+        make_request
+        student.reload.should be_active
+      end
+
+      it "redirects to the student page" do
+        make_request
+        response.should redirect_to student_path(student)
+      end
+
+      it "should deliver a user activated mail if the user was inactive" do
+        mock_delay = double('mock_delay')
+        UserMailer.stub(:delay).and_return(mock_delay)
+        mock_delay.should_receive(:activation_mail)
+        make_request
+      end
+
+      it "should deliver a password reset if the user was active" do
+        student.reset_password
+        mock_delay = double('mock_delay')
+        UserMailer.stub(:delay).and_return(mock_delay)
+        mock_delay.should_receive(:reset_password_mail)
+        make_request
+      end
+
+      it "sets a flash message" do
+        make_request
+        flash[:notice].should be_present
+      end
     end
 
-    it "finds the correct student" do
-      make_request
-      assigns(:student).should eq(student)
-    end
+    context "when email is not present" do
+      let(:student){ create(:student) }
 
-    it "activates the student if the student is inactive" do
-      student.should_not be_active
-      make_request
-      student.reload.should be_active
-    end
+      it "redirects to the guardian page" do
+        make_request
+        response.should redirect_to student_path(student)
+      end
 
-    it "redirects to the student page" do
-      make_request
-      response.should redirect_to student_path(student)
-    end
+      it "does not deliver a mail" do
+        UserMailer.should_not_receive(:delay)
+        make_request
+      end
 
-    it "should deliver a user activated mail if the user was inactive" do
-      mock_delay = double('mock_delay')
-      UserMailer.stub(:delay).and_return(mock_delay)
-      mock_delay.should_receive(:activation_mail)
-      make_request
-    end
+      it "does not activate the guardian" do
+        make_request
+        student.reload.should_not be_active
+      end
 
-    it "should deliver a password reset if the user was active" do
-      student.user.generate_password
-      student.save!
-
-      mock_delay = double('mock_delay')
-      UserMailer.stub(:delay).and_return(mock_delay)
-      mock_delay.should_receive(:reset_password_mail)
-      make_request
-    end
-
-    it "sets a flash message" do
-      make_request
-      flash[:notice].should be_present
+      it "sets a flash error" do
+        make_request
+        flash[:alert].should be_present
+      end
     end
   end
 

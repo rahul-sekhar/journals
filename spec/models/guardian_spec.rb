@@ -7,41 +7,6 @@ describe Guardian do
 
   it_behaves_like "a profile"
 
-  describe "#email=" do
-    it "is valid with a nil email" do
-      profile.email = nil
-      profile.should be_valid
-    end
-
-    it "is valid with a blank email" do
-      profile.email = " "
-      profile.should be_valid
-    end
-  end
-
-  describe "#email" do
-    it "returns nil if set to nil" do
-      profile.email = nil
-      profile.save!
-      profile.email.should be_nil
-    end
-  end
-
-  it "deactivates the user if saved with a blank email" do
-    profile.reset_password
-    profile.reload.should be_active
-    profile.email = nil
-    profile.save!
-    profile.reload.should_not be_active
-  end
-
-  it "does not deactive the user if saved with a non-blank email" do
-    profile.reset_password
-    profile.email = "something@mail.com"
-    profile.save!
-    profile.reload.should be_active
-  end
-
   describe "#name_with_type" do
     context "with one student" do
       it "returns the full name along with the profile type and the associated student" do
@@ -79,7 +44,7 @@ describe Guardian do
     let(:student1){ create(:student) }
     let(:student2){ create(:student) }
 
-    let(:profile){ create(:guardian, students: [student1, student2]) }
+    let(:profile){ create(:guardian, email: "test@mail.com", students: [student1, student2]) }
 
     let(:ability){ Ability.new(profile.user) }
 
@@ -89,9 +54,7 @@ describe Guardian do
       end
 
       it "can read, update and destroy its own posts" do
-        own_post = build(:post, user: profile.user)
-        own_post.initialize_tags
-        own_post.save!
+        own_post = create(:post, author: profile)
         ability.should be_able_to :read, own_post
         ability.should be_able_to :update, own_post
         ability.should be_able_to :destroy, own_post
@@ -99,23 +62,21 @@ describe Guardian do
 
       context "when its students are not tagged in the post" do
         it "cannot read, edit or destroy posts created by a teacher" do
-          post = create(:post, user: create(:teacher).user )
+          post = create(:post, author: create(:teacher) )
           ability.should_not be_able_to :read, post
           ability.should_not be_able_to :update, post
           ability.should_not be_able_to :destroy, post
         end
 
         it "cannot read, edit or destroy posts created by a student" do
-          post = create(:post, user: create(:student).user )
+          post = create(:post, author: create(:student) )
           ability.should_not be_able_to :read, post
           ability.should_not be_able_to :update, post
           ability.should_not be_able_to :destroy, post
         end
 
         it "cannot read, edit or destroy posts created by another guardian" do
-          post = build(:post, user: create(:guardian).user )
-          post.initialize_tags
-          post.save!
+          post = create(:post, author: create(:guardian) )
           ability.should_not be_able_to :read, post
           ability.should_not be_able_to :update, post
           ability.should_not be_able_to :destroy, post
@@ -162,26 +123,26 @@ describe Guardian do
       end
 
       it "can manage its own comments" do
-        own_comment = create(:comment, user: profile.user)
+        own_comment = create(:comment, author: profile)
         ability.should be_able_to :manage, own_comment
       end
 
       it "can only read comments created by a teacher" do
-        comment = create(:comment, user: create(:teacher).user )
+        comment = create(:comment, author: create(:teacher) )
         ability.should be_able_to :read, comment
         ability.should_not be_able_to :update, comment
         ability.should_not be_able_to :destroy, comment
       end
 
       it "can only read comments created by another student" do
-        comment = create(:comment, user: create(:student).user )
+        comment = create(:comment, author: create(:student) )
         ability.should be_able_to :read, comment
         ability.should_not be_able_to :update, comment
         ability.should_not be_able_to :destroy, comment
       end
 
       it "can only read comments created by a guardian" do
-        comment = create(:comment, user: create(:guardian).user )
+        comment = create(:comment, author: create(:guardian) )
         ability.should be_able_to :read, comment
         ability.should_not be_able_to :update, comment
         ability.should_not be_able_to :destroy, comment

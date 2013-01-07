@@ -41,7 +41,7 @@
       %p.date= post.formatted_created_at
       %p.author 
         Posted by 
-        = profile_name(post.author_profile, true)
+        = profile_name(post.author, true)
       
       - if post.tags.present?
         %p.tags Tags: #{post.tag_names}

@@ -12,8 +12,8 @@ describe Post do
     post.should be_invalid
   end
 
-  it "is invalid without a user (author)" do
-    post.user = nil
+  it "is invalid without a author" do
+    post.author = nil
     post.should be_invalid
   end
 
@@ -21,12 +21,6 @@ describe Post do
     it "returns a formatted version of the created date" do
       post.created_at = Date.new(2009, 2, 3)
       post.formatted_created_at.should == "3rd February 2009"
-    end
-  end
-
-  describe "#author_profile" do
-    it "returns the associated users profile" do
-      post.author_profile.should eq(post.user.profile)
     end
   end
 
@@ -101,20 +95,20 @@ describe Post do
   describe "#initialize_tags" do
     it "adds a teacher tag if the author is a teacher" do
       post.initialize_tags
-      post.teachers.should == [post.author_profile]
+      post.teachers.should == [post.author]
       post.students.should be_empty
     end
 
     it "adds a student tag if the author is a student" do
-      post.user = create(:student).user
+      post.author = create(:student)
       post.initialize_tags
-      post.students.should == [post.author_profile]
+      post.students.should == [post.author]
       post.teachers.should be_empty
     end
 
     it "adds a student tag if the author is a guardian" do
       student = create(:student)
-      post.user = create(:guardian, students: [student]).user
+      post.author = create(:guardian, students: [student])
       post.initialize_tags
       post.students.should == [student]
       post.teachers.should be_empty
@@ -128,13 +122,13 @@ describe Post do
     before { post.students = [student1, student2] }
 
     it "does nothing if the author is a student" do
-      post.user = create(:student).user
+      post.author = create(:student)
       post.initialize_observations
       post.student_observations.should be_empty
     end
 
     it "does nothing if the author is a guardian" do
-      post.user = create(:guardian).user
+      post.author = create(:guardian)
       post.initialize_observations
       post.student_observations.should be_empty
     end
@@ -171,7 +165,7 @@ describe Post do
     let(:other_student){ create(:student) }
 
     context "if posted by a student" do
-      before { post.user = student.user }
+      before { post.author = student }
       
       it "automatically sets the self tag" do
         post.students = [other_student]
@@ -192,7 +186,7 @@ describe Post do
 
     context "if posted by a guardian" do
       let(:guardian){ create(:guardian, students: [student, other_student]) }
-      before { post.user = guardian.user }
+      before { post.author = guardian }
 
       let(:third_student){ create(:student) }
 
@@ -220,14 +214,14 @@ describe Post do
 
   describe "permissions" do
     it "must be visible to both guardians and students if created by a student" do
-      post.user = create(:student).user
+      post.author = create(:student)
       post.save!
       post.visible_to_students.should == true
       post.visible_to_guardians.should == true
     end
 
     it "must be visible to guardians if created by a guardians" do
-      post.user = create(:guardian).user
+      post.author = create(:guardian)
       post.initialize_tags
       post.save!
       post.visible_to_students.should == false
@@ -349,7 +343,7 @@ describe Post do
         guardian = create(:guardian, students: [student, other_student])
 
         post1 = create(:post)
-        post2 = create(:post, students: [third_student], user: student.user, visible_to_guardians: true)
+        post2 = create(:post, students: [third_student], author: student, visible_to_guardians: true)
         post3 = create(:post, students: [student, other_student, third_student])
         post4 = create(:post, students: [other_student], visible_to_guardians: true)
         post5 = create(:post, students: [student])

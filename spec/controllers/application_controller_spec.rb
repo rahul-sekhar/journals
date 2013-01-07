@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ApplicationController do
   describe "current_user" do
-    let(:teacher){ create(:teacher) }
+    let(:teacher){ create(:teacher_with_user) }
     let(:user){ teacher.user }
     let(:user_id){ user.id }
     before{ user }

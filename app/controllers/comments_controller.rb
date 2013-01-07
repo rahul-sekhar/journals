@@ -4,7 +4,7 @@ class CommentsController < ApplicationController
   skip_load_resource :comment, only: :create
 
   def create
-    @comment = current_user.comments.build(params[:comment])
+    @comment = current_profile.comments.build(params[:comment])
     @comment.post = @post
     if @comment.save
       redirect_to @post
