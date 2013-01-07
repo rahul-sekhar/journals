@@ -102,3 +102,10 @@ Scenario: View a guardian profile with multiple students
   Then I should see "Profile: Manoj Jain"
   Then I should see "Parvathy Manjunath"
   And I should see "Roly Jain"
+
+Scenario: Click on users name to reach profile
+  Given a post titled "Some Post" created by me exists
+  And I am on the page for that post
+  When I click "Rahul Sekhar" within the ".info" block
+  Then I should be on the page for my profile
+  And I should see "Rahul Sekhar"

@@ -24,7 +24,10 @@ module NavigationHelpers
       edit_post_comment_path(@comment.post, @comment)
 
     when /the page for that profile/
-      url_for(@profile)
+      profile_path(@profile)
+
+    when /the page for my profile/
+      profile_path(@logged_in_user.profile)
 
     else
       begin
@@ -35,6 +38,16 @@ module NavigationHelpers
         raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
           "Now, go and add a mapping in #{__FILE__}"
       end
+    end
+  end
+
+  def profile_path(profile)
+    if profile.is_a? Student
+      student_path(profile)
+    elsif profile.is_a? Teacher
+      teacher_path(profile)
+    elsif profile.is_a? Guardian
+      guardian_path(profile)
     end
   end
 end

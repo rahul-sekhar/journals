@@ -23,6 +23,6 @@ module ApplicationHelper
   def profile_name(profile, long=false)
     display_name = long ? profile.full_name : profile.name
 
-    link_to display_name, '#', title: profile.name_with_type 
+    link_to display_name, url_for(profile), title: profile.name_with_type 
   end
 end
