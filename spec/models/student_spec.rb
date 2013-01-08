@@ -7,6 +7,13 @@ describe Student do
 
   it_behaves_like "a profile"
 
+  it "cannot have a bloodgroup longer than 15 characters" do
+    profile.bloodgroup = "a" * 15
+    profile.should be_valid
+    profile.bloodgroup = "a" * 16
+    profile.should be_invalid
+  end
+
   describe "#formatted_birthday" do
     it "returns nil if the birthday is empty" do
       profile.formatted_birthday.should be_nil
@@ -65,12 +72,14 @@ describe Student do
   end
 
   describe "on destruction" do
+    before{ profile.save! }
+
     it "destroys a guardian without other students" do
       create(:guardian, students: [profile])
       expect { profile.destroy }.to change { Guardian.count }.by(-1)
     end
 
-    it "removes iteslf from a guardian with other students" do
+    it "removes itself from a guardian with other students" do
       guardian = create(:guardian)
       guardian.students << profile
       guardian.students.exists?(profile).should == true
@@ -85,7 +94,6 @@ describe Student do
     end
 
     it "destroys any student observations" do
-      profile.save!
       create(:student_observation, student: profile)
       expect { profile.destroy }.to change { StudentObservation.count }.by(-1)
     end
@@ -118,7 +126,6 @@ describe Student do
       it "should deactivate the user" do
         profile.user.should_receive(:deactivate)
         profile.toggle_archive
-        profile.reload.should_not be_active
       end
 
       it "should deactivate any guardians that are archived" do
@@ -144,7 +151,9 @@ describe Student do
       end
 
       it "should not bother with guardians" do
+        guardian1
         guardian2.reset_password
+        guardian3
         profile.toggle_archive
         guardian1.reload.should_not be_active
         guardian2.reload.should be_active

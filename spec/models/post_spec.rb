@@ -1,20 +1,40 @@
 require 'spec_helper'
 
-describe Post do
+describe Post  do
   let(:post){ build(:post) }
 
   it "is valid with valid attributes" do
     post.should be_valid
   end
 
-  it "is invalid without a title" do
-    post.title = nil
-    post.should be_invalid
-  end
-
   it "is invalid without a author" do
     post.author = nil
     post.should be_invalid
+  end
+
+  describe "#title" do
+    it "is required" do
+      post.title = nil
+      post.should be_invalid
+    end
+
+    it "cannot be blank" do
+      post.title = " "
+      post.should be_invalid
+    end
+
+    it "cannot be longer than 255 characters" do
+      post.title = "a" * 255
+      post.should be_valid
+      post.title = "a" * 256
+      post.should be_invalid
+    end
+
+    it "is trimmed when saved" do
+      post.title = "  Some title "
+      post.save!
+      post.title.should == "Some title"
+    end
   end
 
   describe "#formatted_created_at" do
@@ -36,7 +56,7 @@ describe Post do
     end
 
     it "is invalid with an invalid tag name" do
-      post.tag_names = "Tag1, #{"a" * 61}"
+      post.tag_names = "Tag1, #{"a" * 51}"
       post.should be_invalid
     end
 
@@ -334,27 +354,27 @@ describe Post do
       end
     end
 
-    describe "##readable_by_guardian" do
-      it "returns posts tagged with the guardians students and visible to the guardian" do
-        student = create(:student)
-        other_student = create(:student)
-        third_student = create(:student)
-
-        guardian = create(:guardian, students: [student, other_student])
-
-        post1 = create(:post)
-        post2 = create(:post, students: [third_student], author: student, visible_to_guardians: true)
-        post3 = create(:post, students: [student, other_student, third_student])
-        post4 = create(:post, students: [other_student], visible_to_guardians: true)
-        post5 = create(:post, students: [student])
-        post6 = create(:post, students: [third_student], visible_to_guardians: true)
-
-        Post.readable_by_guardian(guardian).should =~ [post2, post4]
-      end
-    end
-
     it "filters out observations with html tags but no content"
 
     it "does not filter out image tags"
+  end
+
+  describe "##readable_by_guardian" do
+    it "returns posts tagged with the guardians students and visible to the guardian" do
+      student = create(:student)
+      other_student = create(:student)
+      third_student = create(:student)
+
+      guardian = create(:guardian, students: [student, other_student])
+
+      post1 = create(:post)
+      post2 = create(:post, students: [third_student], author: student, visible_to_guardians: true)
+      post3 = create(:post, students: [student, other_student, third_student])
+      post4 = create(:post, students: [other_student], visible_to_guardians: true)
+      post5 = create(:post, students: [student])
+      post6 = create(:post, students: [third_student], visible_to_guardians: true)
+
+      Post.readable_by_guardian(guardian).should =~ [post2, post4]
+    end
   end
 end

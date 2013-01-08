@@ -23,9 +23,9 @@ describe SessionsController do
         response.should redirect_to login_path
       end
 
-      it "sets a flash message indicating invalid data" do
+      it "sets a flash alert" do
         make_request
-        flash[:alert].should == "Invalid email or password"
+        flash[:alert].should be_present
       end
 
       it "clears the user in the session" do
@@ -90,6 +90,30 @@ describe SessionsController do
         make_request
         response.should redirect_to "/some_path"
       end
+    end
+  end
+
+  describe "GET destroy" do
+    before do 
+      user = mock_model(User)
+      controller.stub(:current_user).and_return(user)
+      User.stub(:find).and_return(user)
+      session[:user_id] = 5
+    end
+
+    it "deletes the user id from the session" do
+      get :destroy
+      session[:user_id].should be_nil
+    end
+
+    it "redirects to the login path" do
+      get :destroy
+      response.should redirect_to login_path
+    end
+
+    it "sets a flash message" do
+      get :destroy
+      flash[:notice].should be_present
     end
   end
 end

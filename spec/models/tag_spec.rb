@@ -25,10 +25,10 @@ describe Tag do
       tag.should be_invalid
     end
 
-    it "has a maximum length of 60 characters" do
-      tag.name = "a" * 60
+    it "has a maximum length of 50 characters" do
+      tag.name = "a" * 50
       tag.should be_valid
-      tag.name = "a" * 61
+      tag.name = "a" * 51
       tag.should be_invalid
     end
 

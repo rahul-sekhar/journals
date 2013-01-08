@@ -2,9 +2,7 @@ require 'spec_helper'
 
 describe ApplicationController do
   describe "current_user" do
-    let(:teacher){ create(:teacher_with_user) }
-    let(:user){ teacher.user }
-    let(:user_id){ user.id }
+    let(:user){ create(:teacher_with_user).user }
     before{ user }
 
     it "is nil when not logged in" do
@@ -12,12 +10,12 @@ describe ApplicationController do
     end
 
     it "is nil when logged in with an invalid user" do
-      session[:user_id] = user_id - 1
+      session[:user_id] = user.id - 1
       controller.current_user.should be_nil
     end
 
     it "returns the user when logged in with a valid user" do
-      session[:user_id] = user_id
+      session[:user_id] = user.id
       controller.current_user.should eq(user)
     end
   end

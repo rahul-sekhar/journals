@@ -35,19 +35,49 @@ shared_examples_for "a profile" do
       profile.should be_invalid
     end
 
-    it "can be edited for an already saved profile" do
-      profile.email = "some@mail.com"
-      profile.save!
-      profile.email = "another@mail.com"
-      profile.save!
-      profile.reload.email.should == "another@mail.com"
+    it "is invalid when more than 60 characters" do
+      profile.email = "a" * 51 + "@email.com"
+      profile.should be_invalid
     end
 
-    it "destroys the user when set with a nil email" do
-      profile.email = "test@mail.com"
-      profile.save!
+    it "can be set to nil and set again before being saved" do
+      profile.email = "some@mail.com"
       profile.email = nil
-      expect{ profile.save! }.to change{ User.count }.by(-1)
+      profile.email = "some_other@mail.com"
+      profile.save!
+      profile.reload.email.should == "some_other@mail.com"
+    end
+
+    it "can be set to nil after being set to a value" do
+      profile.email = "some@mail.com"
+      profile.email = nil
+      profile.save!
+      profile.reload.email.should be_nil
+    end
+
+    context "after email is set and saved" do
+      before do
+        profile.email = "some@mail.com"
+        profile.save!
+      end
+
+      it "can be edited for an already saved profile" do
+        profile.email = "another@mail.com"
+        profile.save!
+        profile.reload.email.should == "another@mail.com"
+      end
+
+      it "can be edited after being set to nil" do
+        profile.email = nil
+        profile.email = "another@mail.com"
+        profile.save!
+        profile.reload.email.should == "another@mail.com"
+      end
+
+      it "destroys the user when set with a nil email" do
+        profile.email = nil
+        expect{ profile.save! }.to change{ User.count }.by(-1)
+      end
     end
 
     it "is valid with a blank email" do
@@ -77,40 +107,34 @@ shared_examples_for "a profile" do
     end
   end
 
-  context "with an active user" do
-    before do
-      profile.email = "test@mail.com"
-      profile.reset_password
-      profile.reload
-    end
-
-    it "should be active" do
-      profile.should be_active
-    end
-
-    it "deactivates the user if saved with a blank email" do
-      profile.email = nil
+  describe "#first_name" do
+    it "is trimmed" do
+      profile.first_name = " Rahul  "
       profile.save!
-      profile.reload.should_not be_active
+      profile.reload.first_name.should == "Rahul"
     end
 
-    it "does not deactivate the user if saved with a non-blank email" do
-      profile.email = "something@mail.com"
-      profile.save!
-      profile.reload.should be_active
+    it "cannot be more than 80 characters" do
+      profile.first_name = "a" * 80
+      profile.should be_valid
+      profile.first_name = "a" * 81
+      profile.should be_invalid
     end
   end
 
-  it "trims the first name" do
-    profile.first_name = " Rahul  "
-    profile.save!
-    profile.reload.first_name.should == "Rahul"
-  end
+  describe "#last_name" do
+    it "is trimmed" do
+      profile.last_name = " Rahul  "
+      profile.save!
+      profile.reload.last_name.should == "Rahul"
+    end
 
-  it "trims the last name" do
-    profile.last_name = " Rahul  "
-    profile.save!
-    profile.reload.last_name.should == "Rahul"
+    it "cannot be more than 80 characters" do
+      profile.last_name = "a" * 80
+      profile.should be_valid
+      profile.last_name = "a" * 81
+      profile.should be_invalid
+    end
   end
 
   describe "#full_name" do
@@ -128,10 +152,37 @@ shared_examples_for "a profile" do
   end
 
   describe "#name" do
-    it "returns the first_name" do
+    it "returns the first_name if present" do
       profile.first_name = "Rahul"
       profile.name.should == "Rahul"
     end
+
+    it "returns the last name if the first name is not present" do
+      profile.first_name = nil
+      profile.last_name = "Sekhar"
+      profile.name.should == "Sekhar"
+    end
+  end
+
+  it "cannot have a mobile longer than 40 characters" do
+    profile.mobile = "a" * 40
+    profile.should be_valid
+    profile.mobile = "a" * 41
+    profile.should be_invalid
+  end
+
+  it "cannot have a home_phone longer than 40 characters" do
+    profile.home_phone = "a" * 40
+    profile.should be_valid
+    profile.home_phone = "a" * 41
+    profile.should be_invalid
+  end
+
+  it "cannot have a office_phone longer than 40 characters" do
+    profile.office_phone = "a" * 40
+    profile.should be_valid
+    profile.office_phone = "a" * 41
+    profile.should be_invalid
   end
 
   describe "#active?" do
@@ -212,18 +263,6 @@ shared_examples_for "a profile" do
       profile.save!
       create(:comment, author: profile)
       expect { profile.destroy }.to change { Comment.count }.by(-1)
-    end
-  end
-
-  describe "##find_by_name" do
-    it "returns nil when no such profile exists" do
-      create(profile_type, first_name: "Some", last_name: "Chap")
-      profile_class.find_by_name("Other", "Chap").should be_nil
-    end
-
-    it "returns the matched profile if it exists" do
-      profile = create(profile_type, first_name: "Some", last_name: "Chap")
-      profile_class.find_by_name("Some", "Chap").should eq(profile)
     end
   end
 

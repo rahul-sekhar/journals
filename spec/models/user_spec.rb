@@ -1,11 +1,14 @@
 require 'spec_helper'
 
 describe User do
-  let(:teacher){ create(:teacher, email: "test@mail.com" ) }
-  let(:user){ teacher.user }
+  let(:user){ build(:user) }
 
   it "is valid with valid attributes" do
     user.should be_valid
+  end
+
+  it "does not save without a profile" do
+    expect{ user.save }.to raise_exception
   end
 
   describe "email" do
@@ -33,9 +36,17 @@ describe User do
       user.email = "Test1@Mail.com"
       user.should be_invalid
     end
+
+    it "cannot be more than 60 characters" do
+      user = create(:teacher_with_user).user
+      user.email = "a" * 51 + "@email.com"
+      user.should be_invalid
+    end
   end
 
   describe "#generate_password" do
+    let(:user){ create(:teacher, email: "test@mail.com").user }
+
     it "returns a ten letter password" do
       user.generate_password.length.should == 10
     end
@@ -59,6 +70,8 @@ describe User do
   end
 
   describe "#is_active?" do
+    let(:user){ create(:teacher, email: "test@mail.com").user }
+
     it "returns false when initially created" do
       user.should_not be_active
     end
@@ -71,6 +84,8 @@ describe User do
   end
 
   describe "#deactivate" do
+    let(:user){ create(:teacher, email: "test@mail.com").user }
+
     before do 
       user.generate_password
       user.save!
@@ -92,6 +107,8 @@ describe User do
   end
 
   describe "on initial creation" do
+    let(:user){ create(:teacher, email: "test@mail.com").user }
+
     it "sets the password salt" do
       user.password_salt.should be_present
     end
@@ -148,35 +165,41 @@ describe User do
       user.should be_valid
     end
 
-    it "does not change the password when nil" do
-      user.password = nil
-      user.save!
-      user.should_not be_active
-    end
+    describe "changing the password" do
+      let(:user){ create(:teacher, email: "test@mail.com").user }
 
-    it "does not change the password when blank" do
-      user.password = " "
-      user.save!
-      user.should_not be_active
-    end
+      it "does not change the password when nil" do
+        user.password = nil
+        user.save!
+        user.should_not be_active
+      end
 
-    it "changes the password when present" do
-      user.password = "some-pass"
-      user.save!
-      user.should be_active
-      User.authenticate("test@mail.com", "some-pass").should == user
-    end
+      it "does not change the password when blank" do
+        user.password = " "
+        user.save!
+        user.should_not be_active
+      end
 
-    it "changes the password when present with a confirmation" do
-      user.password = "randomstuff"
-      user.password_confirmation = "randomstuff"
-      user.save!
-      user.should be_active
-      User.authenticate("test@mail.com", "randomstuff").should == user
+      it "changes the password when present" do
+        user.password = "some-pass"
+        user.save!
+        user.should be_active
+        User.authenticate("test@mail.com", "some-pass").should == user
+      end
+
+      it "changes the password when present with a confirmation" do
+        user.password = "randomstuff"
+        user.password_confirmation = "randomstuff"
+        user.save!
+        user.should be_active
+        User.authenticate("test@mail.com", "randomstuff").should == user
+      end     
     end
   end
   
   describe "authenticate" do
+    let(:user){ create(:teacher, email: "test@mail.com").user }
+
     context "with an inactive user" do
       before{ user }
 
@@ -216,52 +239,51 @@ describe User do
     end
   end
 
-  describe "profile checks:" do
-    let(:student){ create(:student, email: "student@mail.com" ) }
-    let(:student_user){ student.user }
-    let(:guardian){ create(:guardian, email: "guardian@mail.com" ) }
-    let(:guardian_user){ guardian.user }
-    
-    describe "#is_teacher?" do
-      it "returns true if the profile is a teacher" do
-        user.is_teacher?.should == true
-      end
+  context "when the profile is a teacher" do
+    before{ user.profile = Teacher.new }
 
-      it "returns false if the profile is a student" do
-        student_user.is_teacher?.should == false
-      end
-
-      it "returns false if the profile is a guardian" do
-        guardian_user.is_teacher?.should == false
-      end
+    specify "#is_teacher? returns true" do
+      user.is_teacher?.should == true
     end
 
-    describe "#is_student?" do
-      it "returns true if the profile is a student" do
-        student_user.is_student?.should == true
-      end
-
-      it "returns false if the profile is a teacher" do
-        user.is_student?.should == false
-      end
-
-      it "returns false if the profile is a guardian" do
-        guardian_user.is_student?.should == false
-      end
+    specify "#is_student? returns false" do
+      user.is_student?.should == false
     end
 
-    describe "#is_guardian?" do
-      it "returns true if the profile is a guardian" do
-        guardian_user.is_guardian?.should == true
-      end
+    specify "#is_guardian? returns false" do
+      user.is_guardian?.should == false
+    end
+  end
 
-      it "returns false if the profile is a student" do
-        student_user.is_guardian?.should == false
-      end
+  context "when the profile is a student" do
+    before{ user.profile = Student.new }
 
-      it "returns false if the profile is a teacher" do
-        user.is_guardian?.should == false
-      end
+    specify "#is_teacher? returns false" do
+      user.is_teacher?.should == false
+    end
+
+    specify "#is_student? returns true" do
+      user.is_student?.should == true
+    end
+
+    specify "#is_guardian? returns false" do
+      user.is_guardian?.should == false
+    end
+  end
+
+  context "when the profile is a guardian" do
+    before{ user.profile = Guardian.new }
+
+    specify "#is_teacher? returns false" do
+      user.is_teacher?.should == false
+    end
+
+    specify "#is_student? returns false" do
+      user.is_student?.should == false
+    end
+
+    specify "#is_guardian? returns true" do
+      user.is_guardian?.should == true
     end
   end
 end

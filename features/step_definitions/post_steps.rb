@@ -19,7 +19,7 @@ end
 Given /^that post has the students? "(.*?)" tagged$/ do |p_student_names|
   p_student_names.split(",").each do |student_name|
     first_name, last_name = split_name(student_name)
-    student = Student.find_by_name(first_name, last_name)
+    student = Student.where(first_name: first_name, last_name: last_name).first
 
     @post.students << student
   end
@@ -91,7 +91,7 @@ Then /^a post with student and teacher tags should exist$/ do
   @post.should be_present
 
   @post.students.should =~ [ansh, sahana]
-  @post.teachers.should =~ [Teacher.find_by_name("Rahul", "Sekhar"), angela]
+  @post.teachers.should =~ [Teacher.where(first_name:"Rahul").first, angela]
 end
 
 Then /^a post with permissions should exist$/ do
@@ -106,7 +106,7 @@ Then /^a student post with student and teacher tags should exist$/ do
   @post = Post.where(title: "Tagged Student Post").first
   @post.should be_present
 
-  @post.students.should =~ [ansh, Student.find_by_name("Rahul", "Sekhar")]
+  @post.students.should =~ [ansh, Student.where(first_name: "Rahul").first]
   @post.teachers.should =~ [angela]
 end
 
@@ -114,7 +114,7 @@ Then /^a guardian post with student and teacher tags should exist$/ do
   @post = Post.where(title: "Tagged Guardian Post").first
   @post.should be_present
 
-  @post.students.should =~ [ansh, Student.find_by_name("Roly", "Sekhar")]
+  @post.students.should =~ [ansh, Student.where(first_name: "Roly").first]
   @post.teachers.should =~ [angela]
 end
 
@@ -130,5 +130,5 @@ Then /^a guardian post with lucky should exist$/ do
   @post = Post.where(title: "Guardian Post with Lucky").first
   @post.should be_present
 
-  @post.students.should == [Student.find_by_name("Lucky", "Sekhar")]
+  @post.students.should == [Student.where(first_name: "Lucky").first]
 end

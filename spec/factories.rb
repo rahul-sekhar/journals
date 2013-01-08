@@ -26,6 +26,10 @@ FactoryGirl.define do
     end
   end
 
+  factory :user do
+    sequence(:email){ |n| "user#{n}@mail.com" }
+  end
+
   factory :post do
     title "Some Post"
     association :author, factory: :teacher

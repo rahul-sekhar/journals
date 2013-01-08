@@ -5,7 +5,7 @@ end
 
 Given /^the guardian "(.*?)" has a student "(.*?)"$/ do |p_name, p_student_name|
   first_name, last_name = split_name(p_name)
-  guardian = Guardian.find_by_name(first_name, last_name)
+  guardian = Guardian.where(first_name: first_name, last_name: last_name).first
 
   guardian.students << create_profile("student", p_student_name)
 end

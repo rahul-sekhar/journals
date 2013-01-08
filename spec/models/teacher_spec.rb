@@ -46,7 +46,7 @@ describe Teacher do
     end
 
     context "with no user" do
-      it "should work" do
+      it "should be archivable" do
         profile.save!
         profile.toggle_archive
         profile.archived.should == true

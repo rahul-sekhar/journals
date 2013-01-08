@@ -13,8 +13,12 @@ class Post < ActiveRecord::Base
 
   accepts_nested_attributes_for :student_observations
 
-  validates :title, presence: { message: "Please enter a post title" }
+  validates :title, 
+    presence: { message: "Please enter a post title" },
+    length: { maximum: 255, message: "The title cannot be longer than 255 letters" }
   validates :author, presence: true
+
+  strip_attributes
 
   # Posts that are either authored by the guardian or that have one of the guardian's students tagged and have guardian permissions allowed
   def self.readable_by_guardian(guardian)

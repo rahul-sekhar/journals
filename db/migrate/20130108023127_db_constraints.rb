@@ -27,7 +27,7 @@ class DbConstraints < ActiveRecord::Migration
     change_column :images, :post_id, :integer, null: false
 
     # Posts
-    change_column :posts, :title, :string, null: false
+    change_column :posts, :title, :string, null: false, limit: 255
     remove_column :posts, :last_commented_at
     change_column :posts, :author_id, :integer, null: false
     change_column :posts, :author_type, :string, null: false, limit: 10

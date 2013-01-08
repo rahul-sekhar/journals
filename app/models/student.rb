@@ -8,6 +8,8 @@ class Student < ActiveRecord::Base
   has_and_belongs_to_many :guardians, uniq: true, join_table: :students_guardians
   has_many :student_observations, dependent: :destroy
 
+  validates :bloodgroup, length: { maximum: 15 }
+
   def name_with_type
     "#{full_name} (student)"
   end
