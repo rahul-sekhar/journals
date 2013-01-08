@@ -53,7 +53,12 @@ Given /^a guardian Manoj with multiple students exists$/ do
   @profile.students << @student
 end
 
-Given /^that profile has been activated$/ do
+Given /^the profile has been activated$/ do
   @profile.user.generate_password
+  @profile.save!
+end
+
+Given /^the profile has no email address$/ do
+  @profile.email = nil
   @profile.save!
 end

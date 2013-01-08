@@ -377,4 +377,16 @@ describe Post  do
       Post.readable_by_guardian(guardian).should =~ [post2, post4]
     end
   end
+
+  describe "comments" do
+    it "should be ordered by the oldest first" do
+      post.save!
+      comment1 = create(:comment, post: post, created_at: 1.day.ago)
+      comment2 = create(:comment, post: post, created_at: Time.now)
+      comment3 = create(:comment, post: post, created_at: 2.days.ago)
+      comment4 = create(:comment, post: post, created_at: 1.hour.ago)
+
+      post.comments.should == [comment3, comment1, comment4, comment2]
+    end
+  end
 end

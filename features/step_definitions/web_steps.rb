@@ -69,6 +69,16 @@ When /^I click "(.*?)" within the "(.*?)" block$/ do |p_link, p_context|
   end
 end
 
+Then /^I should not see the link "(.*?)"$/ do |p_link|
+  page.should have_no_link p_link
+end
+
+Then /^I should not see the link "(.*?)" within the "(.*?)" block$/ do |p_link, p_context|
+  within(p_context) do
+    page.should have_no_link p_link
+  end
+end
+
 
 # Select element steps
 When /^I select "(.*?)" from "(.*?)"$/ do |p_option, p_select|

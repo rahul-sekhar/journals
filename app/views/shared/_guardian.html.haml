@@ -9,7 +9,7 @@
           method: :post,
           confirm: "Are you sure you want to reset the password for this user? A randomly generated password will be emailed to the user."
       - else
-        %li= link_to "Activate user",
+        %li= link_to_if guardian.email, "Activate user",
           reset_profile_path(guardian),
           method: :post,
           confirm: "Are you sure you want to activate this user? A randomly generated password will be emailed to the user."

@@ -8,7 +8,7 @@ class Post < ActiveRecord::Base
   has_and_belongs_to_many :tags, uniq: true, validate: true
   has_and_belongs_to_many :teachers, uniq: true
   has_and_belongs_to_many :students, uniq: true
-  has_many :comments, dependent: :destroy
+  has_many :comments, dependent: :destroy, order: :created_at
   has_many :student_observations, inverse_of: :post, dependent: :destroy
 
   accepts_nested_attributes_for :student_observations

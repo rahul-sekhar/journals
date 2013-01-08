@@ -36,6 +36,12 @@ Scenario: Remove a guardian when the guardian has multiple students
   And I should see "The user "Manoj Jain" has been removed for the student "Roly Jain""
   And I should not see "Manoj Jain" within the ".guardians" block
 
+Scenario: Activate a teacher with no email address
+  Given a teacher profile for Shalini exists
+  And the profile has no email address
+  When I am on the page for that profile
+  Then I should not see the link "Activate user"
+
 Scenario: Activate a teacher
   Given a teacher profile for Shalini exists
   When I am on the page for that profile
@@ -49,7 +55,7 @@ Scenario: Activate a teacher
 
 Scenario: Reset the password for a teacher
   Given a teacher profile for Shalini exists
-  And that profile has been activated
+  And the profile has been activated
   When I am on the page for that profile
   And I click "Reset password"
   Then I should be on the page for that profile
@@ -57,6 +63,12 @@ Scenario: Reset the password for a teacher
   And "shalini@mail.com" should receive an email
   When they open the email
   Then they should see /^Password reset/ in the email subject
+
+Scenario: Activate a student with no email address
+  Given a student profile for Parvathy exists
+  And the profile has no email address
+  When I am on the page for that profile
+  Then I should not see the link "Activate user"
 
 Scenario: Activate a student
   Given a student profile for Parvathy exists
@@ -73,11 +85,7 @@ Scenario: Activate a guardian with no email address
   Given a student profile for Parvathy exists
   And a guardian Manoj for that student exists
   When I am on the page for that profile
-  And I click "Activate user" within the ".guardians" block
-  Then I should be on the page for the guardian
-  And I should see "You must add an email address before you can activate the user"
-  And I should see "Activate user"
-  And "manoj@mail.com" should receive no emails
+  Then I should not see the link "Activate user" within the ".guardians" block
 
 Scenario: Activate a guardian with an email address
   Given a student profile for Parvathy exists
@@ -102,7 +110,6 @@ Scenario: Archive and unarchive a teacher
   And I should see "The user is no longer archived and must be activated to allow a login"
   And I should see "Archive user"
 
-@current
 Scenario: Archive and unarchive a student
   Given a student profile for Parvathy exists
   When I am on the page for that profile

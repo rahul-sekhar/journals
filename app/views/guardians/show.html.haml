@@ -1,5 +1,5 @@
 - page_id 'single_profile'
 - title "Profile: #{@guardian.full_name}"
 
-- @guardian.students.each do |student|
+- @guardian.students.alphabetical.each do |student|
   = render "shared/profile", profile: student
