@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108023127) do
+ActiveRecord::Schema.define(:version => 20130108061140) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -24,7 +24,6 @@ ActiveRecord::Schema.define(:version => 20130108023127) do
     t.integer  "post_id",                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "edited_at"
     t.integer  "author_id",                 :null => false
     t.string   "author_type", :limit => 10, :null => false
   end
@@ -96,7 +95,6 @@ ActiveRecord::Schema.define(:version => 20130108023127) do
     t.boolean  "visible_to_guardians",               :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "edited_at"
     t.integer  "author_id",                                             :null => false
     t.string   "author_type",          :limit => 10,                    :null => false
   end
