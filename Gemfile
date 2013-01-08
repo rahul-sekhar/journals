@@ -27,6 +27,7 @@ group :test do
   gem 'launchy', '2.1.2'
   gem 'headless', '0.3.1'
   gem 'email_spec', '1.4.0'
+  gem 'simplecov', '0.7.1', require: false
 end
 
 gem 'jquery-rails', '2.1.4'
