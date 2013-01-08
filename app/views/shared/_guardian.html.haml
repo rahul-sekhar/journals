@@ -2,28 +2,7 @@
   %h4= guardian.full_name
 
   - if can? :administrate, guardian
-    %ul.manage
-      - if guardian.active?
-        %li= link_to "Reset password",
-          reset_profile_path(guardian),
-          method: :post,
-          confirm: "Are you sure you want to reset the password for this user? A randomly generated password will be emailed to the user."
-      - else
-        %li= link_to_if guardian.email, "Activate user",
-          reset_profile_path(guardian),
-          method: :post,
-          confirm: "Are you sure you want to activate this user? A randomly generated password will be emailed to the user."
-
-      - if guardian.students.length > 1
-        %li= link_to "Remove user",
-          student_guardian_path( student, guardian ),
-          method: :delete,
-          confim: "Are you sure you want to remove the guardian from this student? The guardian has other students too, so data will not be lost."
-      - else
-        %li= link_to "Delete user",
-          student_guardian_path( student, guardian ),
-          method: :delete,
-          confim: "Are you sure you want to delete this user? Anything created by the user will be lost."
+    = render 'shared/administrate_profile_menu', profile: guardian
 
   - Guardian.fields.each do |field|
     = render 'shared/profile_field', field_data: field, field_value: guardian.send(field[:function])

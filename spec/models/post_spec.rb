@@ -45,55 +45,30 @@ describe Post  do
   end
 
   describe "#tag_names=" do
-    it "creates the tags that do not exist" do
-      post.tag_names = "Tag1, Tag2"
-      expect{ post.save! }.to change{ Tag.count }.by(2)
+    it "splits the name list" do
+      Tag.should_receive(:find_or_build_list).with("list").and_return []
+      post.tag_names = "list"
     end
 
-    it "creates tags with the correct names" do
-      post.tag_names = "Tag1, Tag2"
-      post.tags.map{ |tag| tag.name }.should =~ ["Tag1", "Tag2"]
+    it "sets its tags to the received list" do
+      tag_list = double('tag list')
+      Tag.stub(:find_or_build_list).and_return(tag_list)
+      post.should_receive(:tags=).with(tag_list)
+      post.tag_names = "list"
     end
 
-    it "is invalid with an invalid tag name" do
-      post.tag_names = "Tag1, #{"a" * 51}"
-      post.should be_invalid
-    end
-
-    it "uses tags that already exist" do
-      create(:tag, name: "Tag1")
-      post.tag_names = "Tag1, Tag2"
-      expect{ post.save! }.to change{ Tag.count }.by(1)
-      post.tags.map{ |tag| tag.name }.should =~ ["Tag1", "Tag2"]
-    end
-
-    it "checks existing tags case insensitively" do
-      create(:tag, name: "tag1")
-      post.tag_names = "Tag1, Tag2"
-      expect{ post.save! }.to change{ Tag.count }.by(1)
-      post.tags.map{ |tag| tag.name }.should =~ ["tag1", "Tag2"]
-    end
-
-    it "removes duplicates" do
-      create(:tag, name: "tag1")
-      post.tag_names = "Tag1, Tag2, tag1, tag2"
-      expect{ post.save! }.to change{ Tag.count }.by(1)
-      post.tags.map{ |tag| tag.name }.should =~ ["tag1", "Tag2"]
-    end
-
-    it "removes blank items" do
-      post.tag_names = "tag1,  , tag2"
-      expect{ post.save! }.to change{ Tag.count }.by(2)
-      post.tags.map{ |tag| tag.name }.should =~ ["tag1", "tag2"]
-    end
-
-    it "updates an existing tag list" do
+    it "sets a tag list" do
       post.tag_names = "tag1, tag2"
       post.save!
-      
-      post.tag_names = "tag2, tag3"
-      expect{ post.save! }.to change{ Tag.count }.by(1)
-      post.tags.map{ |tag| tag.name }.should =~ ["tag2", "tag3"]
+      post.reload.tags.map{ |tag| tag.name }.should =~ ["tag1", "tag2"]
+    end
+
+    it "removes and updates tags from an existing tag list" do
+      post.tag_names = "tag1, tag2"
+      post.save!
+      post.reload.tag_names = "tag2, tag3"
+      post.save!
+      post.reload.tags.map{ |tag| tag.name }.should =~ ["tag2", "tag3"]
     end
   end
 

@@ -97,21 +97,6 @@ class Post < ActiveRecord::Base
   end
 
   def tag_names=(tag_names)
-    self.tags.clear
-
-    # Split a comma separated list of tag names into an array of trimmed names
-    tag_name_array = tag_names.split(",").map{ |name| name.strip }
-
-    # Remove duplicates case insensitively and blank items
-    tag_name_array = tag_name_array.reject{ |tag| tag.blank? }.uniq{ |tag| tag.downcase }
-
-    tag_name_array.each do |tag_name|
-      existing_tag = Tag.name_is(tag_name)
-      if existing_tag
-        self.tags << existing_tag
-      else
-        self.tags.build(name: tag_name)
-      end
-    end
+    self.tags = Tag.find_or_build_list(tag_names)
   end
 end
