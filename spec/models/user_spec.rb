@@ -92,8 +92,11 @@ describe User do
   end
 
   describe "on initial creation" do
-    it "does not set the password hash and salt" do
-      user.password_salt.should be_blank
+    it "sets the password salt" do
+      user.password_salt.should be_present
+    end
+
+    it "does not set the password hash" do
       user.password_hash.should be_blank
     end
 
@@ -174,32 +177,42 @@ describe User do
   end
   
   describe "authenticate" do
-    let(:other_user){ create(:teacher, email: "other_test@mail.com").user }
+    context "with an inactive user" do
+      before{ user }
+
+      it "returns nil" do
+        User.authenticate("test@mail.com", "").should be_nil
+      end
+    end
     
-    before do
-      user.password = "test-pass"
-      user.save!
+    context "with active users" do
+      let(:other_user){ create(:teacher, email: "other_test@mail.com").user }
+      
+      before do
+        user.password = "test-pass"
+        user.save!
 
-      other_user.password = "other-pass"
-      other_user.save!
-    end
+        other_user.password = "other-pass"
+        other_user.save!
+      end
 
-    it "returns the matched user when given a valid username and password" do
-      other_user
-      User.authenticate("test@mail.com", "test-pass").should == user
-      User.authenticate("other_test@mail.com", "other-pass").should == other_user
-    end
+      it "returns the matched user when given a valid username and password" do
+        other_user
+        User.authenticate("test@mail.com", "test-pass").should == user
+        User.authenticate("other_test@mail.com", "other-pass").should == other_user
+      end
 
-    it "returns nil with a valid username but invalid password" do
-      User.authenticate("test@mail.com", "other-pass").should be_nil
-    end
+      it "returns nil with a valid username but invalid password" do
+        User.authenticate("test@mail.com", "other-pass").should be_nil
+      end
 
-    it "returns nil with an invalid username" do
-      User.authenticate("test1@mail.com", "test-pass").should be_nil
-    end
+      it "returns nil with an invalid username" do
+        User.authenticate("test1@mail.com", "test-pass").should be_nil
+      end
 
-    it "returns nil with a nil password" do
-      User.authenticate("test1@mail.com", nil).should be_nil
+      it "returns nil with a nil password" do
+        User.authenticate("test1@mail.com", nil).should be_nil
+      end
     end
   end
 

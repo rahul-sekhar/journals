@@ -17,6 +17,11 @@ class ChangeAuthorToProfile < ActiveRecord::Migration
 
     remove_column :posts, :user_id
     remove_column :comments, :user_id
+
+    # Remove users without email addresses
+    execute <<-SQL
+      DELETE FROM users WHERE email IS NULL
+    SQL
   end
 
   def down

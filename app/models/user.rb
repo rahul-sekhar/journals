@@ -33,11 +33,13 @@ class User < ActiveRecord::Base
     if password.present?
       self.password_salt = BCrypt::Engine.generate_salt
       self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
+    elsif password_salt.blank?
+      self.password_salt = BCrypt::Engine.generate_salt
     end
   end
 
   def active?
-    password_salt.present? && password_hash.present?
+    password_hash.present?
   end
 
   def deactivate
