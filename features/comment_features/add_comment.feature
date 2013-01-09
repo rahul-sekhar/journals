@@ -8,7 +8,7 @@ Background:
 Scenario: Add a comment to a post
   When I am on the page for that post
   And I fill in "Enter comment" with "Test comment"
-  And I click "Add comment"
+  And I click "Comment"
   Then I should see "Comments"
   And I should see "Test comment"
   And I should see "Posted by Rahul Sekhar"

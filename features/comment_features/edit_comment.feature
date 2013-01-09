@@ -12,7 +12,7 @@ Scenario: Edit comment
   Then I should be on the edit page for that comment
   And "Enter comment" should be filled in with "First comment"
   When I fill in "Enter comment" with "Changed comment"
-  And I click "Save comment"
+  And I click "Save"
   Then I should be on the page for that post
   And I should see "Changed comment" within the ".comments" block
   And I should not see "First comment" within the ".comments" block
@@ -20,7 +20,7 @@ Scenario: Edit comment
 Scenario: Edit comment with invalid data
   When I click "Edit" within the ".comments" block
   And I fill in "Enter comment" with ""
-  And I click "Save comment"
+  And I click "Save"
   Then I should be on the page for that post
   And I should see "First comment" within the ".comments" block
   And I should see "Invalid comment"
