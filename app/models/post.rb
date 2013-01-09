@@ -107,4 +107,16 @@ class Post < ActiveRecord::Base
       self.tags.build(name: tag.name)
     end
   end
+
+  def restriction_message
+    if visible_to_students && visible_to_guardians
+      return "Visible to everyone"
+    else
+      restrictions = []
+      restrictions << "guardians" if !visible_to_guardians
+      restrictions << "students" if !visible_to_students
+
+      return "Not visible to #{restrictions.join(" or ")}"
+    end
+  end
 end

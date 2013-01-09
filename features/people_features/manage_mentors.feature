@@ -34,7 +34,6 @@ Scenario: View a student with mentors, add and remove mentors
   And I should not see "Angela Jain" within the ".mentors ul" block
   And "Remaining teachers" should have the options "Angela Jain, Aditya Pandya, Rahul Sekhar"
 
-@current
 Scenario: View a teacher with mentees, add and remove mentees
   Given the students Roly, Lucky and Jumble exist
   And I have the mentees "Lucky, Jumble"

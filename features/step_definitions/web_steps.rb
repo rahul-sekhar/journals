@@ -41,6 +41,11 @@ Then /^a "(.*?)" block should not be present$/ do |p_css|
   page.should have_no_css p_css
 end
 
+Then /^the span "(.*?)" should have the title "(.*?)"$/ do |p_text, p_title|
+  span = page.find("span", text: p_text)
+  span['title'].should == p_title
+end
+
 
 # Input field steps
 When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|

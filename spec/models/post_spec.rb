@@ -369,4 +369,33 @@ describe Post  do
       post.comments.should == [comment3, comment1, comment4, comment2]
     end
   end
+
+  describe "#restriction_message" do
+    subject{ post.restriction_message }
+
+    context "when unrestricted" do
+      before do
+        post.visible_to_guardians = true
+        post.visible_to_students = true
+      end
+
+      it { should == "Visible to everyone" }
+    end
+
+    context "when restricted to students" do
+      before{ post.visible_to_guardians = true }
+
+      it { should == "Not visible to students" }
+    end
+
+    context "when restricted to guardians" do
+      before{ post.visible_to_students = true }
+
+      it { should == "Not visible to guardians" }
+    end
+
+    context "when restricted to students and guardians" do
+      it { should == "Not visible to guardians or students" }
+    end
+  end
 end

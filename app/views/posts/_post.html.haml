@@ -1,5 +1,8 @@
 %article.post
-  %header.tagged-people
+  %header
+    = render "posts/restrictions", post: post
+
+    .tagged-people
     - if post.students.present?
       .students
         %h4 Students
