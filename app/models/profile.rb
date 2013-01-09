@@ -50,6 +50,30 @@ module Profile
     return password
   end
 
+  def name
+    if first_name
+
+      initial = last_name[0]
+
+      # Check for duplicate first names
+      other_profiles = ProfileName.excluding_profile(self)
+      if ( other_profiles.where(first_name: first_name).exists? )
+
+        # Check for duplicate last_names
+        if ( other_profiles.where(first_name: first_name, initial: initial).exists? )
+          return full_name
+
+        else
+          return "#{first_name} #{initial}."
+        end
+      else
+        return first_name
+      end
+    else
+      return last_name
+    end
+  end
+
   module ClassMethods
     def alphabetical
       order(:first_name, :last_name)

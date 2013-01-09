@@ -152,15 +152,42 @@ shared_examples_for "a profile" do
   end
 
   describe "#name" do
-    it "returns the first_name if present" do
+    subject{ profile.name }
+    before do
       profile.first_name = "Rahul"
-      profile.name.should == "Rahul"
+      profile.last_name = "Sekhar"
+      profile.save!
     end
 
-    it "returns the last name if the first name is not present" do
-      profile.first_name = nil
-      profile.last_name = "Sekhar"
-      profile.name.should == "Sekhar"
+    context "with no duplicates" do
+      context "if there is no first_name" do
+        before do
+          profile.first_name = " "
+          profile.save!
+        end
+
+        it { should == "Sekhar" }
+      end
+
+      it { should == "Rahul" }
+    end
+
+    context "with a duplicate first name" do
+      before{ create(:student, first_name: "Rahul", last_name: "Raj") }
+
+      it { should == "Rahul S." }
+
+      context "with a duplicate first name and initial" do
+        before{ create(:student, first_name: "Rahul", last_name: "Sharma") }
+
+        it { should == "Rahul Sekhar" }
+      end
+
+      context "with a duplicate full name" do
+        before{ create(:student, first_name: "Rahul", last_name: "Sekhar") }
+
+        it { should == "Rahul Sekhar" }
+      end
     end
   end
 

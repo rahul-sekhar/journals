@@ -14,7 +14,7 @@ module Taggable
         .map { |name| name_is(name) || new(name: name) }
     end
 
-    def self.alphabetical
+    def alphabetical
       order(:name)
     end
     
