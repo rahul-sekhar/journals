@@ -9,3 +9,8 @@ Scenario: Navigate pages as teacher
   Then I should be on the create post page
   When I click "View posts"
   Then I should be on the posts page
+
+Scenario: View your profile
+  Given I have logged in as a teacher "Rahul Sekhar"
+  And I click "Your profile"
+  Then I should be on the page for my profile
