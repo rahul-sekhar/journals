@@ -16,3 +16,6 @@ en:
         update: "Save profile"
       guardian:
         update: "Save profile"
+      group:
+        create: "Create"
+        update: "Save"

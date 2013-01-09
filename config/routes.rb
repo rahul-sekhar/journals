@@ -11,7 +11,7 @@ Journals::Application.routes.draw do
     resources :comments, only: [:create, :edit, :update, :destroy]
   end
 
-  resources :students, only: [:show, :edit, :update, :destroy] do
+  resources :students do
     resources :guardians, only: :destroy
 
     member do
@@ -24,7 +24,7 @@ Journals::Application.routes.draw do
     end
   end
 
-  resources :teachers, only: [:show, :edit, :update, :destroy] do
+  resources :teachers do
     member do
       post :reset
       post :archive
@@ -38,4 +38,6 @@ Journals::Application.routes.draw do
       post :reset
     end
   end
+
+  resources :groups
 end

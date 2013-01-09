@@ -1,4 +1,4 @@
-%article.profile
+%article{ class: profile.archived? ? ["profile", "archived"] : "profile" }
   %h3= profile.full_name
   - if profile.is_a? Teacher
     %p.type (Teacher)

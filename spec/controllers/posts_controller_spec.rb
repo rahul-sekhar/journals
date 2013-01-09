@@ -270,7 +270,7 @@ describe PostsController do
 
     it "sets a flash message" do
       make_request
-      flash[:notice].should == "The post has been deleted"
+      flash[:notice].should be_present
     end
   end
 end

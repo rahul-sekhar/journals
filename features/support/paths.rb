@@ -41,6 +41,12 @@ module NavigationHelpers
     when /the page for one of the students/
       student_path(@student)
 
+    when /the groups page/
+      groups_path
+
+    when /the page for that group/
+      group_path(@group)
+
     else
       begin
         page_name =~ /the (.*) page/

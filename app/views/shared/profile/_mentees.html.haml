@@ -3,7 +3,7 @@
   - if teacher.mentees.present?
     - teacher.mentees.alphabetical.each do |mentee|
       %li
-        = mentee.full_name
+        = profile_name( mentee )
         - if can? :administrate, teacher
           = link_to "Remove", remove_mentee_from_teacher_path(teacher, student_id: mentee.id), method: :post
   - else

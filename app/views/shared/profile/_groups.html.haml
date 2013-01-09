@@ -3,7 +3,7 @@
   - if student.groups.present?
     - student.groups.alphabetical.each do |group|
       %li
-        = group.name
+        = link_to group.name, group
         - if can? :administrate, student
           = link_to "Remove", remove_group_from_student_path(student, group_id: group.id), method: :post
   - else
