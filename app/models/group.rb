@@ -1,6 +1,6 @@
-class Tag < ActiveRecord::Base
+class Group < ActiveRecord::Base
   include Taggable
-  
+
   attr_accessible :name
 
   validates :name,

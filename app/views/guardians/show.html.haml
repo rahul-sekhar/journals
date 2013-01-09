@@ -2,4 +2,4 @@
 - title "Profile: #{@guardian.full_name}"
 
 - @guardian.students.alphabetical.each do |student|
-  = render "shared/profile", profile: student
+  = render "shared/profile/profile", profile: student

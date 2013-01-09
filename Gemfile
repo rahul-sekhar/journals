@@ -14,6 +14,11 @@ group :assets do
   gem 'compass-rails', '1.0.3'
 end
 
+group :development do
+  gem 'rb-inotify', '~> 0.8.8'
+  gem 'guard-livereload'
+end
+
 group :test, :development do
   gem 'rspec-rails', '2.12.0'
   gem 'cucumber-rails', '1.3.0', require: false

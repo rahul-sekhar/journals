@@ -52,4 +52,64 @@ class StudentsController < ApplicationController
 
     redirect_to @student, notice: message
   end
+
+  def add_group
+    @group = Group.find_by_id(params[:group_id])
+    
+    if @group
+      if @student.groups.exists? @group
+        redirect_to @student, alert: "#{@student.full_name} is already in the group \"#{@group.name}\""
+      else
+        @student.groups << @group
+        redirect_to @student, notice: "#{@student.full_name} has been added to the group \"#{@group.name}\""
+      end
+    else
+      redirect_to @student, alert: "Invalid group"
+    end
+  end
+
+  def remove_group
+    @group = Group.find_by_id(params[:group_id])
+    
+    if @group
+      if @student.groups.exists? @group
+        @student.groups.delete(@group)
+        redirect_to @student, notice: "#{@student.full_name} has been removed from the group \"#{@group.name}\""
+      else
+        redirect_to @student, notice: "#{@student.full_name} was not in the group \"#{@group.name}\""
+      end
+    else
+      redirect_to @student, alert: "Invalid group"
+    end
+  end
+
+  def add_mentor
+    @teacher = Teacher.find_by_id(params[:teacher_id])
+    
+    if @teacher
+      if @student.mentors.exists? @teacher
+        redirect_to @student, alert: "#{@teacher.full_name} is already a mentor for #{@student.full_name}"
+      else
+        @student.mentors << @teacher
+        redirect_to @student, notice: "#{@teacher.full_name} has been added as a mentor for #{@student.full_name}"
+      end
+    else
+      redirect_to @student, alert: "Invalid teacher"
+    end
+  end
+
+  def remove_mentor
+    @teacher = Teacher.find_by_id(params[:teacher_id])
+    
+    if @teacher
+      if @student.mentors.exists? @teacher
+        @student.mentors.delete(@teacher)
+        redirect_to @student, notice: "#{@teacher.full_name} is no longer a mentor for #{@student.full_name}"
+      else
+        redirect_to @student, notice: "#{@teacher.full_name} was not a mentor for #{@student.full_name}"
+      end
+    else
+      redirect_to @student, alert: "Invalid teacher"
+    end
+  end
 end

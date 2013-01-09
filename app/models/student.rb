@@ -6,6 +6,8 @@ class Student < ActiveRecord::Base
   before_destroy :clear_guardians
 
   has_and_belongs_to_many :guardians, uniq: true, join_table: :students_guardians
+  has_and_belongs_to_many :groups, uniq: true, join_table: :students_groups
+  has_and_belongs_to_many :mentors, class_name: Teacher, uniq: true, join_table: :student_mentors
   has_many :student_observations, dependent: :destroy
 
   validates :bloodgroup, length: { maximum: 15 }
@@ -50,6 +52,14 @@ class Student < ActiveRecord::Base
   def birthday_with_age
     "#{formatted_birthday} (#{age} yrs)" if birthday.present?
   end
+
+  def remaining_groups
+    Group.where{ id.not_in( my{ group_ids } ) }
+  end
+
+  def remaining_teachers
+    Teacher.where{ id.not_in( my{ mentor_ids } ) }
+  end  
 
   def self.fields
     [

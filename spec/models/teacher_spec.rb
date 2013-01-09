@@ -56,6 +56,34 @@ describe Teacher do
     end
   end
 
+  describe "#remaining_students" do
+    it "returns an empty array when no students exist" do
+      profile.remaining_students.should be_empty
+    end
+
+    context "when some students exist" do
+      before do
+        @student1 = create(:student)
+        @student2 = create(:student)
+        @student3 = create(:student)
+      end
+
+      it "returns all students when the student has no mentees" do
+        profile.remaining_students.should =~ [@student1, @student2, @student3]
+      end
+
+      it "returns an empty array when the student has all existing mentees" do
+        profile.mentees = [@student1, @student2, @student3]
+        profile.remaining_students.should be_empty
+      end
+
+      it "returns only students that are not added to the student already" do
+        profile.mentees = [@student2]
+        profile.remaining_students.should =~ [@student1, @student3]
+      end
+    end
+  end
+
   describe "permissions:" do
     before do 
       profile.email = "test@mail.com"

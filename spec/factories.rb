@@ -41,6 +41,10 @@ FactoryGirl.define do
     sequence(:name){ |n| "tag#{n}"}
   end
 
+  factory :group do
+    sequence(:name){ |n| "tag#{n}"}
+  end
+
   factory :comment do
     post
     association :author, factory: :teacher

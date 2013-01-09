@@ -56,6 +56,10 @@ Then /^"(.*?)" should be filled in with the lines: (.*?)$/ do |p_field, p_lines|
   find_field(p_field).value.should == p_lines
 end
 
+Then /^I should not see the field "(.*?)"$/ do |p_field|
+  page.should have_no_field p_field
+end
+
 
 
 # Link and button steps
@@ -79,6 +83,13 @@ Then /^I should not see the link "(.*?)" within the "(.*?)" block$/ do |p_link, 
   end
 end
 
+When /^I click "(.*?)" near "(.*?)" in a list item$/ do |p_link, p_text|
+  list_item = page.find('li', text: /#{p_text}/)
+  within(list_item) do
+    click_on p_link
+  end
+end
+
 
 # Select element steps
 When /^I select "(.*?)" from "(.*?)"$/ do |p_option, p_select|
@@ -91,6 +102,10 @@ end
 
 Then /^"(.*?)" should have "(.*?)" selected$/ do |p_select, p_options|
   page.should have_select( p_select, selected: p_options.split(",").map{ |option| option.strip } )
+end
+
+Then /^"(.*?)" should have the options "(.*?)"$/ do |p_select, p_options|
+  page.should have_select( p_select, options: p_options.split(",").map{ |option| option.strip } )
 end
 
 

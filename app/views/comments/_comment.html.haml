@@ -1,19 +1,21 @@
 %article.comment
-  .comment-content= comment.content
+  .comment-wrapper
+    .comment-content
+      = simple_format comment.content
 
-  %footer
-    %p
-      Posted by
-      = profile_name(comment.author, true)
-      on
-      %span.date= comment.formatted_created_at
+    %footer.comment-footer
+      %p
+        Posted by
+        = profile_name(comment.author, true)
+        on
+        %span.date= comment.formatted_created_at
 
-    - if can? :update, comment
-      = link_to "Edit", edit_post_comment_path(comment.post, comment), class: "edit-link"
+      - if can? :update, comment
+        = link_to "Edit", edit_post_comment_path(comment.post, comment), class: "edit-link"
 
-    - if can? :destroy, comment
-      = link_to "Delete", 
-        post_comment_path(comment.post, comment), 
-        method: :delete,
-        confirm: "Are you sure you want to delete this comment?",
-        class: "delete-link"
+      - if can? :destroy, comment
+        = link_to "Delete", 
+          post_comment_path(comment.post, comment), 
+          method: :delete,
+          confirm: "Are you sure you want to delete this comment?",
+          class: "delete-link"

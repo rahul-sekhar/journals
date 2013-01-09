@@ -52,4 +52,34 @@ class TeachersController < ApplicationController
 
     redirect_to @teacher, notice: message
   end
+
+  def add_mentee
+    @student = Student.find_by_id(params[:student_id])
+    
+    if @student
+      if @teacher.mentees.exists? @student
+        redirect_to @teacher, alert: "#{@teacher.full_name} is already a mentor for #{@student.full_name}"
+      else
+        @teacher.mentees << @student
+        redirect_to @teacher, notice: "#{@teacher.full_name} has been added as a mentor for #{@student.full_name}"
+      end
+    else
+      redirect_to @teacher, alert: "Invalid student"
+    end
+  end
+
+  def remove_mentee
+    @student = Student.find_by_id(params[:student_id])
+    
+    if @student
+      if @teacher.mentees.exists? @student
+        @teacher.mentees.delete(@student)
+        redirect_to @teacher, notice: "#{@teacher.full_name} is no longer a mentor for #{@student.full_name}"
+      else
+        redirect_to @teacher, notice: "#{@teacher.full_name} was not a mentor for #{@student.full_name}"
+      end
+    else
+      redirect_to @teacher, alert: "Invalid student"
+    end
+  end
 end

@@ -172,6 +172,63 @@ describe Student do
     end
   end
 
+  describe "#remaining_groups" do
+    it "returns an empty array when no groups exist" do
+      profile.remaining_groups.should be_empty
+    end
+
+    context "when some groups exist" do
+      before do
+        @group1 = create(:group, name: "Group 1")
+        @group2 = create(:group, name: "Group 2")
+        @group3 = create(:group, name: "Group 3")
+      end
+
+      it "returns all groups when the student has no groups" do
+        profile.remaining_groups.should =~ [@group1, @group2, @group3]
+      end
+
+      it "returns an empty array when the student has all existing groups" do
+        profile.groups = [@group1, @group2, @group3]
+        profile.remaining_groups.should be_empty
+      end
+
+      it "returns only groups that are not added to the student already" do
+        profile.groups = [@group2]
+        profile.remaining_groups.should =~ [@group1, @group3]
+      end
+    end
+  end
+
+  describe "#remaining_teachers" do
+    it "returns an empty array when no teachers exist" do
+      profile.remaining_teachers.should be_empty
+    end
+
+    context "when some teachers exist" do
+      before do
+        @teacher1 = create(:teacher)
+        @teacher2 = create(:teacher)
+        @teacher3 = create(:teacher)
+      end
+
+      it "returns all teachers when the student has no mentors" do
+        profile.remaining_teachers.should =~ [@teacher1, @teacher2, @teacher3]
+      end
+
+      it "returns an empty array when the student has all existing mentors" do
+        profile.mentors = [@teacher1, @teacher2, @teacher3]
+        profile.remaining_teachers.should be_empty
+      end
+
+      it "returns only teachers that are not added to the student already" do
+        profile.mentors = [@teacher2]
+        profile.remaining_teachers.should =~ [@teacher1, @teacher3]
+      end
+    end
+  end
+  
+
   describe "permissions:" do
     before do 
       profile.email = "test@mail.com"

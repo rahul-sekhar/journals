@@ -252,4 +252,152 @@ describe TeachersController do
       flash[:notice].should be_present
     end
   end
+
+
+  describe "POST add_mentee" do
+    let(:teacher){ create(:teacher) }
+    let(:student){ create(:student, id: 5) }
+    let(:make_request){ post :add_mentee, id: teacher.id  }
+    before{ student }
+
+    it "raises an exception if the user cannot add a mentee to a teacher" do
+      ability.cannot :add_mentee, teacher
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    context "without a student_id" do
+      it "redirects to the teacher page" do
+        make_request
+        response.should redirect_to teacher_path(teacher)
+      end
+
+      it "sets a flash alert" do
+        make_request
+        flash[:alert].should be_present
+      end
+    end
+
+    context "with an invalid student_id" do
+      let(:make_request){ post :add_mentee, id: teacher.id, student_id: 4 }
+
+      it "redirects to the teacher page" do
+        make_request
+        response.should redirect_to teacher_path(teacher)
+      end
+
+      it "sets a flash alert" do
+        make_request
+        flash[:alert].should be_present
+      end
+    end
+
+    context "with a valid student_id" do
+      let(:make_request){ post :add_mentee, id: teacher.id, student_id: 5 }
+
+      context "when the teacher contains that student" do
+        before{ teacher.mentees = [student] }
+
+        it "redirects to the teacher page" do
+          make_request
+          response.should redirect_to teacher_path(teacher)
+        end
+
+        it "sets a flash alert" do
+          make_request
+          flash[:alert].should be_present
+        end
+      end
+
+      context "when the teacher does not contain that student" do
+        it "redirects to the teacher page" do
+          make_request
+          response.should redirect_to teacher_path(teacher)
+        end
+
+        it "adds the student to the teacher" do
+          make_request
+          teacher.reload.mentees.should == [student]
+        end
+
+        it "sets a flash notice" do
+          make_request
+          flash[:notice].should be_present
+        end
+      end
+    end
+  end
+
+
+  describe "POST remove_mentee" do
+    let(:teacher){ create(:teacher) }
+    let(:student){ create(:student, id: 5) }
+    let(:make_request){ post :remove_mentee, id: teacher.id  }
+    before{ student }
+
+    it "raises an exception if the user cannot remove a student to a teacher" do
+      ability.cannot :remove_mentee, teacher
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    context "without a student_id" do
+      it "redirects to the teacher page" do
+        make_request
+        response.should redirect_to teacher_path(teacher)
+      end
+
+      it "sets a flash alert" do
+        make_request
+        flash[:alert].should be_present
+      end
+    end
+
+    context "with an invalid student_id" do
+      let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 4 }
+
+      it "redirects to the teacher page" do
+        make_request
+        response.should redirect_to teacher_path(teacher)
+      end
+
+      it "sets a flash alert" do
+        make_request
+        flash[:alert].should be_present
+      end
+    end
+
+    context "with a valid student_id" do
+      let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 5 }
+
+      context "when the teacher contains that student" do
+        before{ teacher.mentees = [student] }
+
+        it "redirects to the teacher page" do
+          make_request
+          response.should redirect_to teacher_path(teacher)
+        end
+
+        it "removes the student from the teacher" do
+          make_request
+          teacher.reload.mentees.should be_empty
+        end
+
+        it "sets a flash notice" do
+          make_request
+          flash[:notice].should be_present
+        end
+      end
+
+      context "when the teacher does not contain that student" do
+        it "redirects to the teacher page" do
+          make_request
+          response.should redirect_to teacher_path(teacher)
+        end
+
+        it "sets a flash notice" do
+          make_request
+          flash[:notice].should be_present
+        end
+      end
+    end
+  end
 end

@@ -8,8 +8,8 @@ en:
         create: "Create post"
         update: "Save post"
       comment:
-        create: "Add comment"
-        update: "Save comment"
+        create: "Comment"
+        update: "Save"
       teacher:
         update: "Save profile"
       student:

@@ -1,4 +1,5 @@
 = semantic_form_for [comment.post, comment] do |form|
-  
-  = form.input :content, label: 'Enter comment'
-  = form.action :submit, button_html: { class: :button }
+  = form.inputs do
+    = form.input :content, label: 'Enter comment'
+  = form.actions do
+    = form.action :submit, button_html: { class: :button }

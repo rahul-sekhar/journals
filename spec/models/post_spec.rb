@@ -45,18 +45,6 @@ describe Post  do
   end
 
   describe "#tag_names=" do
-    it "splits the name list" do
-      Tag.should_receive(:find_or_build_list).with("list").and_return []
-      post.tag_names = "list"
-    end
-
-    it "sets its tags to the received list" do
-      tag_list = double('tag list')
-      Tag.stub(:find_or_build_list).and_return(tag_list)
-      post.should_receive(:tags=).with(tag_list)
-      post.tag_names = "list"
-    end
-
     it "sets a tag list" do
       post.tag_names = "tag1, tag2"
       post.save!
@@ -69,6 +57,23 @@ describe Post  do
       post.reload.tag_names = "tag2, tag3"
       post.save!
       post.reload.tags.map{ |tag| tag.name }.should =~ ["tag2", "tag3"]
+    end
+
+    it "is invalid when passed an invalid tag" do
+      post.save!
+      post.tag_names = "a" * 51 + ", tag2"
+      post.should be_invalid
+    end
+
+    it "sets both existing and new tags correctly" do
+      @tag1 = Tag.create(name: "tag1")
+
+      post.tag_names = " tag2,  TAG1, Tag1, Tag2,  tag 3  "
+      post.save!
+      post.tags.reload
+      post.tags.should include @tag1
+      post.tags.length.should == 3
+      post.tags.map { |tag| tag.name }.should =~ ["tag1", "tag2", "tag 3"]
     end
   end
 

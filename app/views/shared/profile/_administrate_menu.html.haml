@@ -22,14 +22,21 @@
 
   
 
-  - if (profile.is_a? Guardian) && (profile.students.length > 1)
-    %li= link_to "Remove user",
-      student_guardian_path( student, guardian ),
-      method: :delete,
-      confim: "Are you sure you want to remove the guardian from this student? The guardian has other students too, so data will not be lost."
+  - if profile.is_a? Guardian 
+    - if profile.students.length > 1
+      %li= link_to "Remove user",
+        student_guardian_path( student, profile ),
+        method: :delete,
+        confim: "Are you sure you want to remove the guardian from this student? The guardian has other students too, so data will not be lost."
+
+    - else
+      %li= link_to "Delete user",
+        student_guardian_path( student, profile ),
+        method: :delete,
+        confirm: "Are you sure you want to delete this user? Anything that has been created by the user will be lost."
 
   - else
     %li= link_to "Delete user",
-      profile,
-      method: :delete,
-      confirm: "Are you sure you want to delete this user? Anything that has been created by the user will be lost."
+        profile,
+        method: :delete,
+        confirm: "Are you sure you want to delete this user? Anything that has been created by the user will be lost. You can archive the user if you don't want to lose it's data."

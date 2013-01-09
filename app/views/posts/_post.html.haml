@@ -33,10 +33,10 @@
       - post.comments.each do |comment|
         = render "comments/comment", comment: comment
 
-  .add-comment
+  .comment-fields
     = render "comments/fields", comment: post.comments.build
 
-  %footer
+  %footer.post-footer
     .info
       %p.date= post.formatted_created_at
       %p.author 

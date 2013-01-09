@@ -97,6 +97,14 @@ class Post < ActiveRecord::Base
   end
 
   def tag_names=(tag_names)
-    self.tags = Tag.find_or_build_list(tag_names)
+    tags = Tag.find_or_build_list(tag_names)
+
+    # Add existing tags
+    self.tags = tags.reject{ |tag| tag.new_record? }
+
+    # Build new tags
+    tags.select{ |tag| tag.new_record? }.each do |tag|
+      self.tags.build(name: tag.name)
+    end
   end
 end
