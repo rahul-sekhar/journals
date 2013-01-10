@@ -141,6 +141,81 @@ describe PagesController do
         assigns(:empty_message).should be_present
       end
     end
-    
+  end
+
+
+
+  describe "GET change_password" do
+    it "has a 200 status" do
+      get :change_password
+      response.status.should eq(200)
+    end
+  end
+
+
+  describe "PUT update_password" do
+    let(:user){ create(:teacher_with_user, email: "test@mail.com").user }
+    before { user.set_password "pass" }
+
+    shared_examples_for "invalid params" do
+      it "does not change the password" do
+        make_request
+        User.authenticate("test@mail.com", "pass").should == user
+      end
+
+      it "sets an alert" do
+        make_request
+        flash[:alert].should be_present
+      end
+
+      it "redirects to the change password page" do
+        make_request
+        response.should redirect_to change_password_path
+      end
+    end
+
+    context "with no current password or new password" do
+      let(:make_request){ put :update_password }
+
+      it_behaves_like "invalid params"
+    end
+
+    context "with no current password" do
+      let(:make_request){ put :update_password, user: { new_password: "newpass" } }
+
+      it_behaves_like "invalid params"
+    end
+
+    context "with no new password" do
+      let(:make_request){ put :update_password, user: { current_password: "pass" } }
+
+      it_behaves_like "invalid params"
+    end
+
+    context "with an invalid current password" do
+      let(:make_request){ put :update_password, user: { current_password: "ass", new_password: "newpass" } }
+
+      it_behaves_like "invalid params"
+    end
+
+    context "with a valid current password" do
+      let(:make_request){ put :update_password, user: { current_password: "pass", new_password: "newpass" } }
+
+      it "changes the password" do
+        make_request
+        User.authenticate("test@mail.com", "pass").should be_nil
+        User.authenticate("test@mail.com", "newpass").should == user
+      end
+
+      it "sets an notice" do
+        make_request
+        flash[:notice].should be_present
+      end
+
+      it "redirects to the posts page" do
+        make_request
+        response.should redirect_to posts_path
+      end
+    end
   end
 end

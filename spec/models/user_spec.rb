@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe User do
-  let(:user){ build(:user) }
+  let(:user){ create(:teacher, email: "test@mail.com").user }
 
   it "is valid with valid attributes" do
     user.should be_valid
   end
 
   it "does not save without a profile" do
-    expect{ user.save }.to raise_exception
+    expect{ build(:user).save }.to raise_exception
   end
 
   describe "email" do
@@ -45,8 +45,6 @@ describe User do
   end
 
   describe "#generate_password" do
-    let(:user){ create(:teacher, email: "test@mail.com").user }
-
     it "returns a ten letter password" do
       user.generate_password.length.should == 10
     end
@@ -70,8 +68,6 @@ describe User do
   end
 
   describe "#is_active?" do
-    let(:user){ create(:teacher, email: "test@mail.com").user }
-
     it "returns false when initially created" do
       user.should_not be_active
     end
@@ -84,8 +80,6 @@ describe User do
   end
 
   describe "#deactivate" do
-    let(:user){ create(:teacher, email: "test@mail.com").user }
-
     before do 
       user.generate_password
       user.save!
@@ -98,8 +92,7 @@ describe User do
     end
 
     it "disallows authentication" do
-      user.password = "pass"
-      user.save!
+      user.set_password "pass"
       User.authenticate("test@mail.com", "pass").should eq(user)
       user.deactivate
       User.authenticate("test@mail.com", "pass").should be_nil
@@ -107,8 +100,6 @@ describe User do
   end
 
   describe "on initial creation" do
-    let(:user){ create(:teacher, email: "test@mail.com").user }
-
     it "sets the password salt" do
       user.password_salt.should be_present
     end
@@ -123,83 +114,76 @@ describe User do
     end
   end
 
-  describe "#password" do
-    it "can be blank" do
-      user.password = ""
-      user.should be_valid
+  describe "#new_password" do
+    before do
+      user.set_password "pass"
+      user.current_password = "pass"
     end
 
-    describe "confirmation" do
-      before{ user.password = "some-pass" }
-
-      it "is valid when the same" do
-        user.password_confirmation = "some-pass"
-        user.should be_valid
-      end
-
-      it "is invalid when different" do
-        user.password_confirmation = "other-pass"
-        user.should be_invalid
-      end
-
-      it "is valid when nil" do
-        user.password_confirmation = nil
-        user.should be_valid
-      end
+    it "can be blank" do
+      user.new_password = ""
+      user.should be_valid
     end
 
     it "cannot be less than 4 characters" do
-      user.password = "asdf"
+      user.new_password = "asdf"
       user.should be_valid
-      user.password = "asd"
+      user.new_password = "asd"
       user.should be_invalid
     end
 
     it "cannot have spaces" do
-      user.password = "some pass"
+      user.new_password = "some pass"
       user.should be_invalid
     end
 
     it "can have letters, numbers and symbols" do
-      user.password = "asf_1-%24#5s$"
+      user.new_password = "asf_1-%24#5s$"
       user.should be_valid
     end
 
     describe "changing the password" do
-      let(:user){ create(:teacher, email: "test@mail.com").user }
-
       it "does not change the password when nil" do
-        user.password = nil
+        user.new_password = nil
         user.save!
-        user.should_not be_active
+        User.authenticate("test@mail.com", "pass").should == user
       end
 
       it "does not change the password when blank" do
-        user.password = " "
+        user.new_password = " "
         user.save!
-        user.should_not be_active
+        User.authenticate("test@mail.com", "pass").should == user
       end
 
-      it "changes the password when present" do
-        user.password = "some-pass"
+      it "changes the password when the password present" do
+        user.new_password = "some-pass"
         user.save!
-        user.should be_active
+        User.authenticate("test@mail.com", "pass").should be_nil
         User.authenticate("test@mail.com", "some-pass").should == user
       end
 
-      it "changes the password when present with a confirmation" do
-        user.password = "randomstuff"
-        user.password_confirmation = "randomstuff"
-        user.save!
-        user.should be_active
-        User.authenticate("test@mail.com", "randomstuff").should == user
-      end     
+      it "does not change the password when the current_password is empty" do
+        user.new_password = "some-pass"
+        user.current_password = nil
+        user.should be_invalid
+      end
+
+      it "does not change the password when the current_password is wrong" do
+        user.new_password = "some-pass"
+        user.current_password = "wrongpass"
+        user.should be_invalid
+      end
+    end
+  end
+
+  describe "#set_password" do
+    it "sets the password to the passed value" do
+      user.set_password("a_password")
+      User.authenticate("test@mail.com", "a_password").should == user
     end
   end
   
   describe "authenticate" do
-    let(:user){ create(:teacher, email: "test@mail.com").user }
-
     context "with an inactive user" do
       before{ user }
 
@@ -212,11 +196,8 @@ describe User do
       let(:other_user){ create(:teacher, email: "other_test@mail.com").user }
       
       before do
-        user.password = "test-pass"
-        user.save!
-
-        other_user.password = "other-pass"
-        other_user.save!
+        user.set_password "test-pass"
+        other_user.set_password "other-pass"
       end
 
       it "returns the matched user when given a valid username and password" do

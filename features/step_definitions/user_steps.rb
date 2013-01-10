@@ -46,8 +46,7 @@ end
 
 def set_profile_password(profile, password)
   user = profile.user
-  user.password = password
-  user.save!
+  user.set_password password
 end
 
 def create_profile(type, name, email=nil)

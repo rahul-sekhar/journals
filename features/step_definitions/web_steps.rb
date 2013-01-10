@@ -87,6 +87,10 @@ When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
 end
 
+When /^I click the button "(.*?)"$/ do |p_button|
+  page.find_button(p_button).click
+end
+
 Then /^I should see the button "(.*?)"$/ do |p_button|
   page.should have_button p_button
 end

@@ -1,4 +1,3 @@
-@current
 Feature: Group permissions for a guardian
 
 As a guardian, I can view but not manage groups

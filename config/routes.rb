@@ -8,6 +8,8 @@ Journals::Application.routes.draw do
   get "people" => "pages#people"
   get "people/archived" => "pages#archived", as: "archived_people"
   get "mentees" => "pages#mentees"
+  get "change_password" => "pages#change_password"
+  put "change_password" => "pages#update_password"
 
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]
