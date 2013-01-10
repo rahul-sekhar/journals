@@ -2,6 +2,7 @@ class GroupsController < ApplicationController
   load_and_authorize_resource
 
   def index
+    authorize! :manage, Group
     @groups = @groups.alphabetical
   end
 

@@ -175,5 +175,80 @@ describe Guardian do
         ability.should_not be_able_to :destroy, comment
       end
     end
+
+    describe "profiles:" do
+      it "can view profiles" do
+        ability.should be_able_to :read, Student
+        ability.should be_able_to :read, Teacher
+        ability.should be_able_to :read, Guardian
+      end
+
+      it "cannot edit profiles" do
+        ability.should_not be_able_to :update, create(:student)
+        ability.should_not be_able_to :update, create(:teacher)
+        ability.should_not be_able_to :update, create(:guardian)
+      end
+
+      it "can edit its own profile" do
+        ability.should be_able_to :update, profile
+      end
+
+      it "can edit only its own students profile" do
+        ability.should be_able_to :update, student1
+        ability.should be_able_to :update, student2
+        ability.should_not be_able_to :update, create(:student)
+      end
+
+      it "can edit a guardian shared by any of its students profile" do
+        guardian1 = create(:guardian, students: [student1])
+        guardian2 = create(:guardian, students: [student2])
+        guardian3 = create(:guardian)
+
+        ability.should be_able_to :update, guardian1
+        ability.should be_able_to :update, guardian2
+        ability.should_not be_able_to :update, guardian3
+      end
+
+      it "cannot create profiles" do
+        ability.should_not be_able_to :create, Student
+        ability.should_not be_able_to :create, Teacher
+        ability.should_not be_able_to :create, Guardian
+      end
+
+      it "cannot administrate profiles" do
+        ability.should_not be_able_to :administrate, Student
+        ability.should_not be_able_to :create, Student
+        ability.should_not be_able_to :reset, Student
+        ability.should_not be_able_to :archive, Student
+        ability.should_not be_able_to :destroy, Student
+        ability.should_not be_able_to :add_mentor, Student
+        ability.should_not be_able_to :remove_mentor, Student
+        ability.should_not be_able_to :add_group, Student
+        ability.should_not be_able_to :remove_group, Student
+
+        ability.should_not be_able_to :administrate, Teacher
+        ability.should_not be_able_to :reset, Teacher
+        ability.should_not be_able_to :archive, Teacher
+        ability.should_not be_able_to :destroy, Teacher
+        ability.should_not be_able_to :add_mentee, Teacher
+        ability.should_not be_able_to :remove_mentee, Teacher
+
+        ability.should_not be_able_to :administrate, Guardian
+        ability.should_not be_able_to :reset, Guardian
+        ability.should_not be_able_to :destroy, Guardian
+      end
+    end
+
+    describe "groups:" do
+      it "can view groups" do
+        ability.should be_able_to :read, Group
+      end
+
+      it "cannot create, edit and delete groups" do
+        ability.should_not be_able_to :create, Group
+        ability.should_not be_able_to :update, Group
+        ability.should_not be_able_to :delete, Group
+      end
+    end
   end
 end

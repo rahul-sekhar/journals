@@ -5,7 +5,7 @@ Students should be allowed to create posts but not set permissions, and cannot r
 Background:
   Given some base students and teachers exist
   And I have logged in as a student "Rahul Sekhar"
-  And I am on the create post page
+  And I am on the new post page
 
 Scenario: Create a minimal post with a title, content and tags
   When I fill in "Title" with "Test Post"

@@ -3,10 +3,21 @@
   %head
     %meta{"content" => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
   %body
-    %p 
-      Dear 
-      = @profile.full_name
+    %p Dear #{@profile.full_name},
 
     %p 
-      Your password is 
-      = @password
+      You have been added to the 
+      = Rails.configuration.settings['application_name']
+      as a 
+      = @profile.class.to_s.downcase
+      of the school. This online application is meant to facilitate communication between teachers, students and guardians.
+
+    %p
+      Please log in with your email address 
+      = @profile.email
+      %br
+      Your password is temporarily #{@password}. You will need to change the password once you log in.
+    
+    %p Thank you!
+
+    %p= link_to Rails.configuration.settings['application_name'], root_url

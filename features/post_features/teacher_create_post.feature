@@ -5,7 +5,7 @@ As a teacher I should be able to create a post so that I can add content to the 
 Background:
   Given some base students and teachers exist
   And I have logged in as a teacher "Rahul Sekhar"
-  And I am on the create post page
+  And I am on the new post page
 
 Scenario: Create a minimal post with a title, content and tags
   When I fill in "Title" with "Test Post"
@@ -19,7 +19,7 @@ Scenario: Create a minimal post with a title, content and tags
 Scenario: Create a post without a title
   When I fill in "Content" with "Content without a title"
   And I click "Create post"
-  Then I should be on the create post page
+  Then I should be on the new post page
   And I should see "Please enter a post title"
   And "Content" should be filled in with "Content without a title"
 

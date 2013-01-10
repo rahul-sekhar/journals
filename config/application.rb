@@ -24,6 +24,9 @@ module Journals
     config.sensitive = YAML.load_file("#{config.root}/config/sensitive.yml")['journals']
     config.settings = YAML.load_file("#{config.root}/config/settings.yml")
 
+    # Set mailer host
+    config.action_mailer.default_url_options = config.settings['host']
+
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
 

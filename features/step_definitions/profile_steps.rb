@@ -34,6 +34,11 @@ Given /^a guardian Manoj for that student exists$/ do
   @guardian = @profile.guardians.create!(first_name: "Manoj", last_name: "Jain")
 end
 
+Given /^I have the guardian "(\S+) (\S+)"$/ do |p_first_name, p_last_name|
+  @guardian = @logged_in_user.profile.guardians.create!(first_name: p_first_name, last_name: p_last_name)
+  
+end
+
 Given /^a guardian Poonam for that student exists$/ do
   @guardian = @profile.guardians.create!(
     first_name: "Poonam", 
@@ -69,4 +74,17 @@ end
 
 Given /^that teacher|student is archived$/ do
   @profile.toggle_archive
+end
+
+Given /^the profile in question is my students profile$/ do
+  @profile = @student
+end
+
+# Links for a student page
+When /^I click the student "Edit profile" link$/ do
+  page.find(".profile > a", text: "Edit profile").click
+end
+
+When /^I click the "Edit profile" link for the guardian "(.*?)"$/ do |p_guardian_name|
+  page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/../a[text()="Edit profile"]').click
 end

@@ -46,8 +46,8 @@ describe GroupsController do
 
 
   describe "GET index" do
-    it "raises an exception if the user cannot read groups" do
-      ability.cannot :read, Group
+    it "raises an exception if the user cannot manage groups" do
+      ability.cannot :manage, Group
       expect{ get :index }.to raise_exception(CanCan::AccessDenied)
     end
 

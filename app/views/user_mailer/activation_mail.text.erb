@@ -1,3 +1,12 @@
 Dear <%= @profile.full_name %>,
 
-Your password is <%= @password %>
+You have been added to the <%= Rails.configuration.settings['application_name'] %> as a <%= @profile.class.to_s.downcase %> of the school. This online application is meant to facilitate communication between teachers, students and guardians.
+
+Please log in with your email address <%= @profile.email %>
+Your password is temporarily <%= @password %>. You will need to change the password once you log in.
+
+The 'Help' section on the Journals has an introductory tour of the application. If you have any further questions, please contact a school administrator.
+
+Thank you!
+
+<%= root_url %>

@@ -5,15 +5,6 @@ module NavigationHelpers
     when /the home page/
       '/'
 
-    when /the posts page/
-      posts_path
-
-    when /the create post page/
-      new_post_path
-
-    when /the login page/
-      login_path
-
     when /the page for that post/
       post_path(@post)
 
@@ -35,17 +26,23 @@ module NavigationHelpers
     when /the edit page for that profile/
       edit_profile_path(@profile)
 
+    when /the edit page for my profile/
+      edit_profile_path(@logged_in_user.profile)
+
     when /the edit page for the guardian/
       edit_profile_path(@guardian)
 
     when /the page for one of the students/
       student_path(@student)
 
-    when /the groups page/
-      groups_path
-
     when /the page for that group/
       group_path(@group)
+
+    when /the create guardian page for that profile/
+      new_student_guardian_path(@profile)
+
+    when /the create guardian page for my profile/
+      new_student_guardian_path(@logged_in_user.profile)
 
     else
       begin

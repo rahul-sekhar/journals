@@ -1,3 +1,11 @@
+# Step to check within a block
+Given /^(.*) within the "(.*?)" block$/ do |p_step, p_context|
+  within(p_context) do
+    step p_step
+  end
+end
+
+
 # Page testing steps
 Given /^I am on (.*?)$/ do |p_page|
   visit path_to(p_page)
@@ -21,18 +29,6 @@ Then /^I should not see "(.*?)"$/ do |p_content|
   page.should have_no_content p_content
 end
 
-Then /^I should see "(.*?)" within the "(.*?)" block$/ do |p_content, p_context|
-  within(p_context) do
-    page.should have_content p_content
-  end
-end
-
-Then /^I should not see "(.*?)" within the "(.*?)" block$/ do |p_content, p_context|
-  within(p_context) do
-    page.should have_no_content p_content
-  end
-end
-
 Then /^a "(.*?)" block should be present$/ do |p_css|
   page.should have_css p_css
 end
@@ -53,6 +49,8 @@ end
 Then /^I should not see the heading "(.*?)"$/ do |p_content|
   page.should have_no_css "h3", text: p_content
 end
+
+
 
 
 # Input field steps
@@ -89,20 +87,20 @@ When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
 end
 
-When /^I click "(.*?)" within the "(.*?)" block$/ do |p_link, p_context|
-  within(p_context) do
-    click_on p_link
-  end
+Then /^I should see the button "(.*?)"$/ do |p_button|
+  page.should have_button p_button
+end
+
+Then /^I should not see the button "(.*?)"$/ do |p_button|
+  page.should have_no_button p_button
 end
 
 Then /^I should not see the link "(.*?)"$/ do |p_link|
   page.should have_no_link p_link
 end
 
-Then /^I should not see the link "(.*?)" within the "(.*?)" block$/ do |p_link, p_context|
-  within(p_context) do
-    page.should have_no_link p_link
-  end
+Then /^I should see the link "(.*?)" (\d+) times$/ do |p_content, p_count|
+  page.should have_link p_content, count: p_count
 end
 
 When /^I click "(.*?)" near "(.*?)" in a list item$/ do |p_link, p_text|

@@ -101,7 +101,7 @@ describe PagesController do
   end
 
 
-  describe "GET mentees", :focus do
+  describe "GET mentees" do
     context "when logged in as a student" do
       before{ user.stub(:profile).and_return(create(:student)) }
 

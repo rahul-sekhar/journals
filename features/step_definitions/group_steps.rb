@@ -9,6 +9,12 @@ Given /^that student belongs to the groups "(.*?)"$/ do |p_groups|
   @profile.save!
 end
 
+Given /^I belong to the groups "(.*?)"$/ do |p_groups|
+  profile = @logged_in_user.profile
+  profile.groups = Group.find_or_build_list(p_groups)
+  profile.save!
+end
+
 Given /^a group "(.*?)" exists$/ do |p_group|
   @group = Group.create!(name: p_group)
 end

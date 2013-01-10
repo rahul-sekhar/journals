@@ -6,7 +6,7 @@ Scenario: Navigate pages as teacher
   Given I have logged in as a teacher "Rahul Sekhar"
   Then I should be on the posts page
   When I click "New post"
-  Then I should be on the create post page
+  Then I should be on the new post page
   When I click "View posts"
   Then I should be on the posts page
 

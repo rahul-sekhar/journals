@@ -5,7 +5,7 @@ Guardians should be able to create posts and set only student permissions on the
 Background:
   Given some base students and teachers exist
   And I have logged in as a guardian "Rahul Sekhar" to the student "Roly Sekhar"
-  And I am on the create post page
+  And I am on the new post page
 
 Scenario: Create a minimal post with a title, content and tags
   When I fill in "Title" with "Test Post"
@@ -28,7 +28,7 @@ Scenario: Create a post without own students tag
   And I select "Ansh Something" from "Student tags"
   And I unselect "Roly Sekhar" from "Student tags"
   And I click "Create post"
-  Then I should be on the create post page
+  Then I should be on the new post page
   And I should see "You must tag at least one of your own students"
 
 Scenario: Set post permissions
@@ -41,7 +41,7 @@ Scenario: Set post permissions
 
 Scenario: Create a post as a guardian with multiple students
   Given the guardian "Rahul Sekhar" has a student "Lucky Sekhar"
-  When I am on the create post page
+  When I am on the new post page
   Then "Student tags" should have "Roly Sekhar, Lucky Sekhar" selected
   When I fill in "Title" with "Guardian Post with Lucky"
   And I unselect "Roly Sekhar" from "Student tags"
@@ -50,10 +50,10 @@ Scenario: Create a post as a guardian with multiple students
 
 Scenario: Untag all students as a guardian with multiple students
   Given the guardian "Rahul Sekhar" has a student "Lucky Sekhar"
-  When I am on the create post page
+  When I am on the new post page
   And I fill in "Title" with "Guardian Post with Lucky"
   And I unselect "Roly Sekhar" from "Student tags"
   And I unselect "Lucky Sekhar" from "Student tags"
   And I click "Create post"
-  Then I should be on the create post page
+  Then I should be on the new post page
   And I should see "You must tag at least one of your own students"
