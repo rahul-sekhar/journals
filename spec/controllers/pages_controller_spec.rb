@@ -99,4 +99,48 @@ describe PagesController do
       assigns(:empty_message).should be_present
     end
   end
+
+
+  describe "GET mentees", :focus do
+    context "when logged in as a student" do
+      before{ user.stub(:profile).and_return(create(:student)) }
+
+      it "raises a page not found exception" do
+        expect{ get :mentees }.to raise_exception( ActiveRecord::RecordNotFound )
+      end
+    end
+
+    context "when logged in as a guardian" do
+      before{ user.stub(:profile).and_return(create(:guardian)) }
+
+      it "raises a page not found exception" do
+        expect{ get :mentees }.to raise_exception( ActiveRecord::RecordNotFound )
+      end
+    end
+
+    context "when logged in as a teacher" do
+      let(:teacher){ create(:teacher) }
+      before{ user.stub(:profile).and_return(teacher) }
+
+      it "has a status of 200" do
+        get :mentees
+        response.status.should == 200
+      end
+
+      it "assigns any mentees into a profiles collection" do
+        student1 = create(:student)
+        student2 = create(:student)
+        student3 = create(:student)
+        teacher.mentees = [student1, student3]
+        get :mentees
+        assigns(:profiles).should =~ [student1, student3]
+      end
+
+      it "sets an empty_message" do
+        get :mentees
+        assigns(:empty_message).should be_present
+      end
+    end
+    
+  end
 end

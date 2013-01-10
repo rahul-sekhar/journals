@@ -149,3 +149,7 @@ end
 Then /^I should get a forbidden message when (.*)$/ do |p_step|
   expect{ step p_step }.to raise_exception(CanCan::AccessDenied)
 end
+
+Then /^I should get a page not found message when (.*)$/ do |p_step|
+  expect{ step p_step }.to raise_exception(ActiveRecord::RecordNotFound)
+end

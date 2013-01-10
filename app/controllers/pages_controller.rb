@@ -15,4 +15,12 @@ class PagesController < ApplicationController
     @profiles = People.archived.alphabetical.map{ |person| person.profile }
     render "people"
   end
+
+  def mentees
+    raise ActiveRecord::RecordNotFound unless current_profile.is_a? Teacher
+
+    @empty_message = "You do not have any mentees yet."
+    @profiles = current_profile.mentees
+    render "people"
+  end
 end

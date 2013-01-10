@@ -1,12 +1,13 @@
 Journals::Application.routes.draw do
   root :to => "pages#home"
 
-  get "login" => "sessions#new", as: "login"
+  get "login" => "sessions#new"
   post "login" => "sessions#create"
-  get "logout" => "sessions#destroy", as: "logout"
+  get "logout" => "sessions#destroy"
 
-  get "people" => "pages#people", as: "people"
+  get "people" => "pages#people"
   get "people/archived" => "pages#archived", as: "archived_people"
+  get "mentees" => "pages#mentees"
 
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]
