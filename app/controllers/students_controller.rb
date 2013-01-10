@@ -1,6 +1,12 @@
 class StudentsController < ApplicationController
   load_and_authorize_resource
 
+  def index
+    @empty_message = "There are no students yet."
+    @profiles = @students.current.alphabetical
+    render "pages/people"
+  end
+
   def show
   end
 

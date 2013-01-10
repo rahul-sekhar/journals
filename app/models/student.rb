@@ -12,13 +12,21 @@ class Student < ActiveRecord::Base
 
   validates :bloodgroup, length: { maximum: 15 }
 
+  scope :current, where(archived: false)
+  scope :archived, where(archived: true)
+
   def name_with_type
     "#{full_name} (student)"
   end
 
   def toggle_archive
     self.archived = !archived
-    user.deactivate if (user && archived)
+
+    if archived
+      user.deactivate if user.present?
+      mentors.clear
+    end
+
     save
     guardians.each { |guardian| guardian.check_students }
   end
@@ -58,7 +66,7 @@ class Student < ActiveRecord::Base
   end
 
   def remaining_teachers
-    Teacher.where{ id.not_in( my{ mentor_ids } ) }
+    Teacher.current.where{ id.not_in( my{ mentor_ids } ) }
   end  
 
   def self.fields

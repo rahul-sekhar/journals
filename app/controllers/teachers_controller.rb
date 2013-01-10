@@ -1,6 +1,12 @@
 class TeachersController < ApplicationController
   load_and_authorize_resource
 
+  def index
+    @empty_message = "There are no teachers yet."
+    @profiles = @teachers.current.alphabetical
+    render "pages/people"
+  end
+
   def show
   end
 

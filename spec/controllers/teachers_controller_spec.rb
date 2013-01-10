@@ -12,6 +12,49 @@ describe TeachersController do
     ability.can :manage, Teacher
   end
 
+
+  describe "GET index" do
+    let(:user){ create(:student_with_user).user }
+
+    it "raises an exception if the user cannot view teachers" do
+      ability.cannot :read, Teacher
+      expect{ get :index }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      get :index
+      response.status.should == 200
+    end
+
+    it "assigns any teachers into a profiles collection" do
+      student1 = create(:student)
+      teacher1 = create(:teacher)
+      teacher2 = create(:teacher)
+      get :index
+      assigns(:profiles).should =~ [teacher1, teacher2]
+    end
+
+    it "does not assign archived teachers" do
+      teacher1 = create(:teacher)
+      teacher2 = create(:teacher, archived: true)
+      get :index
+      assigns(:profiles).should == [teacher1]
+    end
+
+    it "sorts the teachers alphabetically" do
+      teacher1 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
+      teacher2 = create(:teacher, first_name: "Ze", last_name: "Teacher")
+      teacher3 = create(:teacher, first_name: "A", last_name: "Teacher")
+      get :index
+      assigns(:profiles).should == [teacher3, teacher1, teacher2]
+    end
+
+    it "sets an empty_message" do
+      get :index
+      assigns(:empty_message).should be_present
+    end
+  end
+
   describe "GET show" do
     let(:teacher){ mock_model(Teacher) }
     before { Teacher.stub(:find).and_return(teacher) }

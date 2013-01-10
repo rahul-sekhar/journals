@@ -6,5 +6,13 @@ class PagesController < ApplicationController
   end
 
   def people
+    @empty_message = "There are no current students and teachers yet."
+    @profiles = People.current.alphabetical.map{ |person| person.profile }
+  end
+
+  def archived
+    @empty_message = "There are no archived students and teachers yet."
+    @profiles = People.archived.alphabetical.map{ |person| person.profile }
+    render "people"
   end
 end

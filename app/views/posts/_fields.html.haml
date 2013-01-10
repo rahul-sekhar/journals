@@ -8,13 +8,13 @@
   = form.inputs nil, class: :tags do
     = form.input :students, 
       label: 'Student tags',
-      collection: Student.alphabetical,
+      collection: Student.current.alphabetical,
       member_label: :full_name,
       input_html: { size: 6 }
 
     = form.input :teachers, 
       label: 'Teacher tags',
-      collection: Teacher.alphabetical,
+      collection: Teacher.current.alphabetical,
       member_label: :full_name,
       input_html: { size: 6 }
 

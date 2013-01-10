@@ -46,6 +46,14 @@ Then /^the span "(.*?)" should have the title "(.*?)"$/ do |p_text, p_title|
   span['title'].should == p_title
 end
 
+Then /^I should see the heading "(.*?)"$/ do |p_content|
+  page.should have_css "h3", text: p_content
+end
+
+Then /^I should not see the heading "(.*?)"$/ do |p_content|
+  page.should have_no_css "h3", text: p_content
+end
+
 
 # Input field steps
 When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|

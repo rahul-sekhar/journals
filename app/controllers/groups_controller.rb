@@ -6,6 +6,9 @@ class GroupsController < ApplicationController
   end
 
   def show
+    @empty_message = "There are no students in this group yet."
+    @profiles = @group.students
+    render "pages/people"
   end
 
   def new

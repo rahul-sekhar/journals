@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130109155956) do
+ActiveRecord::Schema.define(:version => 20130110060332) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -82,6 +82,36 @@ ActiveRecord::Schema.define(:version => 20130109155956) do
     t.index ["strand_id"], :name => "index_milestones_on_strand_id", :order => {"strand_id" => :asc}
   end
 
+  create_table "students", :force => true do |t|
+    t.string   "first_name",            :limit => 80
+    t.string   "last_name",             :limit => 80,                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.date     "birthday"
+    t.string   "bloodgroup",            :limit => 15
+    t.text     "address"
+    t.string   "application_form_file"
+    t.string   "home_phone",            :limit => 40
+    t.string   "mobile",                :limit => 40
+    t.string   "office_phone",          :limit => 40
+    t.boolean  "archived",                            :default => false, :null => false
+    t.index ["first_name", "last_name"], :name => "student_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
+  end
+
+  create_table "teachers", :force => true do |t|
+    t.string   "first_name",   :limit => 80
+    t.string   "last_name",    :limit => 80,                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "mobile",       :limit => 40
+    t.text     "address"
+    t.string   "home_phone",   :limit => 40
+    t.string   "office_phone", :limit => 40
+    t.boolean  "archived",                   :default => false, :null => false
+    t.index ["first_name", "last_name"], :name => "teacher_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
+  end
+
+  create_view "people", "SELECT (((students.first_name)::text || ' '::text) || (students.last_name)::text) AS full_name, students.archived, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT (((teachers.first_name)::text || ' '::text) || (teachers.last_name)::text) AS full_name, teachers.archived, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers", :force => true
   create_table "posts", :force => true do |t|
     t.string   "title",                                                 :null => false
     t.text     "content"
@@ -114,35 +144,6 @@ ActiveRecord::Schema.define(:version => 20130109155956) do
     t.integer "post_id",    :null => false
     t.integer "teacher_id", :null => false
     t.index ["post_id", "teacher_id"], :name => "index_posts_teachers_on_post_id_and_teacher_profile_id", :unique => true, :order => {"post_id" => :asc, "teacher_id" => :asc}
-  end
-
-  create_table "students", :force => true do |t|
-    t.string   "first_name",            :limit => 80
-    t.string   "last_name",             :limit => 80,                    :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.date     "birthday"
-    t.string   "bloodgroup",            :limit => 15
-    t.text     "address"
-    t.string   "application_form_file"
-    t.string   "home_phone",            :limit => 40
-    t.string   "mobile",                :limit => 40
-    t.string   "office_phone",          :limit => 40
-    t.boolean  "archived",                            :default => false, :null => false
-    t.index ["first_name", "last_name"], :name => "student_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
-  end
-
-  create_table "teachers", :force => true do |t|
-    t.string   "first_name",   :limit => 80
-    t.string   "last_name",    :limit => 80,                    :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "mobile",       :limit => 40
-    t.text     "address"
-    t.string   "home_phone",   :limit => 40
-    t.string   "office_phone", :limit => 40
-    t.boolean  "archived",                   :default => false, :null => false
-    t.index ["first_name", "last_name"], :name => "teacher_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
   end
 
   create_view "profile_names", "(SELECT students.first_name, \"left\"((students.last_name)::text, 1) AS initial, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT teachers.first_name, \"left\"((teachers.last_name)::text, 1) AS initial, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers) UNION ALL SELECT guardians.first_name, \"left\"((guardians.last_name)::text, 1) AS initial, 'Guardian'::text AS profile_type, guardians.id AS profile_id FROM guardians", :force => true

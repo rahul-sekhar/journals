@@ -43,6 +43,12 @@ describe Teacher do
         profile.user.should_receive(:deactivate)
         profile.toggle_archive
       end
+
+      it "removes all mentees" do
+        profile.mentees = [create(:student), create(:student)]
+        profile.toggle_archive
+        profile.reload.mentees.should be_empty
+      end
     end
 
     context "with no user" do
@@ -66,9 +72,10 @@ describe Teacher do
         @student1 = create(:student)
         @student2 = create(:student)
         @student3 = create(:student)
+        @student4 = create(:student, archived: true)
       end
 
-      it "returns all students when the student has no mentees" do
+      it "returns all unarchived students when the student has no mentees" do
         profile.remaining_students.should =~ [@student1, @student2, @student3]
       end
 

@@ -6,6 +6,7 @@ Journals::Application.routes.draw do
   get "logout" => "sessions#destroy", as: "logout"
 
   get "people" => "pages#people", as: "people"
+  get "people/archived" => "pages#archived", as: "archived_people"
 
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]

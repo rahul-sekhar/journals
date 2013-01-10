@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupsController, :focus do
+describe GroupsController do
   let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new
@@ -16,6 +16,13 @@ describe GroupsController, :focus do
     let(:group){ create(:group) }
     let(:make_request) { get :show, id: group.id }
 
+    before do
+      @student1 = create(:student)
+      @student2 = create(:student)
+      @student3 = create(:student)
+      group.students = [@student1, @student3]
+    end
+
     it "raises an exception if the user cannot read the group" do
       ability.cannot :read, group
       expect{ make_request }.to raise_exception(CanCan::AccessDenied)
@@ -26,9 +33,14 @@ describe GroupsController, :focus do
       response.status.should eq(200)
     end
 
-    it "assigns the found group" do
+    it "assigns the found groups students" do
       make_request
-      assigns(:group).should == group
+      assigns(:profiles).should =~ [@student1, @student3]
+    end
+
+    it "sets an empty_message" do
+      make_request
+      assigns(:empty_message).should be_present
     end
   end
 

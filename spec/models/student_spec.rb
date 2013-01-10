@@ -128,6 +128,12 @@ describe Student do
         profile.toggle_archive
       end
 
+      it "removes all mentors from the student" do
+        profile.mentors = [create(:teacher), create(:teacher)]
+        profile.toggle_archive
+        profile.reload.mentors.should be_empty
+      end
+
       it "should deactivate any guardians that are archived" do
         guardian1.reset_password
         guardian2.reset_password
@@ -210,9 +216,10 @@ describe Student do
         @teacher1 = create(:teacher)
         @teacher2 = create(:teacher)
         @teacher3 = create(:teacher)
+        @teacher4 = create(:teacher, archived: true)
       end
 
-      it "returns all teachers when the student has no mentors" do
+      it "returns all unarchived teachers when the student has no mentors" do
         profile.remaining_teachers.should =~ [@teacher1, @teacher2, @teacher3]
       end
 

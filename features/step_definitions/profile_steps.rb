@@ -62,3 +62,11 @@ Given /^the profile has no email address$/ do
   @profile.email = nil
   @profile.save!
 end
+
+Given /^a (teacher|student) named "(\S+) (\S+)" exists$/ do |p_type, p_first_name, p_last_name|
+  @profile = FactoryGirl.create(p_type, first_name: p_first_name, last_name: p_last_name)
+end
+
+Given /^that teacher|student is archived$/ do
+  @profile.toggle_archive
+end
