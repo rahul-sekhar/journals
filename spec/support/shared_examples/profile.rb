@@ -3,7 +3,8 @@ shared_examples_for "a profile" do
     profile.should be_valid
   end
 
-  it "is invalid without a last name" do
+  it "is invalid without a first_name or last name" do
+    profile.first_name = nil
     profile.last_name = nil
     profile.should be_invalid
   end
@@ -134,6 +135,14 @@ shared_examples_for "a profile" do
       profile.should be_valid
       profile.last_name = "a" * 81
       profile.should be_invalid
+    end
+
+    it "is set to the first name if not present" do
+      profile.first_name = "Something"
+      profile.last_name = nil
+      profile.save!
+      profile.reload.first_name.should be_nil
+      profile.reload.last_name.should == "Something"
     end
   end
 
@@ -323,6 +332,51 @@ shared_examples_for "a profile" do
 
     it "returns either the function or the input of the field, giving preference to the input" do
       profile_class.inputs.should == [:something, :some_input]
+    end
+  end
+
+  describe "##name_is" do
+    before do
+      @profile1 = profile_class.create(first_name: "First", last_name: "Last")
+      @profile2 = profile_class.create(first_name: "First")
+    end
+
+    it "returns a profile with passed names" do
+      profile_class.name_is("First", "Last").should == @profile1
+    end
+
+    it "returns nil if no match was found" do
+      profile_class.name_is("Some", "Last").should be_nil
+    end
+
+    it "matches names case insensitively" do
+      profile_class.name_is("first", "last").should == @profile1
+    end
+
+    it "matches profiles with only single names" do
+      profile_class.name_is("first", nil).should == @profile2
+      profile_class.name_is("first", " ").should == @profile2
+    end
+  end
+
+  describe "##names_are" do
+    before do
+      @profile1 = profile_class.create(first_name: "First", last_name: "Last")
+      @profile2 = profile_class.create(first_name: "First", last_name: "last")
+      @profile3 = profile_class.create(first_name: "First")
+    end
+
+    it "returns profiles with passed names" do
+      profile_class.names_are("first", "last").should == [@profile1, @profile2]
+    end
+
+    it "returns an empty array if no match was found" do
+      profile_class.names_are("Some", "Last").should be_empty
+    end
+
+    it "matches profiles with only single names" do
+      profile_class.names_are("first", nil).should == [@profile3]
+      profile_class.names_are("first", " ").should == [@profile3]
     end
   end
 end

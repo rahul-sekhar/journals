@@ -11,11 +11,14 @@ en:
         create: "Comment"
         update: "Save"
       teacher:
-        update: "Save profile"
+        create: "Create"
+        update: "Save"
       student:
-        update: "Save profile"
+        create: "Create"
+        update: "Save"
       guardian:
-        update: "Save profile"
+        create: "Create"
+        update: "Save"
       group:
         create: "Create"
         update: "Save"

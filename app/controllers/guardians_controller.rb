@@ -4,6 +4,42 @@ class GuardiansController < ApplicationController
   def show
   end
 
+  def new
+    @student = Student.find(params[:student_id])
+  end
+
+  def create
+    @student = Student.find(params[:student_id])
+
+    # Check for existing guardians with the same name for that student
+    if @student.guardians.name_is(@guardian.first_name, @guardian.last_name)
+      redirect_to @student, alert: "#{@student.full_name} already has a guardian named #{@guardian.full_name}"
+      return
+    end
+
+    # Skip duplicate check if use_duplicate is set
+    if (params[:use_duplicate].present?)
+      if params[:use_duplicate].to_i > 0
+        @guardian = Guardian.find(params[:use_duplicate])
+      end
+    else
+      # Check for guardians with the same name for other students
+      @duplicate_guardians = Guardian.names_are(@guardian.first_name, @guardian.last_name)
+      if @duplicate_guardians.present?
+        render "check_duplicates"
+        return
+      end
+    end
+
+    @guardian.students << @student
+
+    if @guardian.save
+      redirect_to @student
+    else
+      redirect_to new_student_guardian_path(@student), alert: "You must enter a name for the guardian."
+    end
+  end
+
   def edit
     # Pre-load data if present
     @guardian.assign_attributes(flash[:guardian_data]) if flash[:guardian_data]

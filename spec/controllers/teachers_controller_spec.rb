@@ -55,6 +55,7 @@ describe TeachersController do
     end
   end
 
+
   describe "GET show" do
     let(:teacher){ mock_model(Teacher) }
     before { Teacher.stub(:find).and_return(teacher) }
@@ -80,13 +81,98 @@ describe TeachersController do
     end
   end
 
+
+  describe "GET new" do
+    let(:make_request){ get :new }
+
+    it "raises an exception if the user cannot create a teacher" do
+      ability.cannot :create, Teacher
+      expect{ get :new }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      make_request
+      response.status.should eq(200)
+    end
+
+    it "assigns an empty teacher" do
+      make_request
+      assigns(:teacher).should be_new_record
+    end
+  end
+
+
+  describe "POST create" do
+    context "with valid data" do
+      let(:make_request){ post :create, teacher: { first_name: "Rahul", last_name: "Sekhar" } }
+
+      it "raises an exception if the user cannot create a teacher" do
+        ability.cannot :create, Teacher
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      it "creates a teacher" do
+        expect{ make_request }.to change{ Teacher.count }.by(1)
+      end
+
+      it "creates a teacher with the correct name" do
+        make_request
+        assigns(:teacher).first_name.should == "Rahul"
+        assigns(:teacher).last_name.should == "Sekhar"
+      end
+
+      it "redirects to the teacher page" do
+        make_request
+        response.should redirect_to teacher_path(assigns(:teacher))
+      end
+    end
+
+    context "with only a first name" do
+      let(:make_request){ post :create, teacher: { first_name: "Rahul", last_name: " " } }
+
+      it "creates a teacher" do
+        expect{ make_request }.to change{ Teacher.count }.by(1)
+      end
+
+      it "sets the last name and not the first name" do
+        make_request
+        assigns(:teacher).first_name.should be_nil
+        assigns(:teacher).last_name.should == "Rahul"
+      end
+
+      it "redirects to the teacher page" do
+        make_request
+        response.should redirect_to teacher_path(assigns(:teacher))
+      end
+    end
+
+    context "with no first name or last name" do
+      let(:make_request){ post :create, teacher: { first_name: " " } }
+
+      it "does not create a teacher" do
+        expect{ make_request }.to change{ Teacher.count }.by(0)
+      end
+
+      it "sets a flash alert" do
+        make_request
+        flash[:alert].should be_present
+      end
+
+      it "redirects to the new teacher page" do
+        make_request
+        response.should redirect_to new_teacher_path
+      end
+    end
+  end
+
+
   describe "GET edit" do
     let(:teacher){ create(:teacher) }
     let(:make_request){ get :edit, id: teacher.id }
 
     it "raises an exception if the user cannot update a teacher" do
       ability.cannot :update, teacher
-      expect{ get :edit, id: teacher.id }.to raise_exception(CanCan::AccessDenied)
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
     it "has a status of 200" do
@@ -104,6 +190,7 @@ describe TeachersController do
       assigns(:teacher).mobile.should == "1234"
     end
   end
+
 
   describe "PUT update" do
     let(:teacher){ create(:teacher) }
@@ -138,7 +225,7 @@ describe TeachersController do
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: teacher.id, teacher: { first_name: "Rahul", last_name: "" } }
+      let(:make_request){ put :update, id: teacher.id, teacher: { first_name: "", last_name: "" } }
 
       it "does not edit the teacher" do
         make_request
@@ -157,10 +244,11 @@ describe TeachersController do
 
       it "stores already filled data in a flash object" do
         make_request
-        flash[:teacher_data].should == { 'first_name' => 'Rahul', 'last_name' => '' }
+        flash[:teacher_data].should == { 'first_name' => '', 'last_name' => '' }
       end
     end
   end
+
 
   describe "DELETE destroy" do
     let(:teacher){ create(:teacher) }
@@ -191,6 +279,7 @@ describe TeachersController do
       flash[:notice].should be_present
     end
   end
+
 
   describe "POST reset" do
     let(:make_request){ post :reset, id: teacher.id }
@@ -264,6 +353,7 @@ describe TeachersController do
       end
     end
   end
+
 
   describe "POST archive" do
     let(:teacher){ create(:teacher) }

@@ -1,0 +1,8 @@
+- page_id 'new_profile'
+- title "Add a guardian to #{@student.full_name}"
+
+= semantic_form_for [@student, @guardian] do |form|
+  = form.inputs do
+    = form.input :first_name
+    = form.input :last_name
+  = form.actions

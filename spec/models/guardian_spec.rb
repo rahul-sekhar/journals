@@ -40,6 +40,33 @@ describe Guardian do
     end
   end
 
+  describe "#students_as_sentence" do
+    subject{ profile.students_as_sentence }
+    before do 
+      profile.students = [create(:student, first_name: "Roly", last_name: "Sekhar")]
+      profile.save!
+    end
+    
+    context "with one student" do
+      it { should == "Roly" }
+    end
+
+    context "with two students" do
+      before{ profile.students << [create(:student, first_name: "Lucky", last_name: "Sekhar")] }
+
+      it { should == "Lucky and Roly" }
+    end
+
+    context "with three students" do
+      before do 
+        profile.students << [create(:student, first_name: "Lucky", last_name: "Sekhar")]
+        profile.students << [create(:student, first_name: "Jumble", last_name: "Sekhar")]
+      end
+
+      it { should == "Jumble, Lucky, and Roly" }
+    end
+  end
+
   describe "permissions:" do
     let(:student1){ create(:student) }
     let(:student2){ create(:student) }

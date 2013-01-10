@@ -52,6 +52,8 @@ describe StudentsController do
     end
   end
 
+
+
   describe "GET show" do
     let(:student){ mock_model(Student) }
     before { Student.stub(:find).and_return(student) }
@@ -77,6 +79,92 @@ describe StudentsController do
     end
   end
 
+
+
+  describe "GET new" do
+    let(:make_request){ get :new }
+
+    it "raises an exception if the user cannot create a student" do
+      ability.cannot :create, Student
+      expect{ get :new }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      make_request
+      response.status.should eq(200)
+    end
+
+    it "assigns an empty student" do
+      make_request
+      assigns(:student).should be_new_record
+    end
+  end
+
+
+  describe "POST create" do
+    context "with valid data" do
+      let(:make_request){ post :create, student: { first_name: "Rahul", last_name: "Sekhar" } }
+
+      it "raises an exception if the user cannot create a student" do
+        ability.cannot :create, Student
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      it "creates a student" do
+        expect{ make_request }.to change{ Student.count }.by(1)
+      end
+
+      it "creates a student with the correct name" do
+        make_request
+        assigns(:student).first_name.should == "Rahul"
+        assigns(:student).last_name.should == "Sekhar"
+      end
+
+      it "redirects to the student page" do
+        make_request
+        response.should redirect_to student_path(assigns(:student))
+      end
+    end
+
+    context "with only a first name" do
+      let(:make_request){ post :create, student: { first_name: "Rahul", last_name: " " } }
+
+      it "creates a student" do
+        expect{ make_request }.to change{ Student.count }.by(1)
+      end
+
+      it "sets the last name and not the first name" do
+        make_request
+        assigns(:student).first_name.should be_nil
+        assigns(:student).last_name.should == "Rahul"
+      end
+
+      it "redirects to the student page" do
+        make_request
+        response.should redirect_to student_path(assigns(:student))
+      end
+    end
+
+    context "with no first name or last name" do
+      let(:make_request){ post :create, student: { first_name: " " } }
+
+      it "does not create a student" do
+        expect{ make_request }.to change{ Teacher.count }.by(0)
+      end
+
+      it "sets a flash alert" do
+        make_request
+        flash[:alert].should be_present
+      end
+
+      it "redirects to the new student page" do
+        make_request
+        response.should redirect_to new_student_path
+      end
+    end
+  end
+
+
   describe "GET edit" do
     let(:student){ create(:student) }
     let(:make_request){ get :edit, id: student.id }
@@ -101,6 +189,8 @@ describe StudentsController do
       assigns(:student).mobile.should == "1234"
     end
   end
+
+
 
   describe "PUT update" do
     let(:student){ create(:student) }
@@ -135,7 +225,7 @@ describe StudentsController do
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: student.id, student: { first_name: "Rahul", last_name: "" } }
+      let(:make_request){ put :update, id: student.id, student: { first_name: "", last_name: "", mobile: '1234' } }
 
       it "does not edit the student" do
         make_request
@@ -154,10 +244,12 @@ describe StudentsController do
 
       it "stores already filled data in a flash object" do
         make_request
-        flash[:student_data].should == { 'first_name' => 'Rahul', 'last_name' => '' }
+        flash[:student_data].should == { 'first_name' => '', 'last_name' => '', 'mobile' => '1234' }
       end
     end
   end
+
+
 
   describe "DELETE destroy" do
     let(:student){ create(:student) }
@@ -188,6 +280,8 @@ describe StudentsController do
       flash[:notice].should be_present
     end
   end
+
+
 
   describe "POST reset" do
     let(:make_request){ post :reset, id: student.id }
@@ -262,6 +356,8 @@ describe StudentsController do
     end
   end
 
+
+
   describe "POST archive" do
     let(:student){ create(:student) }
     let(:make_request){ post :archive, id: student.id }
@@ -292,6 +388,8 @@ describe StudentsController do
       flash[:notice].should be_present
     end
   end
+
+
 
   describe "POST add_group" do
     let(:student){ create(:student) }
@@ -365,6 +463,7 @@ describe StudentsController do
       end
     end
   end
+
 
 
   describe "POST remove_group" do

@@ -30,6 +30,10 @@ class Guardian < ActiveRecord::Base
     destroy if students.reload.empty?
   end
 
+  def students_as_sentence
+    students.alphabetical.map{ |student| student.name }.to_sentence
+  end
+
   def self.fields
     [
       { name: "Mobile", function: :mobile },

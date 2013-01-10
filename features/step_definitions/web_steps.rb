@@ -74,6 +74,15 @@ Then /^I should not see the field "(.*?)"$/ do |p_field|
 end
 
 
+# Option steps
+Then /^I should see the option "(.*?)"$/ do |p_option|
+  page.should have_field p_option, type: 'radio'
+end
+
+When /^I select the option "(.*?)"$/ do |p_option|
+  page.choose p_option
+end
+
 
 # Link and button steps
 When /^I click "(.*?)"$/ do |p_link|

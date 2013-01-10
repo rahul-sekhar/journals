@@ -23,7 +23,7 @@ Scenario: Edit a teacher profile
   And I fill in "Email" with "shalu@mail.com"
   And I fill in "Home phone" with "990088"
   And I fill in "Office phone" with " "
-  And I click "Save profile"
+  And I click "Save"
 
   Then I should be on the page for that profile
   And I should see "Shalu Pandya"
@@ -52,7 +52,7 @@ Scenario: Edit a student profile
   And I fill in "Address" with "Some other address"
   And I fill in "Birthday" with "20-11-2000"
   And I fill in "Blood group" with ""
-  And I click "Save profile"
+  And I click "Save"
 
   Then I should be on the page for that profile
   And I should see "Parvathy Jain"
@@ -77,7 +77,7 @@ Scenario: Edit a guardian profile
   And I fill in "Email" with "mail@jain.com"
   And I fill in "Office phone" with "12345"
   And I fill in "Address" with "Some address"
-  And I click "Save profile"
+  And I click "Save"
 
   Then I should be on the page for the guardian
   And I should see "Jain"

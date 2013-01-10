@@ -10,6 +10,17 @@ class StudentsController < ApplicationController
   def show
   end
 
+  def new
+  end
+
+  def create
+    if @student.save
+      redirect_to @student
+    else
+      redirect_to new_student_path, alert: "You must enter a name for the student."
+    end
+  end
+
   def edit
     # Pre-load data if present
     @student.assign_attributes(flash[:student_data]) if flash[:student_data]

@@ -13,7 +13,7 @@ Journals::Application.routes.draw do
   end
 
   resources :students do
-    resources :guardians, only: :destroy
+    resources :guardians, only: [:new, :create, :destroy]
 
     member do
       post :reset
