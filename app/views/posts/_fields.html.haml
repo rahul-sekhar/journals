@@ -14,21 +14,28 @@
     = form.input :students, 
       label: 'Student tags',
       collection: Student.current.alphabetical,
-      member_label: :full_name,
+      member_label: :name,
       input_html: { size: 6 }
 
     = form.input :teachers, 
       label: 'Teacher tags',
       collection: Teacher.current.alphabetical,
-      member_label: :full_name,
+      member_label: :name,
       input_html: { size: 6 }
 
   - if post.author.is_a? Teacher
-    = form.inputs nil, class: :"student-observations" do
+    - obs_class = post.student_observations.present? ? "student-observations" : "student-observations empty"
+    = form.inputs nil, class: obs_class do
+      %p Individual student observations
+      - index = 0
       = form.semantic_fields_for :student_observations do |obs_form|
-        = obs_form.input :id, as: :hidden
-        = obs_form.input :student_id, as: :hidden
-        = obs_form.input :content, label: "Observations for #{obs_form.object.student.name}"
+        - student = obs_form.object.student
+        .fields{ "data-name" => student.name, "data-id" => student.id, "data-index" => index }
+          = obs_form.input :id, as: :hidden
+          = obs_form.input :student_id, as: :hidden
+          = obs_form.input :content, label: "Observations for #{student.name}"
+
+        - index += 1
 
   - unless post.author.is_a? Student
     = form.inputs nil, class: :permissions do

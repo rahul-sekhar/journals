@@ -209,3 +209,8 @@ h2 {
 strong { font-weight: bold; }
 
 em { font-style: italic; }
+
+// Wrap words
+p {
+  @include word-wrap;
+}

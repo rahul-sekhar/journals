@@ -102,28 +102,116 @@ form.post {
     select {
       width: 100%;
     }
+
+    .tag-list {
+      font-size: 14px;
+      @include semibold;
+      padding-left: 20px;
+      color: $grey-3;
+
+      li {
+        padding: 5px 0;
+        border-bottom: 1px solid $light-red;
+        position: relative;
+        padding-right: 28px;
+        @include word-wrap;
+      }
+
+      .remove-link {
+        display: block;
+        height: 24px;
+        width: 20px;
+        position: absolute;
+        right: 8px;
+        top: 0;
+        background: url('/images/small-icons.png') no-repeat 0 -273px;
+        &:hover {
+          background-position: 0 -313px;
+        }
+      }
+    }
+
+    .add-link {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      @include semibold;
+      @include link-colors($grey-3, lighten($grey-3, 20));
+      letter-spacing: 1px;
+      padding-left: 22px;
+      line-height: 18px;
+      margin-top: 18px;
+      background: url('/images/small-icons.png') no-repeat -2px -356px;
+      &:hover {
+        background-position: -2px -396px;
+      }
+    }
   }
 
   fieldset.student-observations {
     float: right;
     width: 474px;
-    background-color: $light-cream;
-    max-height: 150px;
-    overflow-y: auto;
     margin-bottom: 15px;
+    position: relative;
 
-    label {
-      font-size: 14px;
-      margin-left: 20px;
-      display: block;
+    &.empty {
+      display: none;
     }
 
+    p {
+      font-size: 16px;
+      @include semibold;
+      margin: 10px 0;
+    }
+
+    label { display: none; }
+
     textarea {
-      height: 60px;
+      height: 160px;
       float: none;
-      width: 474px - (2 * 15px + 2 * 20px);
+      width: 474px - (2 * 15px);
       display: block;
-      margin: 5px auto 20px auto;
+    }
+  }
+
+  #observation-editor {
+    min-height: 600px;
+  }
+
+  #observation-buttons {
+    position: absolute;
+    right: 474px;
+    top: 70px;
+    text-align: right;
+    font-size: 14px;
+    width: 150px;
+    @include semibold;
+
+    li {
+      background-color: $grey-3;
+      line-height: 26px;
+      height: 26px;
+      margin-bottom: 5px;
+      float: right;
+      clear: right;
+
+      &:hover { background-color: #777771; }
+    }
+
+    a {
+      @include link-colors($light-cream);
+      display: block;
+      padding-right: 5px;
+      background: url('/images/small-icons.png') no-repeat -3px -458px;
+      padding-left: 22px;
+      margin-left: -17px;
+
+      &:hover { background-position: -3px -488px; }
+    }
+
+    li.selected {
+      background-color: $brown;
+      a { background-position: -3px -428px; }
     }
   }
 
@@ -160,5 +248,27 @@ form.post {
         }
       }
     }
+  }
+}
+
+.no-js form.post fieldset.student-observations {
+  background-color: $light-cream;
+  height: 150px;
+  overflow-y: auto;
+
+  label {
+    font-size: 14px;
+    margin-left: 20px;
+    display: block;
+  }
+
+  p { margin-left: 20px; }
+
+  textarea {
+    height: 60px;
+    float: none;
+    width: 474px - (2 * 15px + 2 * 20px);
+    display: block;
+    margin: 5px auto 20px auto;
   }
 }

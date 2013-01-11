@@ -1,7 +1,7 @@
 //= require ./jquery.tinymce.js
 
 $(document).ready(function() {
-  $('#post_content').tinymce({
+  $('#post_content, #observation-editor').tinymce({
       script_url : '/tiny_mce/tiny_mce.js',
       theme : "advanced",
       plugins : "autolink,lists,inlinepopups,paste",
@@ -16,6 +16,9 @@ $(document).ready(function() {
       relative_urls: false,
       formats: {
         underline : { inline : 'span', 'classes' : 'underline', exact : true }
+      },
+      oninit: function() {
+        $('#post_content, #observation-editor').trigger('editorInit');
       }
   });
 });

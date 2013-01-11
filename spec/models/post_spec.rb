@@ -269,6 +269,22 @@ describe Post  do
         post.student_observations.should be_empty
       end
 
+      it "does not create an observation with html tags but no content" do
+        post.student_observations_attributes = {
+          '0' => { 'student_id' => student.id, 'content' => "   <p>   <br />   <br />   </p>" }
+        }
+        post.save!
+        post.student_observations.should be_empty
+      end
+
+      it "does creates an observation with only an image tag" do
+        post.student_observations_attributes = {
+          '0' => { 'student_id' => student.id, 'content' => "<img title=\"blahblah\" src=\"http://blahblah.com\">" }
+        }
+        post.save!
+        post.student_observations.first.content.should == "<img title=\"blahblah\" src=\"http://blahblah.com\">"
+      end
+
       it "edits an existing student observation when the id is passed" do
         obs = create(:student_observation, post: post, student: student)
         post.reload.student_observations_attributes = {
@@ -333,10 +349,6 @@ describe Post  do
         post.student_observations.should be_empty
       end
     end
-
-    it "filters out observations with html tags but no content"
-
-    it "does not filter out image tags"
   end
 
   describe "##readable_by_guardian" do

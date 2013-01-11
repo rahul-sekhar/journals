@@ -1,0 +1,36 @@
+.filterable-list {
+
+  background-color: $teal;
+  padding: 5px 2px 2px 2px;
+  @include new-clearfix;
+  width: 140px;
+  position: absolute;
+  z-index: 20;
+
+  input {
+    width: 120px;
+    margin-left: 5px;
+    padding: 2px 5px;
+    border: 0;
+    color: $grey-2;
+    margin-bottom: 7px;
+  }
+
+  li {
+    padding: 2px 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: lighten($teal, 10);
+    }
+  }
+
+  ul {
+    max-height: 120px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-transform: lowercase;
+    font-size: 12px;
+    color: $cream;
+  }
+}

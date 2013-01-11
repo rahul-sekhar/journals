@@ -18,15 +18,15 @@ Scenario: Create a minimal post with a title, content and tags
 
 Scenario: Add student and teacher tags to a post
   When I fill in "Title" with "Tagged Guardian Post"
-  And I select "Ansh Something" from "Student tags"
-  And I select "Angela Jain" from "Teacher tags"
+  And I select "Ansh" from "Student tags"
+  And I select "Angela" from "Teacher tags"
   And I click "Create post"
   Then a guardian post with student and teacher tags should exist
 
 Scenario: Create a post without own students tag
   When I fill in "Title" with "Tagged Guardian Post"
-  And I select "Ansh Something" from "Student tags"
-  And I unselect "Roly Sekhar" from "Student tags"
+  And I select "Ansh" from "Student tags"
+  And I unselect "Roly" from "Student tags"
   And I click "Create post"
   Then I should be on the new post page
   And I should see "You must tag at least one of your own students"
@@ -42,9 +42,9 @@ Scenario: Set post permissions
 Scenario: Create a post as a guardian with multiple students
   Given the guardian "Rahul Sekhar" has a student "Lucky Sekhar"
   When I am on the new post page
-  Then "Student tags" should have "Roly Sekhar, Lucky Sekhar" selected
+  Then "Student tags" should have "Roly, Lucky" selected
   When I fill in "Title" with "Guardian Post with Lucky"
-  And I unselect "Roly Sekhar" from "Student tags"
+  And I unselect "Roly" from "Student tags"
   And I click "Create post"
   Then a guardian post with lucky should exist
 
@@ -52,8 +52,8 @@ Scenario: Untag all students as a guardian with multiple students
   Given the guardian "Rahul Sekhar" has a student "Lucky Sekhar"
   When I am on the new post page
   And I fill in "Title" with "Guardian Post with Lucky"
-  And I unselect "Roly Sekhar" from "Student tags"
-  And I unselect "Lucky Sekhar" from "Student tags"
+  And I unselect "Roly" from "Student tags"
+  And I unselect "Lucky" from "Student tags"
   And I click "Create post"
   Then I should be on the new post page
   And I should see "You must tag at least one of your own students"

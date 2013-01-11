@@ -59,8 +59,8 @@ Scenario: Remove a student tag and hence the student observation
   Given a post about an ice cream factory visit with student observations exists
   And I am on the edit page for that post
   When I fill in "Observations for Ansh" with "Some observation"
-  And I unselect "Sahana Somethingelse" from "Student tags"
-  And I unselect "Ansh Something" from "Student tags"
+  And I unselect "Sahana" from "Student tags"
+  And I unselect "Ansh" from "Student tags"
   And I click "Save post"
   Then I should be on the page for that post
   And a ".student-observations" block should not be present

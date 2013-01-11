@@ -12,17 +12,17 @@ Scenario: Edit post
   And "Title" should be filled in with "Ice cream factory visit"
   And "Content" should be filled in with "The whole school went to the Daily Dairy factory for a visit. It was a very small factory and a quick quick quick visit..."
   And "Tags" should be filled in with "icecream, visits"
-  And "Student tags" should have "Ansh Something, Sahana Somethingelse" selected
-  And "Teacher tags" should have "Angela Jain, Aditya Pandya" selected
+  And "Student tags" should have "Ansh, Sahana" selected
+  And "Teacher tags" should have "Angela, Aditya" selected
   And the checkbox "Guardians" should be unchecked
   And the checkbox "Students" should be checked
 
   When I fill in "Title" with "Different Title"
   And I fill in "Content" with "Some other content"
   And I fill in "Tags" with "visits, changes"
-  And I unselect "Ansh Something" from "Student tags"
-  And I select "Rahul Sekhar" from "Teacher tags"
-  And I unselect "Angela Jain" from "Teacher tags"
+  And I unselect "Ansh" from "Student tags"
+  And I select "Rahul" from "Teacher tags"
+  And I unselect "Angela" from "Teacher tags"
   And I click "Save post"
   
   Then I should be on the page for that post

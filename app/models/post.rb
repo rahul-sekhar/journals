@@ -52,7 +52,7 @@ class Post < ActiveRecord::Base
 
   def check_student_observations
     student_observations.each do |obs|
-      if obs.content.blank? || !students.include?(obs.student)
+      if empty_html?( obs.content ) || !students.include?( obs.student )
         obs.mark_for_destruction
       end
     end
@@ -133,5 +133,12 @@ class Post < ActiveRecord::Base
 
       return "Not visible to #{restrictions.join(" or ")}"
     end
+  end
+
+  private
+
+  def empty_html? (html_content)
+    sanitized_content =Sanitize.clean( html_content, elements: ['img'] )
+    return sanitized_content.blank?
   end
 end
