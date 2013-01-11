@@ -1,16 +1,12 @@
-journals:
+journals-demo:
   aws_access_key_id: -
   aws_secret_access_key: -
+  db_name: -
+  db_username: -
   db_pass: -
   scm_pass: -
   default_pass: -
   email_pass: -
 
-shibumi-db:
-  aws_access_key_id: -
-  aws_secret_access_key: -
-  db_pass: -
-  scm_pass: -
-  default_pass: -
-  email_pass: -
+etc..
 

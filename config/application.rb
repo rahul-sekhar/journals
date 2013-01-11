@@ -20,9 +20,10 @@ module Journals
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-
-    config.sensitive = YAML.load_file("#{config.root}/config/sensitive.yml")['journals']
+    
     config.settings = YAML.load_file("#{config.root}/config/settings.yml")
+    config.sensitive = YAML.load_file("#{config.root}/config/sensitive.yml")[config.settings['app_name']]
+    
 
     # Set mailer host
     config.action_mailer.default_url_options = { host: config.settings['host'] }

@@ -2,25 +2,25 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: journals_development
+  database: <%= Rails.configuration.sensitive['db_name'] %>_development
   pool: 5
-  username: journals
+  username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 test: &test
   adapter: postgresql
   encoding: unicode
-  database: journals_test
+  database: <%= Rails.configuration.sensitive['db_name'] %>_test
   pool: 5
-  username: journals
+  username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: journals_production
+  database: <%= Rails.configuration.sensitive['db_name'] %>_production
   pool: 5
-  username: journals
+  username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 cucumber:
