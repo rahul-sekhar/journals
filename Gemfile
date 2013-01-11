@@ -44,6 +44,7 @@ gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
 gem 'strip_attributes', '1.1.1'
 gem 'cancan', '1.6.8'
 gem 'delayed_job_active_record', '0.3.3'
+gem 'daemons'
 gem 'schema_plus', '1.0.0'
 gem 'aws-s3'
 gem 'whenever', require: false
