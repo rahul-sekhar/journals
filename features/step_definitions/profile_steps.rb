@@ -80,11 +80,7 @@ Given /^the profile in question is my students profile$/ do
   @profile = @student
 end
 
-# Links for a student page
-When /^I click the student "Edit profile" link$/ do
-  page.find(".profile > a", text: "Edit profile").click
-end
-
 When /^I click the "Edit profile" link for the guardian "(.*?)"$/ do |p_guardian_name|
-  page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/../a[text()="Edit profile"]').click
+  guardian_node = page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/..')
+  guardian_node.find('.edit-link').click
 end

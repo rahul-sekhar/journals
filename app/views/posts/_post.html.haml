@@ -1,21 +1,21 @@
 %article.post
-  %header
+  %header.post-header
     = render "posts/restrictions", post: post
 
     .tagged-people
-    - if post.students.present?
-      .students
-        %h4 Students
-        %ul
-          - post.students.alphabetical.each do |student|
-            %li= profile_name(student)
+      - if post.students.present?
+        .students
+          %h4 Students
+          %ul
+            - post.students.alphabetical.each do |student|
+              %li= profile_name(student)
 
-    - if post.teachers.present?
-      .teachers
-        %h4 Teachers
-        %ul
-          - post.teachers.alphabetical.each do |teacher|
-            %li= profile_name(teacher)
+      - if post.teachers.present?
+        .teachers
+          %h4 Teachers
+          %ul
+            - post.teachers.alphabetical.each do |teacher|
+              %li= profile_name(teacher)
   
   %h3= post.title
 

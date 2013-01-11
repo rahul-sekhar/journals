@@ -9,11 +9,13 @@ body {
   background-color: $cream;
   background-image: url('/images/bg.jpg');
   background-attachment: fixed;
+  color: $off-black;
   @include myriad;
 }
 
 // Link color transition
 a {
+  text-decoration: none;
   @include transition(color 200ms ease);
 }
 
@@ -53,33 +55,72 @@ input.button {
     line-height: 64px;
     letter-spacing: 2px;
     float: left;
+
+    a {
+      text-decoration: none;
+      @include link-colors($light-cream, white)
+    }
   }
 
   .user {
     float: right;
-    padding-top: 30px;
+    padding-top: 10px;
 
     p {
       color: $cream;
       @include chaparral;
       font-size: 14px;
       float: left;
+      margin-top: 20px;
+    }
+
+    .menu-icon {
+      width: 60px;
+      height: 54px;
+      background: url('/images/large-icons.png') no-repeat 0 -415px;
+      cursor: pointer;
+
+      &:hover { background-position: 0 -495px; }
     }
 
     .menu {
       float: left;
       margin-left: 20px;
-      
-      li {
-        float: left;
-        font-size: 14px;
-        font-weight: bold;
-        margin-left: 15px;
+      position: relative;
 
-        a {
-          text-decoration: none;
-          @include link-colors($light-cream, white);
+      &:hover {
+        ul{
+          visibility: visible;
+          opacity: 1;
+          @include transition(opacity 500ms ease, visibility 500ms ease);
         }
+
+        .menu-icon { background-position: 0 -495px; }
+      }
+    }
+
+    ul {
+      position: absolute;
+      top: 54px;
+      right: 0;
+      width: 150px;
+      background-color: $brown;
+      padding: 5px;
+      visibility: hidden;
+      opacity: 0;
+      @include transition(opacity 400ms ease, visibility 400ms ease);
+    }
+
+    li {
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 28px;
+      margin-left: 15px;
+
+      a {
+        display: block;
+        text-decoration: none;
+        @include link-colors($light-cream, darken($light-cream, 20));
       }
     }
   }
@@ -128,11 +169,23 @@ h2 {
       display: table-cell;
       vertical-align: middle;
       padding: 10px 40px 10px 70px;
-      background-color: $grey-brown;
+      background: $grey-brown url('/images/large-icons.png') no-repeat;
       @include transition(background-color 200ms ease);
 
       &:hover {
         background-color: lighten($grey-brown, 5);
+      }
+
+      &#view_posts_link {
+        background-position: 8px -9px;
+      }
+
+      &#new_post_link {
+        background-position: 8px -89px;
+      }
+
+      &#people_link {
+        background-position: 8px -249px;
       }
     }
   }

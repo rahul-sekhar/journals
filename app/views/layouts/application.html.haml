@@ -12,7 +12,7 @@
   %body{id: content_for(:page_id)}
     %header#page-header
       .wrapper
-        %h1 Journals Demo
+        %h1= link_to Rails.configuration.settings['application_name'], root_path
       
         - if logged_in?
           .user= render "general/user_menu"

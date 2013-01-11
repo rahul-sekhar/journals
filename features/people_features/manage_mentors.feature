@@ -8,7 +8,7 @@ Background:
 Scenario: View a student with no mentors
   Given a student profile for Parvathy exists
   And I am on the page for that profile
-  Then I should see "Mentors"
+  Then I should see "Mentor"
   And I should see "None" within the ".mentors" block
 
 
@@ -19,20 +19,20 @@ Scenario: View a student with mentors, add and remove mentors
   And I am on the page for that profile
   Then I should see "Angela" within the ".mentors ul" block
   And I should see "Sharad" within the ".mentors ul" block
-  And "Remaining teachers" should have the options "Shalini Sekhar, Aditya Pandya, Rahul Sekhar"
+  And "Remaining teachers" should have the options "Shalini, Aditya, Rahul"
 
-  When I select "Shalini Sekhar" from "Remaining teachers"
-  And I click "Add mentor"
+  When I select "Shalini" from "Remaining teachers"
+  And I click "Add" within the ".mentors" block
   Then I should be on the page for that profile
   And I should see "Shalini Sekhar has been added as a mentor for Parvathy Manjunath"
   And I should see "Shalini" within the ".mentors ul" block
-  And "Remaining teachers" should have the options "Aditya Pandya, Rahul Sekhar"
+  And "Remaining teachers" should have the options "Aditya, Rahul"
 
   When I click "Remove" near "Angela" in a list item
   Then I should be on the page for that profile
   And I should see "Angela Jain is no longer a mentor for Parvathy Manjunath"
   And I should not see "Angela" within the ".mentors ul" block
-  And "Remaining teachers" should have the options "Angela Jain, Aditya Pandya, Rahul Sekhar"
+  And "Remaining teachers" should have the options "Angela, Aditya, Rahul"
 
 Scenario: View a teacher with mentees, add and remove mentees
   Given the students Roly, Lucky and Jumble exist
@@ -40,10 +40,10 @@ Scenario: View a teacher with mentees, add and remove mentees
   And I am on the page for my profile
   Then I should see "Lucky " within the ".mentees ul" block
   And I should see "Jumble" within the ".mentees ul" block
-  And "Remaining students" should have the options "Roly Sekhar"
+  And "Remaining students" should have the options "Roly"
 
-  When I select "Roly Sekhar" from "Remaining students"
-  And I click "Add mentee"
+  When I select "Roly" from "Remaining students"
+  And I click "Add" within the ".mentees" block
   Then I should be on the page for my profile
   And I should see "Rahul Sekhar has been added as a mentor for Roly Sekhar"
   And I should see "Roly" within the ".mentees ul" block
@@ -53,4 +53,4 @@ Scenario: View a teacher with mentees, add and remove mentees
   Then I should be on the page for my profile
   And I should see "Rahul Sekhar is no longer a mentor for Jumble Sekhar"
   And I should not see "Jumble" within the ".mentees ul" block
-  And "Remaining students" should have the options "Jumble Sekhar"
+  And "Remaining students" should have the options "Jumble"

@@ -22,7 +22,7 @@ Scenario: View a student with groups, add and remove groups
   And "Remaining groups" should have the options "Group D, Group E"
 
   When I select "Group E" from "Remaining groups"
-  And I click "Add group"
+  And I click "Add" within the ".groups" block
   Then I should be on the page for that profile
   And I should see "Parvathy Manjunath has been added to the group "Group E""
   And I should see "Group E" within the ".groups ul" block

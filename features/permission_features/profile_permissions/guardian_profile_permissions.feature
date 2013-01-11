@@ -18,7 +18,7 @@ Scenario: View a teacher profile
   And I should not see "Activate user"
 
   And I should not see "Remove" within the ".mentees" block
-  And I should not see the button "Add mentee"
+  And I should not see the button "Add" within the ".mentees" block
 
   And I should get a forbidden message when I go to the edit page for that profile
 
@@ -38,10 +38,10 @@ Scenario: View a student profile
   And I should not see "Activate user"
 
   And I should not see "Remove" within the ".mentors" block
-  And I should not see the button "Add mentor"
+  And I should not see the button "Add" within the ".mentors" block
 
   And I should not see "Remove" within the ".groups" block
-  And I should not see the button "Add group"
+  And I should not see the button "Add" within the ".groups" block
 
   And I should not see "Add guardian"
 
@@ -65,14 +65,14 @@ Scenario: View my own profile
   And I should not see "Activate user"
 
   And I should not see "Remove" within the ".mentors" block
-  And I should not see the button "Add mentor"
+  And I should not see the button "Add" within the ".mentors" block
 
   And I should not see "Remove" within the ".groups" block
-  And I should not see the button "Add group"
+  And I should not see the button "Add" within the ".groups" block
 
   And I should not see "Add guardian"
 
-  When I click the student "Edit profile" link
+  When I click "Edit profile" within the ".main-profile-fields" block
   Then I should be on the edit page for that profile
 
   When I am on the page for that profile

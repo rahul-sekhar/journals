@@ -6,3 +6,7 @@
   &:after { clear:both; }
   zoom:1;
 }
+
+@mixin semibold {
+  font-weight: 600;
+}

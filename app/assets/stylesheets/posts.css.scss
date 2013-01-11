@@ -9,6 +9,21 @@ article.post {
     font-size: 24px;
     color: $brown;
     margin-bottom: 22px;
+    margin-right: 20px;
+  }
+
+  .post-header {
+    position: relative;
+  }
+
+  .restrictions {
+    background: url('/images/small-icons.png') no-repeat 0 -60px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    @include hide-text;
+    width: 15px;
+    height: 15px;
   }
 
   .tagged-people {

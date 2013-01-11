@@ -7,7 +7,7 @@ class PagesController < ApplicationController
 
   def people
     @empty_message = "There are no current students and teachers yet."
-    @profiles = People.current.alphabetical.map{ |person| person.profile }
+    @profiles = People.current.alphabetical.limit(10).map{ |person| person.profile }
   end
 
   def archived

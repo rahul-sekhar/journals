@@ -18,7 +18,7 @@ Scenario: Manage a teacher profile
   And I should see "Activate user"
 
   And I should see "Remove" within the ".mentees" block
-  And I should see the button "Add mentee"
+  And I should see the button "Add" within the ".mentees" block
 
   When I click "Edit profile"
   Then I should be on the edit page for that profile
@@ -39,10 +39,10 @@ Scenario: Manage a student profile
   And I should see "Activate user"
 
   And I should see "Remove" within the ".mentors" block
-  And I should see the button "Add mentor"
+  And I should see the button "Add" within the ".mentors" block
 
   And I should see "Remove" within the ".groups" block
-  And I should see the button "Add group"
+  And I should see the button "Add" within the ".groups" block
 
   And I should see "Add guardian"
 

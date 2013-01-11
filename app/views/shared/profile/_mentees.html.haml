@@ -1,16 +1,17 @@
 %h4 Mentees
-%ul
-  - if teacher.mentees.present?
-    - teacher.mentees.alphabetical.each do |mentee|
-      %li
-        = profile_name( mentee )
-        - if can? :administrate, teacher
-          = link_to "Remove", remove_mentee_from_teacher_path(teacher, student_id: mentee.id), method: :post
-  - else
-    %li None
+.menu
+  %ul
+    - if teacher.mentees.present?
+      - teacher.mentees.alphabetical.each do |mentee|
+        %li
+          = profile_name( mentee )
+          - if can? :administrate, teacher
+            = link_to "Remove", remove_mentee_from_teacher_path(teacher, student_id: mentee.id), method: :post, class: "remove-link"
+    - else
+      %li None
 
-- if (can? :administrate, teacher) && (teacher.remaining_students.present?)
-  = form_tag add_mentee_to_teacher_path(teacher), method: :post do
-    = label_tag :student_id, 'Remaining students'
-    = select_tag :student_id, options_from_collection_for_select(teacher.remaining_students.alphabetical, :id, :full_name)
-    = submit_tag "Add mentee"
+  - if (can? :administrate, teacher) && (teacher.remaining_students.present?)
+    = form_tag add_mentee_to_teacher_path(teacher), method: :post do
+      = label_tag :student_id, 'Remaining students'
+      = select_tag :student_id, options_from_collection_for_select(teacher.remaining_students.alphabetical, :id, :name)
+      = submit_tag "Add", class: "button"

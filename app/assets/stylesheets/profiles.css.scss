@@ -1,0 +1,193 @@
+article.profile {
+  background-color: white;
+  margin-bottom: 26px;
+  position: relative;
+  @include new-clearfix;
+
+  h3 {
+    color: $cream;
+    background-color: $grey-brown;
+    font-size: 20px;
+    padding: ((48px - 20px) / 2) 21px;
+    margin-bottom: 20px;
+    padding-right: 228px;
+    @include semibold;
+  }
+
+  .manage {
+    display: none;
+  }
+
+  .field {
+    clear: left;
+    margin-bottom: 7px;
+    @include new-clearfix;
+    line-height: 120%;
+
+    p {
+      float: left;
+      color: $off-black;
+      font-size: 14px;
+      width: 180px;
+    }
+
+    .field-name {
+      width: 110px;
+      text-align: right;
+      margin-right: 24px;
+      color: $grey-brown;
+    }
+  }
+
+  .edit {
+    margin-bottom: 7px;
+    text-align: right;
+    width: 110px;
+    line-height: 14px;
+
+    .edit-link {
+      @include link-colors($grey-brown, lighten($grey-brown, 10));
+      font-size: 12px;
+      text-transform: lowercase;
+    }
+  }
+
+  .main-profile-fields {
+    width: 320px;
+    float: left;
+  }
+
+  .guardians {
+    float: right;
+    width: 315px;
+
+    h4 {
+      @include semibold;
+      color: $off-black;
+      margin-left: 85px + 24px;
+      margin-bottom: 7px;
+      font-size: 16px;
+      margin-top: -2px;
+      line-height: 120%;
+    }
+
+    .field {
+      .field-name {
+        width: 85px;
+      }
+    }
+
+    .edit {
+      width: 85px;
+    }
+  }
+
+  .guardian {
+    margin-bottom: 19px;
+  }
+
+  .add-guardian {
+    position: absolute;
+    top: 0;
+    right: 75px;
+    line-height: 48px;
+    @include link-colors($cream, white);
+    @include semibold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 2px;
+    background: url('/images/small-icons.png') no-repeat 0 -76px;
+    padding-left: 26px;
+
+    &:hover { background-position: 0 -126px }
+  }
+
+  .profile-footer {
+    clear: both;
+    margin-top: 26px;
+    float: left;
+  }
+
+  .groups, .mentors, .mentees {
+    position: relative;
+    float: left;
+    margin-left: 28px;
+
+    h4 {
+      padding-bottom: 5px;
+      font-size: 14px;
+      line-height: 20px;
+      width: auto;
+      float: left;
+      background: url('/images/small-icons.png') no-repeat right -176px;
+      padding-right: 23px;
+    }
+
+    label { display: none; }
+    
+    .remove-link {
+    display: block; 
+      @include hide-text;
+      background: url('/images/small-icons.png') no-repeat center -229px;
+      width: 20px;
+      height: 12px;
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      &:hover{ background-position: center -249px}
+    }
+
+    .menu {
+      clear: left;
+      background-color: $teal;
+      text-transform: lowercase;
+      font-size: 12px;
+      padding: 8px 16px;
+      box-shadow: 1px 1px 8px #888;
+      overflow: hidden;
+      min-width: 100px;
+      color: $cream;
+      margin-bottom: 15px;
+
+      a {
+        @include link-colors($cream, lighten($cream, 20));
+      }
+
+      li {
+        margin-bottom: 8px;
+        position: relative;
+      }
+    }
+
+    select { width: 100%; }
+
+    select, .button {
+      font-size: 12px;
+      @include myriad;
+      margin-top: 5px;
+      text-transform: lowercase;
+    }
+
+    .button {
+      display: block;
+      float: right;
+      border: none;
+      background-color: $light-grey-brown;
+      @include border-radius(8px);
+      padding: 2px 8px;
+      cursor: pointer;
+      color: $off-black;
+
+      &:hover { background-color: lighten($light-grey-brown, 15); }
+    }
+  }
+
+
+  .mentors {
+    margin-left: 18px;
+    .menu {
+      float: left;
+    }
+  }
+}

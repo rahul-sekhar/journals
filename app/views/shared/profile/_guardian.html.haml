@@ -8,4 +8,5 @@
     = render 'shared/profile/field', field_data: field, field_value: guardian.send(field[:function])
 
   - if can? :update, guardian
-    = link_to "Edit profile", edit_guardian_path(guardian)
+    .edit
+      = link_to "Edit profile", edit_guardian_path(guardian), class: "edit-link"

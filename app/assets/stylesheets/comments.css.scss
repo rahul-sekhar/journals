@@ -60,14 +60,14 @@ article.comment {
 
   .edit-link {
     bottom: 0;
-    background-position: center -30px;
-    &:hover { background-position: center -45px; }
+    background-position: left -30px;
+    &:hover { background-position: left -45px; }
   }
 
   .delete-link {
     top: 0;
-    background-position: center 0;
-    &:hover { background-position: center -15px; }
+    background-position: left 0;
+    &:hover { background-position: left -15px; }
   }
 }
 
