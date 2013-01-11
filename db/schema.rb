@@ -146,7 +146,7 @@ ActiveRecord::Schema.define(:version => 20130110060332) do
     t.index ["post_id", "teacher_id"], :name => "index_posts_teachers_on_post_id_and_teacher_profile_id", :unique => true, :order => {"post_id" => :asc, "teacher_id" => :asc}
   end
 
-  create_view "profile_names", "(SELECT students.first_name, \"left\"((students.last_name)::text, 1) AS initial, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT teachers.first_name, \"left\"((teachers.last_name)::text, 1) AS initial, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers) UNION ALL SELECT guardians.first_name, \"left\"((guardians.last_name)::text, 1) AS initial, 'Guardian'::text AS profile_type, guardians.id AS profile_id FROM guardians", :force => true
+  create_view "profile_names", "(SELECT students.first_name, substr((students.last_name)::text, 1, 1) AS initial, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT teachers.first_name, substr((teachers.last_name)::text, 1, 1) AS initial, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers) UNION ALL SELECT guardians.first_name, substr((guardians.last_name)::text, 1, 1) AS initial, 'Guardian'::text AS profile_type, guardians.id AS profile_id FROM guardians", :force => true
   create_table "strands", :force => true do |t|
     t.integer  "academic_id"
     t.integer  "parent_strand_id"
