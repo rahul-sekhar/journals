@@ -5,4 +5,5 @@
     - unless profile.new_record?
       - profile.class.inputs.each do |input_name|
         = form.input input_name
-  = form.actions
+  = form.actions do
+    = form.action :submit, button_html: { class: :button }

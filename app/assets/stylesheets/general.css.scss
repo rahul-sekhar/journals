@@ -92,7 +92,7 @@ input.button {
         ul{
           visibility: visible;
           opacity: 1;
-          @include transition(opacity 500ms ease, visibility 500ms ease);
+          @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
         }
 
         .menu-icon { background-position: 0 -495px; }
@@ -108,7 +108,7 @@ input.button {
       padding: 5px;
       visibility: hidden;
       opacity: 0;
-      @include transition(opacity 400ms ease, visibility 400ms ease);
+      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
     }
 
     li {
@@ -190,3 +190,10 @@ h2 {
     }
   }
 }
+
+.content-block {
+  background-color: white;
+  padding: 20px;
+}
+
+strong { font-weight: bold; }

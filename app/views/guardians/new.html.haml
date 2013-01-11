@@ -5,4 +5,5 @@
   = form.inputs do
     = form.input :first_name
     = form.input :last_name
-  = form.actions
+  = form.actions do
+    = form.action :submit, button_html: { class: :button }

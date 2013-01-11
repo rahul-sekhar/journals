@@ -31,7 +31,7 @@ class TeachersController < ApplicationController
       redirect_to @teacher
     else
       flash[:teacher_data] = params[:teacher]
-      redirect_to edit_teacher_path(@teacher), alert: @teacher.errors.messages.first
+      redirect_to edit_teacher_path(@teacher), alert: @teacher.errors.full_messages.first
     end
   end
 

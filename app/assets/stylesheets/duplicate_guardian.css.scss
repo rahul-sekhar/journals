@@ -1,0 +1,42 @@
+#duplicate_guardian {
+  .content-block {
+    @include new-clearfix;
+  }
+  
+  ul {
+    margin-top: 30px;
+    margin-left: 10px;
+  }
+
+  li {
+    margin-bottom: 20px;
+  }
+
+  strong {
+    @include semibold;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    padding-left: 23px;
+    text-indent: -23px;
+    line-height: 18px;
+
+    input {
+      width: 13px;
+      height: 13px;
+      padding: 0;
+      margin:0;
+      vertical-align: bottom;
+      position: relative;
+      top: -3px;
+      *overflow: hidden;
+      margin-right: 8px;
+    }
+  }
+
+  .button {
+    float: right;
+  }
+}

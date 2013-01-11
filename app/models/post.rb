@@ -14,8 +14,8 @@ class Post < ActiveRecord::Base
   accepts_nested_attributes_for :student_observations
 
   validates :title, 
-    presence: { message: "Please enter a post title" },
-    length: { maximum: 255, message: "The title cannot be longer than 255 letters" }
+    presence: true,
+    length: { maximum: 255 }
   validates :author, presence: true
 
   strip_attributes

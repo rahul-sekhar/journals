@@ -31,7 +31,7 @@ class StudentsController < ApplicationController
       redirect_to @student
     else
       flash[:student_data] = params[:student]
-      redirect_to edit_student_path(@student), alert: @student.errors.messages.first
+      redirect_to edit_student_path(@student), alert: @student.errors.full_messages.first
     end
   end
 

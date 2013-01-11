@@ -9,57 +9,26 @@
   }
 
   .input {
-    @include new-clearfix;
     margin-bottom: 18px;
 
     label {
-      @include myriad;
       text-transform: uppercase;
       color: $grey-1;
       letter-spacing: 2px;
       font-weight: 600;
-      font-size: 14px;
       
-      display: block;
-      float: left;
       width: 200px;
-      line-height: 23px;
-      text-align: right;
       margin-right: 7px;
     }
 
     input {
-      float: left;
-      @include myriad;
       letter-spacing: 1px;
-      border: none;
-      line-height: 23px;
-      padding: 0 4px;
-      width: 160px;
+      width: 200px;
     }
   }
 
   .actions {
-    width: 207px + 160px + 8px;
-
-    input {
-      float: right;
-      @include myriad;
-      font-weight: bold;
-      font-size: 16px;
-      text-transform: lowercase;
-      color: $cream;
-      background-color: $grey-brown;
-      border: none;
-      line-height: 29px;
-      padding: 0 20px;
-      @include border-radius(9px);
-      cursor: pointer;
-
-      &:hover {
-        background-color: lighten($grey-brown, 5);
-      }
-    }
+    width: 207px + 200px + 16px;
   }
 
   #upper-bar {

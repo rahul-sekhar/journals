@@ -57,9 +57,9 @@ Scenario: Add a guardian that already exists for a different student who is not 
   And I click "Create"
   
   Then I should see "A guardian named Manoj Jain already exists"
-  And I should see the option "John is a sibling of Parvathy - use the same login and profile for the guardian"
-  And I should see the option "John is not a sibling of Parvathy - create another guardian with the same name but a different profile"
-  When I select the option "John is not a sibling of Parvathy - create another guardian with the same name but a different profile"
+  And I should see the option "John is a sibling of Parvathy Use the same login and profile for the guardian"
+  And I should see the option "John is not a sibling of Parvathy Create another guardian with the same name but a different profile"
+  When I select the option "John is not a sibling of Parvathy Create another guardian with the same name but a different profile"
   And I click "Continue"
   
   Then I should be on the page for that profile
@@ -82,7 +82,7 @@ Scenario: Add a guardian that already exists for a different student who is a si
   And I fill in "Last name" with "Jain"
   And I click "Create"
   
-  And I select the option "John is a sibling of Parvathy - use the same login and profile for the guardian"
+  And I select the option "John is a sibling of Parvathy Use the same login and profile for the guardian"
   And I click "Continue"
   Then I should be on the page for that profile
   And I should see "Manoj Jain" within the ".guardians" block
@@ -106,10 +106,10 @@ Scenario: Add multiple guardians exist with different students
   And I click "Create"
   
   Then I should see "A guardian named Manoj Jain already exists"
-  And I should see the option "John is a sibling of Parvathy and Roly - use the same login and profile for the guardian"
-  And I should see the option "John is a sibling of Lucky - use the same login and profile for the guardian"
-  And I should see the option "John is not a sibling of Parvathy and Roly or Lucky - create another guardian with the same name but a different profile"
-  When I select the option "John is a sibling of Lucky - use the same login and profile for the guardian"
+  And I should see the option "John is a sibling of Parvathy and Roly Use the same login and profile for the guardian"
+  And I should see the option "John is a sibling of Lucky Use the same login and profile for the guardian"
+  And I should see the option "John is not a sibling of Parvathy and Roly or Lucky Create another guardian with the same name but a different profile"
+  When I select the option "John is a sibling of Lucky Use the same login and profile for the guardian"
   And I click "Continue"
   Then I should be on the page for that profile
   And I should see "Manoj Jain" within the ".guardians" block

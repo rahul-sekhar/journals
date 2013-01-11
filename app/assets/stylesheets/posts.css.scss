@@ -83,7 +83,15 @@ article.post {
     margin-top: 26px;
 
     textarea {
-      width: 648px - (132px + 42px + (6px + 1px) * 2);
+      width: 648px - (132px + 42px + (8px + 1px) * 2);
+    }
+
+    .button {
+      font-size: 12px;
+      padding: 0 12px;
+      line-height: 24px;
+      @include border-radius(0);
+      text-transform: none;
     }
   }
 

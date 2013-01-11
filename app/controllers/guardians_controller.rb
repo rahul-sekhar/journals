@@ -50,7 +50,7 @@ class GuardiansController < ApplicationController
       redirect_to @guardian
     else
       flash[:guardian_data] = params[:guardian]
-      redirect_to edit_guardian_path(@guardian), alert: @guardian.errors.messages.first
+      redirect_to edit_guardian_path(@guardian), alert: @guardian.errors.full_messages.first
     end
   end
 

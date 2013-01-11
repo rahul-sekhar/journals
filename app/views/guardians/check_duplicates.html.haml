@@ -1,24 +1,36 @@
 - page_id 'duplicate_guardian'
 - title 'Guardian already exists'
 
-%p A guardian named #{@guardian.full_name} already exists
+.content-block
+  %p A guardian named #{@guardian.full_name} already exists
 
-= form_for [@student, @guardian] do |form|
-  = form.hidden_field :first_name
-  = form.hidden_field :last_name
+  = form_for [@student, @guardian] do |form|
+    = form.hidden_field :first_name
+    = form.hidden_field :last_name
 
-  - @duplicate_guardians.each_with_index do |guardian, index|
-    %label
-      = radio_button_tag 'use_duplicate', guardian.id, index == 0
-      #{@student.name} is a sibling of #{guardian.students_as_sentence} - use the same login and profile for the guardian.
+    %ul
+      - @duplicate_guardians.each_with_index do |guardian, index|
+        %li
+          %label
+            = radio_button_tag 'use_duplicate', guardian.id, index == 0
+            %strong #{@student.name} is a sibling of #{guardian.students_as_sentence}
+            %br
+            Use the same login and profile for the guardian.
 
-  %label
-    = radio_button_tag 'use_duplicate', 0
-    - if @duplicate_guardians.length == 1
-      #{@student.name} is not a sibling of #{@duplicate_guardians.first.students_as_sentence} - create another guardian with the same name but a different profile.
-    - else
-      #{@student.name} is not a sibling of 
-      = @duplicate_guardians.map{ |guardian| guardian.students_as_sentence }.join(" or ")
-      \- create another guardian with the same name but a different profile.
+      %li
+        %label
+          = radio_button_tag 'use_duplicate', 0
+          - if @duplicate_guardians.length == 1
+            %strong 
+              #{@student.name} is not a sibling of #{@duplicate_guardians.first.students_as_sentence}
+            %br
+            Create another guardian with the same name but a different profile.
 
-  = submit_tag "Continue", class: "button"
+          - else
+            %strong
+              #{@student.name} is not a sibling of 
+              = @duplicate_guardians.map{ |guardian| guardian.students_as_sentence }.join(" or ")
+            %br
+            Create another guardian with the same name but a different profile.
+
+    = submit_tag "Continue", class: "button"

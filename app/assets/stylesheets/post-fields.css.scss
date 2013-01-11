@@ -12,7 +12,6 @@ form.post {
     width: 474px - (2 * 15px);
     margin: 0;
     margin-bottom: 15px;
-    @include myriad;
   }
 
   textarea {
@@ -107,19 +106,23 @@ form.post {
 
   fieldset.actions {
     clear: right;
-    float: right;
     margin-top: 30px;
+    width: 100%;
+    float: right;
 
-    input {
+    input, .delete-link {
       border: 1px solid $light-grey-brown;
       background-color: $light-cream;
       line-height: 43px;
       padding: 0 20px;
       @include border-radius(10px);
+      font-weight: normal;
       color: $grey-2;
-      @include myriad;
       font-size: 16px;
       cursor: pointer;
+      float: right;
+      margin-left: 10px;
+      text-transform: none;
 
       &:hover {
         background-color: lighten($light-cream, 10);

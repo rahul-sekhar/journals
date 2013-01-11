@@ -33,7 +33,7 @@ class PostsController < ApplicationController
       redirect_to posts_path
     else
       flash[:post_data] = params[:post]
-      redirect_to new_post_path, alert: @post.errors.messages.first
+      redirect_to new_post_path, alert: @post.errors.full_messages.first
     end
   end
 
@@ -50,7 +50,7 @@ class PostsController < ApplicationController
       redirect_to @post
     else
       flash[:post_data] = params[:post]
-      redirect_to edit_post_path(@post), alert: @post.errors.messages.first
+      redirect_to edit_post_path(@post), alert: @post.errors.full_messages.first
     end
   end
 

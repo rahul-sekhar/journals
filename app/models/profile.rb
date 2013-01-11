@@ -100,14 +100,17 @@ module Profile
   def self.included(base)
     base.extend ClassMethods
     base.before_validation :check_last_name
+
     base.has_one :user, as: :profile, dependent: :destroy, autosave: true, inverse_of: :profile
     base.has_many :posts, as: :author, dependent: :destroy, inverse_of: :author
     base.has_many :comments, as: :author, dependent: :destroy, inverse_of: :author
+
     base.validates :last_name, presence: true, length: { maximum: 80 }
     base.validates :first_name, length: { maximum: 80 }
     base.validates :mobile, length: { maximum: 40 }
     base.validates :home_phone, length: { maximum: 40 }
     base.validates :office_phone, length: { maximum: 40 }
+    
     base.strip_attributes
   end
 end

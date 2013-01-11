@@ -1,34 +1,17 @@
 .comment-fields {
-  label {
-    display: none;
-  }
 
-  textarea {
-    width: 648px - ((6px + 1px) * 2);
-    height: 90px;
-    border: 1px solid $cream;
-    resize: none;
-    @include myriad;
-    font-size: 14px;
-    padding: 3px 6px;
-  }
+  .inputs {
+    label { display: none; }
 
-  .button {
-    border: none;
-    background-color: $grey-brown;
-    color: $light-cream;
-    font-size: 12px;
-    @include myriad;
-    float: right;
-    padding: 0 12px;
-    height: 24px;
-    margin: 0;
-    cursor: pointer;
-    margin-top: 10px;
-
-    &:hover {
-      background-color: lighten($grey-brown, 10);
+    textarea {
+      width: 648px - ((8px + 1px) * 2);
+      height: 90px;
+      border: 1px solid $cream;
     }
+  }
+
+  .actions {
+    width: 100%;
   }
 }
 
@@ -48,13 +31,14 @@ article.comment {
     display: block;
     opacity: 0;
     visibility: hidden;
-    @include transition(opacity 300ms ease, visibility 300ms ease);
+    @include transition(opacity 200ms ease 100ms, visibility 200ms ease 100ms);
   }
 
   &:hover {
     .edit-link, .delete-link {
       opacity: 1;
       visibility: visible;
+      @include transition(opacity 800ms ease 200ms, visibility 800ms ease 200ms);
     }
   }
 

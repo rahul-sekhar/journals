@@ -9,7 +9,7 @@ Scenario: View teacher profile with minimal information
   Given a teacher profile for Shalini exists
   When I am on the page for that profile
   Then I should see "Shalini Sekhar"
-  And I should see "(Teacher)"
+  And I should see "Teacher"
   And I should see "Email"
   And I should see "shalini@mail.com"
   And I should not see "Mobile"
@@ -21,7 +21,7 @@ Scenario: View teacher profile with all information
   Given a teacher profile for Shalini with all information exists
   When I am on the page for that profile
   Then I should see "Shalini Sekhar"
-  And I should see "(Teacher)"
+  And I should see "Teacher"
   And I should see "Email"
   And I should see "shalini@mail.com"
   And I should see "Mobile"
@@ -37,6 +37,7 @@ Scenario: View student profile with minimal information
   Given a student profile for Parvathy exists
   When I am on the page for that profile
   Then I should see "Parvathy Manjunath"
+  And I should not see "Teacher"
   And I should see "Email"
   And I should see "parvathy@mail.com"
   And I should not see "Mobile"
