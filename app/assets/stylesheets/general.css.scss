@@ -55,8 +55,12 @@ input.button {
     line-height: 64px;
     letter-spacing: 2px;
     float: left;
+    @include hide-text;
+    background: url('/images/logo.png') no-repeat 0 14px;
+    width: 400px;
 
     a {
+      display: block;
       text-decoration: none;
       @include link-colors($light-cream, white)
     }

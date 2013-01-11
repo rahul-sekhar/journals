@@ -1,5 +1,5 @@
 # Application configuration settings
-app_full_name: Journals Demo
+app_full_name: Small School Journals
 app_name: journals-demo
 
 git_branch: master

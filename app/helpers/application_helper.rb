@@ -13,10 +13,11 @@ module ApplicationHelper
   end
 
   def page_title
+    app_name = Rails.configuration.settings['app_full_name']
     if content_for(:title).present?
-      "Journals Demo - #{content_for(:title)}"
+      "#{app_name} - #{content_for(:title)}"
     else
-      "Journals Demo"
+      "#{app_name}"
     end
   end
 
