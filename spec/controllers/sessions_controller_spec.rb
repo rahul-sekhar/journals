@@ -7,10 +7,21 @@ describe SessionsController do
     end
 
     it "assigns a new user object" do
-      user = mock_model("User")
-      User.should_receive(:new).and_return user
       get :new
-      assigns(:user).should eq(user)
+      assigns(:user).should be_a User
+      assigns(:user).should be_new_record
+    end
+
+    it "leaves the users email blank" do
+      get :new
+      assigns(:user).email.should be_blank
+    end
+
+    context "if the flash login email has been set" do
+      it "sets the users email" do
+        get :new, nil, nil, login_email: "some@mail.com"
+        assigns(:user).email.should == "some@mail.com"
+      end
     end
   end
 
@@ -37,10 +48,10 @@ describe SessionsController do
 
     context "with an invalid user" do
       before { User.stub(:authenticate).and_return(nil) }
-      let(:make_request){ post :create, user:{ email: "user", password: "pass" } }
+      let(:make_request){ post :create, user:{ email: "user@mail.com", password: "pass" } }
 
       it "authenticates the sent data" do
-        User.should_receive(:authenticate).with("user", "pass")
+        User.should_receive(:authenticate).with("user@mail.com", "pass")
         make_request
       end
 
@@ -59,6 +70,11 @@ describe SessionsController do
         make_request
         session[:user_id].should be_nil
       end
+
+      it "sets the attempted email in the flash" do
+        make_request
+        flash[:login_email].should == "user@mail.com"
+      end
     end
 
     context "with a valid user" do
@@ -68,10 +84,10 @@ describe SessionsController do
         User.stub(:authenticate).and_return(user)
       end
 
-      let(:make_request){ post :create, user:{ email: "user", password: "pass" } }
+      let(:make_request){ post :create, user:{ email: "user@mail.com", password: "pass" } }
 
       it "authenticates the sent data" do
-        User.should_receive(:authenticate).with("user", "pass")
+        User.should_receive(:authenticate).with("user@mail.com", "pass")
         make_request
       end
 

@@ -4,6 +4,7 @@ class SessionsController < ApplicationController
 
   def new
     @user = User.new
+    @user.email = flash[:login_email] if flash[:login_email].present?
   end
 
   def create
@@ -17,6 +18,7 @@ class SessionsController < ApplicationController
       redirect_back_or_to root_path
     else
       session.delete :user_id
+      flash[:login_email] = params[:user][:email] if params[:user].present?
       redirect_to login_path, alert: "Invalid email or password"
     end
   end
