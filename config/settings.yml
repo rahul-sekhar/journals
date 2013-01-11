@@ -1,14 +1,14 @@
 # Application configuration settings
-app_full_name: Small School Journals
-app_name: journals-demo
+app_full_name: Inwoods Journals
+app_name: inwoods
 
-git_branch: master
+git_branch: inwoods
 
-host: journals.kairi.in
-email_domain: kairi.in
-email_address: contact@kairi.in
+host: inwoodsjournals.org
+email_domain: inwoodsjournals.org
+email_address: admin@inwoodsjournals.org
 
 shared_assets: [ public/uploads ]
-s3_backups_bucket: journals-backups
+s3_backups_bucket: inwoods-backups
 aws_domain: s3-ap-southeast-1.amazonaws.com
 num_local_backups: 5
