@@ -16,6 +16,7 @@ group :development do
   gem 'rb-inotify', '~> 0.8.8'
   gem 'guard-livereload'
   gem 'thin'
+  gem 'capistrano'
   gem 'rvm-capistrano'
 end
 

@@ -50,7 +50,7 @@ namespace :sensitive_data do
   end
 end
 
-before "deploy:create_symlink", "sensitive_data:update_symlinks"
+before "deploy:assets:symlink", "sensitive_data:update_symlinks"
 
 
 # Database
