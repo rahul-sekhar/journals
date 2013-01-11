@@ -67,6 +67,9 @@ article.post {
   }
 
   .post-content {
+    @include chaparral;
+    @include post-styles;
+
     margin-bottom: 45px;
   }
 

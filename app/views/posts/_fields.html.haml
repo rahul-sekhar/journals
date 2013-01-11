@@ -1,3 +1,8 @@
+-# Include redactor files
+- content_for :head do
+  = javascript_include_tag "tinymce/main"
+
+
 = semantic_form_for post do |form|
   
   = form.inputs nil, class: :main do
@@ -23,9 +28,7 @@
       = form.semantic_fields_for :student_observations do |obs_form|
         = obs_form.input :id, as: :hidden
         = obs_form.input :student_id, as: :hidden
-        = obs_form.input :content, 
-          label: "Observations for #{obs_form.object.student.name}",
-          placeholder: "Observations for #{obs_form.object.student.name}"
+        = obs_form.input :content, label: "Observations for #{obs_form.object.student.name}"
 
   - unless post.author.is_a? Student
     = form.inputs nil, class: :permissions do

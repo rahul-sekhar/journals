@@ -1,13 +1,24 @@
-article.post .post-content {
-  @include chaparral;
-
+@mixin post-styles {
   p {
+    @include chaparral;
     font-size: 16px;
     line-height: 150%;
     margin-bottom: 15px;
   }
 
-  h3, h4 {
+  strong {
+    font-weight: bold;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  .strikethrough {
+    text-decoration: line-through;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
     @include myriad;
     font-weight: bold;
     font-size: 16px;
@@ -15,8 +26,17 @@ article.post .post-content {
   }
   
   ul,ol {
-    ul, ol {
-    }
+    font-size: 16px;
+    @include chaparral;
+    line-height: 150%;
+    padding-left: 30px;
+    margin-bottom: 15px;
+  }
+  ul { list-style-type: disc; }
+  ol { list-style-type: decimal; }
+
+  li {
+    margin-bottom: 10px;
   }
   
   a {

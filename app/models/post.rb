@@ -2,7 +2,7 @@ class Post < ActiveRecord::Base
   attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students, :student_observations_attributes
 
   before_save :check_permissions
-  before_validation :check_student_observations, :check_self_tag
+  before_validation :check_student_observations, :check_self_tag, :sanitize_content
 
   belongs_to :author, polymorphic: true
   has_and_belongs_to_many :tags, uniq: true, validate: true
@@ -33,6 +33,21 @@ class Post < ActiveRecord::Base
         ( id.in ( Post.select{id}.joins{ students }.where{ students.id.in( student_ids )}) )
       )
     }
+  end
+
+  def sanitize_content
+    self.content = Sanitize.clean( content,
+      elements: %w[a span p img em strong br ul ol li],
+      attributes: {
+        all: ['class'],
+        'a' => ['href', 'title'],
+        'img' => ['alt', 'src', 'title', 'height', 'width']
+      },
+      protocols: {
+        'a'   => { 'href' => ['http', 'https', 'mailto', :relative] },
+        'img' => {'src' => ['http', 'https', :relative]}
+      }
+    )
   end
 
   def check_student_observations

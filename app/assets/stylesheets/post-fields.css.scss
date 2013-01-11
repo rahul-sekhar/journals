@@ -6,6 +6,10 @@ form.post {
     label { display: none; }
   }
 
+  .input {
+    margin-bottom: 15px;
+  }
+
   .string input {
     font-size: 14px;
     line-height: 16px;
@@ -13,7 +17,6 @@ form.post {
     padding: ((36px - 16px) / 2) 15px;
     width: 474px - (2 * 15px);
     margin: 0;
-    margin-bottom: 15px;
   }
 
   textarea {
@@ -25,7 +28,6 @@ form.post {
     @include chaparral;
     font-size: 16px;
     line-height: 150%;
-    margin-bottom: 15px;
   }
   
   fieldset.permissions {
@@ -34,6 +36,8 @@ form.post {
     float: right;
     width: 474px - (2 * 20px);
     clear: right;
+
+    .input{ margin: 0; }
 
     p {
       font-size: 14px;
@@ -104,18 +108,22 @@ form.post {
     float: right;
     width: 474px;
     background-color: $light-cream;
-    height: 120px;
+    max-height: 150px;
     overflow-y: auto;
     margin-bottom: 15px;
 
-    label { display: none; }
+    label {
+      font-size: 14px;
+      margin-left: 20px;
+      display: block;
+    }
 
     textarea {
       height: 60px;
       float: none;
-      width: 474px - (2 * 15px + 2 * 30px);
+      width: 474px - (2 * 15px + 2 * 20px);
       display: block;
-      margin: 20px auto;
+      margin: 5px auto 20px auto;
     }
   }
 

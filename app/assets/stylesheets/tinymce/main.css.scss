@@ -1,0 +1,17 @@
+/*
+ *= require_self
+*/
+
+@import "compass";
+@import "compass/reset";
+@import "../mixins";
+@import "../colors";
+@import "../fonts";
+@import "../post-styles";
+
+body {
+  @include chaparral;
+  padding: 10px 15px;
+}
+
+@include post-styles;
