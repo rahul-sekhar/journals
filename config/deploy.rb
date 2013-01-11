@@ -1,7 +1,7 @@
 # RVM
-require "rvm/capistrano"
 set :rvm_ruby_string, '1.9.3-p194@journals'
 set :rvm_type, :system
+require "rvm/capistrano"
 
 # Bundler
 require "bundler/capistrano"
