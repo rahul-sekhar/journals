@@ -7,7 +7,7 @@
 
     %p 
       You have been added to the 
-      = Rails.configuration.settings['application_name']
+      = Rails.configuration.settings['app_full_name']
       as a 
       = @profile.class.to_s.downcase
       of the school. This online application is meant to facilitate communication between teachers, students and guardians.
@@ -20,4 +20,4 @@
     
     %p Thank you!
 
-    %p= link_to Rails.configuration.settings['application_name'], root_url
+    %p= link_to Rails.configuration.settings['app_full_name'], root_url

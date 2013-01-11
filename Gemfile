@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.11'
 gem 'pg', '0.14.1'
-gem 'thin', '1.5.0'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -16,6 +15,8 @@ end
 group :development do
   gem 'rb-inotify', '~> 0.8.8'
   gem 'guard-livereload'
+  gem 'thin'
+  gem 'rvm-capistrano'
 end
 
 group :test, :development do
@@ -44,3 +45,5 @@ gem 'strip_attributes', '1.1.1'
 gem 'cancan', '1.6.8'
 gem 'delayed_job_active_record', '0.3.3'
 gem 'schema_plus', '1.0.0'
+gem 'aws-s3'
+gem 'whenever', require: false

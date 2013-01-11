@@ -1,9 +1,14 @@
 # Application configuration settings
+app_full_name: Journals Demo
+app_name: journals-demo
+
+git_branch: master
+
+host: journals.kairi.in
+email_domain: kairi.in
+email_address: contact@kairi.in
+
 shared_assets: [ public/uploads ]
 s3_backups_bucket: journals-backups
 aws_domain: s3-ap-southeast-1.amazonaws.com
 num_local_backups: 5
-email_domain: kairi.in
-email_address: contact@kairi.in
-host: journals.kairi.in
-application_name: Journals Demo
