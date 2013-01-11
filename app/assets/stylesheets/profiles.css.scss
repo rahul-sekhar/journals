@@ -125,18 +125,22 @@ article.profile {
 
     h4 {
       padding-bottom: 5px;
+      margin-right: 20px;
       font-size: 14px;
       line-height: 20px;
       width: auto;
       float: left;
-      //background: url('/images/small-icons.png') no-repeat right -176px;
+      background: url('/images/small-icons.png') no-repeat right -176px;
       padding-right: 23px;
+      cursor: pointer;
+
+      &:hover,&.selected { color: lighten($off-black, 30); }
     }
 
     label { display: none; }
     
     .remove-link {
-    display: block; 
+      display: block; 
       @include hide-text;
       background: url('/images/small-icons.png') no-repeat center -229px;
       width: 20px;
@@ -149,14 +153,20 @@ article.profile {
     }
 
     .menu {
+      position: absolute;
+      display: none;
+      right: 0;
+      top: 25px;
       clear: left;
+      z-index: 20;
       background-color: $teal;
       text-transform: lowercase;
       font-size: 12px;
       padding: 8px 16px;
-      //box-shadow: 1px 1px 8px #888;
+      @include box-shadow(1px 1px 8px #888);
       overflow: hidden;
       min-width: 100px;
+      width: 140px;
       color: $cream;
       margin-bottom: 15px;
 
@@ -167,6 +177,7 @@ article.profile {
       li {
         margin-bottom: 8px;
         position: relative;
+        padding-right: 20px;
       }
     }
 
@@ -197,5 +208,24 @@ article.profile {
     .menu {
       float: left;
     }
+  }
+}
+
+.no-js article.profile{
+  .groups, .mentors, .mentees {
+    h4 {
+      background: none;
+      cursor: default;
+      margin-right: 0;
+
+      &:hover { color: $off-black }
+    }
+  }
+
+  .menu {
+    @include box-shadow(none);
+    position: static;
+    display: block;
+    width: auto;
   }
 }
