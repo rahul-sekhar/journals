@@ -1,0 +1,5 @@
+.notice
+  - if flash[:alert]
+    %p.error= flash[:alert]  
+  - elsif flash[:notice]
+    %p= flash[:notice]

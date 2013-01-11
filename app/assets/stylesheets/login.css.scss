@@ -31,14 +31,12 @@
     width: 207px + 200px + 16px;
   }
 
-  #upper-bar {
-    background-color: transparent;
+  .notice {
     margin-left: 120px;
-    color: $grey-2;
+    margin-bottom: 30px;
+  }
 
-    .error {
-      color: $brown;
-      font-weight: bold;
-    }
+  #upper-bar {
+    display: none;
   }
 }

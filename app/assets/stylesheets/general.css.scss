@@ -44,7 +44,7 @@ input.button {
 #page-header {
   background-color: $brown;
   height: 64px;
-  margin-bottom: 34px;
+  margin-bottom: 24px;
   width: 100%;
 
   h1 {
@@ -134,7 +134,7 @@ input.button {
 h2 {
   font-size: 30px;
   font-weight: 600;
-  margin-bottom: 27px;
+  margin-bottom: 12px;
   color: $off-black;
 }
 
@@ -144,9 +144,19 @@ h2 {
   @include new-clearfix;
 }
 
+.notice {
+  @include semibold;
+  font-size: 14px;
+  color: $dark-green;
+  padding-left: 1px;
+  height: 16px;
+}
+.error { color: $dark-brown; }
+
 #upper-bar {
+  margin-top: 5px;
   min-height: 30px;
-  background-color: $green;
+  background-color: $teal;
   margin-bottom: 22px;
 }
 
@@ -197,3 +207,5 @@ h2 {
 }
 
 strong { font-weight: bold; }
+
+em { font-style: italic; }

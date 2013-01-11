@@ -7,4 +7,4 @@ Scenario: Logout as a teacher
   And I am on the home page
   When I click "Log out"
   Then I should be on the login page
-  And I should see "You have logged out"
+  And I should see "You have been logged out"

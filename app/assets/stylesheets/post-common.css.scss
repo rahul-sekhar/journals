@@ -1,8 +1,50 @@
 article.post .post-content {
+  @include chaparral;
+
   p {
-    @include chaparral;
     font-size: 16px;
     line-height: 150%;
     margin-bottom: 15px;
+  }
+
+  h3, h4 {
+    @include myriad;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px
+  }
+  
+  ul,ol {
+    ul, ol {
+    }
+  }
+  
+  a {
+  }
+  
+  .underline {
+    text-decoration: underline;
+  }
+  
+  .left { text-align: left; }
+  .right { text-align: right; }
+  .center { text-align: center; }
+  .full {
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+    float: none;
+    margin: 20px 0;
+
+    &.left { float: none; }
+    &.right { float: right; }
+    &.center { 
+      float:none; 
+      margin: 20px auto;
+    }
   }
 }

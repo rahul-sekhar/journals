@@ -22,13 +22,13 @@
   .post-content
     != post.content
 
-  - if post.student_observations.present?
-    .student-observations
-      - post.student_observations.each do |obs|
-        %section
-          %h4= obs.student.name
-          .observation-content
-            != obs.content
+    - if post.student_observations.present?
+      .student-observations
+        - post.student_observations.each do |obs|
+          %section
+            %h4= obs.student.name
+            .observation-content
+              != obs.content
   
   - if post.comments.present?
     .comments

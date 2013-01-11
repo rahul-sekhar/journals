@@ -2,6 +2,8 @@ form.post {
   fieldset.main {
     float: right;
     width: 474px;
+
+    label { display: none; }
   }
 
   .string input {
@@ -25,13 +27,7 @@ form.post {
     line-height: 150%;
     margin-bottom: 15px;
   }
-
-  fieldset.main {
-    label {
-      display: none;
-    }  
-  }
-
+  
   fieldset.permissions {
     background-color: $light-cream;
     padding: 10px 20px 15px 20px;
@@ -104,6 +100,25 @@ form.post {
     }
   }
 
+  fieldset.student-observations {
+    float: right;
+    width: 474px;
+    background-color: $light-cream;
+    height: 120px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+
+    label { display: none; }
+
+    textarea {
+      height: 60px;
+      float: none;
+      width: 474px - (2 * 15px + 2 * 30px);
+      display: block;
+      margin: 20px auto;
+    }
+  }
+
   fieldset.actions {
     clear: right;
     margin-top: 30px;
@@ -130,10 +145,10 @@ form.post {
       }
 
       &.submit {
-        color: $green-2;
+        color: $green;
 
         &:hover {
-          color: darken($green-2, 5);
+          color: darken($green, 5);
         }
       }
     }

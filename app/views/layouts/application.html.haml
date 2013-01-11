@@ -24,6 +24,8 @@
       #main-content
         %h2= content_for :heading
 
-        %section#upper-bar= render "general/upper_bar"
+        = render "general/notifications"
+
+        %section#upper-bar
 
         = yield
