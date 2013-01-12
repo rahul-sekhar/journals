@@ -4,7 +4,7 @@ class TeachersController < ApplicationController
   def index
     @empty_message = "No teachers found."
     @filter = "teachers"
-    @profiles = @teachers.current.alphabetical.page(params[:page])
+    @profiles = @teachers.current.alphabetical.search(params[:search]).page(params[:page])
     render "pages/people"
   end
 

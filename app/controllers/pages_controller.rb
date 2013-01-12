@@ -15,7 +15,7 @@ class PagesController < ApplicationController
   def archived
     @empty_message = "No archived students or teachers found."
     @filter = "archived"
-    @people = People.archived.alphabetical.page(params[:page])
+    @people = People.archived.alphabetical.search(params[:search]).page(params[:page])
     @profiles = @people.map{ |person| person.profile }
     render "people"
   end
@@ -25,7 +25,7 @@ class PagesController < ApplicationController
 
     @empty_message = "No mentees found."
     @filter = "mentees"
-    @profiles = current_profile.mentees.page(params[:page])
+    @profiles = current_profile.mentees.search(params[:search]).page(params[:page])
     render "people"
   end
 

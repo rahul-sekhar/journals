@@ -4,7 +4,7 @@ class StudentsController < ApplicationController
   def index
     @empty_message = "No students found."
     @filter = "students"
-    @profiles = @students.current.alphabetical.page(params[:page])
+    @profiles = @students.current.alphabetical.search(params[:search]).page(params[:page])
     render "pages/people"
   end
 
