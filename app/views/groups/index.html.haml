@@ -1,4 +1,4 @@
-- page_id 'manage_groups'
+- page_id 'manage-groups'
 - title 'Manage groups'
 
 - if @groups.present?
@@ -20,4 +20,6 @@
 - else
   .content-block
     %p There are no groups yet.
+
+    = link_to "Add group", new_group_path, class: "add-link"
   

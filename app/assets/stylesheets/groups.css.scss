@@ -1,4 +1,4 @@
-#manage_groups {
+#manage-groups {
   .groups {
     background-color: white;
     padding: 20px;
@@ -31,19 +31,20 @@
       height: 0;
       margin: 0;
     }
+  }
 
-    .add-link {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      float: left;
-      margin-top: 15px;
-      margin-right: 648px - 40px - 370px;
-      background: image-url('small-icons.png') no-repeat 0 -356px;
-      line-height: 18px;
-      padding-left: 30px;
+  .add-link {
+    @include link-colors($off-black, lighten($off-black, 20));
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    @include semibold;
+    margin-top: 20px;
+    display: block;
+    background: image-url('small-icons.png') no-repeat 0 -356px;
+    line-height: 18px;
+    padding-left: 30px;
 
-      &:hover { background-position: 0 -396px; } 
-    }
+    &:hover { background-position: 0 -396px; } 
   }
 }
