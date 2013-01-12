@@ -110,7 +110,7 @@ article.profile {
 
   .add-guardian {
     @include link-colors($cream, white);
-    background: url('/images/small-icons.png') no-repeat 0 -76px;
+    background: image-url('small-icons.png') no-repeat 0 -76px;
     padding-left: 26px;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -141,7 +141,7 @@ article.profile {
       line-height: 20px;
       width: auto;
       float: left;
-      background: url('/images/small-icons.png') no-repeat right -176px;
+      background: image-url('small-icons.png') no-repeat right -176px;
       padding-right: 20px;
       cursor: pointer;
 
@@ -153,7 +153,7 @@ article.profile {
     .remove-link {
       display: block; 
       @include hide-text;
-      background: url('/images/small-icons.png') no-repeat center -229px;
+      background: image-url('small-icons.png') no-repeat center -229px;
       width: 20px;
       height: 12px;
       position: absolute;
@@ -215,7 +215,7 @@ article.profile {
 
   .guardian .manage {
     .icon {
-      background: url('/images/large-icons.png') no-repeat -16px -571px;
+      background: image-url('large-icons.png') no-repeat -16px -571px;
       margin-top: 0;
       margin-left: 10px;
     }
@@ -224,7 +224,7 @@ article.profile {
       left: 5px;
     }
 
-    &:hover .icon { background: url('/images/large-icons.png') no-repeat -16px -611px; }
+    &:hover .icon { background: image-url('large-icons.png') no-repeat -16px -611px; }
   }
 
 
@@ -237,7 +237,7 @@ article.profile {
       height: 20px;
       margin-top: 2px;
       margin-left: 15px;
-      background: url('/images/large-icons.png') no-repeat -16px -651px;
+      background: image-url('large-icons.png') no-repeat -16px -651px;
       cursor: pointer;
     }
 

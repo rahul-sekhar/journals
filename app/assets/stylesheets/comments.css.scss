@@ -25,7 +25,7 @@ article.comment {
     width: 15px;
     height: 15px;
     @include hide-text;
-    background: url('/images/small-icons.png') no-repeat;
+    background: image-url('small-icons.png') no-repeat;
     position: absolute;
     right: 0;
     display: block;
