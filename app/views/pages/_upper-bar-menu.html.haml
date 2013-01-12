@@ -1,0 +1,29 @@
+- if (can? :create, Group) || (can? :create, Teacher) || (can? :create, Student)
+  .add.menu
+    %p.title Add
+    
+    %ul
+      - if can? :create, Teacher
+        %li= link_to "Add teacher", new_teacher_path
+      - if can? :create, Student
+        %li= link_to "Add student", new_student_path
+      - if can? :create, Group
+        %li= link_to "Add group", new_group_path
+
+%p.label Viewing
+
+.viewing.menu
+  %p.title= people_filter_name(@filter)
+
+  %ul
+    = people_filter_menu_item("all", people_path, @filter)
+    = people_filter_menu_item("students", students_path, @filter)
+    = people_filter_menu_item("teachers", teachers_path, @filter)
+    = people_filter_menu_item("mentees", mentees_path, @filter)
+    = people_filter_menu_item("archived", archived_people_path, @filter)
+
+    - if Group.count > 0
+      %li.divider
+      
+      - Group.alphabetical.each do |group|
+        = people_filter_menu_item(group, students_path, @filter)

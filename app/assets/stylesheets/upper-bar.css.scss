@@ -1,0 +1,76 @@
+#upper-bar {
+  line-height: 22px;
+
+  .title {
+    margin: 0;
+    background: url('/images/small-icons.png') no-repeat right -528px;
+    padding-right: 20px;
+    cursor: pointer;
+    padding-left: 10px;
+
+    &:hover { background-position: right -578px; }
+  }
+
+  .menu {
+    color: $cream;
+    font-size: 16px;
+    text-transform: lowercase;
+    font-weight: bold;
+    float: left;
+    position: relative;
+
+    ul {
+      visibility: hidden;
+      opacity: 0;
+      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
+      position: absolute;
+      z-index: 20;
+      background-color: $teal;
+      padding: 5px 0;
+      font-weight: normal;
+      line-height: 25px;
+      font-size: 12px;
+
+
+      a {
+        @include link-colors($cream);
+        display: block;
+        padding: 0 10px;
+
+        &:hover { background-color: lighten($teal, 10); }
+      }
+    }
+
+    &:hover {
+      ul{
+        visibility: visible;
+        opacity: 1;
+        @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
+      }
+
+      .title { color: lighten($cream, 20); }
+    }
+  }
+
+  .add.menu ul{
+    width: 120px;
+  }
+
+  .label {
+    float: left;
+    font-style: italic;
+    color: $cream;
+    text-transform: lowercase;
+    margin-left: 28px;
+    margin-right: 16px;
+  }
+
+  .viewing.menu {
+    ul {
+      font-size: 16px;
+      font-weight: bold;
+      width: 270px;
+      float: left;
+    }
+  }
+}

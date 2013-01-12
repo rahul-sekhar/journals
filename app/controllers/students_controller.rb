@@ -3,6 +3,7 @@ class StudentsController < ApplicationController
 
   def index
     @empty_message = "There are no students yet."
+    @filter = "students"
     @profiles = @students.current.alphabetical.page(params[:page])
     render "pages/people"
   end
