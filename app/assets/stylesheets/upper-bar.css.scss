@@ -1,6 +1,28 @@
 #upper-bar {
   line-height: 22px;
 
+  form {
+    float: left;
+  }
+
+  #search {
+    &::-webkit-input-placeholder { text-transform: lowercase; }
+    &:-moz-placeholder { text-transform: lowercase; }
+    &:-ms-input-placeholder { text-transform: lowercase; }
+
+    border: 0;
+    font-size: 14px;
+    line-height: 16px;
+    padding: 2px 5px;
+
+    background: white image-url('small-icons.png') no-repeat 3px -618px;
+    padding-left: 28px;
+    width: 135px - 28px - 5px;
+    margin-right: 48px;
+
+    float: left;
+  }
+
   .title {
     margin: 0;
     background: image-url('small-icons.png') no-repeat right -528px;

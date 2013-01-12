@@ -27,6 +27,27 @@ module ApplicationHelper
     link_to display_name, url_for(profile), title: profile.name_with_type 
   end
 
+  def people_filter_path(filter)
+    case filter
+    when "all"
+      people_path
+    when "students"
+      students_path
+    when "teachers"
+      teachers_path
+    when "mentees"
+      mentees_path
+    when "archived"
+      archived_people_path
+    else
+      if filter.is_a? Group
+        filter
+      else
+        people_path
+      end
+    end
+  end
+
   def people_filter_name(filter)
     case filter
     when "all"
@@ -48,10 +69,10 @@ module ApplicationHelper
     end
   end
 
-  def people_filter_menu_item(filter, path, current_filter)
+  def people_filter_menu_item(filter, current_filter)
     unless (filter == current_filter)
       content_tag :li do
-        link_to people_filter_name(filter), path
+        link_to people_filter_name(filter), people_filter_path(filter)
       end
     end
   end

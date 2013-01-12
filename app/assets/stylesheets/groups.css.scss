@@ -5,8 +5,8 @@
     @include semibold;
 
     a {
-      @include link-colors($off-black, lighten($off-black, 10));
-      max-width: 250px;
+      @include link-colors($off-black, lighten($off-black, 20));
+      max-width: 240px;
       float: left;
     }
 
@@ -14,14 +14,20 @@
       text-transform: lowercase;
       font-size: 12px;
       float: right;
-      margin-left: 10px;
+      margin-left: 20px;
       font-weight: normal;
       width: auto;
     }
 
     li {
-      margin-bottom: 10px;
-      width: 350px;
+      width: 370px;
+      height: 25px;
+      margin: 12px 0;
+    }
+
+    li.clear-left {
+      height: 0;
+      margin: 0;
     }
   }
 }

@@ -2,9 +2,9 @@ class StudentsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @empty_message = "There are no students yet."
+    @empty_message = "No students found."
     @filter = "students"
-    @profiles = @students.current.alphabetical.page(params[:page])
+    @profiles = @students.current.alphabetical.search(params[:search]).page(params[:page])
     render "pages/people"
   end
 

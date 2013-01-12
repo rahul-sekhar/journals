@@ -1,6 +1,9 @@
 - page_id 'view_posts'
 - title 'Viewing posts'
 
+- content_for :upper_bar do
+  = render "upper-bar/posts-menu"
+
 - if @posts.present?
   - @posts.each do |post|
     = render "post", post: post

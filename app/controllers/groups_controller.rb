@@ -9,7 +9,7 @@ class GroupsController < ApplicationController
   def show
     @empty_message = "There are no students in this group yet."
     @filter = @group
-    @profiles = @group.students.alphabetical.page(params[:page])
+    @profiles = @group.students.alphabetical.search(params[:search]).page(params[:page])
     render "pages/people"
   end
 

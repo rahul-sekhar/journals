@@ -74,6 +74,11 @@ module Profile
   end
 
   module ClassMethods
+    def search(query)
+      query = "%#{SqlHelper::escapeWildcards(query)}%"
+      where{ ((first_name.op('||', ' ')).op('||', last_name)).like query }
+    end
+
     def alphabetical
       order(:first_name, :last_name)
     end
@@ -87,6 +92,9 @@ module Profile
     end
 
     def names_are(first, last)
+      last = SqlHelper::escapeWildcards(last)
+      first = SqlHelper::escapeWildcards(first)
+      
       if first.blank?
         where{ last_name.like last }
       elsif last.blank?
