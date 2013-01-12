@@ -27,4 +27,8 @@ $(document).ready( function() {
       }
     }
   }
+
+  form.find('select').on('change', function() {
+    form.submit();
+  });
 });
