@@ -35,6 +35,12 @@ class Post < ActiveRecord::Base
     }
   end
 
+  def self.search(query)
+    query = "%#{SqlHelper::escapeWildcards(query)}%"
+    
+    where { title.like query }
+  end
+
   def sanitize_content
     self.content = Sanitize.clean( content,
       elements: %w[a span p img em strong br ul ol li],
