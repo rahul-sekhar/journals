@@ -218,3 +218,8 @@ em { font-style: italic; }
 p {
   @include word-wrap;
 }
+
+// Clear floats
+.clear-left {
+  clear: left;
+}

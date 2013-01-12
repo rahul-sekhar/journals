@@ -1,10 +1,13 @@
 %article{ class: profile.archived? ? ["profile", "archived"] : "profile" }
-  %h3= profile.full_name
-  - if profile.is_a? Teacher
-    %p.type Teacher
+  %header.profile-header
+    %h3= profile.full_name
+    - if profile.is_a? Teacher
+      %p.type Teacher
 
-  - if can? :administrate, profile
-    = render 'shared/profile/administrate_menu', profile: profile
+    - if can? :administrate, profile
+      = render 'shared/profile/administrate_menu', profile: profile
+
+    .clear-left
 
   .main-profile-fields
     - profile.class.fields.each do |field|
