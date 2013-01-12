@@ -117,7 +117,7 @@ input.button {
 
     li {
       font-size: 14px;
-      font-weight: 700;
+      @include semibold;
       line-height: 28px;
       margin-left: 15px;
 
