@@ -4,18 +4,19 @@ article.profile {
   position: relative;
   @include new-clearfix;
 
-  h3 {
-    color: $cream;
+  .profile-header {
     background-color: $grey-brown;
-    font-size: 20px;
-    padding: ((48px - 20px) / 2) 21px;
+    padding: 14px 21px 14px 21px;
     margin-bottom: 20px;
-    padding-right: 228px;
-    @include semibold;
   }
 
-  .manage {
-    display: none;
+  h3 {
+    color: $cream;
+    float: left;
+    font-size: 20px;
+    line-height: 20px;
+    max-width: 340px;
+    @include semibold;
   }
 
   .field {
@@ -61,6 +62,10 @@ article.profile {
     float: right;
     width: 315px;
 
+    .guardian-header {
+
+    }
+
     h4 {
       @include semibold;
       color: $off-black;
@@ -69,6 +74,8 @@ article.profile {
       font-size: 16px;
       margin-top: -2px;
       line-height: 120%;
+      float: left;
+      max-width: 160px;
     }
 
     .field {
@@ -131,7 +138,7 @@ article.profile {
       width: auto;
       float: left;
       background: url('/images/small-icons.png') no-repeat right -176px;
-      padding-right: 23px;
+      padding-right: 20px;
       cursor: pointer;
 
       &:hover,&.selected { color: lighten($off-black, 30); }
@@ -155,7 +162,7 @@ article.profile {
     .menu {
       position: absolute;
       display: none;
-      right: 0;
+      left: -20px;
       top: 25px;
       clear: left;
       z-index: 20;
@@ -202,11 +209,74 @@ article.profile {
     }
   }
 
+  .guardian .manage {
+    .icon {
+      background: url('/images/large-icons.png') no-repeat -16px -571px;
+      margin-top: 0;
+      margin-left: 10px;
+    }
 
-  .mentors {
-    margin-left: 18px;
-    .menu {
-      float: left;
+    ul {
+      left: 5px;
+    }
+
+    &:hover .icon { background: url('/images/large-icons.png') no-repeat -16px -611px; }
+  }
+
+
+  .manage {
+    position: relative;
+    float: left;
+
+    .icon {
+      width: 30px;
+      height: 20px;
+      margin-top: 2px;
+      margin-left: 15px;
+      background: url('/images/large-icons.png') no-repeat -16px -651px;
+      cursor: pointer;
+    }
+
+    &:hover {
+      ul{
+        visibility: visible;
+        opacity: 1;
+        @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
+      }
+
+      .icon { background-position: -16px -691px; }
+    }
+
+    ul {
+      width: 100px;
+      visibility: hidden;
+      opacity: 0;
+      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
+      top: 20px;
+      left: 10px;
+      position: absolute;
+      background-color: $grey-brown;
+      color: $grey-2;
+      font-size: 12px;
+      text-transform: lowercase;
+      padding: 7px 0;
+      border: 1px solid lighten($grey-brown, 5);
+      z-index: 20;
+
+      li {
+        cursor: default;
+        line-height: 20px;
+      }
+
+      .disabled, a {
+        display: block;
+        padding: 0 10px;
+      }
+
+      a {
+        @include link-colors($cream);
+        &:hover{ background-color: lighten($grey-brown, 10); }
+      }
     }
   }
 }
@@ -219,6 +289,13 @@ article.profile {
       margin-right: 0;
 
       &:hover { color: $off-black }
+    }
+
+    .mentors {
+      margin-left: 18px;
+      .menu {
+        float: left;
+      }
     }
   }
 

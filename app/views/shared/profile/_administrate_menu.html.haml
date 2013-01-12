@@ -1,42 +1,48 @@
-%ul.manage
+.manage
+  .icon
   
-  - if profile.active?
-    %li= link_to "Reset password",
-      reset_profile_path(profile),
-      method: :post,
-      confirm: "Are you sure you want to reset the password for this user? A randomly generated password will be emailed to the user."
-  
-  - else
-    %li= link_to_if profile.email, "Activate user",
-      reset_profile_path(profile),
-      method: :post,
-      confirm: "Are you sure you want to activate this user? A randomly generated password will be emailed to the user."
-
-
-
-  - unless profile.is_a? Guardian
-    %li= link_to (profile.archived ? "Unarchive user" : "Archive user"),
-        archive_profile_path(profile),
+  %ul  
+    - if profile.active?
+      %li= link_to "Reset password",
+        reset_profile_path(profile),
         method: :post,
-        confirm: "Are you sure you want to archive this user? The user will be deactivated but all its data will remain."
+        confirm: "Are you sure you want to reset the password for this user? A randomly generated password will be emailed to the user."
+    
+    - else
+      - if profile.email
+        %li= link_to "Activate user",
+          reset_profile_path(profile),
+          method: :post,
+          confirm: "Are you sure you want to activate this user? A randomly generated password will be emailed to the user."
+      - else
+        %li
+          %span.disabled Activate user
 
-  
 
-  - if profile.is_a? Guardian 
-    - if profile.students.length > 1
-      %li= link_to "Remove user",
-        student_guardian_path( student, profile ),
-        method: :delete,
-        confim: "Are you sure you want to remove the guardian from this student? The guardian has other students too, so data will not be lost."
+
+    - unless profile.is_a? Guardian
+      %li= link_to (profile.archived ? "Unarchive user" : "Archive user"),
+          archive_profile_path(profile),
+          method: :post,
+          confirm: "Are you sure you want to archive this user? The user will be deactivated but all its data will remain."
+
+    
+
+    - if profile.is_a? Guardian 
+      - if profile.students.length > 1
+        %li= link_to "Remove user",
+          student_guardian_path( student, profile ),
+          method: :delete,
+          confim: "Are you sure you want to remove the guardian from this student? The guardian has other students too, so data will not be lost."
+
+      - else
+        %li= link_to "Delete user",
+          student_guardian_path( student, profile ),
+          method: :delete,
+          confirm: "Are you sure you want to delete this user? Anything that has been created by the user will be lost."
 
     - else
       %li= link_to "Delete user",
-        student_guardian_path( student, profile ),
-        method: :delete,
-        confirm: "Are you sure you want to delete this user? Anything that has been created by the user will be lost."
-
-  - else
-    %li= link_to "Delete user",
-        profile,
-        method: :delete,
-        confirm: "Are you sure you want to delete this user? Anything that has been created by the user will be lost. You can archive the user if you don't want to lose it's data."
+          profile,
+          method: :delete,
+          confirm: "Are you sure you want to delete this user? Anything that has been created by the user will be lost. You can archive the user if you don't want to lose it's data."
