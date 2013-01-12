@@ -76,10 +76,10 @@ class TeachersController < ApplicationController
     
     if @student
       if @teacher.mentees.exists? @student
-        redirect_to @teacher, alert: "#{@teacher.full_name} is already a mentor for #{@student.full_name}"
+        redirect_to @teacher, alert: "#{@teacher.full_name} is already #{@student.full_name}'s mentor"
       else
         @teacher.mentees << @student
-        redirect_to @teacher, notice: "#{@teacher.full_name} has been added as a mentor for #{@student.full_name}"
+        redirect_to @teacher, notice: "#{@teacher.full_name} is now #{@student.full_name}'s mentor"
       end
     else
       redirect_to @teacher, alert: "Invalid student"
@@ -92,9 +92,9 @@ class TeachersController < ApplicationController
     if @student
       if @teacher.mentees.exists? @student
         @teacher.mentees.delete(@student)
-        redirect_to @teacher, notice: "#{@teacher.full_name} is no longer a mentor for #{@student.full_name}"
+        redirect_to @teacher, notice: "#{@teacher.full_name} is no longer #{@student.full_name}'s mentor"
       else
-        redirect_to @teacher, notice: "#{@teacher.full_name} was not a mentor for #{@student.full_name}"
+        redirect_to @teacher, notice: "#{@teacher.full_name} was not #{@student.full_name}'s mentor"
       end
     else
       redirect_to @teacher, alert: "Invalid student"
