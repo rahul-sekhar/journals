@@ -100,7 +100,7 @@ class Post < ActiveRecord::Base
   def initialize_observations
     if author.is_a? Teacher
       students.each do |student|
-        if student_observations.where(student_id: student.id).empty?
+        if student_observations.none?{ |obs| obs.student_id == student.id }
           self.student_observations.build(student_id: student.id)
         end
       end

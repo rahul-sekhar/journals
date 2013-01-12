@@ -144,7 +144,7 @@ h2 {
 
 #main-content {
   width: 648px;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
   @include new-clearfix;
 }
 
@@ -212,6 +212,19 @@ h2 {
 
 .pagination {
   float: right;
+  @include semibold;
+
+  .current {
+    color: $brown;
+  }
+
+  span {
+    margin-left: 8px;
+  }
+
+  a {
+    @include link-colors($off-black, lighten($off-black, 20));
+  }
 }
 
 strong { font-weight: bold; }

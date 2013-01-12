@@ -3,6 +3,7 @@
 $(document).ready(function() {
   $('#post_content, #observation-editor').tinymce({
       script_url : '/tiny_mce/tiny_mce.js',
+      width: 474,
       theme : "advanced",
       plugins : "autolink,lists,inlinepopups,paste",
       content_css: "/assets/tinymce/main.css",

@@ -22,11 +22,16 @@
 
 
     - unless profile.is_a? Guardian
-      %li= link_to (profile.archived ? "Unarchive user" : "Archive user"),
-          archive_profile_path(profile),
-          method: :post,
-          confirm: "Are you sure you want to archive this user? The user will be deactivated but all its data will remain."
+      - if profile.archived
+        %li= link_to "Archive user",
+            archive_profile_path(profile),
+            method: :post,
+            confirm: "Are you sure you want to archive this user? The user will be deactivated but all its data will remain."
 
+      - else
+        %li= link_to "Unarchive user",
+            archive_profile_path(profile),
+            method: :post
     
 
     - if profile.is_a? Guardian 
