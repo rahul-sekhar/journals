@@ -8,6 +8,7 @@ class Student < ActiveRecord::Base
   has_and_belongs_to_many :guardians, uniq: true, join_table: :students_guardians
   has_and_belongs_to_many :groups, uniq: true, join_table: :students_groups
   has_and_belongs_to_many :mentors, class_name: Teacher, uniq: true, join_table: :student_mentors
+  has_and_belongs_to_many :tagged_posts, class_name: Post, uniq: true
   has_many :student_observations, dependent: :destroy
 
   validates :bloodgroup, length: { maximum: 15 }
@@ -17,6 +18,10 @@ class Student < ActiveRecord::Base
 
   def name_with_type
     "#{full_name} (student)"
+  end
+  
+  def self.has_group(group_id)
+    where{ id.in( Student.select{id}.joins{ groups }.where{ groups.id == group_id } ) }
   end
 
   def toggle_archive

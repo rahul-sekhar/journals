@@ -63,6 +63,11 @@
       }
     }
 
+    .divider {
+      border-top: 1px solid $cream;
+      margin-top: 2px;
+    }
+
     &:hover {
       ul{
         visibility: visible;
@@ -94,5 +99,13 @@
       width: 270px;
       float: left;
     }
+  }
+
+  .date-placeholder, .tag-placeholder {
+    float: left;
+    display: block;
+    width: 40px;
+    height: 22px;
+    background: image-url('large-icons.png') no-repeat 0px;
   }
 }

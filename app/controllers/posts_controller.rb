@@ -4,6 +4,16 @@ class PostsController < ApplicationController
 
   def index
     @posts = @posts.search(params[:search]).order{ created_at.desc }
+
+    @students = Student.current.alphabetical
+    
+    if (params[:group].to_i > 0)
+      @students = @students.has_group(params[:group])
+      @posts = @posts.has_group(params[:group])
+      params.delete(:student) unless @students.map{ |x| x.id }.include?(params[:student].to_i)
+    end
+    
+    @posts = @posts.has_student(params[:student]) if (params[:student].to_i > 0)
     @posts = @posts.page(params[:page]).per(6)
   end
 

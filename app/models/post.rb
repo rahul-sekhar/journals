@@ -41,11 +41,19 @@ class Post < ActiveRecord::Base
     where { title.like query }
   end
 
+  def self.has_student(student_id)
+    where{ id.in( Post.select{id}.joins{ students }.where{ students.id == student_id } ) }
+  end
+
+  def self.has_group(group_id)
+    where{ id.in( Post.select{id}.joins{ students.groups }.where{ groups.id == group_id } ) }
+  end
+
   def sanitize_content
     self.content = Sanitize.clean( content,
       elements: %w[a span p img em strong br ul ol li],
       attributes: {
-        all: ['class'],
+        :all => ['class'],
         'a' => ['href', 'title'],
         'img' => ['alt', 'src', 'title', 'height', 'width']
       },
