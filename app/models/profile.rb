@@ -87,6 +87,9 @@ module Profile
     end
 
     def names_are(first, last)
+      last = SqlHelper::escapeWildcards(last)
+      first = SqlHelper::escapeWildcards(first)
+      
       if first.blank?
         where{ last_name.like last }
       elsif last.blank?

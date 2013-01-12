@@ -2,7 +2,7 @@ class TeachersController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @empty_message = "There are no teachers yet."
+    @empty_message = "No teachers found."
     @filter = "teachers"
     @profiles = @teachers.current.alphabetical.page(params[:page])
     render "pages/people"

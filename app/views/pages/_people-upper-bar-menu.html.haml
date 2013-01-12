@@ -1,3 +1,6 @@
+= form_tag people_filter_path(@filter), method: :get, id: 'filter-form' do
+  = text_field_tag 'search', params['search'], placeholder: "Enter search term"
+
 - if (can? :create, Group) || (can? :create, Teacher) || (can? :create, Student)
   .add.menu
     %p.title Add
@@ -16,15 +19,15 @@
   %p.title= people_filter_name(@filter)
 
   %ul
-    = people_filter_menu_item("all", people_path, @filter)
-    = people_filter_menu_item("students", students_path, @filter)
-    = people_filter_menu_item("teachers", teachers_path, @filter)
+    = people_filter_menu_item("all", @filter)
+    = people_filter_menu_item("students", @filter)
+    = people_filter_menu_item("teachers", @filter)
     - if current_profile.is_a? Teacher
-      = people_filter_menu_item("mentees", mentees_path, @filter)
-    = people_filter_menu_item("archived", archived_people_path, @filter)
+      = people_filter_menu_item("mentees", @filter)
+    = people_filter_menu_item("archived", @filter)
 
     - if Group.count > 0
       %li.divider
       
       - Group.alphabetical.each do |group|
-        = people_filter_menu_item(group, students_path, @filter)
+        = people_filter_menu_item(group, @filter)

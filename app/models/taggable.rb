@@ -2,6 +2,7 @@ module Taggable
   module ClassMethods
     
     def name_is(input_name)
+      input_name = SqlHelper::escapeWildcards(input_name)
       self.where{ name.like input_name }.first
     end
 
