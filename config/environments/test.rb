@@ -34,4 +34,8 @@ Journals::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # Set mailer host
+  config.default_host = 'testhost'
+  config.action_mailer.default_url_options = { host: 'testhost' }
 end

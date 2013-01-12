@@ -66,6 +66,7 @@ Journals::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   # Set mailer host
+  config.default_host = config.settings['host']
   config.action_mailer.default_url_options = { host: config.settings['host'] }
 
   config.action_mailer.delivery_method = :smtp
