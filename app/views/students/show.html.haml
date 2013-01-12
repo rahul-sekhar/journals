@@ -1,4 +1,7 @@
 - page_id 'single_profile'
 - title "Profile: #{@student.full_name}"
 
+- content_for :upper_bar do
+  = render "upper-bar/add-menu"
+
 = render "shared/profile/profile", profile: @student

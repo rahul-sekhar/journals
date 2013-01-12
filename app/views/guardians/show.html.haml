@@ -1,5 +1,8 @@
 - page_id 'single_profile'
 - title "Profile: #{@guardian.full_name}"
 
+- content_for :upper_bar do
+  = render "upper-bar/add-menu"
+
 - @guardian.students.alphabetical.each do |student|
   = render "shared/profile/profile", profile: student
