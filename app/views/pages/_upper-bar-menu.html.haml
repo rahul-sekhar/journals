@@ -19,7 +19,8 @@
     = people_filter_menu_item("all", people_path, @filter)
     = people_filter_menu_item("students", students_path, @filter)
     = people_filter_menu_item("teachers", teachers_path, @filter)
-    = people_filter_menu_item("mentees", mentees_path, @filter)
+    - if current_profile.is_a? Teacher
+      = people_filter_menu_item("mentees", mentees_path, @filter)
     = people_filter_menu_item("archived", archived_people_path, @filter)
 
     - if Group.count > 0
