@@ -137,7 +137,6 @@ if (obsFieldset.length) {
 
   // Add student observation when a student is tagged
   studentTagSelect.on( 'itemAdded', function( e, id, name ) {
-
     constructFields(id, name);
     addButton( id, name );
     checkHeight();

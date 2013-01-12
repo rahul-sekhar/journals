@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   skip_load_resource only: [:new, :create]
 
   def index
-    @posts = @posts.limit(10)
+    @posts = @posts.order{ created_at.desc }.page(params[:page]).per(6)
   end
 
   def show

@@ -1,5 +1,11 @@
 - page_id 'view_posts'
 - title 'Viewing posts'
 
-- @posts.each do |post|
-  = render "post", post: post
+- if @posts.present?
+  - @posts.each do |post|
+    = render "post", post: post
+- else
+  .content-block 
+    %p= "No posts found."
+
+= paginate @posts
