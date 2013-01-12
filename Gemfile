@@ -50,3 +50,4 @@ gem 'schema_plus', '1.0.0'
 gem 'aws-s3'
 gem 'whenever', require: false
 gem 'sanitize'
+gem 'kaminari'

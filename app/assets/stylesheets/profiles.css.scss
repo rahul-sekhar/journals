@@ -4,6 +4,10 @@ article.profile {
   position: relative;
   @include new-clearfix;
 
+  &.archived {
+    // background-color: #CDCECC;
+  }
+
   .profile-header {
     background-color: $grey-brown;
     padding: 14px 21px 14px 21px;
