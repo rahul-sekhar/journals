@@ -19,7 +19,7 @@ class GroupsController < ApplicationController
 
   def create
     if @group.save
-      redirect_to people_path, notice: "The group \"#{@group.name}\" has been created"
+      redirect_to groups_path, notice: "The group \"#{@group.name}\" has been created"
     else
       redirect_to new_group_path, alert: "Invalid group name"
     end
