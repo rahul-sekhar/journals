@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130110060332) do
+ActiveRecord::Schema.define(:version => 20130112123243) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(:version => 20130110060332) do
     t.index ["first_name", "last_name"], :name => "teacher_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
   end
 
-  create_view "people", "SELECT (((students.first_name)::text || ' '::text) || (students.last_name)::text) AS full_name, students.archived, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT (((teachers.first_name)::text || ' '::text) || (teachers.last_name)::text) AS full_name, teachers.archived, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers", :force => true
+  create_view "people", "SELECT array_to_string(ARRAY[students.first_name, students.last_name], ' '::text) AS full_name, students.archived, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT array_to_string(ARRAY[teachers.first_name, teachers.last_name], ' '::text) AS full_name, teachers.archived, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers", :force => true
   create_table "posts", :force => true do |t|
     t.string   "title",                                                 :null => false
     t.text     "content"
