@@ -1,0 +1,27 @@
+#manage_groups {
+  ul.groups {
+    background-color: white;
+    padding: 20px;
+    @include semibold;
+
+    a {
+      @include link-colors($off-black, lighten($off-black, 10));
+      max-width: 250px;
+      float: left;
+    }
+
+    .edit-link, .delete-link {
+      text-transform: lowercase;
+      font-size: 12px;
+      float: right;
+      margin-left: 10px;
+      font-weight: normal;
+      width: auto;
+    }
+
+    li {
+      margin-bottom: 10px;
+      width: 350px;
+    }
+  }
+}

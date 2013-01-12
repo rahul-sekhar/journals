@@ -7,12 +7,14 @@ class PagesController < ApplicationController
 
   def people
     @empty_message = "There are no current students and teachers yet."
-    @profiles = People.current.alphabetical.limit(10).map{ |person| person.profile }
+    @people = People.current.alphabetical.page(params[:page])
+    @profiles = @people.map{ |person| person.profile }
   end
 
   def archived
     @empty_message = "There are no archived students and teachers yet."
-    @profiles = People.archived.alphabetical.map{ |person| person.profile }
+    @people = People.archived.alphabetical.page(params[:page])
+    @profiles = @people.map{ |person| person.profile }
     render "people"
   end
 
@@ -20,7 +22,7 @@ class PagesController < ApplicationController
     raise ActiveRecord::RecordNotFound unless current_profile.is_a? Teacher
 
     @empty_message = "You do not have any mentees yet."
-    @profiles = current_profile.mentees
+    @profiles = current_profile.mentees.page(params[:page])
     render "people"
   end
 

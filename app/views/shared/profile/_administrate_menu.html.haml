@@ -2,21 +2,22 @@
   .icon
   
   %ul  
-    - if profile.active?
-      %li= link_to "Reset password",
-        reset_profile_path(profile),
-        method: :post,
-        confirm: "Are you sure you want to reset the password for this user? A randomly generated password will be emailed to the user."
-    
-    - else
-      - if profile.email
-        %li= link_to "Activate user",
+    - unless (profile.is_a?(Guardian) && student.archived) || profile.archived
+      - if profile.active?
+        %li= link_to "Reset password",
           reset_profile_path(profile),
           method: :post,
-          confirm: "Are you sure you want to activate this user? A randomly generated password will be emailed to the user."
+          confirm: "Are you sure you want to reset the password for this user? A randomly generated password will be emailed to the user."
+      
       - else
-        %li
-          %span.disabled Activate user
+        - if profile.email
+          %li= link_to "Activate user",
+            reset_profile_path(profile),
+            method: :post,
+            confirm: "Are you sure you want to activate this user? A randomly generated password will be emailed to the user."
+        - else
+          %li
+            %span.disabled Activate user
 
 
 

@@ -5,6 +5,10 @@ class Guardian < ActiveRecord::Base
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
 
+  def archived
+    false
+  end
+
   def name_with_type
     if students.length == 1
       student_names = students.first.full_name

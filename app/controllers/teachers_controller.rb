@@ -3,7 +3,7 @@ class TeachersController < ApplicationController
 
   def index
     @empty_message = "There are no teachers yet."
-    @profiles = @teachers.current.alphabetical
+    @profiles = @teachers.current.alphabetical.page(params[:page])
     render "pages/people"
   end
 

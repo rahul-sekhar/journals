@@ -16,3 +16,8 @@
 - else
   .content-block 
     %p= @empty_message || "No profiles found."
+
+- if @people
+  = paginate @people
+- else
+  = paginate @profiles
