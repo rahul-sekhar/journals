@@ -27,6 +27,35 @@ module ApplicationHelper
     link_to display_name, url_for(profile), title: profile.name_with_type 
   end
 
+  def people_filter_name(filter)
+    case filter
+    when "all"
+      "Students and teachers"  
+    when "students"
+      "Students"
+    when "teachers"
+      "Teachers"
+    when "mentees"
+      "Your mentees"
+    when "archived"
+      "Archived students and teachers"
+    else
+      if filter.is_a? Group
+        filter.name
+      else
+        "Profiles"
+      end
+    end
+  end
+
+  def people_filter_menu_item(filter, path, current_filter)
+    unless (filter == current_filter)
+      content_tag :li do
+        link_to people_filter_name(filter), path
+      end
+    end
+  end
+
   def edit_profile_path(profile)
     if profile.is_a? Student
       edit_student_path(profile)

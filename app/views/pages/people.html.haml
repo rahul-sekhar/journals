@@ -1,13 +1,8 @@
 - page_id 'people'
 - title "People"
 
-- if can? :create, Group
-  = link_to "Add group", new_group_path
-
-- if can? :create, Teacher
-  = link_to "Add teacher", new_teacher_path
-- if can? :create, Student
-  = link_to "Add student", new_student_path
+- content_for :upper_bar do
+  = render "pages/upper-bar-menu"
 
 - if @profiles.present?
   - @profiles.each do |profile|
