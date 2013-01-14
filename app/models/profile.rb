@@ -76,7 +76,7 @@ module Profile
   module ClassMethods
     def search(query)
       query = "%#{SqlHelper::escapeWildcards(query)}%"
-      where{ ((first_name.op('||', ' ')).op('||', last_name)).like query }
+      where{ array_to_string(`ARRAY[first_name, last_name]`, ' ').like query }
     end
 
     def alphabetical

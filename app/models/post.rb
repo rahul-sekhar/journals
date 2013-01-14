@@ -35,19 +35,19 @@ class Post < ActiveRecord::Base
     }
   end
 
-  def self.search(query)
-    query = "%#{SqlHelper::escapeWildcards(query)}%"
+  # def self.search(query)
+  #   query = "%#{SqlHelper::escapeWildcards(query)}%"
     
-    where { title.like query }
-  end
+  #   where { title.like query }
+  # end
 
-  def self.has_student(student_id)
-    where{ id.in( Post.select{id}.joins{ students }.where{ students.id == student_id } ) }
-  end
+  # def self.has_student(student_id)
+  #   where{ id.in( Post.select{id}.joins{ students }.where{ students.id == student_id } ) }
+  # end
 
-  def self.has_group(group_id)
-    where{ id.in( Post.select{id}.joins{ students.groups }.where{ groups.id == group_id } ) }
-  end
+  # def self.has_group(group_id)
+  #   where{ id.in( Post.select{id}.joins{ students.groups }.where{ groups.id == group_id } ) }
+  # end
 
   def sanitize_content
     self.content = Sanitize.clean( content,
@@ -152,7 +152,7 @@ class Post < ActiveRecord::Base
   private
 
   def empty_html? (html_content)
-    sanitized_content =Sanitize.clean( html_content, elements: ['img'] )
+    sanitized_content = Sanitize.clean( html_content, elements: ['img'] )
     return sanitized_content.blank?
   end
 end

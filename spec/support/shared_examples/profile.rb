@@ -357,6 +357,10 @@ shared_examples_for "a profile" do
       profile_class.name_is("first", nil).should == @profile2
       profile_class.name_is("first", " ").should == @profile2
     end
+
+    it "ignores wildcards" do
+      profile.class.name_is("fir%", "last").should be_nil
+    end
   end
 
   describe "##names_are" do
@@ -377,6 +381,50 @@ shared_examples_for "a profile" do
     it "matches profiles with only single names" do
       profile_class.names_are("first", nil).should == [@profile3]
       profile_class.names_are("first", " ").should == [@profile3]
+    end
+
+    it "ignores wildcards" do
+      profile.class.names_are("fir%", "last").should be_empty
+    end
+  end
+
+  describe "##search" do
+    before do
+      @profile1 = create(profile_type, first_name: "Some", last_name: "Profile")
+      @profile2 = create(profile_type, first_name: "Other", last_name: "Profile")
+      @profile3 = create(profile_type, first_name: nil, last_name: "Person")
+    end
+
+    it "searches the first name" do
+      profile_class.search("Some").should == [@profile1]
+    end
+
+    it "searches the last name" do
+      profile_class.search("Person").should =~ [@profile3]
+    end
+
+    it "searches case insensitively" do
+      profile_class.search("person").should == [@profile3]
+    end
+
+    it "matches partial results" do
+      profile_class.search("so").should =~ [@profile1, @profile3]
+    end
+
+    it "returns all results when the query is empty" do
+      profile_class.search("").should =~ [@profile1, @profile2, @profile3]
+    end
+
+    it "matches the full name" do
+      profile_class.search("r prof").should == [@profile2]
+    end
+
+    it "returns an empty array when there are no matches" do
+      profile_class.search("asdf").should be_empty
+    end
+
+    it "ignores wildcards" do
+      profile_class.search("So%").should be_empty
     end
   end
 end

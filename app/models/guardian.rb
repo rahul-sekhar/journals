@@ -6,7 +6,11 @@ class Guardian < ActiveRecord::Base
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
 
   def archived
-    false
+    if students.all? { |student| student.archived }
+      return true
+    else
+      return false
+    end
   end
 
   def name_with_type

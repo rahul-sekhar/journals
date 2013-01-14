@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
     if @group.save
       redirect_to groups_path, notice: "The group \"#{@group.name}\" has been created"
     else
-      redirect_to new_group_path, alert: "Invalid group name"
+      redirect_to new_group_path, alert: @group.errors.full_messages.first
     end
   end
 
@@ -33,7 +33,7 @@ class GroupsController < ApplicationController
     if @group.update_attributes(params[:group])
       redirect_to groups_path, notice: "\"#{old_name}\" has been renamed to \"#{@group.name}\""
     else
-      redirect_to edit_group_path(@group), alert: "Invalid group name"
+      redirect_to edit_group_path(@group), alert: @group.errors.full_messages.first
     end
   end
 

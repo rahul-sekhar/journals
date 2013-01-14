@@ -20,9 +20,9 @@ class Student < ActiveRecord::Base
     "#{full_name} (student)"
   end
   
-  def self.has_group(group_id)
-    where{ id.in( Student.select{id}.joins{ groups }.where{ groups.id == group_id } ) }
-  end
+  # def self.has_group(group_id)
+  #   where{ id.in( Student.select{id}.joins{ groups }.where{ groups.id == group_id } ) }
+  # end
 
   def toggle_archive
     self.archived = !archived

@@ -26,4 +26,9 @@ describe StudentObservation do
     student_observation.content = "  "
     student_observation.should be_invalid
   end
+
+  describe "sanitization of content" do
+    let(:object){ student_observation }
+    it_behaves_like "an object with sanitized content"
+  end
 end

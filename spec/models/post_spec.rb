@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Post  do
+describe Post do
   let(:post){ build(:post) }
 
   it "is valid with valid attributes" do
@@ -409,5 +409,10 @@ describe Post  do
     context "when restricted to students and guardians" do
       it { should == "Not visible to guardians or students" }
     end
+  end
+
+  describe "sanitization of content" do
+    let(:object){ post }
+    it_behaves_like "an object with sanitized content"
   end
 end
