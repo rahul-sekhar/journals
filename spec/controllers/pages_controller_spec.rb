@@ -54,6 +54,15 @@ describe PagesController do
       assigns(:profiles).should == [teacher1, student2, teacher2, student1]
     end
 
+    it "searches if a search parameter is passed" do
+      student1 = create(:student, first_name: "Some", last_name: "Student")
+      student2 = create(:student, first_name: "Other", last_name: "Student")
+      teacher1 = create(:teacher, first_name: "A", last_name: "Teacher")
+      teacher2 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
+      get :people, search: "ther stu"
+      assigns(:profiles).should == [student2]
+    end
+
     it "sets an empty_message" do
       get :people
       assigns(:empty_message).should be_present
@@ -92,6 +101,15 @@ describe PagesController do
       teacher2 = create(:teacher, archived: true, first_name: "Rahul", last_name: "Sekhar")
       get :archived
       assigns(:profiles).should == [teacher1, student2, teacher2, student1]
+    end
+
+    it "searches if a search parameter is passed" do
+      student1 = create(:student, archived: true, first_name: "Some", last_name: "Student")
+      student2 = create(:student, archived: true, first_name: "Other", last_name: "Student")
+      teacher1 = create(:teacher, archived: true, first_name: "A", last_name: "Teacher")
+      teacher2 = create(:teacher, archived: true, first_name: "Rahul", last_name: "Sekhar")
+      get :archived, search: "ther stu"
+      assigns(:profiles).should == [student2]
     end
 
     it "sets an empty_message" do

@@ -16,6 +16,16 @@ class ApplicationController < ActionController::Base
     current_user
   end
 
+  def filter_and_display_people(collection, map_profiles = false)
+    @profiles = collection.alphabetical
+    @profiles = @profiles.search(params[:search]) if params[:search]
+    @profiles = @profiles.page(params[:page])
+
+    @profiles = @profiles.map{ |person| person.profile } if map_profiles
+
+    render "pages/people"
+  end
+
   protected
   def store_target_path
     session[:target_path] = request.fullpath
