@@ -234,6 +234,35 @@ describe Student do
       end
     end
   end
+
+  describe "##filter_group" do
+    before do
+      @student1 = create(:student)
+      @student2 = create(:student)
+      @student3 = create(:student)
+      @group1 = create(:group)
+      @group1.students << [@student1, @student2]
+      @group2 = create(:group)
+      @group2.students << [@student2, @student3]
+      @group3 = create(:group)
+    end
+
+    it "returns all students when nil is passed" do
+      Student.filter_group(nil).should =~ [@student1, @student2, @student3]
+    end
+
+    it "returns all students when 0 is passed" do
+      Student.filter_group(0).should =~ [@student1, @student2, @student3]
+    end
+
+    it "returns students within that group when a group id is passed" do
+      Student.filter_group(@group1.id).should == [@student1, @student2]
+    end
+
+    it "returns no students when a group with no students is passed" do
+      Student.filter_group(@group3.id).should be_empty
+    end
+  end
   
 
   describe "permissions:" do

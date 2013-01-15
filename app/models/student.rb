@@ -19,11 +19,13 @@ class Student < ActiveRecord::Base
   def name_with_type
     "#{full_name} (student)"
   end
-  
-  # def self.has_group(group_id)
-  #   where{ id.in( Student.select{id}.joins{ groups }.where{ groups.id == group_id } ) }
-  # end
 
+  def self.filter_group(group_id)
+    students = self.scoped
+    students = students.has_group(group_id) if group_id.to_i > 0
+    return students
+  end
+  
   def toggle_archive
     self.archived = !archived
 
@@ -84,5 +86,11 @@ class Student < ActiveRecord::Base
       { name: "Email", function: :email },
       { name: "Address", function: :address, format: true },
     ]
+  end
+
+  private
+
+  def self.has_group(group_id)
+    where{ id.in( Student.select{id}.joins{ groups }.where{ groups.id == group_id } ) }
   end
 end

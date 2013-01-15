@@ -3,18 +3,9 @@ class PostsController < ApplicationController
   skip_load_resource only: [:new, :create]
 
   def index
-    @posts = @posts.search(params[:search]).order{ created_at.desc }
-
-    @students = Student.current.alphabetical
-    
-    if (params[:group].to_i > 0)
-      @students = @students.has_group(params[:group])
-      @posts = @posts.has_group(params[:group])
-      params.delete(:student) unless @students.map{ |x| x.id }.include?(params[:student].to_i)
-    end
-    
-    @posts = @posts.has_student(params[:student]) if (params[:student].to_i > 0)
-    @posts = @posts.page(params[:page]).per(6)
+    @students = Student.current.alphabetical.filter_group(params[:group])
+    params.delete(:student) unless contains_id?(@students, params[:student])
+    @posts = @posts.filter_by_params(params).order{ created_at.desc }.page(params[:page]).per(6)
   end
 
   def show
@@ -68,5 +59,12 @@ class PostsController < ApplicationController
   def destroy
     @post.destroy
     redirect_to posts_path, notice: "The post has been deleted"
+  end
+
+  private
+
+  def contains_id?(collection, id)
+    ids = collection.map{ |object| object.id }
+    return ids.include?(id.to_i)
   end
 end
