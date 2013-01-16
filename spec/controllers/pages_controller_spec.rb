@@ -154,6 +154,24 @@ describe PagesController do
         assigns(:profiles).should =~ [student1, student3]
       end
 
+      it "assigns mentees alphabetically" do
+        student1 = create(:student, first_name: "Some", last_name: "Student")
+        student2 = create(:student, first_name: "Other", last_name: "Student")
+        student3 = create(:student, first_name: "A", last_name: "Student")
+        teacher.mentees = [student1, student2, student3]
+        get :mentees
+        assigns(:profiles).should == [student3, student2, student1]
+      end
+
+      it "searches if a search parameter is passed" do
+        student1 = create(:student, first_name: "Some", last_name: "Student")
+        student2 = create(:student, first_name: "Other", last_name: "Student")
+        student3 = create(:student, first_name: "A", last_name: "Student")
+        teacher.mentees = [student1, student2, student3]
+        get :mentees, search: "oth"
+        assigns(:profiles).should == [student2]
+      end
+
       it "sets an empty_message" do
         get :mentees
         assigns(:empty_message).should be_present

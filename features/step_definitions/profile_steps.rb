@@ -81,6 +81,6 @@ Given /^the profile in question is my students profile$/ do
 end
 
 When /^I click the "Edit profile" link for the guardian "(.*?)"$/ do |p_guardian_name|
-  guardian_node = page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/..')
+  guardian_node = page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/../..')
   guardian_node.find('.edit-link').click
 end

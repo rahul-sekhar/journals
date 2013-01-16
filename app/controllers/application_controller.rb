@@ -17,10 +17,11 @@ class ApplicationController < ActionController::Base
   end
 
   def filter_and_display_people(collection, map_profiles = false)
-    @profiles = collection.alphabetical
-    @profiles = @profiles.search(params[:search]) if params[:search]
-    @profiles = @profiles.page(params[:page])
+    @people = collection.alphabetical
+    @people = @people.search(params[:search]) if params[:search]
+    @people = @people.page(params[:page])
 
+    @profiles = @people
     @profiles = @profiles.map{ |person| person.profile } if map_profiles
 
     render "pages/people"

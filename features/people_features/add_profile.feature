@@ -12,7 +12,6 @@ Scenario: Add a teacher
   And I click "Add teacher"
   Then I should see "First name"
   And I should see "Last name"
-  And I should not see "Email"
   And I fill in "First name" with "Angela"
   And I fill in "Last name" with "Jain"
   And I click "Create"
@@ -24,7 +23,6 @@ Scenario: Add a student
   And I click "Add student"
   Then I should see "First name"
   And I should see "Last name"
-  And I should not see "Email"
   And I fill in "First name" with "Jonathan"
   And I click "Create"
   And I go to the students page

@@ -22,8 +22,7 @@ class PagesController < ApplicationController
 
     @empty_message = "No mentees found."
     @filter = "mentees"
-    @profiles = current_profile.mentees.search(params[:search]).page(params[:page])
-    render "people"
+    filter_and_display_people( current_profile.mentees )
   end
 
   def change_password
