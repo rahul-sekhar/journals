@@ -5,7 +5,6 @@ journals-demo:
   db_username: -
   db_pass: -
   scm_pass: -
-  default_pass: -
   email_pass: -
 
 etc..

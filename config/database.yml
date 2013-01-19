@@ -4,6 +4,7 @@ development:
   encoding: unicode
   database: <%= Rails.configuration.sensitive['db_name'] %>_development
   pool: 5
+  host: localhost
   username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
@@ -12,6 +13,7 @@ test: &test
   encoding: unicode
   database: <%= Rails.configuration.sensitive['db_name'] %>_test
   pool: 5
+  host: localhost
   username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
@@ -20,6 +22,7 @@ production:
   encoding: unicode
   database: <%= Rails.configuration.sensitive['db_name'] %>_production
   pool: 5
+  host: localhost
   username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
