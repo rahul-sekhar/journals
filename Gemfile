@@ -36,11 +36,11 @@ group :test do
   gem 'simplecov', '0.7.1', require: false
 end
 
-gem 'jquery-rails', '2.1.4'
+gem 'jquery-rails', '2.2.0'
 gem 'haml', '3.1.7'
 gem 'yaml_db', '0.2.3'
 gem 'formtastic', '2.2.1'
-gem 'squeel', '1.0.14'
+gem 'squeel', '1.0.15'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
 gem 'strip_attributes', '1.1.1'
 gem 'cancan', '1.6.8'
