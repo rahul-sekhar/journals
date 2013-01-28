@@ -119,6 +119,8 @@ Scenario: Add a teacher with an invalid email address
   And I click "Create"
   Then I should be on the new teacher page
   And I should see "Email is invalid"
+  And "First name" should be filled in with "Angela"
+  And "Last name" should be filled in with "Jain"
 
 
 Scenario: Add a student with a valid date of birth
@@ -140,3 +142,5 @@ Scenario: Add a student with an invalid date of birth
   And I click "Create"
   Then I should be on the new student page
   And I should see "Birthday is invalid"
+  And "First name" should be filled in with "Angela"
+  And "Last name" should be filled in with "Jain"

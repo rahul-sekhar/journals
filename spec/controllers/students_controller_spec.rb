@@ -106,6 +106,11 @@ describe StudentsController do
       make_request
       assigns(:student).should be_new_record
     end
+
+    it "assigns student data from the flash if present" do
+      get :new, nil, nil, { student_data: { mobile: "1234" } }
+      assigns(:student).mobile.should == "1234"
+    end
   end
 
 
@@ -168,6 +173,11 @@ describe StudentsController do
       it "redirects to the new student page" do
         make_request
         response.should redirect_to new_student_path
+      end
+
+      it "stores already filled data in a flash object" do
+        make_request
+        flash[:student_data].should == { 'first_name' => ' ' }
       end
     end
   end

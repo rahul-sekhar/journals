@@ -11,12 +11,15 @@ class StudentsController < ApplicationController
   end
 
   def new
+    # Pre-load data if present
+    @student.assign_attributes(flash[:student_data]) if flash[:student_data]
   end
 
   def create
     if @student.save
       redirect_to @student
     else
+      flash[:student_data] = params[:student]
       redirect_to new_student_path, alert: @student.errors.full_messages.first
     end
   end

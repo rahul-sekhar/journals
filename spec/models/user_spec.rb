@@ -56,6 +56,12 @@ describe User do
       end
     end
 
+    it "is stripped of spaces" do
+      user.email = " a@b.c "
+      user.save!
+      user.email.should == "a@b.c"
+    end
+
     it "must be case insensitively unique" do
       create(:teacher, email: "test1@mail.com")
       user.email = "Test1@Mail.com"

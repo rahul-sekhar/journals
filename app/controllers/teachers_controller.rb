@@ -11,12 +11,15 @@ class TeachersController < ApplicationController
   end
 
   def new
+    # Pre-load data if present
+    @teacher.assign_attributes(flash[:teacher_data]) if flash[:teacher_data]
   end
 
   def create
     if @teacher.save
       redirect_to @teacher
     else
+      flash[:teacher_data] = params[:teacher]
       redirect_to new_teacher_path, alert: @teacher.errors.full_messages.first
     end
   end

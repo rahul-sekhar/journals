@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
     confirmation: true,
     allow_blank: true
 
+  strip_attributes only: :email
+
   def self.authenticate(email, password)
     user = User.where(email: email).first
     if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)
