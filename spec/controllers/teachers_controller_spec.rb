@@ -107,6 +107,11 @@ describe TeachersController do
       make_request
       assigns(:teacher).should be_new_record
     end
+
+    it "assigns teacher data from the flash if present" do
+      get :new, nil, nil, { teacher_data: { mobile: "1234" } }
+      assigns(:teacher).mobile.should == "1234"
+    end
   end
 
 
@@ -169,6 +174,11 @@ describe TeachersController do
       it "redirects to the new teacher page" do
         make_request
         response.should redirect_to new_teacher_path
+      end
+
+      it "stores already filled data in a flash object" do
+        make_request
+        flash[:teacher_data].should == { 'first_name' => ' ' }
       end
     end
   end
