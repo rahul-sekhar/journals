@@ -24,13 +24,13 @@ Scenario: View a student with mentors, add and remove mentors
   When I select "Shalini" from "Remaining teachers"
   And I click "Add" within the ".mentors" block
   Then I should be on the page for that profile
-  And I should see "Shalini Sekhar has been added as a mentor for Parvathy Manjunath"
+  And I should see "Shalini Sekhar is now Parvathy Manjunath's mentor"
   And I should see "Shalini" within the ".mentors ul" block
   And "Remaining teachers" should have the options "Aditya, Rahul"
 
   When I click "Remove" near "Angela" in a list item
   Then I should be on the page for that profile
-  And I should see "Angela Jain is no longer a mentor for Parvathy Manjunath"
+  And I should see "Angela Jain is no longer Parvathy Manjunath's mentor"
   And I should not see "Angela" within the ".mentors ul" block
   And "Remaining teachers" should have the options "Angela, Aditya, Rahul"
 
@@ -45,12 +45,12 @@ Scenario: View a teacher with mentees, add and remove mentees
   When I select "Roly" from "Remaining students"
   And I click "Add" within the ".mentees" block
   Then I should be on the page for my profile
-  And I should see "Rahul Sekhar has been added as a mentor for Roly Sekhar"
+  And I should see "Rahul Sekhar is now Roly Sekhar's mentor"
   And I should see "Roly" within the ".mentees ul" block
   And I should not see the field "Remaining students"
 
   When I click "Remove" near "Jumble" in a list item
   Then I should be on the page for my profile
-  And I should see "Rahul Sekhar is no longer a mentor for Jumble Sekhar"
+  And I should see "Rahul Sekhar is no longer Jumble Sekhar's mentor"
   And I should not see "Jumble" within the ".mentees ul" block
   And "Remaining students" should have the options "Jumble"

@@ -10,9 +10,6 @@ Background:
 Scenario: Add a teacher
   When I am on the people page
   And I click "Add teacher"
-  Then I should see "First name"
-  And I should see "Last name"
-  And I should not see "Email"
   And I fill in "First name" with "Angela"
   And I fill in "Last name" with "Jain"
   And I click "Create"
@@ -22,9 +19,6 @@ Scenario: Add a teacher
 Scenario: Add a student
   When I am on the people page
   And I click "Add student"
-  Then I should see "First name"
-  And I should see "Last name"
-  And I should not see "Email"
   And I fill in "First name" with "Jonathan"
   And I click "Create"
   And I go to the students page
@@ -34,9 +28,7 @@ Scenario: Add a guardian
   Given a student profile for Parvathy exists
   And I am on the page for that profile
   When I click "Add guardian"
-  Then I should see "First name"
-  And I should see "Last name"
-  And I should not see "Email"
+  Then I should not see "Email"
   And I fill in "First name" with "William"
   And I fill in "Last name" with "Tell"
   And I click "Create"
@@ -117,3 +109,34 @@ Scenario: Add multiple guardians exist with different students
   When I go to the page for the guardian
   Then I should see the heading "Lucky Sekhar"
   And I should see the heading "John Doe"
+
+Scenario: Add a teacher with an invalid email address
+  When I am on the people page
+  And I click "Add teacher"
+  And I fill in "First name" with "Angela"
+  And I fill in "Last name" with "Jain"
+  And I fill in "Email" with "some invalid address"
+  And I click "Create"
+  Then I should be on the new teacher page
+  And I should see "Email is invalid"
+
+
+Scenario: Add a student with a valid date of birth
+  When I am on the people page
+  And I click "Add student"
+  And I fill in "First name" with "Angela"
+  And I fill in "Last name" with "Jain"
+  And I fill in "Birthday" with "18-2-2007"
+  And I click "Create"
+  Then I should see "Angela Jain"
+  And I should see "18-02-2007"
+
+Scenario: Add a student with an invalid date of birth
+  When I am on the people page
+  And I click "Add student"
+  And I fill in "First name" with "Angela"
+  And I fill in "Last name" with "Jain"
+  And I fill in "Birthday" with "18th Feb 2007"
+  And I click "Create"
+  Then I should be on the new student page
+  And I should see "Birthday is invalid"

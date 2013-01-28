@@ -36,7 +36,7 @@ class GuardiansController < ApplicationController
     if @guardian.save
       redirect_to @student
     else
-      redirect_to new_student_guardian_path(@student), alert: "You must enter a name for the guardian."
+      redirect_to new_student_guardian_path(@student), alert: @guardian.errors.full_messages.first
     end
   end
 

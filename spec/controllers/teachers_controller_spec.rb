@@ -49,6 +49,14 @@ describe TeachersController do
       assigns(:profiles).should == [teacher3, teacher1, teacher2]
     end
 
+    it "searches for teachers when the search parameter is passed" do
+      teacher1 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
+      teacher2 = create(:teacher, first_name: "Ze", last_name: "Teacher")
+      teacher3 = create(:teacher, first_name: "A", last_name: "Teacher")
+      get :index, search: "ra"
+      assigns(:profiles).should == [teacher1]
+    end
+
     it "sets an empty_message" do
       get :index
       assigns(:empty_message).should be_present

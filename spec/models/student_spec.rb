@@ -36,14 +36,29 @@ describe Student do
       profile.birthday.should be_nil
     end
 
+    it "invalidates the student if invalid" do
+      profile.formatted_birthday = "asdf"
+      profile.should be_invalid
+    end
+
     it "sets the birthday to nil if blank" do
       profile.formatted_birthday = ""
       profile.birthday.should be_nil
     end
 
+    it "does not invalidate the student if blank" do
+      profile.formatted_birthday = " "
+      profile.should be_valid
+    end
+
     it "sets the birthday to nil if nil" do
       profile.formatted_birthday = nil
       profile.birthday.should be_nil
+    end
+
+    it "does not invalidate the student if nil" do
+      profile.formatted_birthday = nil
+      profile.should be_valid
     end
   end
 
@@ -232,6 +247,35 @@ describe Student do
         profile.mentors = [@teacher2]
         profile.remaining_teachers.should =~ [@teacher1, @teacher3]
       end
+    end
+  end
+
+  describe "##filter_group" do
+    before do
+      @student1 = create(:student)
+      @student2 = create(:student)
+      @student3 = create(:student)
+      @group1 = create(:group)
+      @group1.students << [@student1, @student2]
+      @group2 = create(:group)
+      @group2.students << [@student2, @student3]
+      @group3 = create(:group)
+    end
+
+    it "returns all students when nil is passed" do
+      Student.filter_group(nil).should =~ [@student1, @student2, @student3]
+    end
+
+    it "returns all students when 0 is passed" do
+      Student.filter_group(0).should =~ [@student1, @student2, @student3]
+    end
+
+    it "returns students within that group when a group id is passed" do
+      Student.filter_group(@group1.id).should =~ [@student1, @student2]
+    end
+
+    it "returns no students when a group with no students is passed" do
+      Student.filter_group(@group3.id).should be_empty
     end
   end
   

@@ -69,9 +69,9 @@ describe CommentsController do
         response.should redirect_to post_path(post_obj)
       end
 
-      it "displays a flash alert indicating invalid data" do
+      it "sets a flash alert" do
         make_request
-        flash[:alert].should == "Invalid comment"
+        flash[:alert].should be_present
       end
     end
   end
@@ -153,9 +153,9 @@ describe CommentsController do
         response.should redirect_to post_path(post_obj)
       end
 
-      it "displays a flash message indicating invalid data" do
+      it "sets a flash message" do
         make_request
-        flash[:alert].should == "Invalid comment"
+        flash[:alert].should be_present
       end
     end
   end
@@ -191,7 +191,7 @@ describe CommentsController do
 
     it "sets a flash message" do
       make_request
-      flash[:notice].should == "The comment has been deleted"
+      flash[:notice].should be_present
     end
   end
 end

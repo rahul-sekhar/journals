@@ -35,18 +35,12 @@ class Post < ActiveRecord::Base
     }
   end
 
-  def self.search(query)
-    query = "%#{SqlHelper::escapeWildcards(query)}%"
-    
-    where { title.like query }
-  end
-
-  def self.has_student(student_id)
-    where{ id.in( Post.select{id}.joins{ students }.where{ students.id == student_id } ) }
-  end
-
-  def self.has_group(group_id)
-    where{ id.in( Post.select{id}.joins{ students.groups }.where{ groups.id == group_id } ) }
+  def self.filter_by_params(params)
+    posts = self.scoped
+    posts = posts.search(params[:search]) if params[:search]
+    posts = posts.has_group(params[:group]) if params[:group].to_i > 0
+    posts = posts.has_student(params[:student]) if params[:student].to_i > 0
+    return posts
   end
 
   def sanitize_content
@@ -152,7 +146,21 @@ class Post < ActiveRecord::Base
   private
 
   def empty_html? (html_content)
-    sanitized_content =Sanitize.clean( html_content, elements: ['img'] )
+    sanitized_content = Sanitize.clean( html_content, elements: ['img'] )
     return sanitized_content.blank?
+  end
+
+  def self.search(query)
+    query = query.strip
+    query = "%#{SqlHelper::escapeWildcards(query)}%"
+    where { title.like query }
+  end
+
+  def self.has_student(student_id)
+    where{ id.in( Post.select{id}.joins{ students }.where{ students.id == student_id } ) }
+  end
+
+  def self.has_group(group_id)
+    where{ id.in( Post.select{id}.joins{ students.groups }.where{ groups.id == group_id } ) }
   end
 end

@@ -9,7 +9,7 @@ class CommentsController < ApplicationController
     if @comment.save
       redirect_to @post
     else
-      redirect_to @post, alert: "Invalid comment"
+      redirect_to @post, alert: "Please enter a comment"
     end
   end
 
@@ -20,7 +20,7 @@ class CommentsController < ApplicationController
     if @comment.update_attributes(params[:comment])
       redirect_to @post
     else
-      redirect_to @post, alert: "Invalid comment"
+      redirect_to @post, alert: "Please enter a comment"
     end
   end
 

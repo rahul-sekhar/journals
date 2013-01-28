@@ -67,6 +67,26 @@ describe Guardian do
     end
   end
 
+  describe "#archived" do
+    it "returns true if all the students are archived" do
+      profile.students.first.archived = true
+      profile.students << create(:student, archived: true)
+      profile.archived.should == true
+    end
+
+    it "returns false if any of the students are not archived" do
+      profile.students.first.archived = false
+      profile.students << create(:student, archived: true)
+      profile.archived.should == false
+    end
+
+    it "returns false if all of the students are not archived" do
+      profile.students.first.archived = false
+      profile.students << create(:student, archived: false)
+      profile.archived.should == false
+    end
+  end
+
   describe "permissions:" do
     let(:student1){ create(:student) }
     let(:student2){ create(:student) }

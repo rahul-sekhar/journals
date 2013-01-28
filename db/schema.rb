@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130112123243) do
+ActiveRecord::Schema.define(:version => 20130128114815) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -53,14 +53,16 @@ ActiveRecord::Schema.define(:version => 20130112123243) do
   end
 
   create_table "guardians", :force => true do |t|
-    t.string   "first_name",   :limit => 80
-    t.string   "last_name",    :limit => 80, :null => false
-    t.string   "mobile",       :limit => 40
+    t.string   "first_name",        :limit => 80
+    t.string   "last_name",         :limit => 80,  :null => false
+    t.string   "mobile",            :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "home_phone",   :limit => 40
-    t.string   "office_phone", :limit => 40
+    t.string   "home_phone",        :limit => 40
+    t.string   "office_phone",      :limit => 40
     t.text     "address"
+    t.string   "additional_emails", :limit => 100
+    t.text     "notes"
     t.index ["last_name", "first_name"], :name => "index_guardians_on_last_name_and_first_name", :order => {"last_name" => :asc, "first_name" => :asc}
   end
 
@@ -84,7 +86,7 @@ ActiveRecord::Schema.define(:version => 20130112123243) do
 
   create_table "students", :force => true do |t|
     t.string   "first_name",            :limit => 80
-    t.string   "last_name",             :limit => 80,                    :null => false
+    t.string   "last_name",             :limit => 80,                     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "birthday"
@@ -94,20 +96,24 @@ ActiveRecord::Schema.define(:version => 20130112123243) do
     t.string   "home_phone",            :limit => 40
     t.string   "mobile",                :limit => 40
     t.string   "office_phone",          :limit => 40
-    t.boolean  "archived",                            :default => false, :null => false
+    t.boolean  "archived",                             :default => false, :null => false
+    t.string   "additional_emails",     :limit => 100
+    t.text     "notes"
     t.index ["first_name", "last_name"], :name => "student_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
   end
 
   create_table "teachers", :force => true do |t|
-    t.string   "first_name",   :limit => 80
-    t.string   "last_name",    :limit => 80,                    :null => false
+    t.string   "first_name",        :limit => 80
+    t.string   "last_name",         :limit => 80,                     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "mobile",       :limit => 40
+    t.string   "mobile",            :limit => 40
     t.text     "address"
-    t.string   "home_phone",   :limit => 40
-    t.string   "office_phone", :limit => 40
-    t.boolean  "archived",                   :default => false, :null => false
+    t.string   "home_phone",        :limit => 40
+    t.string   "office_phone",      :limit => 40
+    t.boolean  "archived",                         :default => false, :null => false
+    t.string   "additional_emails", :limit => 100
+    t.text     "notes"
     t.index ["first_name", "last_name"], :name => "teacher_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
   end
 

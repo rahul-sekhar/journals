@@ -13,6 +13,17 @@ describe PostsController do
   end
 
   describe "GET index" do
+    before do
+      @student1 = create(:student)
+      @student2 = create(:student)
+      @student3 = create(:student)
+      @group1 = create(:group, students: [@student1, @student2])
+      @post1 = create(:post, title: "Post No One", students: [@student1])
+      @post2 = create(:post, title: "Post No Two")
+      @post3 = create(:post, title: "Post No Three", students: [@student1, @student2])
+      @post4 = create(:post, title: "Post Number Four", students: [@student2])
+    end
+
     it "raises an exception if the user cannot read posts" do
       ability.cannot :read, Post
       expect{ get :index }.to raise_exception(CanCan::AccessDenied)
@@ -29,11 +40,40 @@ describe PostsController do
       response.status.should eq(200)
     end
 
-    it "finds and assigns posts" do
-      post1 = create(:post)
-      post2 = create(:post)
+    it "finds and assigns all posts" do
       get :index
-      assigns(:posts).should =~ [post1, post2]
+      assigns(:posts).should =~ [@post1, @post2, @post3, @post4]
+    end
+    
+    it "sorts posts by the most recent post first" do
+      get :index
+      assigns(:posts).should == [@post4, @post3, @post2, @post1]
+    end
+
+    it "filters posts by search and student" do
+      get :index, search: "no", student: @student2.id
+      assigns(:posts).should == [@post3]
+    end
+
+    it "filters posts by search and group" do
+      get :index, search: "no", group: @group1.id
+      assigns(:posts).should =~ [@post1, @post3]
+    end
+
+    it "assigns all current students" do
+      get :index
+      assigns(:students).should =~ [@student1, @student2, @student3]
+    end
+
+    it "assigns students belonging to a group if a group filter is passed" do
+      get :index, group: @group1.id
+      assigns(:students).should =~ [@student1, @student2]
+    end
+
+    it "removes the student parameter if a student not belonging to the group is passed" do
+      get :index, group: @group1.id, student: @student3.id
+      controller.params[:group].to_i.should == @group1.id
+      controller.params[:student].should be_nil
     end
   end
 

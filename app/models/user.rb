@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 
   validates :email,
     presence: true,
-    format: { with: /.+@.+\..+/ },
+    format: { with: /\A[\w.-]+@[\w-]+\.[\w.]+\z/ },
     length: { maximum: 60 },
     uniqueness: { case_sensitive: false }
   validates :new_password,

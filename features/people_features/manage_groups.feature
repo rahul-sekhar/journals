@@ -47,7 +47,7 @@ Scenario: View all the students in a group
 Scenario: View a group with no students
   Given a group "Some Group" exists
   And I am on the page for that group
-  Then I should see "There are no students in this group yet"
+  Then I should see "No students in the group "Some Group" found"
 
 Scenario: View the groups page with no groups
   When I am on the groups page
@@ -81,9 +81,10 @@ Scenario: Edit a group
 
 Scenario: Add a group
   When I am on the people page
+  And I click "Manage groups"
   And I click "Add group"
   And I fill in "Name" with "New Group"
   And I click "Create"
-  Then I should be on the people page
+  Then I should be on the groups page
   And I should see "The group "New Group" has been created"
   And I should see "New Group"

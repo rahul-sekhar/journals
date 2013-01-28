@@ -17,9 +17,9 @@ describe GroupsController do
     let(:make_request) { get :show, id: group.id }
 
     before do
-      @student1 = create(:student)
-      @student2 = create(:student)
-      @student3 = create(:student)
+      @student1 = create(:student, last_name: "Jim")
+      @student2 = create(:student, last_name: "John")
+      @student3 = create(:student, last_name: "Janet")
       group.students = [@student1, @student3]
     end
 
@@ -33,9 +33,14 @@ describe GroupsController do
       response.status.should eq(200)
     end
 
-    it "assigns the found groups students" do
+    it "assigns the found groups students alphabetically" do
       make_request
-      assigns(:profiles).should =~ [@student1, @student3]
+      assigns(:profiles).should == [@student3, @student1]
+    end
+
+    it "searches for a particular name with the search parameter present" do
+      get :show, id: group.id, search: "Jan"
+      assigns(:profiles).should == [@student3]
     end
 
     it "sets an empty_message" do
@@ -111,9 +116,9 @@ describe GroupsController do
         assigns(:group).name.should == "Something"
       end
 
-      it "redirects to the people page" do
+      it "redirects to the manage groups page" do
         make_request
-        response.should redirect_to people_path
+        response.should redirect_to groups_path
       end
     end
 

@@ -8,16 +8,13 @@ class PagesController < ApplicationController
   def people
     @empty_message = "No current students or teachers found."
     @filter = "all"
-    @people = People.current.alphabetical.search(params[:search]).page(params[:page])
-    @profiles = @people.map{ |person| person.profile }
+    filter_and_display_people( People.current, true )
   end
 
   def archived
     @empty_message = "No archived students or teachers found."
     @filter = "archived"
-    @people = People.archived.alphabetical.search(params[:search]).page(params[:page])
-    @profiles = @people.map{ |person| person.profile }
-    render "people"
+    filter_and_display_people( People.archived, true )
   end
 
   def mentees
@@ -25,8 +22,7 @@ class PagesController < ApplicationController
 
     @empty_message = "No mentees found."
     @filter = "mentees"
-    @profiles = current_profile.mentees.search(params[:search]).page(params[:page])
-    render "people"
+    filter_and_display_people( current_profile.mentees )
   end
 
   def change_password

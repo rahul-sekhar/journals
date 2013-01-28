@@ -76,7 +76,7 @@ module Profile
   module ClassMethods
     def search(query)
       query = "%#{SqlHelper::escapeWildcards(query)}%"
-      where{ ((first_name.op('||', ' ')).op('||', last_name)).like query }
+      where{ array_to_string(`ARRAY[first_name, last_name]`, ' ').like query }
     end
 
     def alphabetical
@@ -118,6 +118,8 @@ module Profile
     base.validates :mobile, length: { maximum: 40 }
     base.validates :home_phone, length: { maximum: 40 }
     base.validates :office_phone, length: { maximum: 40 }
+    base.validates :additional_emails, length: { maximum: 100 }
+    base.validates_associated :user
     
     base.strip_attributes
   end

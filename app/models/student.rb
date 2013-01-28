@@ -1,7 +1,9 @@
 class Student < ActiveRecord::Base
   include Profile
 
-  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address, :bloodgroup, :formatted_birthday
+  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, 
+    :office_phone, :address, :bloodgroup, :formatted_birthday,
+    :additional_emails, :notes
 
   before_destroy :clear_guardians
 
@@ -12,6 +14,7 @@ class Student < ActiveRecord::Base
   has_many :student_observations, dependent: :destroy
 
   validates :bloodgroup, length: { maximum: 15 }
+  validates :birthday, presence: { message: "is invalid" }, if: "formatted_birthday.present?"
 
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
@@ -19,11 +22,13 @@ class Student < ActiveRecord::Base
   def name_with_type
     "#{full_name} (student)"
   end
-  
-  def self.has_group(group_id)
-    where{ id.in( Student.select{id}.joins{ groups }.where{ groups.id == group_id } ) }
-  end
 
+  def self.filter_group(group_id)
+    students = self.scoped
+    students = students.has_group(group_id) if group_id.to_i > 0
+    return students
+  end
+  
   def toggle_archive
     self.archived = !archived
 
@@ -43,10 +48,15 @@ class Student < ActiveRecord::Base
   end
 
   def formatted_birthday
-    birthday.strftime( '%d-%m-%Y' ) if birthday.present?
+    if @formatted_birthday.present?
+      @formatted_birthday
+    elsif birthday.present?
+      birthday.strftime( '%d-%m-%Y' )
+    end
   end
 
   def formatted_birthday=(val)
+    @formatted_birthday = val
     begin
       self.birthday = Date.strptime( val, '%d-%m-%Y' )
     rescue
@@ -82,7 +92,15 @@ class Student < ActiveRecord::Base
       { name: "Home Phone", function: :home_phone },
       { name: "Office Phone", function: :office_phone },
       { name: "Email", function: :email },
+      { name: "Additional Emails", function: :additional_emails },
       { name: "Address", function: :address, format: true },
+      { name: "Notes", function: :notes, format: true }
     ]
+  end
+
+  private
+
+  def self.has_group(group_id)
+    where{ id.in( Student.select{id}.joins{ groups }.where{ groups.id == group_id } ) }
   end
 end

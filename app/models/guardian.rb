@@ -1,12 +1,17 @@
 class Guardian < ActiveRecord::Base
   include Profile
 
-  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address
+  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address,
+    :additional_emails, :notes
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
 
   def archived
-    false
+    if students.all? { |student| student.archived }
+      return true
+    else
+      return false
+    end
   end
 
   def name_with_type
@@ -44,7 +49,9 @@ class Guardian < ActiveRecord::Base
       { name: "Home Phone", function: :home_phone },
       { name: "Office Phone", function: :office_phone },
       { name: "Email", function: :email },
+      { name: "Additional Emails", function: :additional_emails },
       { name: "Address", function: :address, format: true },
+      { name: "Notes", function: :notes, format: true }
     ]
   end
 end

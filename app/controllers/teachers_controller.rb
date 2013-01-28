@@ -4,8 +4,7 @@ class TeachersController < ApplicationController
   def index
     @empty_message = "No teachers found."
     @filter = "teachers"
-    @profiles = @teachers.current.alphabetical.search(params[:search]).page(params[:page])
-    render "pages/people"
+    filter_and_display_people( @teachers.current )
   end
 
   def show
@@ -18,7 +17,7 @@ class TeachersController < ApplicationController
     if @teacher.save
       redirect_to @teacher
     else
-      redirect_to new_teacher_path, alert: "You must enter a name for the teacher."
+      redirect_to new_teacher_path, alert: @teacher.errors.full_messages.first
     end
   end
 

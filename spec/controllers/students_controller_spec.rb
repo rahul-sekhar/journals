@@ -46,6 +46,14 @@ describe StudentsController do
       assigns(:profiles).should == [student3, student1, student2]
     end
 
+    it "searches for students when the search parameter is passed" do
+      student1 = create(:student, first_name: "Rahul", last_name: "Sekhar")
+      student2 = create(:student, first_name: "Ze", last_name: "Student")
+      student3 = create(:student, first_name: "A", last_name: "Student")
+      get :index, search: "student"
+      assigns(:profiles).should =~ [student3, student2]
+    end
+
     it "sets an empty_message" do
       get :index
       assigns(:empty_message).should be_present

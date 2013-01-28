@@ -51,7 +51,7 @@ Scenario: Activate a teacher
   And I should see "Reset password"
   And "shalini@mail.com" should receive an email
   When they open the email
-  Then they should see /^User activation/ in the email subject
+  Then they should see /^Activate your account$/ in the email subject
 
 Scenario: Reset the password for a teacher
   Given a teacher profile for Shalini exists
@@ -62,7 +62,7 @@ Scenario: Reset the password for a teacher
   And I should see "An email has been sent to the user with a randomly generated password"
   And "shalini@mail.com" should receive an email
   When they open the email
-  Then they should see /^Password reset/ in the email subject
+  Then they should see /^Your password has been reset$/ in the email subject
 
 Scenario: Activate a student with no email address
   Given a student profile for Parvathy exists
@@ -79,7 +79,7 @@ Scenario: Activate a student
   And I should see "Reset password"
   And "parvathy@mail.com" should receive an email
   When they open the email
-  Then they should see /^User activation/ in the email subject
+  Then they should see /^Activate your account$/ in the email subject
 
 Scenario: Activate a guardian with no email address
   Given a student profile for Parvathy exists
@@ -97,7 +97,7 @@ Scenario: Activate a guardian with an email address
   And I should see "Reset password"
   And "poonam@mail.com" should receive an email
   When they open the email
-  Then they should see /^User activation/ in the email subject
+  Then they should see /^Activate your account$/ in the email subject
 
 Scenario: Archive and unarchive a teacher
   Given a teacher profile for Shalini exists

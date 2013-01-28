@@ -23,4 +23,4 @@ Scenario: Edit comment with invalid data
   And I click "Save"
   Then I should be on the page for that post
   And I should see "First comment" within the ".comments" block
-  And I should see "Invalid comment"
+  And I should see "Please enter a comment"

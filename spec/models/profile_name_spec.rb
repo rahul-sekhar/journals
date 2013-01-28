@@ -80,6 +80,22 @@ describe ProfileName do
     end
   end
 
+  context "with single named profiles" do
+    before do
+      @student = create(:student, first_name: nil)
+      @teacher = create(:teacher, first_name: nil)
+      @guardian = create(:guardian, first_name: nil, students: [@student])
+    end
+    
+    it "returns all the profiles" do
+      ProfileName.all.map{ |profile| profile.profile }.should =~ [@student, @teacher, @guardian]
+    end
+
+    it "returns nil for the first names" do
+      ProfileName.all.all?{ |profile| profile.first_name == nil }.should == true
+    end
+  end
+
   describe "##excluding_profile" do
     let(:student) { create(:student, first_name: "Some", last_name: "Name") }
     let(:student2) { create(:student, first_name: "Some", last_name: "Name") }
