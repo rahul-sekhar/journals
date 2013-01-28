@@ -17,7 +17,7 @@ class StudentsController < ApplicationController
     if @student.save
       redirect_to @student
     else
-      redirect_to new_student_path, alert: "You must enter a name for the student."
+      redirect_to new_student_path, alert: @student.errors.full_messages.first
     end
   end
 

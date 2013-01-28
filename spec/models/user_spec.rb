@@ -24,6 +24,31 @@ describe User do
       end
     end
 
+    it "is invalid with commas" do
+      user.email = "a@b.c,d@g.e"
+      user.should be_invalid
+    end
+
+    it "is invalid with spaces" do
+      user.email = "a@b.c e@g.f"
+      user.should be_invalid
+    end
+
+    it "is invalid with a lt symbol" do
+      user.email = "<a@b.c"
+      user.should be_invalid
+    end
+
+    it "is valid with dashes in the email" do
+      user.email = "a-d@b.c"
+      user.should be_valid
+    end
+
+    it "is valid with dashes in the domain" do
+      user.email = "a@b-d.c"
+      user.should be_valid
+    end
+
     it "is valid for a valid email format" do
       %w[a@b.c test.email@server.co.in].each do |email|
         user.email = email

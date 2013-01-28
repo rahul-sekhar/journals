@@ -17,7 +17,7 @@ class TeachersController < ApplicationController
     if @teacher.save
       redirect_to @teacher
     else
-      redirect_to new_teacher_path, alert: "You must enter a name for the teacher."
+      redirect_to new_teacher_path, alert: @teacher.errors.full_messages.first
     end
   end
 

@@ -221,6 +221,13 @@ shared_examples_for "a profile" do
     profile.should be_invalid
   end
 
+  it "cannot have additional emails longer than 100 characters" do
+    profile.additional_emails = "a" * 100
+    profile.should be_valid
+    profile.additional_emails = "a" * 101
+    profile.should be_invalid
+  end
+
   describe "#active?" do
     it "is inactive if the user is not present" do
       profile.should_not be_active

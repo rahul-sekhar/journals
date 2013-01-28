@@ -22,3 +22,8 @@ en:
       group:
         create: "Create"
         update: "Save"
+
+  activerecord:
+    attributes:
+      user:
+        email: "Email"

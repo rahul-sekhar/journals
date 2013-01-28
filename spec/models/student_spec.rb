@@ -36,14 +36,29 @@ describe Student do
       profile.birthday.should be_nil
     end
 
+    it "invalidates the student if invalid" do
+      profile.formatted_birthday = "asdf"
+      profile.should be_invalid
+    end
+
     it "sets the birthday to nil if blank" do
       profile.formatted_birthday = ""
       profile.birthday.should be_nil
     end
 
+    it "does not invalidate the student if blank" do
+      profile.formatted_birthday = " "
+      profile.should be_valid
+    end
+
     it "sets the birthday to nil if nil" do
       profile.formatted_birthday = nil
       profile.birthday.should be_nil
+    end
+
+    it "does not invalidate the student if nil" do
+      profile.formatted_birthday = nil
+      profile.should be_valid
     end
   end
 
@@ -256,7 +271,7 @@ describe Student do
     end
 
     it "returns students within that group when a group id is passed" do
-      Student.filter_group(@group1.id).should == [@student1, @student2]
+      Student.filter_group(@group1.id).should =~ [@student1, @student2]
     end
 
     it "returns no students when a group with no students is passed" do

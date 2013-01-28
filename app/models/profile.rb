@@ -118,6 +118,8 @@ module Profile
     base.validates :mobile, length: { maximum: 40 }
     base.validates :home_phone, length: { maximum: 40 }
     base.validates :office_phone, length: { maximum: 40 }
+    base.validates :additional_emails, length: { maximum: 100 }
+    base.validates_associated :user
     
     base.strip_attributes
   end

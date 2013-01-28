@@ -1,7 +1,9 @@
 class Student < ActiveRecord::Base
   include Profile
 
-  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address, :bloodgroup, :formatted_birthday
+  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, 
+    :office_phone, :address, :bloodgroup, :formatted_birthday,
+    :additional_emails, :notes
 
   before_destroy :clear_guardians
 
@@ -12,6 +14,7 @@ class Student < ActiveRecord::Base
   has_many :student_observations, dependent: :destroy
 
   validates :bloodgroup, length: { maximum: 15 }
+  validates :birthday, presence: { message: "is invalid" }, if: "formatted_birthday.present?"
 
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
@@ -45,10 +48,15 @@ class Student < ActiveRecord::Base
   end
 
   def formatted_birthday
-    birthday.strftime( '%d-%m-%Y' ) if birthday.present?
+    if @formatted_birthday.present?
+      @formatted_birthday
+    elsif birthday.present?
+      birthday.strftime( '%d-%m-%Y' )
+    end
   end
 
   def formatted_birthday=(val)
+    @formatted_birthday = val
     begin
       self.birthday = Date.strptime( val, '%d-%m-%Y' )
     rescue
@@ -84,7 +92,9 @@ class Student < ActiveRecord::Base
       { name: "Home Phone", function: :home_phone },
       { name: "Office Phone", function: :office_phone },
       { name: "Email", function: :email },
+      { name: "Additional Emails", function: :additional_emails },
       { name: "Address", function: :address, format: true },
+      { name: "Notes", function: :notes, format: true }
     ]
   end
 
