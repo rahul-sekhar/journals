@@ -14,7 +14,7 @@ set :application, app_settings['app_name']
 default_run_options[:pty] = true
 set :repository,  "git@github.com:rahul-sekhar/journals.git"
 set :scm, :git
-set :scm_passphrase, YAML::load_file("config/sensitive.yml")[app_settings['app_name']]['scm_pass']
+set :ssh_options, { forward_agent: true }
 set :branch, app_settings['git_branch']
 
 set :user, "rahul"
@@ -31,8 +31,8 @@ after "deploy:start",   "delayed_job:start"
 after "deploy:restart", "delayed_job:restart"
 
 # Whenever cron jobs
-# set :whenever_command, "bundle exec whenever"
-# require "whenever/capistrano"
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
 
 
 # Sensitive data
