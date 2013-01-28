@@ -47,4 +47,11 @@ $(document).ready(function() {
     })
     
   });
+
+
+
+  // Student birthday datepicker
+  $('#student_formatted_birthday').datepicker({ 
+    dateFormat: "dd-mm-yy" 
+  });
 });
