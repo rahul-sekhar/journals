@@ -31,8 +31,8 @@ after "deploy:start",   "delayed_job:start"
 after "deploy:restart", "delayed_job:restart"
 
 # Whenever cron jobs
-# set :whenever_command, "bundle exec whenever"
-# require "whenever/capistrano"
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
 
 
 # Sensitive data
