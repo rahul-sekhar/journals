@@ -1,4 +1,8 @@
 #login {
+  #main-content {
+    width: 100%;
+  }
+
   header {
     margin-bottom: 64px;
   }
@@ -39,4 +43,46 @@
   #upper-bar {
     display: none;
   }
+
+  .message {
+    p {
+      line-height: 24px;
+      margin-bottom: 15px;
+    }
+
+    a {
+      @include link-colors($dark-teal, lighten($dark-teal, 10));
+    }
+  }
+
+  .browser-icon-link {
+    margin: 0 6px;
+
+    img {
+      position: relative;
+      bottom: -5px;
+    }
+  }
+}
+
+#ie-message, #js-message {
+  display: none
+}
+
+.no-js #login, .old-ie #login {
+  h2, form {
+    display: none;
+  }
+}
+
+.old-ie #ie-message {
+  display: block
+}
+
+.no-js #js-message {
+  display: block
+}
+
+.old-ie.no-js #js-message {
+  display: none;
 }

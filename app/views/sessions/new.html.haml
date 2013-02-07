@@ -5,3 +5,29 @@
   = form.inputs :email, :password
   = form.actions do
     = form.action :submit, label: "Log in", button_html: { class: :button }
+
+#ie-message.message
+  %p 
+    %strong Your current browser does not support this website. Please upgrade to a more modern browser.
+
+  %p 
+    We suggest
+    = link_to "http://www.google.com/chrome", class: "browser-icon-link" do
+      = image_tag "chrome-icon.png"
+      Google Chrome 
+    or
+    = link_to "http://www.mozilla.org/en-US/firefox/new/", class: "browser-icon-link" do
+      = image_tag "firefox-icon.png"
+      Mozilla Firefox
+
+  %p 
+    You can also upgrade to the lastest version of 
+    = link_to "Internet Explorer", "http://windows.microsoft.com/ie"
+    if you have Windows 7 or higher.
+
+#js-message.message
+  %p
+    %strong Your browser must have javascript enabled for you to use this website.
+
+  %p
+    = link_to "Click here to find out how to enable javsacript", "http://www.activatejavascript.org/", target: "_blank"
