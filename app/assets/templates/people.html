@@ -1,0 +1,56 @@
+<article class="profile" ng-repeat="person in people">
+  <header class="profile-header">
+    <h3>{{person.name}}</h3>
+
+    <p class="type" ng-show="person.type == 'teachers'">Teacher</p>
+
+    <div class="clear-left">
+  </header>
+
+  <div class="main-profile-fields">
+    <div class="field" ng-controller="FieldController" ng-repeat="field in ['mobile', 'home_phone', 'office_phone', 'email', 'additional_emails']">
+      <p class="field-name">{{field | capitalize}}</p>
+      <p ng-hide="fieldEnabled" ng-click="enableField()">{{person[field]}}</p>
+      <input ng-model="newValue" ng-focus-on="fieldEnabled" ng-show="fieldEnabled" ng-blur="save(person, field, newValue)" />
+    </div>
+  </div>
+</article>
+
+<!--   %header.profile-header
+    %h3= profile.full_name
+    - if profile.is_a? Teacher
+      %p.type Teacher
+
+    - if can? :administrate, profile
+      = render 'shared/profile/administrate_menu', profile: profile
+
+    .clear-left
+
+  .main-profile-fields
+    - profile.class.fields.each do |field|
+      = render 'shared/profile/field', field_data: field, field_value: profile.send(field[:function])
+
+    - if can? :update, profile
+      .edit
+        = link_to "Edit profile", edit_profile_path(profile), class: 'edit-link'
+
+
+  - if profile.is_a? Student
+    .guardians
+      - if can? :create, Guardian
+        = link_to "Add guardian", new_student_guardian_path(profile), class: "add-guardian"
+
+      - profile.guardians.each do |guardian|
+        = render "shared/profile/guardian", guardian: guardian, student: profile
+
+  %footer.profile-footer
+    - if profile.is_a? Student
+      .groups
+        = render "shared/profile/groups", student: profile
+
+      .mentors
+        = render "shared/profile/mentors", student: profile
+
+    - if profile.is_a? Teacher
+      .mentees
+        = render "shared/profile/mentees", teacher: profile -->

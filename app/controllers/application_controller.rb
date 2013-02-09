@@ -1,8 +1,12 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   helper_method :current_user, :current_profile, :logged_in?
-  before_filter :require_login
+  before_filter :require_login, :intercept_html
   check_authorization
+
+  def intercept_html
+    render inline: "", layout: "angular" if request.format.html?
+  end
 
   def current_user
     @current_user ||= User.find_by_id(session[:user_id])
@@ -19,12 +23,9 @@ class ApplicationController < ActionController::Base
   def filter_and_display_people(collection, map_profiles = false)
     @people = collection.alphabetical
     @people = @people.search(params[:search]) if params[:search]
-    @people = @people.page(params[:page])
+    @people = @people.map{ |person| person.profile } if map_profiles
 
-    @profiles = @people
-    @profiles = @profiles.map{ |person| person.profile } if map_profiles
-
-    render "pages/people"
+    render "pages/people.json"
   end
 
   protected

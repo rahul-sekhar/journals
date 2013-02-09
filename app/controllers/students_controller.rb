@@ -31,7 +31,7 @@ class StudentsController < ApplicationController
 
   def update
     if @student.update_attributes(params[:student])
-      redirect_to @student
+      render 'show'
     else
       flash[:student_data] = params[:student]
       redirect_to edit_student_path(@student), alert: @student.errors.full_messages.first

@@ -30,13 +30,14 @@ end
 group :test do
   gem 'factory_girl_rails', '4.1.0'
   gem 'capybara', '2.0.2'
+  gem 'capybara-webkit'
   gem 'launchy', '2.1.2'
   gem 'headless', '0.3.1'
   gem 'email_spec', '1.4.0'
   gem 'simplecov', '0.7.1', require: false
 end
 
-gem 'jquery-rails', '2.2.0'
+gem 'jbuilder'
 gem 'haml', '3.1.7'
 gem 'yaml_db', '0.2.3'
 gem 'formtastic', '2.2.1'
@@ -50,4 +51,3 @@ gem 'schema_plus', '1.0.0'
 gem 'aws-s3'
 gem 'whenever', require: false
 gem 'sanitize'
-gem 'kaminari'

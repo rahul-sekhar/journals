@@ -155,3 +155,9 @@ end
 Then /^I should get a page not found message when (.*)$/ do |p_step|
   expect{ step p_step }.to raise_exception(ActiveRecord::RecordNotFound)
 end
+
+
+# Hover steps
+When /^I hover over "(.*?)"$/ do |p_css|
+  find(p_css).trigger(:mouseover)
+end

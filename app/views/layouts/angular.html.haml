@@ -1,0 +1,27 @@
+!!! 5
+%html{"ng-app" => "journalsApp"}
+  %head
+    %title Journals Angular
+    %link{ rel: "shortcut icon", href: "/favicon.ico?v=1" }
+    = stylesheet_link_tag    "application", media: "all"
+    = javascript_include_tag "angular"
+    \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
+    \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    = csrf_meta_tags
+
+  %body
+    %header#page-header
+      .wrapper
+        %h1= link_to Rails.configuration.settings['app_full_name'], root_path
+        .user= render "general/user_menu"
+
+    .wrapper
+      %navigation#page-navigation= render "general/navigation"
+
+      #main-content
+        %h2 Page heading
+
+        %section#upper-bar
+          .clear-left
+
+        .ng-view
