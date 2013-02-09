@@ -21,19 +21,19 @@ describe PagesController do
   end
 
 
-  describe "GET people" do
+  describe "GET people", :focus do
     it "has a status of 200" do
-      get :people
+      get :people, format: :json
       response.status.should == 200
     end
 
-    it "assigns any students and teachers into a profiles collection" do
+    it "assigns any students and teachers into a people collection" do
       student1 = create(:student)
       student2 = create(:student)
       teacher1 = create(:teacher)
       teacher2 = create(:teacher)
-      get :people
-      assigns(:profiles).should =~ [student1, student2, teacher1, teacher2]
+      get :people, format: :json
+      assigns(:people).should =~ [student1, student2, teacher1, teacher2]
     end
 
     it "does not assign archived students and teachers" do
@@ -41,8 +41,8 @@ describe PagesController do
       student2 = create(:student)
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
-      get :people
-      assigns(:profiles).should =~ [student2, teacher1]
+      get :people, format: :json
+      assigns(:people).should =~ [student2, teacher1]
     end
 
     it "assigns students and teachers alphabetically" do
@@ -50,8 +50,8 @@ describe PagesController do
       student2 = create(:student, first_name: "Other", last_name: "Student")
       teacher1 = create(:teacher, first_name: "A", last_name: "Teacher")
       teacher2 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
-      get :people
-      assigns(:profiles).should == [teacher1, student2, teacher2, student1]
+      get :people, format: :json
+      assigns(:people).should == [teacher1, student2, teacher2, student1]
     end
 
     it "searches if a search parameter is passed" do
@@ -59,12 +59,12 @@ describe PagesController do
       student2 = create(:student, first_name: "Other", last_name: "Student")
       teacher1 = create(:teacher, first_name: "A", last_name: "Teacher")
       teacher2 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
-      get :people, search: "ther stu"
-      assigns(:profiles).should == [student2]
+      get :people, search: "ther stu", format: :json
+      assigns(:people).should == [student2]
     end
 
     it "sets an empty_message" do
-      get :people
+      get :people, format: :json
       assigns(:empty_message).should be_present
     end
   end

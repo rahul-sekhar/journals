@@ -3,7 +3,7 @@
 /* Directives */
 
 
-// angular.module('journalsApp.directives', []).
+angular.module('journalsApp.directives', [])
   
 //   directive('jnlBlur', function() {
 //     return function( scope, elem, attrs ) {

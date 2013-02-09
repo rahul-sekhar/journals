@@ -1,3 +1,4 @@
+@angular
 Feature: View students and teachers
 
 Unarchived students and teachers are both shown on the people page and. Only students, only teachers and archived students and teachers can also be viewed.
@@ -13,6 +14,7 @@ Background:
   And a student named "Archie Andrews" exists
   And that student is archived
 
+@current
 Scenario: View unarchived students and teachers on the people page
   When I am on the people page
   Then I should see the heading "Aditya Pandya"

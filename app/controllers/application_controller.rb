@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
     @people = @people.search(params[:search]) if params[:search]
     @people = @people.map{ |person| person.profile } if map_profiles
 
-    render "pages/people.json"
+    render "pages/people"
   end
 
   protected
