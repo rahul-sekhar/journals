@@ -5,8 +5,9 @@
     %link{ rel: "shortcut icon", href: "/favicon.ico?v=1" }
     = stylesheet_link_tag    "application", media: "all"
     = javascript_include_tag "angular"
-    \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
-    \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    - unless Rails.env.test?
+      \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
+      \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     = csrf_meta_tags
 
   %body

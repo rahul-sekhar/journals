@@ -6,6 +6,10 @@ function PeopleCtrl($scope, commonPeopleCtrl) {
   commonPeopleCtrl.include($scope);
 }
 
+function ArchivedPeopleCtrl($scope, commonPeopleCtrl) {
+  commonPeopleCtrl.include($scope, 'archived');
+}
+
 function TeachersCtrl($scope, $routeParams, commonPeopleCtrl) {
   commonPeopleCtrl.include($scope, 'teachers', $routeParams.id);
 }

@@ -24,6 +24,7 @@ Scenario: View unarchived students and teachers on the people page
   And I should not see the heading "Tanu GB"
   And I should not see the heading "Archie Andrews"
 
+@current
 Scenario: View archived students and teachers on the people page
   When I am on the archived people page
   Then I should not see the heading "Aditya Pandya"

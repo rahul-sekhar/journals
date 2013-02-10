@@ -22,15 +22,20 @@ describe('Controllers', function() {
     }));
 
     describe('PeopleCtrl', function() {
-
       it("includes the common people controller, passing the scope", inject(function($rootScope, $controller) {
         ctrl = $controller(PeopleCtrl, {$scope: scope, commonPeopleCtrl: commonPeopleCtrl});
         expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope);
       }));
     });
 
-    describe('TeachersCtrl', function() {
+    describe('ArchivedPeopleCtrl', function() {
+      it("includes the common people controller, passing the scope and type", inject(function($rootScope, $controller) {
+        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, commonPeopleCtrl: commonPeopleCtrl});
+        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'archived');
+      }));
+    });
 
+    describe('TeachersCtrl', function() {
       it("includes the common people controller, passing the scope, type and id", inject(function($rootScope, $controller) {
         ctrl = $controller(TeachersCtrl, {
           $scope: scope, 
@@ -42,7 +47,6 @@ describe('Controllers', function() {
     });
 
     describe('StudentsCtrl', function() {
-
       it("includes the common people controller, passing the scope, type and id", inject(function($rootScope, $controller) {
         ctrl = $controller(StudentsCtrl, {
           $scope: scope, 

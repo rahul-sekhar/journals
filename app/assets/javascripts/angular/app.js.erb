@@ -13,6 +13,8 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
 
       when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl}).
 
+      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: ArchivedPeopleCtrl}).
+
       otherwise({redirectTo: '/people'});
   }]).
   config(["$httpProvider", function(provider) {

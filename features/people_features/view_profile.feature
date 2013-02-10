@@ -43,7 +43,6 @@ Scenario: View teacher profile with all information
   And I should see "Notes"
   And I should see "A test sister"
 
-@current
 Scenario: View student profile with all information
   Given a teacher profile for Shalini exists
   And a student profile for Parvathy with all information exists

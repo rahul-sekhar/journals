@@ -27,6 +27,13 @@ describe('service', function() {
       expect(result).toEqualData([{name: 'Student 1'}]);
     }));
 
+    it('should query archived people', inject(function(Person) {
+      $httpBackend.expectGET('/people/archived').respond([{name: 'Student 1'}]);
+      result = Person.query_archived();
+      $httpBackend.flush();
+      expect(result).toEqualData([{name: 'Student 1'}]);
+    }));
+
     it("should get a teacher", inject(function(Person) {
       $httpBackend.expectGET('/teachers/5').respond({name: 'Teacher Name'})
       result = Person.get({type: 'teachers', id: 5});
@@ -69,6 +76,26 @@ describe('service', function() {
             { id: 15, type: 'teachers', name: 'Teacher 1'}
           ]);
           ctrl.include(scope);
+        });
+
+        it('sets people to the list fetched via xhr', inject(function(Person) {
+          expect(scope.people).toEqual([]);
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([
+            { id: 12, type: 'students', name: 'Student 1'},
+            { id: 15, type: 'teachers', name: 'Teacher 1'}
+          ]);
+        }));
+      });
+
+
+      describe('Archived people', function() {     
+        beforeEach(function() {
+          $httpBackend.expectGET('/people/archived').respond([
+            { id: 12, type: 'students', name: 'Student 1'},
+            { id: 15, type: 'teachers', name: 'Teacher 1'}
+          ]);
+          ctrl.include(scope, 'archived');
         });
 
         it('sets people to the list fetched via xhr', inject(function(Person) {

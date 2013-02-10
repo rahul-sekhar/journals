@@ -7,6 +7,7 @@ angular.module('journalsApp.services', ['ngResource']).
   factory('Person', function($resource) {
     return $resource('/:type/:id', {id: "@id", type: "@type"}, {
       query: { method: 'GET', params: {type: 'people'}, isArray: true },
+      query_archived: { method: 'GET', params: {type: 'people', id: 'archived'}, isArray: true }
     });
   }).
   
@@ -33,7 +34,7 @@ angular.module('journalsApp.services', ['ngResource']).
 
       // Query people based on passed parameters
       $scope.people = [];
-      if (type) {
+      if (type == 'students' || type == 'teachers') {
         Person.get(
           { id: id, type: type },
           function(result) {
@@ -44,6 +45,9 @@ angular.module('journalsApp.services', ['ngResource']).
             errorHandler.message('This profile could not be found');
           }
         );
+      }
+      else if(type == 'archived') {
+        $scope.people = Person.query_archived();
       }
       else {
         $scope.people = Person.query();
