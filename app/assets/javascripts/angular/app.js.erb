@@ -1,10 +1,20 @@
 'use strict';
 
 angular.module('journalsApp', ['journalsApp.filters', 'journalsApp.services', 'journalsApp.directives']).
+  config(['$locationProvider', function($locationProvider) {
+    $locationProvider.html5Mode(true);
+  }]).
   config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: PeopleCtrl});
-    $routeProvider.otherwise({redirectTo: '/people'});
-  }])
-  .config(["$httpProvider", function(provider) {
+    $routeProvider.
+
+      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: PeopleCtrl}).
+
+      when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
+
+      when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl}).
+
+      otherwise({redirectTo: '/people'});
+  }]).
+  config(["$httpProvider", function(provider) {
     provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
   }]);

@@ -2,18 +2,15 @@
   <header class="profile-header">
     <h3>{{person.full_name}}</h3>
 
-    <p class="type" ng-show="person.type == 'teachers'">Teacher</p>
+    <p class="type" ng-show="person.type == 'teachers'">{{person.type | simpleSingularize | capitalize}}</p>
 
     <div class="clear-left">
   </header>
 
-  <!-- <div class="main-profile-fields">
-    <div class="field" ng-controller="FieldController" ng-repeat="field in ['mobile', 'home_phone', 'office_phone', 'email', 'additional_emails']">
-      <p class="field-name">{{field | capitalize}}</p>
-      <p ng-hide="fieldEnabled" ng-click="enableField()">{{person[field]}}</p>
-      <input ng-model="newValue" ng-focus-on="fieldEnabled" ng-show="fieldEnabled" ng-blur="save(person, field, newValue)" />
-    </div>
-  </div> -->
+  <div class="main-profile-fields">
+    <date-field parent="person" ng-repeat="field in date_field_list(person)" name="{{field}}" function-name="formatted_{{field}}"></date-field>
+    <field parent="person" ng-repeat="field in field_list(person)" name="{{field}}"></field>
+  </div>
 </article>
 
 <!--   %header.profile-header

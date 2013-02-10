@@ -12,28 +12,47 @@ describe('Controllers', function() {
 
   beforeEach(module('journalsApp.services'));
 
-  describe('PeopleCtrl', function() {
-    var scope, ctrl, $httpBackend;
+  describe('People controllers', function() {
 
-    beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
-      $httpBackend = _$httpBackend_;
-      $httpBackend.expectGET('/people').respond([
-        { id: 12, type: 'student', name: 'Student 1'},
-        { id: 15, type: 'teacher', name: 'Teacher 1'}
-      ]);
+    var scope, ctrl, commonPeopleCtrl;
 
+    beforeEach(inject(function($rootScope) {
+      commonPeopleCtrl = { include: jasmine.createSpy() };
       scope = $rootScope.$new();
-      ctrl = $controller(PeopleCtrl, {$scope: scope});
     }));
 
-    it('set people to the list fetched via xhr', inject(function(Person) {
-      expect(scope.phones).toBeUndefined();
-      $httpBackend.flush();
-      expect(scope.people).toEqualData([
-        { id: 12, type: 'student', name: 'Student 1'},
-        { id: 15, type: 'teacher', name: 'Teacher 1'}
-      ]);
-    }));
+    describe('PeopleCtrl', function() {
+
+      it("includes the common people controller, passing the scope", inject(function($rootScope, $controller) {
+        ctrl = $controller(PeopleCtrl, {$scope: scope, commonPeopleCtrl: commonPeopleCtrl});
+        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope);
+      }));
+    });
+
+    describe('TeachersCtrl', function() {
+
+      it("includes the common people controller, passing the scope, type and id", inject(function($rootScope, $controller) {
+        ctrl = $controller(TeachersCtrl, {
+          $scope: scope, 
+          commonPeopleCtrl: commonPeopleCtrl, 
+          $routeParams: { id: 11 }
+        });
+        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'teachers', 11);
+      }));
+    });
+
+    describe('StudentsCtrl', function() {
+
+      it("includes the common people controller, passing the scope, type and id", inject(function($rootScope, $controller) {
+        ctrl = $controller(StudentsCtrl, {
+          $scope: scope, 
+          commonPeopleCtrl: commonPeopleCtrl, 
+          $routeParams: { id: 5 }
+        });
+        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'students', 5);
+      }));
+    });
+
   });
 });
 

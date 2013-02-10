@@ -2,7 +2,14 @@
 
 /* Controllers */
 
-function PeopleCtrl($scope, Person) {
-  $scope.people = Person.query();
+function PeopleCtrl($scope, commonPeopleCtrl) {
+  commonPeopleCtrl.include($scope);
 }
-PeopleCtrl.$inject = ['$scope', 'Person'];
+
+function TeachersCtrl($scope, $routeParams, commonPeopleCtrl) {
+  commonPeopleCtrl.include($scope, 'teachers', $routeParams.id);
+}
+
+function StudentsCtrl($scope, $routeParams, commonPeopleCtrl) {
+  commonPeopleCtrl.include($scope, 'students', $routeParams.id);
+}

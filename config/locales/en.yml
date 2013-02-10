@@ -2,7 +2,7 @@ en:
   formtastic:
     labels:
       formatted_birthday: "Birthday"
-      bloodgroup: "Blood group"
+      blood_group: "Blood Group"
     actions:
       post:
         create: "Create post"

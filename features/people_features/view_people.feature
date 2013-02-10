@@ -14,7 +14,6 @@ Background:
   And a student named "Archie Andrews" exists
   And that student is archived
 
-@current
 Scenario: View unarchived students and teachers on the people page
   When I am on the people page
   Then I should see the heading "Aditya Pandya"

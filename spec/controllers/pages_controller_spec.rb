@@ -21,7 +21,7 @@ describe PagesController do
   end
 
 
-  describe "GET people", :focus do
+  describe "GET people" do
     it "has a status of 200" do
       get :people, format: :json
       response.status.should == 200

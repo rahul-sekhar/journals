@@ -9,7 +9,9 @@ Given /^a teacher profile for Shalini with all information exists$/ do
     mobile: '1122334455',
     address: "Some house,\nBanashankari,\nBangalore - 55",
     home_phone: '080-12345',
-    office_phone: '080-67890'
+    office_phone: '080-67890',
+    additional_emails: 'shalu@short.com, shalini_sekhar@long.com',
+    notes: 'A test sister'
   )
 end
 
@@ -26,7 +28,7 @@ Given /^a student profile for Parvathy with all information exists$/ do
     home_phone: '5678',
     office_phone: '1432',
     formatted_birthday: '25-12-1996',
-    bloodgroup: 'B+'
+    blood_group: 'B+'
   )
 end
 

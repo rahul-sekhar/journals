@@ -318,30 +318,6 @@ shared_examples_for "a profile" do
     end    
   end
 
-  describe "##fields" do
-    it "returns an array of hashes of fields" do
-      profile_class.fields.should be_a Array
-      profile_class.fields.first.should be_a Hash
-    end
-
-    it "must include email" do
-      profile_class.fields.find{ |field| field[:name] == "Email" }.should be_present
-    end
-  end
-
-  describe "##inputs" do
-    before do
-      profile_class.stub(:fields).and_return([
-        { name: "Something", function: :something },
-        { name: "Something Else", function: :something_else, input: :some_input }
-      ])
-    end
-
-    it "returns either the function or the input of the field, giving preference to the input" do
-      profile_class.inputs.should == [:something, :some_input]
-    end
-  end
-
   describe "##name_is" do
     before do
       @profile1 = profile_class.create(first_name: "First", last_name: "Last")

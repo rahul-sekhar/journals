@@ -83,10 +83,6 @@ module Profile
       order(:first_name, :last_name)
     end
 
-    def inputs
-      self.fields.map { |field| field[:input] || field[:function] }
-    end
-
     def name_is(first, last)
       names_are(first, last).first
     end

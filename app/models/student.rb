@@ -2,7 +2,7 @@ class Student < ActiveRecord::Base
   include Profile
 
   attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, 
-    :office_phone, :address, :bloodgroup, :formatted_birthday,
+    :office_phone, :address, :blood_group, :formatted_birthday,
     :additional_emails, :notes
 
   before_destroy :clear_guardians
@@ -13,7 +13,7 @@ class Student < ActiveRecord::Base
   has_and_belongs_to_many :tagged_posts, class_name: Post, uniq: true
   has_many :student_observations, dependent: :destroy
 
-  validates :bloodgroup, length: { maximum: 15 }
+  validates :blood_group, length: { maximum: 15 }
   validates :birthday, presence: { message: "is invalid" }, if: "formatted_birthday.present?"
 
   scope :current, where(archived: false)
@@ -27,6 +27,23 @@ class Student < ActiveRecord::Base
     students = self.scoped
     students = students.has_group(group_id) if group_id.to_i > 0
     return students
+  end
+
+  def formatted_birthday
+    if @formatted_birthday.present?
+      @formatted_birthday
+    elsif birthday.present?
+      birthday.strftime( '%d-%m-%Y' )
+    end
+  end
+
+  def formatted_birthday=(val)
+    @formatted_birthday = val
+    begin
+      self.birthday = Date.strptime( val, '%d-%m-%Y' )
+    rescue
+      self.birthday = nil
+    end
   end
   
   def toggle_archive
@@ -47,35 +64,6 @@ class Student < ActiveRecord::Base
     guardians_copy.each { |guardian| guardian.check_students }
   end
 
-  def formatted_birthday
-    if @formatted_birthday.present?
-      @formatted_birthday
-    elsif birthday.present?
-      birthday.strftime( '%d-%m-%Y' )
-    end
-  end
-
-  def formatted_birthday=(val)
-    @formatted_birthday = val
-    begin
-      self.birthday = Date.strptime( val, '%d-%m-%Y' )
-    rescue
-      self.birthday = nil
-    end
-  end
-
-  def age
-    if birthday.present?
-      now = Date.today
-      dob = birthday
-      return (now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1))
-    end
-  end
-
-  def birthday_with_age
-    "#{formatted_birthday} (#{age} yrs)" if birthday.present?
-  end
-
   def remaining_groups
     Group.where{ id.not_in( my{ group_ids } ) }
   end
@@ -83,20 +71,6 @@ class Student < ActiveRecord::Base
   def remaining_teachers
     Teacher.current.where{ id.not_in( my{ mentor_ids } ) }
   end  
-
-  def self.fields
-    [
-      { name: "Birthday", function: :birthday_with_age, input: :formatted_birthday },
-      { name: "Blood group", function: :bloodgroup },
-      { name: "Mobile", function: :mobile },
-      { name: "Home Phone", function: :home_phone },
-      { name: "Office Phone", function: :office_phone },
-      { name: "Email", function: :email },
-      { name: "Additional Emails", function: :additional_emails },
-      { name: "Address", function: :address, format: true },
-      { name: "Notes", function: :notes, format: true }
-    ]
-  end
 
   private
 

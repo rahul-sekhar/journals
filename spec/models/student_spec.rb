@@ -7,10 +7,10 @@ describe Student do
 
   it_behaves_like "a profile"
 
-  it "cannot have a bloodgroup longer than 15 characters" do
-    profile.bloodgroup = "a" * 15
+  it "cannot have a blood_group longer than 15 characters" do
+    profile.blood_group = "a" * 15
     profile.should be_valid
-    profile.bloodgroup = "a" * 16
+    profile.blood_group = "a" * 16
     profile.should be_invalid
   end
 
@@ -59,30 +59,6 @@ describe Student do
     it "does not invalidate the student if nil" do
       profile.formatted_birthday = nil
       profile.should be_valid
-    end
-  end
-
-  describe "#age" do
-    it "returns nil if the birthday is empty" do
-      profile.age.should be_nil
-    end
-
-    it "returns the age if the profile is present" do
-      profile.birthday = Date.new(1955, 7, 12)
-      Date.stub(:now).and_return(Date.new(2013,1,1))
-      profile.age.should == 57
-    end
-  end
-
-  describe "#birthday_with_age" do
-    it "returns nil if the birthday is empty" do
-      profile.birthday_with_age.should be_nil
-    end
-
-    it "returns the date of birth and age if the profile is present" do
-      profile.birthday = Date.new(1955, 7, 12)
-      Date.stub(:now).and_return(Date.new(2013,1,1))
-      profile.birthday_with_age.should == "12-07-1955 (57 yrs)"
     end
   end
 
