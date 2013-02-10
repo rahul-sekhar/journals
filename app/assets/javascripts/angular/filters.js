@@ -27,6 +27,13 @@ angular.module('journalsApp.filters', []).
     };
   }).
 
+  filter('simpleFormat', function() {
+    return function(text) {
+      if (!text) return null;
+      return text.replace(/\n/g, '<br />');
+    };
+  }).
+
   filter('dateToAge', function(currentDate) {
     return function(date_text) {
       if (!date_text) return null;

@@ -25,6 +25,20 @@ describe('filter', function() {
     }));
   });
 
+  describe('simpleFormat', function() {
+    it('replaces new lines with brs', inject(function(simpleFormatFilter) {
+      expect(simpleFormatFilter("Some thing\non many\nlines")).toEqual('Some thing<br />on many<br />lines');
+    }));
+
+    it('leaves single line values alone', inject(function(simpleFormatFilter) {
+      expect(simpleFormatFilter('Some thing on one line')).toEqual('Some thing on one line');
+    }));
+
+    it('returns null for a null value', inject(function(simpleFormatFilter) {
+      expect(simpleFormatFilter(null)).toEqual(null);
+    }));
+  });
+
   describe('dateToAge', function() {
     var currentDateMock
 

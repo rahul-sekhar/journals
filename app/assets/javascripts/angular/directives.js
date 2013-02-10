@@ -22,6 +22,23 @@ angular.module('journalsApp.directives', []).
     }
   }).
 
+  directive('multiLineField', function() {
+    return {
+      restrict: 'E',
+      transclude: true,
+      scope: { 
+        parent: '=',
+        field_name: '@name'
+      },
+      template:
+        '<div class="field" ng-show="parent[field_name]">' +
+          '<p class="field-name">{{field_name | capitalize}}</p>' +
+          '<p ng-bind-html="parent[field_name] | simpleFormat"></p>' +
+        '</div>',
+      replace: true
+    }
+  }).
+
   directive('dateField', function() {
     return {
       restrict: 'E',

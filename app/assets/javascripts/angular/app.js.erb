@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('journalsApp', ['journalsApp.filters', 'journalsApp.services', 'journalsApp.directives']).
+angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp.services', 'journalsApp.directives']).
   config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);
   }]).

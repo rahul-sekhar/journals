@@ -62,14 +62,16 @@ angular.module('journalsApp.services', ['ngResource']).
           "office_phone",
           "email",
           "additional_emails",
-          "address",
-          "notes"
         ];
         if (person.type == 'students') {
           list.unshift("blood_group");
         }
         return list;
       };
+
+      $scope.multi_line_field_list = function(person) {
+        return ["address", "notes"];
+      }
     };
 
     return commonPeopleCtrl

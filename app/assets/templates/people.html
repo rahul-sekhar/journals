@@ -10,6 +10,7 @@
   <div class="main-profile-fields">
     <date-field parent="person" ng-repeat="field in date_field_list(person)" name="{{field}}" function-name="formatted_{{field}}"></date-field>
     <field parent="person" ng-repeat="field in field_list(person)" name="{{field}}"></field>
+    <multi-line-field parent="person" ng-repeat="field in multi_line_field_list(person)" name="{{field}}"></field>
   </div>
 </article>
 

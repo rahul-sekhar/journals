@@ -168,8 +168,6 @@ describe('service', function() {
           "office_phone",
           "email",
           "additional_emails",
-          "address",
-          "notes"
         ]);
       });
 
@@ -180,11 +178,9 @@ describe('service', function() {
           "office_phone",
           "email",
           "additional_emails",
-          "address",
-          "notes"
         ]);
       });
-    })
+    });
 
 
     describe("date_field_list", function() {
@@ -200,6 +196,21 @@ describe('service', function() {
       it("lists a teachers fields when passed a teacher", function() {
         expect(scope.date_field_list({type: 'teachers'})).toEqual([]);
       });
-    })
+    });
+
+    describe("multi_line_field_list", function() {
+      beforeEach(function() {
+        $httpBackend.expectGET('/people').respond([]);
+        ctrl.include(scope);
+      });
+
+      it("lists a students fields when passed a student", function() {
+        expect(scope.multi_line_field_list({type: 'students'})).toEqual(["address", "notes"]);
+      });
+
+      it("lists a teachers fields when passed a teacher", function() {
+        expect(scope.multi_line_field_list({type: 'teachers'})).toEqual(["address", "notes"]);
+      });
+    });
   });
 });
