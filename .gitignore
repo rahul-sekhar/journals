@@ -19,3 +19,4 @@
 /backups
 /db/data.yml
 /db/data*.yml.bak
+/db-bak.sql
