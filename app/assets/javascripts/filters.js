@@ -14,7 +14,6 @@ $(document).ready( function() {
 
     // Check for a change event of the search box
     searchBox.on('change', function() {
-      console.log('changed');
       doSearch();
     });
 

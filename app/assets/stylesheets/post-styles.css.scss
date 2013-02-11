@@ -40,6 +40,7 @@
   }
   
   a {
+    @include link-colors($dark-teal, lighten($dark-teal, 10));
   }
   
   .underline {
