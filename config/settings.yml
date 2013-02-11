@@ -8,7 +8,7 @@ host: inwoodsjournals.org
 email_domain: inwoodsjournals.org
 email_address: admin@inwoodsjournals.org
 
-shared_assets: [ public/uploads ]
+shared_assets: [ public/uploads, uploads ]
 s3_backups_bucket: inwoods-backups
 aws_domain: s3-ap-southeast-1.amazonaws.com
 num_local_backups: 5
