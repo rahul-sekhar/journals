@@ -8,7 +8,7 @@ host: shibumijournal.org
 email_domain: shibumijournal.org
 email_address: admin@shibumijournal.org
 
-shared_assets: [ public/uploads ]
+shared_assets: [ public/uploads uploads/images ]
 s3_backups_bucket: shibumi-journals-backups
 aws_domain: s3-ap-southeast-1.amazonaws.com
 num_local_backups: 5
