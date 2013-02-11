@@ -55,7 +55,10 @@ describe('service', function() {
 
     beforeEach(function() {
       module(function($provide) {
-        errorHandlerMock = {message: jasmine.createSpy()};
+        errorHandlerMock = {
+          message: jasmine.createSpy(),
+          raise_404: jasmine.createSpy()
+        };
         $provide.value('errorHandler', errorHandlerMock)
       });
 
@@ -144,23 +147,23 @@ describe('service', function() {
       });
 
       describe('Teachers', function() {
-      beforeEach(function() {
-        $httpBackend.expectGET('/teachers').respond([
-          { id: 17, type: 'teachers', full_name: 'Some Teacher'},
-          { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
-        ]);
-        ctrl.include(scope, 'teachers', null)
-      });
+        beforeEach(function() {
+          $httpBackend.expectGET('/teachers').respond([
+            { id: 17, type: 'teachers', full_name: 'Some Teacher'},
+            { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
+          ]);
+          ctrl.include(scope, 'teachers', null)
+        });
 
-      it('sets people to the list fetched via xhr', function() {
-        expect(scope.people).toEqualData([]);
-        $httpBackend.flush();
-        expect(scope.people).toEqualData([
-          { id: 17, type: 'teachers', full_name: 'Some Teacher'},
-          { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
-        ]);
+        it('sets people to the list fetched via xhr', function() {
+          expect(scope.people).toEqualData([]);
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([
+            { id: 17, type: 'teachers', full_name: 'Some Teacher'},
+            { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
+          ]);
+        });
       });
-    });
 
 
       describe('Single student', function() {
@@ -213,6 +216,55 @@ describe('service', function() {
             { id: 17, type: 'students', full_name: 'Some Student'},
             { id: 20, type: 'students', full_name: 'Some Other Student'}
           ]);
+        });
+      });
+
+
+
+      describe('Single guardian', function() {
+        beforeEach(function() {
+          $httpBackend.expectGET('/guardians/17').respond([
+            { id: 13, type: 'students', full_name: 'Some Student'},
+            { id: 14, type: 'students', full_name: 'Some Other Student'}
+          ]);
+          ctrl.include(scope, 'guardians', 17)
+        });
+
+        it('sets people to the list fetched via xhr', function() {
+          expect(scope.people).toEqualData([]);
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([
+            { id: 13, type: 'students', full_name: 'Some Student'},
+            { id: 14, type: 'students', full_name: 'Some Other Student'}
+          ]);
+        });
+      });
+
+      describe('Non-existent guardian', function() {
+        beforeEach(function() {
+          $httpBackend.expectGET('/guardians/17').respond(function() {
+            return [404, {}];
+          });
+          ctrl.include(scope, 'guardians', 17)
+        });
+
+        it('set reports an error message and sets people to an empty array', function() {
+          expect(scope.people).toEqualData([]);
+          expect(errorHandlerMock.message).not.toHaveBeenCalled();
+          $httpBackend.flush();
+          expect(errorHandlerMock.message).toHaveBeenCalled();
+          expect(scope.people).toEqualData([]);
+        });
+      });
+
+      describe('Guardians', function() {
+        beforeEach(function() {
+          ctrl.include(scope, 'guardians')
+        });
+
+        it('set reports an error message and sets people to an empty array', function() {
+          expect(errorHandlerMock.raise_404).toHaveBeenCalled();
+          expect(scope.people).toEqualData([]);
         });
       });
 

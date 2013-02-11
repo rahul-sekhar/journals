@@ -17,3 +17,7 @@ function TeachersCtrl($scope, $routeParams, commonPeopleCtrl) {
 function StudentsCtrl($scope, $routeParams, commonPeopleCtrl) {
   commonPeopleCtrl.include($scope, 'students', $routeParams.id);
 }
+
+function GuardiansCtrl($scope, $routeParams, commonPeopleCtrl) {
+  commonPeopleCtrl.include($scope, 'guardians', $routeParams.id);
+}

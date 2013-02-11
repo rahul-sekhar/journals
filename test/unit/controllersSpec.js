@@ -57,6 +57,17 @@ describe('Controllers', function() {
       }));
     });
 
+    describe('GuardiansCtrl', function() {
+      it("includes the common people controller, passing the scope, type and id", inject(function($rootScope, $controller) {
+        ctrl = $controller(GuardiansCtrl, {
+          $scope: scope, 
+          commonPeopleCtrl: commonPeopleCtrl, 
+          $routeParams: { id: 5 }
+        });
+        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'guardians', 5);
+      }));
+    });
+
   });
 });
 

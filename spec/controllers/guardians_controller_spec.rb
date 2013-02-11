@@ -14,26 +14,38 @@ describe GuardiansController do
 
   describe "GET show" do
     let(:guardian){ mock_model(Guardian) }
-    before { Guardian.stub(:find).and_return(guardian) }
+    let(:make_request){ get :show, id: 5, format: :json }
+    let(:student1){ mock_model(Student) }
+    let(:student2){ mock_model(Student) }
+
+    before do 
+      Guardian.stub(:find).and_return(guardian)
+      guardian.stub_chain("students.alphabetical").and_return([student1, student2])
+    end
 
     it "raises an exception if the user cannot view the guardian" do
       ability.cannot :read, guardian
-      expect{ get :show, id: 5 }.to raise_exception(CanCan::AccessDenied)
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
     
     it "has a status of 200" do
-      get :show, id: 5
+      make_request
       response.status.should eq(200)
     end
 
     it "finds the guardian given by the passed ID" do
       Guardian.should_receive(:find).with("5")
-      get :show, id: 5
+      make_request
     end
 
     it "assigns the found guardian" do
-      get :show, id: 5
+      make_request
       assigns(:guardian).should == guardian
+    end
+
+    it "assigns the guardians students" do
+      make_request
+      assigns(:students).should == [student1, student2]
     end
   end
 

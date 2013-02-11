@@ -4,7 +4,7 @@
 
     <p class="type" ng-show="person.type == 'teachers'">{{person.type | simpleSingularize | capitalize}}</p>
 
-    <div class="clear-left">
+    <div class="clear-left"></div>
   </header>
 
   <div class="main-profile-fields">
@@ -12,15 +12,32 @@
     <field parent="person" ng-repeat="field in field_list(person)" name="{{field}}"></field>
     <multi-line-field parent="person" ng-repeat="field in multi_line_field_list(person)" name="{{field}}"></field>
   </div>
+
+  <div class="guardians" ng-show="person.type == 'students'">
+    
+    <div class="guardian" ng-repeat="guardian in person.guardians">
+      <header class="guardian-header">
+        <h4>{{guardian.full_name}}</h4>
+        <div class="clear-left"></div>
+      </header>
+
+      <field parent="guardian" ng-repeat="field in field_list(guardian)" name="{{field}}"></field>
+      <multi-line-field parent="guardian" ng-repeat="field in multi_line_field_list(guardian)" name="{{field}}"></field>
+    </div>
+
+  </div>
 </article>
 
 <!--   %header.profile-header
     %h3= profile.full_name
     - if profile.is_a? Teacher
       %p.type Teacher
+      
 
+    !!
     - if can? :administrate, profile
       = render 'shared/profile/administrate_menu', profile: profile
+    !!
 
     .clear-left
 
@@ -35,12 +52,15 @@
 
   - if profile.is_a? Student
     .guardians
+      !!
       - if can? :create, Guardian
         = link_to "Add guardian", new_student_guardian_path(profile), class: "add-guardian"
+      !!
 
       - profile.guardians.each do |guardian|
         = render "shared/profile/guardian", guardian: guardian, student: profile
 
+  !!
   %footer.profile-footer
     - if profile.is_a? Student
       .groups
@@ -51,4 +71,5 @@
 
     - if profile.is_a? Teacher
       .mentees
-        = render "shared/profile/mentees", teacher: profile -->
+        = render "shared/profile/mentees", teacher: profile
+  !! -->

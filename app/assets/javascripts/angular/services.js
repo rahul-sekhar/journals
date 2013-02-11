@@ -13,9 +13,14 @@ angular.module('journalsApp.services', ['ngResource']).
   
   factory('errorHandler', function() {
     var errorHandler = {};
+    
     errorHandler.message = function(message) {
-      console.log("ERROR: " + message)
+      console.log("ERROR: " + message);
     };
+
+    errorHandler.raise_404 = function() {
+      this.message("Page not found");
+    }
     return errorHandler;
   }).
 
@@ -35,25 +40,63 @@ angular.module('journalsApp.services', ['ngResource']).
       // Query people based on passed parameters
       $scope.people = [];
       if (type == 'students' || type == 'teachers') {
+        
+        // For a single profile
         if (id) {
           Person.get(
             { id: id, type: type },
+
+            // Success - load the profile
             function(result) {
               $scope.people = [result];
-            }, 
+            },
+
+            // Failure - profile not found 
             function() {
               $scope.people = [];
               errorHandler.message('This profile could not be found');
             }
           );
         }
+
+        // List of students or teachers
         else {
           $scope.people = Person.query({ type: type });
         }
       }
+
+      // Get a guardian
+      else if(type == 'guardians') {
+        if (id) {
+          Person.query(
+            { id: id, type: type },
+
+            // Success - load the profile array
+            function(result) {
+              $scope.people = result
+            },
+
+            // Failure - profile not found 
+            function() {
+              $scope.people = [];
+              errorHandler.message('This profile could not be found');
+            }
+          );
+        }
+
+        // Raise a 404 error if a guardian list is requested
+        else {
+          $scope.people = [];
+          errorHandler.raise_404();
+        }
+      }
+
+      // List of archived students/teachers
       else if(type == 'archived') {
         $scope.people = Person.query_archived();
       }
+
+      // List of all students and teachers
       else {
         $scope.people = Person.query();
       }

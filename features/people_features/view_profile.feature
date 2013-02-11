@@ -8,7 +8,7 @@ Background:
 
 Scenario: View teacher profile with minimal information
   Given a student profile for Parvathy exists
-  Given a teacher profile for Shalini exists
+  And a teacher profile for Shalini exists
   When I am on the page for that profile
   Then I should not see "Parvathy Manjunath"
   And I should see "Shalini Sekhar"
@@ -96,11 +96,14 @@ Scenario: View a student profile containing multiple guardians
   And I should see "333-444"
 
 Scenario: View a guardian profile with multiple students
-  Given a guardian Manoj with multiple students exists
+  Given a teacher profile for Shalini exists
+  And a guardian Manoj with multiple students exists
   When I am on the page for that profile
-  Then I should see "Profile: Manoj Jain"
   Then I should see "Parvathy Manjunath"
   And I should see "Roly Jain"
+  And I should not see "Shalini Sekhar"
+  Given PENDING page headings
+  And I should see "Profile: Manoj Jain"
 
 Scenario: Click on users name to reach profile
   Given PENDING posts page
