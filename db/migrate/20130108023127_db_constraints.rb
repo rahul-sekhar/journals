@@ -65,8 +65,8 @@ class DbConstraints < ActiveRecord::Migration
     change_column :students, :bloodgroup, :string, limit: 15
     change_column :students, :archived, :boolean, null: false, default: false
 
-    remove_index :students, name: :index_student_profiles_on_first_name
-    remove_index :students, name: :index_student_profiles_on_last_name
+    remove_index :students, :first_name
+    remove_index :students, :last_name
 
     # Students groups
     change_column :students_groups, :student_id, :integer, null: false
@@ -82,7 +82,7 @@ class DbConstraints < ActiveRecord::Migration
     # Tags
     change_column :tags, :name, :string, null: false, limit: 50
 
-    remove_index :tags, name: :index_subjects_on_name
+    remove_index :tags, :name
     add_index :tags, :name, unique: true
 
     # Teachers
@@ -93,8 +93,8 @@ class DbConstraints < ActiveRecord::Migration
     change_column :teachers, :office_phone, :string, limit: 40
     change_column :teachers, :archived, :boolean, null: false, default: false
 
-    remove_index :teachers, name: :index_teacher_profiles_on_first_name
-    remove_index :teachers, name: :index_teacher_profiles_on_last_name
+    remove_index :teachers, :first_name
+    remove_index :teachers, :last_name
 
     # Users
     change_column :users, :email, :string, null: false, limit: 60
@@ -103,7 +103,7 @@ class DbConstraints < ActiveRecord::Migration
     change_column :users, :profile_id, :integer, null: false
     change_column :users, :profile_type, :string, null: false, limit: 10
 
-    remove_index :users, name: :index_users_on_username
+    remove_index :users, :username
     remove_index :users, name: :users_profile_index
     add_index :users, :email, unique: true
     add_index :users, [:profile_type, :profile_id], unique: true
