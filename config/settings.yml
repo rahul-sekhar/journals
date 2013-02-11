@@ -1,6 +1,6 @@
 # Application configuration settings
 app_full_name: the Shibumi Journal
-app_name: shibumi
+app_name: shibumi-journal
 
 git_branch: shibumi
 
