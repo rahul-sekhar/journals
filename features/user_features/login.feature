@@ -25,10 +25,11 @@ Scenario: Log in with a valid email and password, as a teacher
   And I fill in "Email" with "rahul@mail.com"
   And I fill in "Password" with "pass"
   And I click "Log in"
-  Then I should be on the home page
+  Then I should be on the people page
   And I should see "You are signed in as Rahul Sekhar"
 
 Scenario: Log in when accessing a page other than the home page
+  Given PENDING a new posts page
   Given a teacher "Rahul Sekhar" exists with the email "rahul@mail.com" and the password "pass"
   When I am on the new post page
   Then I should see "Log in"

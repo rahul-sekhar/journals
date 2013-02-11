@@ -21,31 +21,31 @@ describe('service', function() {
     }));
 
     it('should query people', inject(function(Person) {
-      $httpBackend.expectGET('/people').respond([{name: 'Student 1'}]);
+      $httpBackend.expectGET('/people').respond([{full_name: 'Student 1'}]);
       result = Person.query();
       $httpBackend.flush();
-      expect(result).toEqualData([{name: 'Student 1'}]);
+      expect(result).toEqualData([{full_name: 'Student 1'}]);
     }));
 
     it('should query archived people', inject(function(Person) {
-      $httpBackend.expectGET('/people/archived').respond([{name: 'Student 1'}]);
+      $httpBackend.expectGET('/people/archived').respond([{full_name: 'Student 1'}]);
       result = Person.query_archived();
       $httpBackend.flush();
-      expect(result).toEqualData([{name: 'Student 1'}]);
+      expect(result).toEqualData([{full_name: 'Student 1'}]);
     }));
 
     it("should get a teacher", inject(function(Person) {
-      $httpBackend.expectGET('/teachers/5').respond({name: 'Teacher Name'})
+      $httpBackend.expectGET('/teachers/5').respond({full_name: 'Teacher Name'})
       result = Person.get({type: 'teachers', id: 5});
       $httpBackend.flush();
-      expect(result).toEqualData({name:"Teacher Name"});
+      expect(result).toEqualData({full_name:"Teacher Name"});
     }));
 
     it("should get a student", inject(function(Person) {
-      $httpBackend.expectGET('/students/5').respond({name: 'Student Name'})
+      $httpBackend.expectGET('/students/5').respond({full_name: 'Student Name'})
       result = Person.get({type: 'students', id: 5});
       $httpBackend.flush();
-      expect(result).toEqualData({name:"Student Name"});
+      expect(result).toEqualData({full_name:"Student Name"});
     }));
   });
 
@@ -72,8 +72,8 @@ describe('service', function() {
       describe('All people', function() {     
         beforeEach(function() {
           $httpBackend.expectGET('/people').respond([
-            { id: 12, type: 'students', name: 'Student 1'},
-            { id: 15, type: 'teachers', name: 'Teacher 1'}
+            { id: 12, type: 'students', full_name: 'Student 1'},
+            { id: 15, type: 'teachers', full_name: 'Teacher 1'}
           ]);
           ctrl.include(scope);
         });
@@ -82,8 +82,8 @@ describe('service', function() {
           expect(scope.people).toEqual([]);
           $httpBackend.flush();
           expect(scope.people).toEqualData([
-            { id: 12, type: 'students', name: 'Student 1'},
-            { id: 15, type: 'teachers', name: 'Teacher 1'}
+            { id: 12, type: 'students', full_name: 'Student 1'},
+            { id: 15, type: 'teachers', full_name: 'Teacher 1'}
           ]);
         }));
       });
@@ -92,8 +92,8 @@ describe('service', function() {
       describe('Archived people', function() {     
         beforeEach(function() {
           $httpBackend.expectGET('/people/archived').respond([
-            { id: 12, type: 'students', name: 'Student 1'},
-            { id: 15, type: 'teachers', name: 'Teacher 1'}
+            { id: 12, type: 'students', full_name: 'Student 1'},
+            { id: 15, type: 'teachers', full_name: 'Teacher 1'}
           ]);
           ctrl.include(scope, 'archived');
         });
@@ -102,8 +102,8 @@ describe('service', function() {
           expect(scope.people).toEqual([]);
           $httpBackend.flush();
           expect(scope.people).toEqualData([
-            { id: 12, type: 'students', name: 'Student 1'},
-            { id: 15, type: 'teachers', name: 'Teacher 1'}
+            { id: 12, type: 'students', full_name: 'Student 1'},
+            { id: 15, type: 'teachers', full_name: 'Teacher 1'}
           ]);
         }));
       });
@@ -112,7 +112,7 @@ describe('service', function() {
       describe('Single teacher', function() {
         beforeEach(function() {
           $httpBackend.expectGET('/teachers/17').respond(
-            { id: 17, type: 'teachers', name: 'Some Teacher'}
+            { id: 17, type: 'teachers', full_name: 'Some Teacher'}
           );
           ctrl.include(scope, 'teachers', 17)
         });
@@ -121,7 +121,7 @@ describe('service', function() {
           expect(scope.people).toEqualData([]);
           $httpBackend.flush();
           expect(scope.people).toEqualData([
-            { id: 17, type: 'teachers', name: 'Some Teacher'}
+            { id: 17, type: 'teachers', full_name: 'Some Teacher'}
           ]);
         });
       });
@@ -143,11 +143,30 @@ describe('service', function() {
         });
       });
 
+      describe('Teachers', function() {
+      beforeEach(function() {
+        $httpBackend.expectGET('/teachers').respond([
+          { id: 17, type: 'teachers', full_name: 'Some Teacher'},
+          { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
+        ]);
+        ctrl.include(scope, 'teachers', null)
+      });
+
+      it('sets people to the list fetched via xhr', function() {
+        expect(scope.people).toEqualData([]);
+        $httpBackend.flush();
+        expect(scope.people).toEqualData([
+          { id: 17, type: 'teachers', full_name: 'Some Teacher'},
+          { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
+        ]);
+      });
+    });
+
 
       describe('Single student', function() {
         beforeEach(function() {
           $httpBackend.expectGET('/students/17').respond(
-            { id: 17, type: 'students', name: 'Some Student'}
+            { id: 17, type: 'students', full_name: 'Some Student'}
           );
           ctrl.include(scope, 'students', 17)
         });
@@ -156,7 +175,7 @@ describe('service', function() {
           expect(scope.people).toEqualData([]);
           $httpBackend.flush();
           expect(scope.people).toEqualData([
-            { id: 17, type: 'students', name: 'Some Student'}
+            { id: 17, type: 'students', full_name: 'Some Student'}
           ]);
         });
       });
@@ -178,7 +197,30 @@ describe('service', function() {
         });
       });
 
+      describe('Students', function() {
+        beforeEach(function() {
+          $httpBackend.expectGET('/students').respond([
+            { id: 17, type: 'students', full_name: 'Some Student'},
+            { id: 20, type: 'students', full_name: 'Some Other Student'}
+          ]);
+          ctrl.include(scope, 'students', null)
+        });
+
+        it('sets people to the list fetched via xhr', function() {
+          expect(scope.people).toEqualData([]);
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([
+            { id: 17, type: 'students', full_name: 'Some Student'},
+            { id: 20, type: 'students', full_name: 'Some Other Student'}
+          ]);
+        });
+      });
+
     });
+
+    
+
+    
 
     
     describe("field_list", function() {

@@ -35,16 +35,21 @@ angular.module('journalsApp.services', ['ngResource']).
       // Query people based on passed parameters
       $scope.people = [];
       if (type == 'students' || type == 'teachers') {
-        Person.get(
-          { id: id, type: type },
-          function(result) {
-            $scope.people = [result];
-          }, 
-          function() {
-            $scope.people = [];
-            errorHandler.message('This profile could not be found');
-          }
-        );
+        if (id) {
+          Person.get(
+            { id: id, type: type },
+            function(result) {
+              $scope.people = [result];
+            }, 
+            function() {
+              $scope.people = [];
+              errorHandler.message('This profile could not be found');
+            }
+          );
+        }
+        else {
+          $scope.people = Person.query({ type: type });
+        }
       }
       else if(type == 'archived') {
         $scope.people = Person.query_archived();

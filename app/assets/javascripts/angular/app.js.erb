@@ -9,7 +9,11 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
 
       when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: PeopleCtrl}).
 
+      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
+
       when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
+
+      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl}).
 
       when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl}).
 
