@@ -1,36 +1,37 @@
 !!! 5
-%html.no-js
-  %head
-    %title= page_title
-    %link{ rel: "shortcut icon", href: "/favicon.ico?v=1" }
-    = stylesheet_link_tag    "application", media: "all"
-    = javascript_include_tag "application"
-    = yield :head
-    \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
-    \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-    = csrf_meta_tags
-    %meta{ name: "google-site-verification", content: "D98hplQ27PxNr6qr9kxLpS92HMKp8x7bHH3HrL19KSc" }
+<!--[if lte IE 8]>     <html class="no-js old-ie"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+%head
+  %title= page_title
+  %link{ rel: "shortcut icon", href: "/favicon.ico?v=1" }
+  = stylesheet_link_tag    "application", media: "all"
+  = javascript_include_tag "application"
+  = yield :head
+  \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
+  \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  = csrf_meta_tags
 
 
-  %body{id: content_for(:page_id)}
-    %header#page-header
-      .wrapper
-        %h1= link_to Rails.configuration.settings['app_full_name'], root_path
-      
-        - if logged_in?
-          .user= render "general/user_menu"
-
+%body{id: content_for(:page_id)}
+  %header#page-header
     .wrapper
+      %h1= link_to Rails.configuration.settings['app_full_name'], root_path
+    
       - if logged_in?
-        %navigation#page-navigation= render "general/navigation"
+        .user= render "general/user_menu"
 
-      #main-content
-        %h2= content_for :heading
+  .wrapper
+    - if logged_in?
+      %navigation#page-navigation= render "general/navigation"
 
-        = render "general/notifications"
+    #main-content
+      %h2= content_for :heading
 
-        %section#upper-bar
-          = yield :upper_bar
-          .clear-left
+      = render "general/notifications"
 
-        = yield
+      %section#upper-bar
+        = yield :upper_bar
+        .clear-left
+
+      = yield
+</html>
