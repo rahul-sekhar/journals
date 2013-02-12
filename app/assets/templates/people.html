@@ -8,16 +8,17 @@
   </header>
 
   <div class="main-profile-fields">
-    <date-field parent="person" ng-repeat="field in dateFieldList(person)" field-name="{{field}}" function-name="formatted_{{field}}"></date-field>
+    <date-field parent="person" ng-repeat="field in dateFieldList(person)" display-name="{{field}}" field-name="formatted_{{field}}"></date-field>
     <field parent="person" ng-repeat="field in fieldList(person)" field-name="{{field}}"></field>
     <multi-line-field parent="person" ng-repeat="field in multiLineFieldList(person)" field-name="{{field}}"></field>
   </div>
 
   <div class="guardians" ng-show="person.type == 'students'">
-    
     <div class="guardian" ng-repeat="guardian in person.guardians">
+      
       <header class="guardian-header">
-        <h4>{{guardian.full_name}}</h4>
+        <small-heading-field parent="guardian" field-name="full_name"></small-heading-field>
+        
         <div class="clear-left"></div>
       </header>
 

@@ -7,8 +7,10 @@ Spork.prefork do
   require 'email_spec'
   require 'email_spec/cucumber'
 
+  require 'capybara/poltergeist'
+
   Capybara.default_selector = :css
-  Capybara.default_driver = :webkit
+  Capybara.default_driver = :poltergeist
 
   # Before do
   #   require 'headless'

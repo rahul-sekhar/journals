@@ -68,12 +68,12 @@ angular.module('journalsApp.services', ['ngResource']).
       // Get a guardian
       else if(type == 'guardians') {
         if (id) {
-          Person.query(
+          Person.get(
             { id: id, type: type },
 
-            // Success - load the profile array
+            // Success - load the array of students
             function(result) {
-              $scope.people = result
+              $scope.people = result.students
             },
 
             // Failure - profile not found 

@@ -30,9 +30,8 @@ end
 group :test do
   gem 'factory_girl_rails', '4.1.0'
   gem 'capybara', '2.0.2'
-  gem 'capybara-webkit'
+  gem 'poltergeist', :git => 'git://github.com/jonleighton/poltergeist.git'
   gem 'launchy', '2.1.2'
-  gem 'headless', '0.3.1'
   gem 'email_spec', '1.4.0'
   gem 'simplecov', '0.7.1', require: false
 end

@@ -32,6 +32,15 @@ function InPlaceEditCtrl($scope, $http, errorHandler) {
     $scope.editMode = true;
   }
 
+  $scope.cancelEdit = function() {
+    $scope.editMode = false;
+  }
+
+  $scope.clearEdit = function() {
+    $scope.editorValue = null;
+    $scope.finishEdit();
+  }
+
   $scope.finishEdit = function() {
     var old_val = parent[$scope.fieldName];
     var new_val = $scope.editorValue;

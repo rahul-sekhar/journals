@@ -223,10 +223,14 @@ describe('service', function() {
 
       describe('Single guardian', function() {
         beforeEach(function() {
-          $httpBackend.expectGET('/guardians/17').respond([
-            { id: 13, type: 'students', full_name: 'Some Student'},
-            { id: 14, type: 'students', full_name: 'Some Other Student'}
-          ]);
+          $httpBackend.expectGET('/guardians/17').respond({
+            id: 12,
+            type: 'guardians',
+            students: [
+              { id: 13, type: 'students', full_name: 'Some Student'},
+              { id: 14, type: 'students', full_name: 'Some Other Student'}
+            ]
+          });
           ctrl.include(scope, 'guardians', 17)
         });
 

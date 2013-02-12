@@ -95,6 +95,7 @@ Scenario: View a student profile containing multiple guardians
   And I should see "Office Phone" within the ".guardians" block
   And I should see "333-444"
 
+
 Scenario: View a guardian profile with multiple students
   Given a teacher profile for Shalini exists
   And a guardian Manoj with multiple students exists

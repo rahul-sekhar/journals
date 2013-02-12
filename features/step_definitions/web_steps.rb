@@ -86,6 +86,10 @@ When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
 end
 
+When /^I click the element "(.*?)"$/ do |p_element|
+  page.first(p_element).click
+end
+
 When /^I click the button "(.*?)"$/ do |p_button|
   page.find_button(p_button).click
 end
@@ -114,7 +118,7 @@ When /^I click "(.*?)" near "(.*?)" in a list item$/ do |p_link, p_text|
 end
 
 When /^I click "(.*?)" in a "(.*?)" element$/ do |p_text, p_element|
-  page.find(p_element, text: p_text).click
+  page.find(p_element, text: /#{p_text}/).click
 end
 
 
@@ -160,21 +164,23 @@ Then /^I should get a page not found message when (.*)$/ do |p_step|
 end
 
 
-# Hover steps
-When /^I hover over "(.*?)"$/ do |p_css|
-  find(p_css).trigger(:mouseover)
-end
-
-
 # Text input for in place editing
 When /^I enter "(.*?)" in the text input$/ do |p_text|
-  page.first('input', visible: true).set "#{p_text}"
+  page.first('input', visible: true).set p_text
+
   keypress_script = "$('input:visible').blur();"
-  page.driver.browser.execute_script(keypress_script)
+  page.execute_script(keypress_script)
 end
 
 When /^I enter "(.*?)" in the textarea$/ do |p_text|
-  page.first('textarea', visible: true).set "#{p_text}"
-  keypress_script = "$('textarea:visible').blur();"
-  page.driver.browser.execute_script(keypress_script)
+  page.first('textarea', visible: true).set p_text
+  script = "$('textarea:visible').blur();"
+  page.execute_script(script)
+end
+
+When /^I enter the date "(.*?)"$/ do |p_date|
+  script = "setTimeout(function() {" +
+    "$('input:visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
+  "}, 10);"
+  page.execute_script(script)
 end

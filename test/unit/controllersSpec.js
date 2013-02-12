@@ -111,7 +111,6 @@ describe('Controllers', function() {
     });
 
     describe('finishEdit()', function() {
-
       beforeEach(function() {
         scope.editorValue = "changed value";
       });
@@ -183,6 +182,31 @@ describe('Controllers', function() {
           $httpBackend.flush();
           expect(errorHandlerMock.message).toHaveBeenCalledWith("Some error");
         });
+      });
+    });
+
+    describe('cancelEdit()', function() {
+      it('sets editMode to false', function() {
+        scope.editMode = true
+        scope.cancelEdit();
+        expect(scope.editMode).toEqual(false);
+      });
+    });
+
+    describe('clearEdit()', function() {
+      beforeEach(function() {
+        scope.finishEdit = jasmine.createSpy();
+      });
+
+      it('clears the editor value', function() {
+        scope.editorValue = "Some val";
+        scope.clearEdit();
+        expect(scope.editorValue).toEqual(null);
+      });
+
+      it('calls finish edit', function() {
+        scope.clearEdit();
+        expect(scope.finishEdit).toHaveBeenCalled();
       });
     });
   });
