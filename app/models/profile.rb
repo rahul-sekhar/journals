@@ -22,6 +22,21 @@ module Profile
     user.email if user.present?
   end
 
+  def full_name=(val)
+    words = val.split(" ")
+    self.last_name = words.pop
+    
+    while words.length > 1 && ('a'..'z').member?(words.last[0])
+      self.last_name = "#{words.pop} #{last_name}"
+    end
+
+    if words.length > 0
+      self.first_name = words.join(" ")
+    else
+      self.first_name = nil
+    end
+  end
+
   def full_name
     if first_name.present?
       "#{first_name} #{last_name}"
@@ -66,13 +81,6 @@ module Profile
     end
   end
 
-  def check_last_name
-    if last_name.blank? && first_name.present?
-      self.last_name = first_name
-      self.first_name = nil
-    end
-  end
-
   module ClassMethods
     def search(query)
       query = "%#{SqlHelper::escapeWildcards(query)}%"
@@ -103,7 +111,6 @@ module Profile
 
   def self.included(base)
     base.extend ClassMethods
-    base.before_validation :check_last_name
 
     base.has_one :user, as: :profile, dependent: :destroy, autosave: true, inverse_of: :profile
     base.has_many :posts, as: :author, dependent: :destroy, inverse_of: :author

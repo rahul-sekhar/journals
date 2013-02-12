@@ -1,5 +1,5 @@
 Given /^a teacher profile for Shalini exists$/ do
-  @profile = FactoryGirl.create(:teacher, first_name: "Shalini", last_name: "Sekhar", email: "shalini@mail.com")
+  @profile = FactoryGirl.create(:teacher, full_name: "Shalini Sekhar", email: "shalini@mail.com")
 end
 
 Given /^a teacher profile for Shalini with all information exists$/ do
@@ -16,7 +16,7 @@ Given /^a teacher profile for Shalini with all information exists$/ do
 end
 
 Given /^a student profile for Parvathy exists$/ do
-  @profile = FactoryGirl.create(:student, first_name: "Parvathy", last_name: "Manjunath", email: "parvathy@mail.com")
+  @profile = FactoryGirl.create(:student, full_name: "Parvathy Manjunath", email: "parvathy@mail.com")
 end
 
 Given /^a student profile for Parvathy with all information exists$/ do
@@ -33,18 +33,17 @@ Given /^a student profile for Parvathy with all information exists$/ do
 end
 
 Given /^a guardian Manoj for that student exists$/ do
-  @guardian = @profile.guardians.create!(first_name: "Manoj", last_name: "Jain")
+  @guardian = @profile.guardians.create!(full_name: "Manoj Jain")
 end
 
-Given /^I have the guardian "(\S+) (\S+)"$/ do |p_first_name, p_last_name|
-  @guardian = @logged_in_user.profile.guardians.create!(first_name: p_first_name, last_name: p_last_name)
+Given /^I have the guardian "(.*?)"$/ do |p_full_name|
+  @guardian = @logged_in_user.profile.guardians.create!(full_name: p_full_name)
   
 end
 
 Given /^a guardian Poonam for that student exists$/ do
   @guardian = @profile.guardians.create!(
-    first_name: "Poonam", 
-    last_name: "Jain",
+    full_name: "Poonam Jain", 
     email: "poonam@mail.com",
     mobile: "987654",
     address: "A house,\n\nSomewhere",
@@ -55,8 +54,8 @@ end
 
 Given /^a guardian Manoj with multiple students exists$/ do
   step 'a student profile for Parvathy exists'
-  @profile = @profile.guardians.create!(first_name: "Manoj", last_name: "Jain")
-  @student = FactoryGirl.create(:student, first_name: "Roly", last_name: "Jain", email: "roly@mail.com")
+  @profile = @profile.guardians.create!(full_name: "Manoj Jain")
+  @student = FactoryGirl.create(:student, full_name: "Roly Jain", email: "roly@mail.com")
   @profile.students << @student
 end
 
@@ -70,8 +69,8 @@ Given /^the profile has no email address$/ do
   @profile.save!
 end
 
-Given /^a (teacher|student) named "(\S+) (\S+)" exists$/ do |p_type, p_first_name, p_last_name|
-  @profile = FactoryGirl.create(p_type, first_name: p_first_name, last_name: p_last_name)
+Given /^a (teacher|student) named "(.*?)" exists$/ do |p_type, p_full_name|
+  @profile = FactoryGirl.create(p_type, full_name: p_full_name)
 end
 
 Given /^that teacher|student is archived$/ do

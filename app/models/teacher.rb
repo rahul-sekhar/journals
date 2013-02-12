@@ -1,7 +1,7 @@
 class Teacher < ActiveRecord::Base
   include Profile
 
-  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address,
+  attr_accessible :full_name, :email, :mobile, :home_phone, :office_phone, :address,
     :additional_emails, :notes
 
   has_and_belongs_to_many :mentees, class_name: Student, uniq: true, join_table: :student_mentors

@@ -136,13 +136,148 @@ shared_examples_for "a profile" do
       profile.last_name = "a" * 81
       profile.should be_invalid
     end
+  end
 
-    it "is set to the first name if not present" do
-      profile.first_name = "Something"
-      profile.last_name = nil
-      profile.save!
-      profile.reload.first_name.should be_nil
-      profile.reload.last_name.should == "Something"
+  describe "#full_name=" do
+    describe "for a single word" do
+      it "sets the last name when capitalized" do
+        profile.first_name = "Something"
+        profile.full_name = "One"
+        profile.last_name.should == "One"
+        profile.first_name.should be_nil
+      end
+
+      it "sets the last name when uncapitalized" do
+        profile.first_name = "Something"
+        profile.full_name = "one"
+        profile.last_name.should == "one"
+        profile.first_name.should be_nil
+      end
+
+      it "trims the name" do
+        profile.first_name = "Something"
+        profile.full_name = "   One     "
+        profile.last_name.should == "One"
+        profile.first_name.should be_nil
+      end
+    end
+
+    describe "for two words" do
+      it "sets the first name and last name when both words are capitalized" do
+        profile.full_name = "One Two"
+        profile.first_name.should == "One"
+        profile.last_name.should == "Two"
+      end
+
+      it "sets the first name and last name when the first word is capitalized" do
+        profile.full_name = "one Two"
+        profile.first_name.should == "one"
+        profile.last_name.should == "Two"
+      end
+
+      it "sets the first name and last name when the second word is capitalized" do
+        profile.full_name = "One two"
+        profile.first_name.should == "One"
+        profile.last_name.should == "two"
+      end
+
+      it "sets the first name and last name when both words are uncapitalized" do
+        profile.full_name = "one two"
+        profile.first_name.should == "one"
+        profile.last_name.should == "two"
+      end
+
+      it "trims the name" do
+        profile.full_name = "  Something    Else  "
+        profile.first_name.should == "Something"
+        profile.last_name.should == "Else"
+
+        profile.full_name = "  Something    else  "
+        profile.first_name.should == "Something"
+        profile.last_name.should == "else"
+
+        profile.full_name = "  something    Else  "
+        profile.first_name.should == "something"
+        profile.last_name.should == "Else"
+      end
+    end
+
+    describe "for three words" do
+      it "adds the middle name to the first name when it is capitalized" do
+        profile.full_name = "One Two Three"
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "Three"
+      end
+
+      it "adds the middle name to the last name when uncapitalized" do
+        profile.full_name = "One two Three"
+        profile.first_name.should == "One"
+        profile.last_name.should == "two Three"
+      end
+
+      it "adds the middle name to the last name when all uncapitalized" do
+        profile.full_name = "one two three"
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three"
+      end
+
+      it "trims the name" do
+        profile.full_name = "  One   Two    Three  "
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "Three"
+
+        profile.full_name = "   One   two   Three   "
+        profile.first_name.should == "One"
+        profile.last_name.should == "two Three"
+
+        profile.full_name = "   one  two   three   "
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three"
+      end
+    end
+
+    describe "for more than three words" do
+      it "sets the first name to the first word if all are uncapitalized" do
+        profile.full_name = "one two three four five"
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three four five"
+      end
+
+      it "sets the last name to the last word if all are capitalized" do
+        profile.full_name = "One Two Three Four Five"
+        profile.first_name.should == "One Two Three Four"
+        profile.last_name.should == "Five"
+      end
+
+      it "sets the last name to the last word along with any previous uncapitalized words" do
+        profile.full_name = "One Two three four Five"
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "three four Five"
+      end
+
+      it "puts uncapitalized words that are not adjacent to the last word in the first name" do
+        profile.full_name = "One two Three four Five"
+        profile.first_name.should == "One two Three"
+        profile.last_name.should == "four Five"
+      end
+
+      it "trims the name" do
+        profile.full_name = "   one two  three  four   five "
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three four five"
+
+        profile.full_name = "One   Two  Three  Four      Five"
+        profile.first_name.should == "One Two Three Four"
+        profile.last_name.should == "Five"
+
+        profile.full_name = "One   Two    three four Five"
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "three four Five"
+
+        profile.full_name = "   One two Three four    Five   "
+        profile.first_name.should == "One two Three"
+        profile.last_name.should == "four Five"
+      end
     end
   end
 

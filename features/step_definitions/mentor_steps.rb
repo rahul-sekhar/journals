@@ -1,8 +1,8 @@
 Given /^the teachers Angela, Shalini, Aditya and Sharad exist$/ do
-  FactoryGirl.create(:teacher, first_name: "Angela", last_name: "Jain")
-  FactoryGirl.create(:teacher, first_name: "Shalini", last_name: "Sekhar")
-  FactoryGirl.create(:teacher, first_name: "Aditya", last_name: "Pandya")
-  FactoryGirl.create(:teacher, first_name: "Sharad", last_name: "Jain")
+  FactoryGirl.create(:teacher, full_name: "Angela Jain")
+  FactoryGirl.create(:teacher, full_name: "Shalini Sekhar")
+  FactoryGirl.create(:teacher, full_name: "Aditya Pandya")
+  FactoryGirl.create(:teacher, full_name: "Sharad Jain")
 end
 
 Given /^that student belongs to the mentors "(.*?)"$/ do |p_teachers|
@@ -17,9 +17,9 @@ Given /^I belong to the mentors "(.*?)"$/ do |p_teachers|
 end
 
 Given /^the students Roly, Lucky and Jumble exist$/ do
-  FactoryGirl.create(:student, first_name: "Roly", last_name: "Sekhar")
-  FactoryGirl.create(:student, first_name: "Lucky", last_name: "Sekhar")
-  FactoryGirl.create(:student, first_name: "Jumble", last_name: "Sekhar")
+  FactoryGirl.create(:student, full_name: "Roly Sekhar")
+  FactoryGirl.create(:student, full_name: "Lucky Sekhar")
+  FactoryGirl.create(:student, full_name: "Jumble Sekhar")
 end
 
 Given /^I have the mentees "(.*?)"$/ do |p_students|

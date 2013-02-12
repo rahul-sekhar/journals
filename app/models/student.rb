@@ -1,7 +1,7 @@
 class Student < ActiveRecord::Base
   include Profile
 
-  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, 
+  attr_accessible :full_name, :email, :mobile, :home_phone, 
     :office_phone, :address, :blood_group, :formatted_birthday,
     :additional_emails, :notes
 

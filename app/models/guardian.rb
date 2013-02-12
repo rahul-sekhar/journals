@@ -1,7 +1,7 @@
 class Guardian < ActiveRecord::Base
   include Profile
 
-  attr_accessible :first_name, :last_name, :email, :mobile, :home_phone, :office_phone, :address,
+  attr_accessible :full_name, :email, :mobile, :home_phone, :office_phone, :address,
     :additional_emails, :notes
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians

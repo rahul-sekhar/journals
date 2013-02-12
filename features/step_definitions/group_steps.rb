@@ -20,7 +20,7 @@ Given /^a group "(.*?)" exists$/ do |p_group|
 end
 
 Given /^that group has the students Roly, Lucky and Jumble$/ do
-  @group.students << FactoryGirl.create(:student, first_name: "Roly", last_name: "Sekhar")
-  @group.students << FactoryGirl.create(:student, first_name: "Lucky", last_name: "Sekhar")
-  @group.students << FactoryGirl.create(:student, first_name: "Jumble", last_name: "Sekhar")
+  @group.students << FactoryGirl.create(:student, full_name: "Roly Sekhar")
+  @group.students << FactoryGirl.create(:student, full_name: "Lucky Sekhar")
+  @group.students << FactoryGirl.create(:student, full_name: "Jumble Sekhar")
 end
