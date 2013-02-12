@@ -31,10 +31,9 @@ class TeachersController < ApplicationController
 
   def update
     if @teacher.update_attributes(params[:teacher])
-      redirect_to @teacher
+      render "show"
     else
-      flash[:teacher_data] = params[:teacher]
-      redirect_to edit_teacher_path(@teacher), alert: @teacher.errors.full_messages.first
+      render text: @teacher.errors.full_messages.first, status: :unprocessable_entity
     end
   end
 

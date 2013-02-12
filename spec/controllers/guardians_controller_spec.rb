@@ -257,7 +257,7 @@ describe GuardiansController do
     let(:guardian){ create(:guardian) }
 
     context "with valid data" do
-      let(:make_request){ put :update, id: guardian.id, guardian: { first_name: "Rahul", last_name: "Sekhar", email: "rahul@mail.com" } }
+      let(:make_request){ put :update, id: guardian.id, guardian: { full_name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
 
       it "raises an exception if the user cannot update a guardian" do
         ability.cannot :update, guardian
@@ -279,33 +279,28 @@ describe GuardiansController do
         assigns(:guardian).reload.email.should == "rahul@mail.com"
       end
 
-      it "redirects to the guardian page" do
+      it "renders the show page" do
         make_request
-        response.should redirect_to guardian_path(guardian)
+        response.should render_template "show"
       end
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: guardian.id, guardian: { email: '1234' } }
+      let(:make_request){ put :update, id: guardian.id, guardian: { email: '1234', full_name: 'Rahul Sekhar' }, format: :json }
 
       it "does not edit the guardian" do
         make_request
-        guardian.reload.first_name.should_not == "Rahul"
+        guardian.reload.full_name.should_not == "Rahul Sekhar"
       end
       
-      it "redirects to the edit page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to edit_guardian_path
+        response.status.should eq(422)
       end
 
-      it "displays a flash message indicating invalid data" do
+      it "returns the error message" do
         make_request
-        flash[:alert].should be_present
-      end
-
-      it "stores already filled data in a flash object" do
-        make_request
-        flash[:guardian_data].should == { 'email' => '1234' }
+        response.body.should be_present
       end
     end
   end

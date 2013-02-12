@@ -52,7 +52,6 @@ end
 
 
 
-
 # Input field steps
 When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
   fill_in p_field, with: p_value
@@ -114,6 +113,10 @@ When /^I click "(.*?)" near "(.*?)" in a list item$/ do |p_link, p_text|
   end
 end
 
+When /^I click "(.*?)" in a "(.*?)" element$/ do |p_text, p_element|
+  page.find(p_element, text: p_text).click
+end
+
 
 # Select element steps
 When /^I select "(.*?)" from "(.*?)"$/ do |p_option, p_select|
@@ -160,4 +163,12 @@ end
 # Hover steps
 When /^I hover over "(.*?)"$/ do |p_css|
   find(p_css).trigger(:mouseover)
+end
+
+
+# Text input for in place editing
+When /^I enter "(.*?)" in the text input$/ do |p_text|
+  page.first('input', visible: true).set "#{p_text}"
+  keypress_script = "$('input:visible').blur();"
+  page.driver.browser.execute_script(keypress_script)
 end

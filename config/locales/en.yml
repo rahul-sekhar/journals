@@ -27,3 +27,9 @@ en:
     attributes:
       user:
         email: "Email"
+      teacher:
+        last_name: "Name"
+      student:
+        last_name: "Name"
+      guardian:
+        last_name: "Name"

@@ -1,3 +1,4 @@
+@angular
 Feature: Edit a profile
 
 I should be able to edit a student, guardian or teacher's profile
@@ -5,11 +6,19 @@ I should be able to edit a student, guardian or teacher's profile
 Background:
   Given I have logged in as a teacher "Rahul Sekhar"
 
-Scenario: Edit a teacher profile
+@current
+Scenario: Change the profile name
   Given a teacher profile for Shalini with all information exists
-  When I am on the page for that profile
-  And I click "Edit profile"
-  Then I should be on the edit page for that profile
+  And I am on the page for that profile
+  When I click "Shalini Sekhar" in a "h3" element
+  And I enter "Shalu Pandya" in the text input
+  Then I should not see "Shalini Sekhar"
+  And I should see "Shalu Pandya"
+  When I go to the page for that profile
+  Then I should not see "Shalini Sekhar"
+  And I should see "Shalu Pandya" within the "h3" block
+
+Scenario: Stuff
   And "First name" should be filled in with "Shalini"
   And "Last name" should be filled in with "Sekhar"
   And "Email" should be filled in with "shalini@mail.com"

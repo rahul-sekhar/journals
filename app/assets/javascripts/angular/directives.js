@@ -22,6 +22,26 @@ angular.module('journalsApp.directives', []).
     }
   }).
 
+  directive('headingField', function() {
+    return {
+      restrict: 'E',
+      transclude: true,
+      scope: { 
+        parent: '=',
+        fieldName: '@'
+      },
+      template:
+        '<div class="heading-field">' +
+          '<h3 ng-hide="editMode" ng-click="startEdit()">{{parent[fieldName]}}</h3>' +
+          '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" />' +
+        '</div>',
+      replace: true,
+      controller: 'InPlaceEditCtrl'
+    }
+  }).
+  
+    
+
   directive('multiLineField', function() {
     return {
       restrict: 'E',
@@ -55,24 +75,28 @@ angular.module('journalsApp.directives', []).
         '</div>',
       replace: true
     }
-  });
+  }).
   
-//   directive('jnlBlur', function() {
-//     return function( scope, elem, attrs ) {
-//       elem.on('blur', function() {
-//         scope.$apply(attrs.ngBlur);
-//       });
-//     };
-//   }).
+  directive('finishEdit', function() {
+    return function( scope, elem, attrs ) {
+      elem.
+        on('blur', function() {
+          scope.$apply(attrs.finishEdit);
+        }).
+        on('keydown', function(e) {
+          if (e.keyCode == 13) scope.$apply(attrs.finishEdit);
+        });
+    };
+  }).
 
-//   directive('jnlFocusOn', function() {
-//     return function( scope, elem, attrs ) {
-//       scope.$watch(attrs.ngFocusOn, function(value) {
-//         if (value) {
-//           window.setTimeout(function(){
-//             elem.focus();
-//           }, 10);
-//         }
-//       }, true);
-//     };
-//   });
+  directive('focusOn', function() {
+    return function( scope, elem, attrs ) {
+      scope.$watch(attrs.focusOn, function(value) {
+        if (value) {
+          window.setTimeout(function(){
+            elem.focus();
+          }, 10);
+        }
+      }, true);
+    };
+  });

@@ -1,6 +1,6 @@
 <article class="profile" ng-repeat="person in people">
   <header class="profile-header">
-    <h3>{{person.full_name}}</h3>
+    <heading-field parent="person" field-name="full_name"></heading-field>
 
     <p class="type" ng-show="person.type == 'teachers'">{{person.type | simpleSingularize | capitalize}}</p>
 

@@ -48,10 +48,9 @@ class GuardiansController < ApplicationController
 
   def update
     if @guardian.update_attributes(params[:guardian])
-      redirect_to @guardian
+      render "show"
     else
-      flash[:guardian_data] = params[:guardian]
-      redirect_to edit_guardian_path(@guardian), alert: @guardian.errors.full_messages.first
+      render text: @guardian.errors.full_messages.first, status: :unprocessable_entity
     end
   end
 

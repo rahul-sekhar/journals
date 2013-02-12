@@ -33,8 +33,7 @@ class StudentsController < ApplicationController
     if @student.update_attributes(params[:student])
       render 'show'
     else
-      flash[:student_data] = params[:student]
-      redirect_to edit_student_path(@student), alert: @student.errors.full_messages.first
+      render text: @student.errors.full_messages.first, status: :unprocessable_entity
     end
   end
 

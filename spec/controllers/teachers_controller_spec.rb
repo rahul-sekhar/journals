@@ -214,7 +214,7 @@ describe TeachersController do
     let(:teacher){ create(:teacher) }
 
     context "with valid data" do
-      let(:make_request){ put :update, id: teacher.id, teacher: { first_name: "Rahul", last_name: "Sekhar", email: "rahul@mail.com" } }
+      let(:make_request){ put :update, id: teacher.id, teacher: { full_name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
 
       it "raises an exception if the user cannot update a teacher" do
         ability.cannot :update, teacher
@@ -236,33 +236,28 @@ describe TeachersController do
         assigns(:teacher).reload.email.should == "rahul@mail.com"
       end
 
-      it "redirects to the teacher page" do
+      it "renders the show page" do
         make_request
-        response.should redirect_to teacher_path(teacher)
+        response.should render_template "show"
       end
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: teacher.id, teacher: { first_name: "", last_name: "" } }
+      let(:make_request){ put :update, id: teacher.id, teacher: { full_name: "", email: "rahul@mail.com" }, format: :json }
 
       it "does not edit the teacher" do
         make_request
-        teacher.reload.first_name.should_not == "Rahul"
+        teacher.reload.email.should_not == "rahul@mail.com"
       end
       
-      it "redirects to the edit page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to edit_teacher_path
+        response.status.should eq(422)
       end
 
-      it "displays a flash message indicating invalid data" do
+      it "returns the error message" do
         make_request
-        flash[:alert].should be_present
-      end
-
-      it "stores already filled data in a flash object" do
-        make_request
-        flash[:teacher_data].should == { 'first_name' => '', 'last_name' => '' }
+        response.body.should be_present
       end
     end
   end
