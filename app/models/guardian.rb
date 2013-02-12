@@ -6,6 +6,8 @@ class Guardian < ActiveRecord::Base
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
 
+  default_scope includes(:user)
+
   def archived
     if students.all? { |student| student.archived }
       return true

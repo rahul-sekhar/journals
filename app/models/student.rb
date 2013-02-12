@@ -16,6 +16,7 @@ class Student < ActiveRecord::Base
   validates :blood_group, length: { maximum: 15 }
   validates :birthday, presence: { message: "is invalid" }, if: "formatted_birthday.present?"
 
+  default_scope includes(:user, { guardians: :user })
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
 

@@ -6,6 +6,7 @@ class Teacher < ActiveRecord::Base
 
   has_and_belongs_to_many :mentees, class_name: Student, uniq: true, join_table: :student_mentors
 
+  default_scope includes(:user)
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
 

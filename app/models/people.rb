@@ -7,6 +7,8 @@ class People < ActiveRecord::Base
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
 
+  default_scope includes(:profile)
+
   def self.search( query )
     query = "%#{SqlHelper::escapeWildcards(query)}%"
     where{ full_name.like query }
