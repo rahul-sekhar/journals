@@ -8,9 +8,9 @@
   </header>
 
   <div class="main-profile-fields">
-    <date-field parent="person" ng-repeat="field in date_field_list(person)" name="{{field}}" function-name="formatted_{{field}}"></date-field>
-    <field parent="person" ng-repeat="field in field_list(person)" name="{{field}}"></field>
-    <multi-line-field parent="person" ng-repeat="field in multi_line_field_list(person)" name="{{field}}"></field>
+    <date-field parent="person" ng-repeat="field in dateFieldList(person)" field-name="{{field}}" function-name="formatted_{{field}}"></date-field>
+    <field parent="person" ng-repeat="field in fieldList(person)" field-name="{{field}}"></field>
+    <multi-line-field parent="person" ng-repeat="field in multiLineFieldList(person)" field-name="{{field}}"></field>
   </div>
 
   <div class="guardians" ng-show="person.type == 'students'">
@@ -21,8 +21,8 @@
         <div class="clear-left"></div>
       </header>
 
-      <field parent="guardian" ng-repeat="field in field_list(guardian)" name="{{field}}"></field>
-      <multi-line-field parent="guardian" ng-repeat="field in multi_line_field_list(guardian)" name="{{field}}"></field>
+      <field parent="guardian" ng-repeat="field in fieldList(guardian)" field-name="{{field}}"></field>
+      <multi-line-field parent="guardian" ng-repeat="field in multiLineFieldList(guardian)" field-name="{{field}}"></field>
     </div>
 
   </div>

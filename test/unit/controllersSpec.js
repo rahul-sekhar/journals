@@ -118,7 +118,8 @@ describe('Controllers', function() {
 
       describe('with a valid server response', function() {
         beforeEach(function() {
-          $httpBackend.expectPUT('/students/13', { student: { some_field: "changed value" }}).respond(200);
+          var changedParent = { id: "13", type: "students", some_field: "some changed value", random: "random val" }
+          $httpBackend.expectPUT('/students/13', { student: { some_field: "changed value" }}).respond(200, changedParent);
         });
 
         it('sets editMode to false', function() {
@@ -143,6 +144,13 @@ describe('Controllers', function() {
           $httpBackend.resetExpectations();
           scope.finishEdit();
           $httpBackend.verifyNoOutstandingExpectation();
+        });
+
+        it('updates the parent field according to the server response', function() {
+          scope.finishEdit();
+          expect(parentItem.some_field).toEqual("changed value");
+          $httpBackend.flush();
+          expect(parentItem.some_field).toEqual("some changed value");
         });
       });
 

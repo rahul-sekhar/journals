@@ -27,6 +27,7 @@ function InPlaceEditCtrl($scope, $http, errorHandler) {
   var parent = $scope.parent;
 
   $scope.startEdit = function() {
+    $scope.editorValue = null;
     $scope.editorValue = parent[$scope.fieldName];
     $scope.editMode = true;
   }
@@ -37,7 +38,7 @@ function InPlaceEditCtrl($scope, $http, errorHandler) {
     $scope.editMode = false;
 
     // Return if no change was made
-    if (old_val == new_val) return;
+    if (old_val === new_val) return;
 
     // Update the parent field
     parent[$scope.fieldName] = new_val
@@ -48,8 +49,15 @@ function InPlaceEditCtrl($scope, $http, errorHandler) {
     var data = {};
     data[parent.type.slice(0, -1)] = profile_data;
 
-    // Send the data to the server and handle an error in response if present
+    // Send the data to the server
     $http.put( '/' + parent.type + '/' + parent.id, data, { timeout: 4000 }).
+
+      // Update the field according to the response on success
+      success(function(data) {
+        parent[$scope.fieldName] = data[$scope.fieldName]
+      }).
+
+      // Reset the field and show an error on failure
       error(function(data, status) {
         parent[$scope.fieldName] = old_val;
         errorHandler.message(data);

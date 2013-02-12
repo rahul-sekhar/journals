@@ -172,3 +172,9 @@ When /^I enter "(.*?)" in the text input$/ do |p_text|
   keypress_script = "$('input:visible').blur();"
   page.driver.browser.execute_script(keypress_script)
 end
+
+When /^I enter "(.*?)" in the textarea$/ do |p_text|
+  page.first('textarea', visible: true).set "#{p_text}"
+  keypress_script = "$('textarea:visible').blur();"
+  page.driver.browser.execute_script(keypress_script)
+end

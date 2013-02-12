@@ -271,18 +271,15 @@ describe('service', function() {
     });
 
     
-
     
-
-    
-    describe("field_list", function() {
+    describe("fieldList", function() {
       beforeEach(function() {
         $httpBackend.expectGET('/people').respond([]);
         ctrl.include(scope);
       });
 
       it("lists a students fields when passed a student", function() {
-        expect(scope.field_list({type: 'students'})).toEqual([
+        expect(scope.fieldList({type: 'students'})).toEqual([
           "blood_group",
           "mobile",
           "home_phone",
@@ -293,7 +290,17 @@ describe('service', function() {
       });
 
       it("lists a teachers fields when passed a teacher", function() {
-        expect(scope.field_list({type: 'teachers'})).toEqual([
+        expect(scope.fieldList({type: 'teachers'})).toEqual([
+          "mobile",
+          "home_phone",
+          "office_phone",
+          "email",
+          "additional_emails",
+        ]);
+      });
+
+      it("lists a guardians fields when passed a guardian", function() {
+        expect(scope.fieldList({type: 'guardians'})).toEqual([
           "mobile",
           "home_phone",
           "office_phone",
@@ -304,33 +311,41 @@ describe('service', function() {
     });
 
 
-    describe("date_field_list", function() {
+    describe("dateFieldList", function() {
       beforeEach(function() {
         $httpBackend.expectGET('/people').respond([]);
         ctrl.include(scope);
       });
 
       it("lists a students fields when passed a student", function() {
-        expect(scope.date_field_list({type: 'students'})).toEqual(["birthday"]);
+        expect(scope.dateFieldList({type: 'students'})).toEqual(["birthday"]);
       });
 
-      it("lists a teachers fields when passed a teacher", function() {
-        expect(scope.date_field_list({type: 'teachers'})).toEqual([]);
+      it("lists an empty array when passed a teacher", function() {
+        expect(scope.dateFieldList({type: 'teachers'})).toEqual([]);
+      });
+
+      it("lists an empty array when passed a guardian", function() {
+        expect(scope.dateFieldList({type: 'guardians'})).toEqual([]);
       });
     });
 
-    describe("multi_line_field_list", function() {
+    describe("multiLineFieldList", function() {
       beforeEach(function() {
         $httpBackend.expectGET('/people').respond([]);
         ctrl.include(scope);
       });
 
       it("lists a students fields when passed a student", function() {
-        expect(scope.multi_line_field_list({type: 'students'})).toEqual(["address", "notes"]);
+        expect(scope.multiLineFieldList({type: 'students'})).toEqual(["address", "notes"]);
       });
 
       it("lists a teachers fields when passed a teacher", function() {
-        expect(scope.multi_line_field_list({type: 'teachers'})).toEqual(["address", "notes"]);
+        expect(scope.multiLineFieldList({type: 'teachers'})).toEqual(["address", "notes"]);
+      });
+
+      it("lists a guardians fields when passed a guardian", function() {
+        expect(scope.multiLineFieldList({type: 'guardians'})).toEqual(["address", "notes"]);
       });
     });
   });

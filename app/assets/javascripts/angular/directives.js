@@ -11,14 +11,16 @@ angular.module('journalsApp.directives', []).
       transclude: true,
       scope: { 
         parent: '=',
-        field_name: '@name'
+        fieldName: '@'
       },
       template:
-        '<div class="field" ng-show="parent[field_name]">' +
-          '<p class="field-name">{{field_name | capitalize}}</p>' +
-          '<p>{{parent[field_name]}}</p>' +
+        '<div class="field" ng-show="parent[fieldName]">' +
+          '<p class="field-name">{{fieldName | capitalize}}</p>' +
+          '<p ng-hide="editMode" ng-click="startEdit()">{{parent[fieldName]}}</p>' +
+          '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" ng-trim="false" />' +
         '</div>',
-      replace: true
+      replace: true,
+      controller: 'InPlaceEditCtrl'
     }
   }).
 
@@ -33,7 +35,7 @@ angular.module('journalsApp.directives', []).
       template:
         '<div class="heading-field">' +
           '<h3 ng-hide="editMode" ng-click="startEdit()">{{parent[fieldName]}}</h3>' +
-          '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" />' +
+          '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" ng-trim="false" />' +
         '</div>',
       replace: true,
       controller: 'InPlaceEditCtrl'
@@ -48,14 +50,16 @@ angular.module('journalsApp.directives', []).
       transclude: true,
       scope: { 
         parent: '=',
-        field_name: '@name'
+        fieldName: '@'
       },
       template:
-        '<div class="field" ng-show="parent[field_name]">' +
-          '<p class="field-name">{{field_name | capitalize}}</p>' +
-          '<p ng-bind-html="parent[field_name] | simpleFormat"></p>' +
+        '<div class="field" ng-show="parent[fieldName]">' +
+          '<p class="field-name">{{fieldName | capitalize}}</p>' +
+          '<p ng-hide="editMode" ng-click="startEdit()" ng-bind-html="parent[fieldName] | simpleFormat"></p>' +
+          '<textarea ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" ng-trim="false"></textarea>' +
         '</div>',
-      replace: true
+      replace: true,
+      controller: 'InPlaceEditCtrl'
     }
   }).
 
@@ -65,7 +69,7 @@ angular.module('journalsApp.directives', []).
       transclude: true,
       scope: {
         parent: '=',
-        fieldName: '@name',
+        fieldName: '@',
         functionName: '@'
       },
       template:
@@ -84,7 +88,9 @@ angular.module('journalsApp.directives', []).
           scope.$apply(attrs.finishEdit);
         }).
         on('keydown', function(e) {
-          if (e.keyCode == 13) scope.$apply(attrs.finishEdit);
+          if (e.keyCode == 13 && elem.is("input")) {
+            scope.$apply(attrs.finishEdit);
+          }
         });
     };
   }).

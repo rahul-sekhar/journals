@@ -6,41 +6,54 @@ I should be able to edit a student, guardian or teacher's profile
 Background:
   Given I have logged in as a teacher "Rahul Sekhar"
 
-@current
-Scenario: Change the profile name
+Scenario: Change the profile name for a teacher
   Given a teacher profile for Shalini with all information exists
   And I am on the page for that profile
+  
   When I click "Shalini Sekhar" in a "h3" element
   And I enter "Shalu Pandya" in the text input
   Then I should not see "Shalini Sekhar"
   And I should see "Shalu Pandya"
+  
   When I go to the page for that profile
   Then I should not see "Shalini Sekhar"
   And I should see "Shalu Pandya" within the "h3" block
 
-Scenario: Stuff
-  And "First name" should be filled in with "Shalini"
-  And "Last name" should be filled in with "Sekhar"
-  And "Email" should be filled in with "shalini@mail.com"
-  And "Mobile" should be filled in with "1122334455"
-  And "Address" should be filled in with the lines: "Some house,", "Banashankari,", "Bangalore - 55"
-  And "Home phone" should be filled in with "080-12345"
-  And "Office phone" should be filled in with "080-67890"
+@current
+Scenario: Edit fields for a teacher
+  Given a teacher profile for Shalini with all information exists
+  And I am on the page for that profile
   
-  When I fill in "First name" with "Shalu"
-  And I fill in "Last name" with "Pandya"
-  And I fill in "Email" with "shalu@mail.com"
-  And I fill in "Home phone" with "990088"
-  And I fill in "Office phone" with " "
-  And I click "Save"
-
-  Then I should be on the page for that profile
-  And I should see "Shalu Pandya"
+  When I click "shalini@mail.com" in a "p" element
+  And I enter "shalu@mail.com" in the text input
+  Then I should not see "shalini@mail.com"
   And I should see "shalu@mail.com"
+
+  When I click "080-12345" in a "p" element
+  And I enter "1234" in the text input
+  Then I should not see "080-12345"
+  And I should see "1234"
+
+  When I click "080-67890" in a "p" element
+  And I enter " " in the text input
+  Then I should not see "080-67890"
+  And I should not see "Office phone"
+
+  When I click "Some house, Banashankari, Bangalore - 55" in a "p" element
+  And I enter "Some Other Address" in the textarea
+  Then I should not see "Some house, Banashankari, Bangalore - 55"
+  And I should see "Some Other Address"
+
+  When I go to the page for that profile
+  Then I should see "Shalini Sekhar"
   And I should see "1122334455"
-  And I should see "Some house, Banashankari, Bangalore - 55"
-  And I should see "990088"
-  And I should not see "Office Phone"
+  And I should not see "shalini@mail.com"
+  And I should see "shalu@mail.com"
+  And I should not see "080-12345"
+  And I should see "1234"
+  And I should not see "080-67890"
+  And I should not see "Office phone"
+
 
 Scenario: Edit a student profile
   Given a student profile for Parvathy with all information exists

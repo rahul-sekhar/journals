@@ -103,11 +103,11 @@ angular.module('journalsApp.services', ['ngResource']).
 
 
       // List of fields for each type
-      $scope.date_field_list = function(person) {
+      $scope.dateFieldList = function(person) {
         return (person.type == 'students') ? ["birthday"] : [];
       }
       
-      $scope.field_list = function(person) {
+      $scope.fieldList = function(person) {
         var list = [
           "mobile",
           "home_phone",
@@ -121,7 +121,7 @@ angular.module('journalsApp.services', ['ngResource']).
         return list;
       };
 
-      $scope.multi_line_field_list = function(person) {
+      $scope.multiLineFieldList = function(person) {
         return ["address", "notes"];
       }
     };
