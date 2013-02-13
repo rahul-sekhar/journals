@@ -63,9 +63,43 @@ describe PagesController do
       assigns(:people).should == [student2]
     end
 
-    it "sets an empty_message" do
-      get :people, format: :json
-      assigns(:empty_message).should be_present
+    describe "pagination" do
+      before do
+        create_list(:student, 15)
+      end
+
+      it "assigns ten elements for the first page" do
+        get :people, format: :json
+        assigns(:people).length.should == 10
+      end
+
+      it "assigns a total number of pages for the first page" do
+        get :people, format: :json
+        assigns(:total_pages).should == 2
+      end
+
+      it "assigns five elements for the second page" do
+        get :people, page: 2, format: :json
+        assigns(:people).length.should == 5
+      end
+
+      it "assigns a total number of pages for the second page" do
+        get :people, page: 2, format: :json
+        assigns(:total_pages).should == 2
+      end
+
+      it "assigns the correct total number of pages for an exact match" do
+        create_list(:student, 5)
+        get :people, page: 2, format: :json
+        assigns(:total_pages).should == 2
+        assigns(:people).length.should == 10
+      end
+
+      it "assigns an empty collection for a page that is too high" do
+        get :people, page: 3, format: :json
+        assigns(:people).should be_empty
+        assigns(:total_pages).should == 2
+      end
     end
   end
 

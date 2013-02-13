@@ -7,6 +7,10 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
   config(['$routeProvider', function($routeProvider) {
     $routeProvider.
 
+      when('/login', {redirectTo: '/'}).
+
+      when('/', {redirectTo: '/people'}).
+
       when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: PeopleCtrl}).
 
       when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
@@ -21,7 +25,9 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
 
       when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: ArchivedPeopleCtrl}).
 
-      otherwise({redirectTo: '/people'});
+      when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
+
+      otherwise({redirectTo: '/page-not-found'});
   }]).
   config(["$httpProvider", function(provider) {
     provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');

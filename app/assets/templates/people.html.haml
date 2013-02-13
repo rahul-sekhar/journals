@@ -1,3 +1,8 @@
+%h2 {{pageTitle}}
+
+%section#upper-bar
+  .clear-left
+
 %article.profile{ "ng-repeat"=>"person in people" }
   %header.profile-header
     %heading-field{ "parent"=>"person", "field-name"=>"full_name" }
@@ -35,6 +40,11 @@
         %ul
           %li{ "ng-repeat"=>"field in remainingFields(guardian)" }
             %a{ "href"=>"", "ng-click"=>"addField(guardian, field)" } {{field | capitalize}}
+
+.content-block{ "ng-hide"=>"people.length" }
+  %p No matching people were found.
+
+#paginate{ "ng-show" => "page" }
 
 / %header.profile-header
 /   %h3= profile.full_name

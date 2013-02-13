@@ -6,22 +6,16 @@ class PagesController < ApplicationController
   end
 
   def people
-    @empty_message = "No current students or teachers found."
-    @filter = "all"
     filter_and_display_people( People.current, true )
   end
 
   def archived
-    @empty_message = "No archived students or teachers found."
-    @filter = "archived"
     filter_and_display_people( People.archived, true )
   end
 
   def mentees
     raise ActiveRecord::RecordNotFound unless current_profile.is_a? Teacher
 
-    @empty_message = "No mentees found."
-    @filter = "mentees"
     filter_and_display_people( current_profile.mentees )
   end
 

@@ -2,25 +2,42 @@ require 'spec_helper'
 
 describe SessionsController do
   describe "GET new" do
-    it "has a 200 status code" do
-      response.status.should eq(200)
+    describe "when not logged in" do
+      it "has a 200 status code" do
+        get :new
+        response.status.should eq(200)
+      end
+
+      it "assigns a new user object" do
+        get :new
+        assigns(:user).should be_a User
+        assigns(:user).should be_new_record
+      end
+
+      it "leaves the users email blank" do
+        get :new
+        assigns(:user).email.should be_blank
+      end
+
+      context "if the flash login email has been set" do
+        it "sets the users email" do
+          get :new, nil, nil, login_email: "some@mail.com"
+          assigns(:user).email.should == "some@mail.com"
+        end
+      end
     end
 
-    it "assigns a new user object" do
-      get :new
-      assigns(:user).should be_a User
-      assigns(:user).should be_new_record
-    end
+    describe "when logged in" do
+      before do 
+        user = mock_model(User)
+        controller.stub(:current_user).and_return(user)
+        User.stub(:find).and_return(user)
+        session[:user_id] = 5
+      end
 
-    it "leaves the users email blank" do
-      get :new
-      assigns(:user).email.should be_blank
-    end
-
-    context "if the flash login email has been set" do
-      it "sets the users email" do
-        get :new, nil, nil, login_email: "some@mail.com"
-        assigns(:user).email.should == "some@mail.com"
+      it "redirects to the root page" do
+        get :new
+        response.should redirect_to root_path
       end
     end
   end

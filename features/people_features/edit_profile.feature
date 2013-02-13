@@ -12,7 +12,7 @@ Scenario: Change the profile name for a teacher
   
   When I click "Shalini Sekhar" in a "h3" element
   And I enter "Shalu Pandya" in the text input
-  Then I should not see "Shalini Sekhar"
+  Then I should not see "Shalini Sekhar" in a "h3" element
   And I should see "Shalu Pandya"
   
   When I go to the page for that profile
@@ -110,7 +110,7 @@ Scenario: Edit a student profile
   
   When I click "Parvathy Manjunath" in a "h3" element
   And I enter " Parvathy  " in the text input
-  Then I should not see "Parvathy Manjunath"
+  Then I should not see "Parvathy Manjunath" in a "h3" element
   And I should see "Parvathy"
 
   When I click "parvathy@mail.com" in a "p" element

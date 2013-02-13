@@ -75,7 +75,7 @@ describe('service', function() {
 
     describe('Array of people', function() {
 
-      describe('All people', function() {     
+      describe('All people', function() {
         beforeEach(function() {
           $httpBackend.expectGET('/people').respond([
             { id: 12, type: 'students', full_name: 'Student 1'},
@@ -84,14 +84,19 @@ describe('service', function() {
           ctrl.include(scope);
         });
 
-        it('sets people to the list fetched via xhr', inject(function(Person) {
+        it('sets people to the list fetched via xhr', function() {
           expect(scope.people).toEqual([]);
           $httpBackend.flush();
           expect(scope.people).toEqualData([
             { id: 12, type: 'students', full_name: 'Student 1'},
             { id: 15, type: 'teachers', full_name: 'Teacher 1'}
           ]);
-        }));
+        });
+
+        it('sets the page title', function() {
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('People')
+        });
       });
 
 
@@ -104,14 +109,19 @@ describe('service', function() {
           ctrl.include(scope, 'archived');
         });
 
-        it('sets people to the list fetched via xhr', inject(function(Person) {
+        it('sets people to the list fetched via xhr', function() {
           expect(scope.people).toEqual([]);
           $httpBackend.flush();
           expect(scope.people).toEqualData([
             { id: 12, type: 'students', full_name: 'Student 1'},
             { id: 15, type: 'teachers', full_name: 'Teacher 1'}
           ]);
-        }));
+        });
+
+        it('sets the page title', function() {
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Archived people')
+        });
       });
 
 
@@ -130,6 +140,12 @@ describe('service', function() {
             { id: 17, type: 'teachers', full_name: 'Some Teacher'}
           ]);
         });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Some Teacher')
+        });
       });
 
       describe('Non-existent teacher', function() {
@@ -140,12 +156,16 @@ describe('service', function() {
           ctrl.include(scope, 'teachers', 17)
         });
 
-        it('set reports an error message and sets people to an empty array', function() {
+        it('sets people to an empty array', function() {
           expect(scope.people).toEqualData([]);
-          expect(errorHandlerMock.message).not.toHaveBeenCalled();
           $httpBackend.flush();
-          expect(errorHandlerMock.message).toHaveBeenCalled();
           expect(scope.people).toEqualData([]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Not found')
         });
       });
 
@@ -166,6 +186,11 @@ describe('service', function() {
             { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
           ]);
         });
+
+        it('sets the page title', function() {
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Teachers')
+        });
       });
 
 
@@ -184,6 +209,12 @@ describe('service', function() {
             { id: 17, type: 'students', full_name: 'Some Student'}
           ]);
         });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Some Student')
+        });
       });
 
       describe('Non-existent student', function() {
@@ -194,12 +225,16 @@ describe('service', function() {
           ctrl.include(scope, 'students', 17)
         });
 
-        it('set reports an error message and sets people to an empty array', function() {
+        it('sets people to an empty array', function() {
           expect(scope.people).toEqualData([]);
-          expect(errorHandlerMock.message).not.toHaveBeenCalled();
           $httpBackend.flush();
-          expect(errorHandlerMock.message).toHaveBeenCalled();
           expect(scope.people).toEqualData([]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Not found')
         });
       });
 
@@ -220,6 +255,11 @@ describe('service', function() {
             { id: 20, type: 'students', full_name: 'Some Other Student'}
           ]);
         });
+
+        it('sets the page title', function() {
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Students')
+        });
       });
 
 
@@ -229,6 +269,7 @@ describe('service', function() {
           $httpBackend.expectGET('/guardians/17').respond({
             id: 12,
             type: 'guardians',
+            full_name: 'Some Guardian',
             students: [
               { id: 13, type: 'students', full_name: 'Some Student'},
               { id: 14, type: 'students', full_name: 'Some Other Student'}
@@ -245,6 +286,12 @@ describe('service', function() {
             { id: 14, type: 'students', full_name: 'Some Other Student'}
           ]);
         });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Some Guardian')
+        });
       });
 
       describe('Non-existent guardian', function() {
@@ -255,12 +302,16 @@ describe('service', function() {
           ctrl.include(scope, 'guardians', 17)
         });
 
-        it('set reports an error message and sets people to an empty array', function() {
+        it('sets people to an empty array', function() {
           expect(scope.people).toEqualData([]);
-          expect(errorHandlerMock.message).not.toHaveBeenCalled();
           $httpBackend.flush();
-          expect(errorHandlerMock.message).toHaveBeenCalled();
           expect(scope.people).toEqualData([]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Not found')
         });
       });
 

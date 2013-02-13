@@ -12,8 +12,8 @@ describe('Controllers', function() {
 
   beforeEach(module('journalsApp.services'));
 
-  describe('People controllers', function() {
 
+  describe('People controllers', function() {
     var scope, ctrl, commonPeopleCtrl;
 
     beforeEach(inject(function($rootScope) {

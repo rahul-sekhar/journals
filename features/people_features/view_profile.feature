@@ -10,8 +10,8 @@ Scenario: View teacher profile with minimal information
   Given a student profile for Parvathy exists
   And a teacher profile for Shalini exists
   When I am on the page for that profile
-  Then I should not see "Parvathy Manjunath"
-  And I should see "Shalini Sekhar"
+  Then I should see the page heading "Profile: Shalini Sekhar"
+  And I should not see "Parvathy Manjunath"
   And I should see "Teacher"
   And I should see "Email" in a ".field-name" element
   And I should see "shalini@mail.com"
@@ -25,7 +25,7 @@ Scenario: View teacher profile with minimal information
 Scenario: View teacher profile with all information
   Given a teacher profile for Shalini with all information exists
   When I am on the page for that profile
-  Then I should see "Shalini Sekhar"
+  Then I should see the page heading "Profile: Shalini Sekhar"
   And I should see "Teacher"
   And I should see "Email" in a ".field-name" element
   And I should see "shalini@mail.com"
@@ -46,8 +46,8 @@ Scenario: View student profile with all information
   Given a teacher profile for Shalini exists
   And a student profile for Parvathy with all information exists
   When I am on the page for that profile
-  Then I should not see "Shalini Sekhar"
-  And I should see "Parvathy Manjunath"
+  Then I should see the page heading "Profile: Parvathy Manjunath"
+  And I should not see "Shalini Sekhar"
   And I should see "Email" in a ".field-name" element
   And I should see "parvathy@mail.com"
   And I should see "Mobile" in a ".field-name" element
@@ -67,7 +67,7 @@ Scenario: View a student profile containing a guardian profile with minimal info
   Given a student profile for Parvathy exists
   And a guardian Manoj for that student exists
   When I am on the page for that profile
-  Then I should see "Parvathy Manjunath"
+  Then I should see the page heading "Profile: Parvathy Manjunath"
   And I should see "Manoj Jain" within the ".guardians" block
   And I should not see "Email" in a ".field-name" element within the ".guardians" block
   And I should not see "Mobile" in a ".field-name" element within the ".guardians" block
@@ -80,7 +80,7 @@ Scenario: View a student profile containing multiple guardians
   And a guardian Manoj for that student exists
   And a guardian Poonam for that student exists
   When I am on the page for that profile
-  Then I should see "Parvathy Manjunath"
+  And I should see the page heading "Profile: Parvathy Manjunath"
   And I should see "Manoj Jain" within the ".guardians" block
   And I should see "Poonam Jain" within the ".guardians" block
   And I should see "Email" in a ".field-name" element within the ".guardians" block
@@ -99,11 +99,11 @@ Scenario: View a guardian profile with multiple students
   Given a teacher profile for Shalini exists
   And a guardian Manoj with multiple students exists
   When I am on the page for that profile
+  Then I should see the page heading "Profile: Manoj Jain"
   Then I should see "Parvathy Manjunath"
   And I should see "Roly Jain"
   And I should not see "Shalini Sekhar"
   Given PENDING page headings
-  And I should see "Profile: Manoj Jain"
 
 Scenario: Click on users name to reach profile
   Given PENDING posts page

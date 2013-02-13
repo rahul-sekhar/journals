@@ -1,7 +1,7 @@
 !!! 5
-%html{"ng-app" => "journalsApp"}
+%html{ "ng-app"=>"journalsApp" }
   %head
-    %title Journals Angular
+    %title= Rails.configuration.settings['app_full_name']
     %link{ rel: "shortcut icon", href: "/favicon.ico?v=1" }
     = stylesheet_link_tag    "application", media: "all"
     = javascript_include_tag "angular"
@@ -20,9 +20,4 @@
       %navigation#page-navigation= render "general/navigation"
 
       #main-content
-        %h2 Page heading
-
-        %section#upper-bar
-          .clear-left
-
         .ng-view

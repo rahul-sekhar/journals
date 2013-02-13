@@ -58,6 +58,10 @@ Then /^I should not see the heading "(.*?)"$/ do |p_content|
   page.should have_no_css "h3", text: p_content
 end
 
+Then /^I should see the page heading "(.*?)"$/ do |p_content|
+  page.should have_css "h2", text: p_content
+end
+
 
 
 # Input field steps

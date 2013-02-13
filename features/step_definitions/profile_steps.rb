@@ -85,3 +85,22 @@ When /^I click the "Edit profile" link for the guardian "(.*?)"$/ do |p_guardian
   guardian_node = page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/../..')
   guardian_node.find('.edit-link').click
 end
+
+Given /^a teacher for each alphabet exists$/ do
+  ('A'..'Z').each do |letter|
+    Teacher.create!(full_name: letter)
+  end
+end
+
+Given /^a student for each alphabet exists$/ do
+  ('A'..'Z').each do |letter|
+    Student.create!(full_name: letter)
+  end
+end
+
+Given /^an archived student for each alphabet exists$/ do
+  ('A'..'Z').each do |letter|
+    student = Student.create!(full_name: letter)
+    student.toggle_archive
+  end
+end

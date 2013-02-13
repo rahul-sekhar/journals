@@ -21,11 +21,33 @@ class ApplicationController < ActionController::Base
   end
 
   def filter_and_display_people(collection, map_profiles = false)
+    @page = params[:page] || 1
     @people = collection.alphabetical
     @people = @people.search(params[:search]) if params[:search]
+    
+    @total_pages = get_total_pages(@people)
+    @people = paginate(@people, @page)
+
     @people = @people.map{ |person| person.profile } if map_profiles
 
     render "pages/people"
+  end
+
+  def paginate(collection, page, per_page=per_page_default)
+    collection = collection.limit(per_page)
+    collection = collection.offset((page - 1) * per_page)
+    return collection
+  end
+
+  def get_total_pages(collection, per_page=per_page_default)
+    count = collection.count
+    total = count / per_page
+    total = total + 1 if (count % per_page > 0)
+    return total
+  end
+
+  def per_page_default
+    10
   end
 
   protected

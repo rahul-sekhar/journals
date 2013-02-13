@@ -16,6 +16,7 @@ Background:
 
 Scenario: View unarchived students and teachers on the people page
   When I am on the people page
+  Then I should see the page heading "People"
   Then I should see the heading "Aditya Pandya"
   And I should see the heading "Angela Jain"
   And I should see the heading "Rahul Sekhar"
@@ -26,6 +27,7 @@ Scenario: View unarchived students and teachers on the people page
 
 Scenario: View archived students and teachers on the people page
   When I am on the archived people page
+  Then I should see the page heading "Archived people"
   Then I should not see the heading "Aditya Pandya"
   And I should not see the heading "Angela Jain"
   And I should not see the heading "Rahul Sekhar"
@@ -36,6 +38,7 @@ Scenario: View archived students and teachers on the people page
 
 Scenario: View only students
   When I am on the students page
+  Then I should see the page heading "Students"
   Then I should not see the heading "Aditya Pandya"
   And I should not see the heading "Angela Jain"
   And I should not see the heading "Rahul Sekhar"
@@ -46,6 +49,7 @@ Scenario: View only students
 
 Scenario: View only teachers
   When I am on the teachers page
+  Then I should see the page heading "Teachers"
   Then I should see the heading "Aditya Pandya"
   And I should see the heading "Angela Jain"
   And I should see the heading "Rahul Sekhar"

@@ -2,7 +2,7 @@
 
 /* Services */
 
-angular.module('journalsApp.services', ['ngResource']).
+angular.module('journalsApp.services', ['ngResource', 'journalsApp.filters']).
 
   factory('Person', function($resource) {
     return $resource('/:type/:id', {id: "@id", type: "@type"}, {
@@ -32,7 +32,7 @@ angular.module('journalsApp.services', ['ngResource']).
     };
   }).
 
-  factory('commonPeopleCtrl', function(Person, errorHandler) {
+  factory('commonPeopleCtrl', function(Person, errorHandler, capitalizeFilter) {
     var commonPeopleCtrl = {}
     
     commonPeopleCtrl.include = function($scope, type, id) {
@@ -40,27 +40,30 @@ angular.module('journalsApp.services', ['ngResource']).
       // Query people based on passed parameters
       $scope.people = [];
       if (type == 'students' || type == 'teachers') {
-        
+
         // For a single profile
         if (id) {
+          $scope.pageTitle = 'Profile';
           Person.get(
             { id: id, type: type },
 
             // Success - load the profile
             function(result) {
+              $scope.pageTitle = 'Profile: ' + result.full_name;
               $scope.people = [result];
             },
 
             // Failure - profile not found 
             function() {
+              $scope.pageTitle = 'Profile: Not found';
               $scope.people = [];
-              errorHandler.message('This profile could not be found');
             }
           );
         }
 
         // List of students or teachers
         else {
+          $scope.pageTitle = capitalizeFilter(type);
           $scope.people = Person.query({ type: type });
         }
       }
@@ -68,18 +71,20 @@ angular.module('journalsApp.services', ['ngResource']).
       // Get a guardian
       else if(type == 'guardians') {
         if (id) {
+          $scope.pageTitle = 'Profile';
           Person.get(
             { id: id, type: type },
 
             // Success - load the array of students
             function(result) {
+              $scope.pageTitle = 'Profile: ' + result.full_name;
               $scope.people = result.students
             },
 
             // Failure - profile not found 
             function() {
+              $scope.pageTitle = 'Profile: Not found';
               $scope.people = [];
-              errorHandler.message('This profile could not be found');
             }
           );
         }
@@ -93,11 +98,13 @@ angular.module('journalsApp.services', ['ngResource']).
 
       // List of archived students/teachers
       else if(type == 'archived') {
+        $scope.pageTitle = 'Archived people';
         $scope.people = Person.query_archived();
       }
 
       // List of all students and teachers
       else {
+        $scope.pageTitle = 'People';
         $scope.people = Person.query();
       }
 

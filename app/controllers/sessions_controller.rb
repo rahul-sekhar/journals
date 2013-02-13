@@ -4,8 +4,12 @@ class SessionsController < ApplicationController
   skip_authorization_check
 
   def new
-    @user = User.new
-    @user.email = flash[:login_email] if flash[:login_email].present?
+    if logged_in?
+      redirect_to root_path
+    else
+      @user = User.new
+      @user.email = flash[:login_email] if flash[:login_email].present?
+    end
   end
 
   def create

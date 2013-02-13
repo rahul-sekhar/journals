@@ -1,6 +1,6 @@
 Journals::Application.routes.draw do
   root :to => "pages#home"
-
+  
   get "login" => "sessions#new"
   post "login" => "sessions#create"
   get "logout" => "sessions#destroy"
@@ -44,4 +44,6 @@ Journals::Application.routes.draw do
   end
 
   resources :groups
+
+  match "*not_found", :to => "errors#not_found"
 end
