@@ -29,6 +29,14 @@ Then /^I should not see "(.*?)"$/ do |p_content|
   page.should have_no_content p_content
 end
 
+Then /^I should see "(.*?)" in a "(.*?)" element$/ do |p_content, p_element|
+  page.should have_css p_element, text: /#{p_content}/, visible: true
+end
+
+Then /^I should not see "(.*?)" in a "(.*?)" element$/ do |p_content, p_element|
+  page.should have_no_css p_element, text: /#{p_content}/, visible: true
+end
+
 Then /^a "(.*?)" block should be present$/ do |p_css|
   page.should have_css p_css
 end
@@ -183,4 +191,8 @@ When /^I enter the date "(.*?)"$/ do |p_date|
     "$('input:visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
   "}, 10);"
   page.execute_script(script)
+end
+
+Then /^wait for (\d) seconds$/ do |p_seconds|
+  sleep p_seconds.to_i.seconds
 end

@@ -6,6 +6,9 @@ describe('service', function() {
     this.addMatchers({
       toEqualData: function(expected) {
         return angular.equals(this.actual, expected);
+      },
+      toEqualArrayData: function(expected) {
+        return $(this.actual).not(expected).length == 0 && $(expected).not(this.actual).length == 0
       }
     });
   });
@@ -275,82 +278,148 @@ describe('service', function() {
     });
 
     
+    describe("Lists of fields", function() {
+      beforeEach(function() {
+        $httpBackend.expectGET('/people').respond([]);
+        ctrl.include(scope);
+      });
+
+      describe("fieldList", function() {
+        it("lists a students fields when passed a student", function() {
+          expect(scope.fieldList({type: 'students'})).toEqual([
+            "blood_group",
+            "mobile",
+            "home_phone",
+            "office_phone",
+            "email",
+            "additional_emails",
+          ]);
+        });
+
+        it("lists a teachers fields when passed a teacher", function() {
+          expect(scope.fieldList({type: 'teachers'})).toEqual([
+            "mobile",
+            "home_phone",
+            "office_phone",
+            "email",
+            "additional_emails",
+          ]);
+        });
+
+        it("lists a guardians fields when passed a guardian", function() {
+          expect(scope.fieldList({type: 'guardians'})).toEqual([
+            "mobile",
+            "home_phone",
+            "office_phone",
+            "email",
+            "additional_emails",
+          ]);
+        });
+      });
+
+
+      describe("dateFieldList", function() {
+        it("lists a students fields when passed a student", function() {
+          expect(scope.dateFieldList({type: 'students'})).toEqual(["birthday"]);
+        });
+
+        it("lists an empty array when passed a teacher", function() {
+          expect(scope.dateFieldList({type: 'teachers'})).toEqual([]);
+        });
+
+        it("lists an empty array when passed a guardian", function() {
+          expect(scope.dateFieldList({type: 'guardians'})).toEqual([]);
+        });
+      });
+
+      describe("multiLineFieldList", function() {
+        it("lists a students fields when passed a student", function() {
+          expect(scope.multiLineFieldList({type: 'students'})).toEqual(["address", "notes"]);
+        });
+
+        it("lists a teachers fields when passed a teacher", function() {
+          expect(scope.multiLineFieldList({type: 'teachers'})).toEqual(["address", "notes"]);
+        });
+
+        it("lists a guardians fields when passed a guardian", function() {
+          expect(scope.multiLineFieldList({type: 'guardians'})).toEqual(["address", "notes"]);
+        });
+      });
+
+      describe("remainingFields", function() {
+        it("lists a student's remaining fields", function() {
+          var student = { type: 'students', notes: 'some notes', address: null, mobile: null, home_phone: '1234', blood_group: 'A+' }
+          expect(scope.remainingFields(student)).toEqualArrayData([
+            "birthday",
+            "mobile",
+            "office_phone",
+            "email",
+            "additional_emails",
+            "address"
+          ]);
+        });
+
+        it("lists a student's remaining fields, with birthday working", function() {
+          var student = { type: 'students', notes: 'some notes', formatted_birthday: '01-01-2010', mobile: null, home_phone: '1234', blood_group: 'A+' }
+          expect(scope.remainingFields(student)).toEqualArrayData([
+            "mobile",
+            "office_phone",
+            "email",
+            "additional_emails",
+            "address"
+          ]);
+        });
+
+        it("lists a teacher's remaining fields", function() {
+          var student = { type: 'teachers', notes: 'some notes', address: 'some address', mobile: 'Something', office_phone: '' }
+          expect(scope.remainingFields(student)).toEqualArrayData([
+            "home_phone",
+            "office_phone",
+            "email",
+            "additional_emails",
+          ]);
+        });
+
+        it("lists a guardian's remaining fields", function() {
+          var student = { type: 'guardians', email: 'a@b.c', mobile: 'Something', office_phone: '' }
+          expect(scope.remainingFields(student)).toEqualArrayData([
+            "notes",
+            "address",
+            "home_phone",
+            "office_phone",
+            "additional_emails",
+          ]);
+        });
+      });
+    });
+
+    describe("addField()", function() {
+      var child_scope;
+
+      beforeEach(function() {
+        $httpBackend.expectGET('/people').respond([]);
+        ctrl.include(scope);
+        child_scope = scope.$new();
+      });
+
+      it('broadcasts an event to child scopes', function() {
+        var eventSpy = jasmine.createSpy();
+        child_scope.$on("addField", eventSpy);
+        scope.addField({a: 'b'}, 'asdf');
+        expect(eventSpy).toHaveBeenCalled();
+      });
+
+      it('broadcasts the arguments to addField', function() {
+        var argument1, argument2;
+        child_scope.$on("addField", function(e, arg1, arg2) {
+          argument1 = arg1;
+          argument2 = arg2;
+        });
+        scope.addField({a: 'b'}, 'asdf');
+        expect(argument1).toEqual({a: 'b'})
+        expect(argument2).toEqual('asdf');
+      });
+    });
     
-    describe("fieldList", function() {
-      beforeEach(function() {
-        $httpBackend.expectGET('/people').respond([]);
-        ctrl.include(scope);
-      });
-
-      it("lists a students fields when passed a student", function() {
-        expect(scope.fieldList({type: 'students'})).toEqual([
-          "blood_group",
-          "mobile",
-          "home_phone",
-          "office_phone",
-          "email",
-          "additional_emails",
-        ]);
-      });
-
-      it("lists a teachers fields when passed a teacher", function() {
-        expect(scope.fieldList({type: 'teachers'})).toEqual([
-          "mobile",
-          "home_phone",
-          "office_phone",
-          "email",
-          "additional_emails",
-        ]);
-      });
-
-      it("lists a guardians fields when passed a guardian", function() {
-        expect(scope.fieldList({type: 'guardians'})).toEqual([
-          "mobile",
-          "home_phone",
-          "office_phone",
-          "email",
-          "additional_emails",
-        ]);
-      });
-    });
-
-
-    describe("dateFieldList", function() {
-      beforeEach(function() {
-        $httpBackend.expectGET('/people').respond([]);
-        ctrl.include(scope);
-      });
-
-      it("lists a students fields when passed a student", function() {
-        expect(scope.dateFieldList({type: 'students'})).toEqual(["birthday"]);
-      });
-
-      it("lists an empty array when passed a teacher", function() {
-        expect(scope.dateFieldList({type: 'teachers'})).toEqual([]);
-      });
-
-      it("lists an empty array when passed a guardian", function() {
-        expect(scope.dateFieldList({type: 'guardians'})).toEqual([]);
-      });
-    });
-
-    describe("multiLineFieldList", function() {
-      beforeEach(function() {
-        $httpBackend.expectGET('/people').respond([]);
-        ctrl.include(scope);
-      });
-
-      it("lists a students fields when passed a student", function() {
-        expect(scope.multiLineFieldList({type: 'students'})).toEqual(["address", "notes"]);
-      });
-
-      it("lists a teachers fields when passed a teacher", function() {
-        expect(scope.multiLineFieldList({type: 'teachers'})).toEqual(["address", "notes"]);
-      });
-
-      it("lists a guardians fields when passed a guardian", function() {
-        expect(scope.multiLineFieldList({type: 'guardians'})).toEqual(["address", "notes"]);
-      });
-    });
   });
 });

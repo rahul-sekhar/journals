@@ -116,6 +116,8 @@ module Profile
     base.has_many :posts, as: :author, dependent: :destroy, inverse_of: :author
     base.has_many :comments, as: :author, dependent: :destroy, inverse_of: :author
 
+    base.after_save :reload
+
     base.validates :last_name, presence: true, length: { maximum: 80 }
     base.validates :first_name, length: { maximum: 80 }
     base.validates :mobile, length: { maximum: 40 }

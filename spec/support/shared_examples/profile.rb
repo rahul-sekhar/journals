@@ -16,7 +16,7 @@ shared_examples_for "a profile" do
     end
 
     it "can be set on creation of the profile" do
-      prof = profile_class.create!(last_name: "Name", email: "blah@blah.com")
+      prof = profile_class.create!(full_name: "Name", email: "blah@blah.com")
       prof.user.email.should == "blah@blah.com"
     end
 
@@ -78,6 +78,13 @@ shared_examples_for "a profile" do
       it "destroys the user when set with a nil email" do
         profile.email = nil
         expect{ profile.save! }.to change{ User.count }.by(-1)
+        profile.user.should be_nil
+      end
+
+      it "destroys the user when set with a blank email" do
+        profile.email = " "
+        expect{ profile.save! }.to change{ User.count }.by(-1)
+        profile.user.should be_nil
       end
     end
 
@@ -446,17 +453,17 @@ shared_examples_for "a profile" do
 
   describe "##alphabetical" do
     it "orders alphabetically by the first name followed by the last name" do
-      profile1 = create(profile_type, first_name: "Some", last_name: "Fellow")
-      profile2 = create(profile_type, first_name: "Another", last_name: "Fellow")
-      profile3 = create(profile_type, first_name: "Some", last_name: "Chap")
+      profile1 = create(profile_type, full_name: "Some Fellow")
+      profile2 = create(profile_type, full_name: "Another Fellow")
+      profile3 = create(profile_type, full_name: "Some Chap")
       profile_class.alphabetical.should == [profile2, profile3, profile1]
     end    
   end
 
   describe "##name_is" do
     before do
-      @profile1 = profile_class.create(first_name: "First", last_name: "Last")
-      @profile2 = profile_class.create(first_name: "First")
+      @profile1 = profile_class.create(full_name: "First Last")
+      @profile2 = profile_class.create(full_name: "First")
     end
 
     it "returns a profile with passed names" do
@@ -483,9 +490,9 @@ shared_examples_for "a profile" do
 
   describe "##names_are" do
     before do
-      @profile1 = profile_class.create(first_name: "First", last_name: "Last")
-      @profile2 = profile_class.create(first_name: "First", last_name: "last")
-      @profile3 = profile_class.create(first_name: "First")
+      @profile1 = profile_class.create(full_name: "First Last")
+      @profile2 = profile_class.create(full_name: "First last")
+      @profile3 = profile_class.create(full_name: "First")
     end
 
     it "returns profiles with passed names" do
@@ -508,9 +515,9 @@ shared_examples_for "a profile" do
 
   describe "##search" do
     before do
-      @profile1 = create(profile_type, first_name: "Some", last_name: "Profile")
-      @profile2 = create(profile_type, first_name: "Other", last_name: "Profile")
-      @profile3 = create(profile_type, first_name: nil, last_name: "Person")
+      @profile1 = create(profile_type, full_name: "Some Profile")
+      @profile2 = create(profile_type, full_name: "Other Profile")
+      @profile3 = create(profile_type, full_name: "Person")
     end
 
     it "searches the first name" do

@@ -102,10 +102,15 @@ angular.module('journalsApp.services', ['ngResource']).
       }
 
 
+      // Broadcast an event to add a field
+      $scope.addField = function(person, field) {
+        $scope.$broadcast("addField", person, field)
+      };
+
       // List of fields for each type
       $scope.dateFieldList = function(person) {
         return (person.type == 'students') ? ["birthday"] : [];
-      }
+      };
       
       $scope.fieldList = function(person) {
         var list = [
@@ -123,7 +128,23 @@ angular.module('journalsApp.services', ['ngResource']).
 
       $scope.multiLineFieldList = function(person) {
         return ["address", "notes"];
-      }
+      };
+
+      // List of fields that are empty
+      $scope.remainingFields = function(person) {
+
+        // Handle date fields first
+        var fields = $scope.dateFieldList(person).filter(function(element) {
+          return !person['formatted_' + element];
+        });
+
+        // Handle other fields
+        fields = fields.concat($scope.fieldList(person)).concat($scope.multiLineFieldList(person));
+
+        return fields.filter(function(element) {
+          return !person[element];
+        });
+      };
     };
 
     return commonPeopleCtrl

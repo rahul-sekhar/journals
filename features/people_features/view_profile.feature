@@ -13,34 +13,33 @@ Scenario: View teacher profile with minimal information
   Then I should not see "Parvathy Manjunath"
   And I should see "Shalini Sekhar"
   And I should see "Teacher"
-  And I should see "Email"
+  And I should see "Email" in a ".field-name" element
   And I should see "shalini@mail.com"
-  And I should not see "Mobile"
-  And I should not see "Address"
-  And I should not see "Home Phone"
-  And I should not see "Office Phone"
-  And I should not see "Additional Emails"
-  And I should not see "Notes"
+  And I should not see "Mobile" in a ".field-name" element
+  And I should not see "Address" in a ".field-name" element
+  And I should not see "Home Phone" in a ".field-name" element
+  And I should not see "Office Phone" in a ".field-name" element
+  And I should not see "Additional Emails" in a ".field-name" element
+  And I should not see "Notes" in a ".field-name" element
 
 Scenario: View teacher profile with all information
   Given a teacher profile for Shalini with all information exists
   When I am on the page for that profile
   Then I should see "Shalini Sekhar"
   And I should see "Teacher"
-  And I should see "Email"
+  And I should see "Email" in a ".field-name" element
   And I should see "shalini@mail.com"
-  And I should see "Mobile"
+  And I should see "Mobile" in a ".field-name" element
   And I should see "1122334455"
-  And I should see "Address"
+  And I should see "Address" in a ".field-name" element
   And I should see "Some house, Banashankari, Bangalore - 55"
-  And I should see "Home Phone"
+  And I should see "Home Phone" in a ".field-name" element
   And I should see "080-12345"
-  And I should see "Office Phone"
+  And I should see "Office Phone" in a ".field-name" element
   And I should see "080-67890"
-  And I should see "Office Phone"
-  And I should see "Additional Emails"
+  And I should see "Additional Emails" in a ".field-name" element
   And I should see "shalu@short.com, shalini_sekhar@long.com"
-  And I should see "Notes"
+  And I should see "Notes" in a ".field-name" element
   And I should see "A test sister"
 
 Scenario: View student profile with all information
@@ -49,19 +48,19 @@ Scenario: View student profile with all information
   When I am on the page for that profile
   Then I should not see "Shalini Sekhar"
   And I should see "Parvathy Manjunath"
-  And I should see "Email"
+  And I should see "Email" in a ".field-name" element
   And I should see "parvathy@mail.com"
-  And I should see "Mobile"
+  And I should see "Mobile" in a ".field-name" element
   And I should see "12345678"
-  And I should see "Address"
+  And I should see "Address" in a ".field-name" element
   And I should see "Apartment, The hill, Darjeeling - 10"
-  And I should see "Home Phone"
+  And I should see "Home Phone" in a ".field-name" element
   And I should see "5678"
-  And I should see "Office Phone"
+  And I should see "Office Phone" in a ".field-name" element
   And I should see "1432"
-  And I should see "Birthday"
+  And I should see "Birthday" in a ".field-name" element
   And I should see "25-12-1996 (16 yrs)"
-  And I should see "Blood Group"
+  And I should see "Blood Group" in a ".field-name" element
   And I should see "B+"
 
 Scenario: View a student profile containing a guardian profile with minimal information
@@ -70,11 +69,11 @@ Scenario: View a student profile containing a guardian profile with minimal info
   When I am on the page for that profile
   Then I should see "Parvathy Manjunath"
   And I should see "Manoj Jain" within the ".guardians" block
-  And I should not see "Email" within the ".guardians" block
-  And I should not see "Mobile" within the ".guardians" block
-  And I should not see "Address" within the ".guardians" block
-  And I should not see "Home Phone" within the ".guardians" block
-  And I should not see "Office Phone" within the ".guardians" block
+  And I should not see "Email" in a ".field-name" element within the ".guardians" block
+  And I should not see "Mobile" in a ".field-name" element within the ".guardians" block
+  And I should not see "Address" in a ".field-name" element within the ".guardians" block
+  And I should not see "Home Phone" in a ".field-name" element within the ".guardians" block
+  And I should not see "Office Phone" in a ".field-name" element within the ".guardians" block
 
 Scenario: View a student profile containing multiple guardians
   Given a student profile for Parvathy exists
@@ -84,15 +83,15 @@ Scenario: View a student profile containing multiple guardians
   Then I should see "Parvathy Manjunath"
   And I should see "Manoj Jain" within the ".guardians" block
   And I should see "Poonam Jain" within the ".guardians" block
-  And I should see "Email" within the ".guardians" block
+  And I should see "Email" in a ".field-name" element within the ".guardians" block
   And I should see "poonam@mail.com"
-  And I should see "Mobile" within the ".guardians" block
+  And I should see "Mobile" in a ".field-name" element within the ".guardians" block
   And I should see "987654"
-  And I should see "Address" within the ".guardians" block
+  And I should see "Address" in a ".field-name" element within the ".guardians" block
   And I should see "A house, Somewhere"
-  And I should see "Home Phone" within the ".guardians" block
+  And I should see "Home Phone" in a ".field-name" element within the ".guardians" block
   And I should see "111-222"
-  And I should see "Office Phone" within the ".guardians" block
+  And I should see "Office Phone" in a ".field-name" element within the ".guardians" block
   And I should see "333-444"
 
 

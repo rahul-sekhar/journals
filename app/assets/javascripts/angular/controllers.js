@@ -50,8 +50,8 @@ function InPlaceEditCtrl($scope, $http, errorHandler) {
     if (old_val === new_val) return;
 
     // Update the parent field
-    parent[$scope.fieldName] = new_val
-    
+    parent[$scope.fieldName] = new_val;
+
     // Compile data to be sent to the server
     var profile_data = {};
     profile_data[$scope.fieldName] = new_val;
@@ -72,4 +72,11 @@ function InPlaceEditCtrl($scope, $http, errorHandler) {
         errorHandler.message(data);
       });
   }
+
+  // Handler for addField events
+  $scope.$on('addField', function(e, person, field) {
+    if ((person.id === parent.id && person.type === parent.type) && (field === $scope.fieldName || field === $scope.displayName)) {
+      $scope.editMode = true;
+    }
+  });
 }

@@ -14,7 +14,7 @@ angular.module('journalsApp.directives', []).
         fieldName: '@'
       },
       template:
-        '<div class="field" ng-show="parent[fieldName]">' +
+        '<div class="field" ng-show="editMode || parent[fieldName]">' +
           '<p class="field-name">{{fieldName | capitalize}}</p>' +
           '<p ng-hide="editMode" ng-click="startEdit()">{{parent[fieldName]}}</p>' +
           '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" cancel-edit="cancelEdit()" ng-trim="false" />' +
@@ -69,7 +69,7 @@ angular.module('journalsApp.directives', []).
         fieldName: '@'
       },
       template:
-        '<div class="field" ng-show="parent[fieldName]">' +
+        '<div class="field" ng-show="editMode || parent[fieldName]">' +
           '<p class="field-name">{{fieldName | capitalize}}</p>' +
           '<p ng-hide="editMode" ng-click="startEdit()" ng-bind-html="parent[fieldName] | simpleFormat"></p>' +
           '<textarea ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" cancel-edit="cancelEdit()" ng-trim="false"></textarea>' +
@@ -89,11 +89,12 @@ angular.module('journalsApp.directives', []).
         fieldName: '@'
       },
       template:
-        '<div class="field" ng-show="parent[fieldName]">' +
+        '<div class="field" ng-show="editMode || parent[fieldName]">' +
           '<p class="field-name">{{displayName | capitalize}}</p>' +
           '<p ng-hide="editMode" ng-click="startEdit()">{{parent[fieldName]}} ({{parent[fieldName] | dateToAge}} yrs)</p>' +
           '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" readonly="true" />' +
-          '<a href="" class="clear-date" ng-click="clearEdit()" ng-show="editMode">clear</a>' +
+          '<a href="" class="clear-date" ng-click="clearEdit()" ' + 
+            'ng-show="editMode" ng-mouseenter="clearHover = true" ng-mouseleave="clearHover = false">clear</a>' +
         '</div>',
       replace: true,
       link: function( scope, elem, attrs ) {
@@ -105,9 +106,15 @@ angular.module('journalsApp.directives', []).
             scope.$apply(function() {
               scope.editorValue = date;
             });
-            setTimeout(function() {
+            // If the mouse is hovering over the clear button, delay exit to allow the click event to propogate
+            if (scope.clearHover) {
+              setTimeout(function() {
+                scope.$apply("finishEdit()");
+              }, 500);
+            }
+            else {
               scope.$apply("finishEdit()");
-            }, 10);
+            }
           }
         });
       },

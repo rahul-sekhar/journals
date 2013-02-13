@@ -209,6 +209,40 @@ describe('Controllers', function() {
         expect(scope.finishEdit).toHaveBeenCalled();
       });
     });
+
+    describe('addField event', function() {
+      var rootScope;
+
+      beforeEach(inject(function($rootScope) {
+        rootScope = $rootScope;
+      }));
+      
+      it('sets editMode to true when the parent id and type and the field name are matched', function() {
+        rootScope.$broadcast("addField", { id: "13", type: "students" }, "some_field");
+        expect(scope.editMode).toEqual(true);
+      });
+
+      it('sets editMode to true when the parent id and type and the display name are matched', function() {
+        scope.displayName = 'other_field';
+        rootScope.$broadcast("addField", { id: "13", type: "students" }, "other_field");
+        expect(scope.editMode).toEqual(true);
+      });
+
+      it('does not set editMode to true when the parent id is not matched', function() {
+        rootScope.$broadcast("addField", { id: "14", type: "students" }, "some_field");
+        expect(scope.editMode).toEqual(false);
+      });
+
+      it('does not set editMode to true when the parent type is not matched', function() {
+        rootScope.$broadcast("addField", { id: "13", type: "teachers" }, "some_field");
+        expect(scope.editMode).toEqual(false);
+      });
+
+      it('does not set editMode to true when the field name is not matched', function() {
+        rootScope.$broadcast("addField", { id: "13", type: "students" }, "other_field");
+        expect(scope.editMode).toEqual(false);
+      });
+    });
   });
 });
 
