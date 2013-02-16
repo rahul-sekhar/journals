@@ -2,8 +2,6 @@ class TeachersController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @empty_message = "No teachers found."
-    @filter = "teachers"
     filter_and_display_people( @teachers.current )
   end
 

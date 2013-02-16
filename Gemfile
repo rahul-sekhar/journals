@@ -1,15 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.11'
-gem 'pg', '0.14.1'
+gem 'rails', '3.2.12'
 
-# Gems used only for assets and not required
-# in production environments by default.
 group :assets do
-  gem 'sass-rails', '3.2.6'
-  gem 'coffee-rails', '3.2.2'
-  gem 'uglifier', '1.3.0'
-  gem 'compass-rails', '1.0.3'
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
+  gem 'compass-rails'
 end
 
 group :development do
@@ -21,32 +18,33 @@ group :development do
 end
 
 group :test, :development do
-  gem 'rspec-rails', '2.12.2'
-  gem 'cucumber-rails', '1.3.0', require: false
-  gem 'database_cleaner', '0.9.1'
-  gem 'spork-rails', '3.2.1'
+  gem 'rspec-rails', '~> 2.12.2'
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner'
+  gem 'spork-rails'
 end
 
 group :test do
-  gem 'factory_girl_rails', '4.1.0'
-  gem 'capybara', '2.0.2'
+  gem 'factory_girl_rails'
+  gem 'capybara'
   gem 'poltergeist', :git => 'git://github.com/jonleighton/poltergeist.git'
-  gem 'launchy', '2.1.2'
-  gem 'email_spec', '1.4.0'
-  gem 'simplecov', '0.7.1', require: false
+  gem 'launchy'
+  gem 'email_spec'
+  gem 'simplecov', require: false
 end
 
+gem 'pg'
 gem 'jbuilder'
-gem 'haml', '3.1.7'
-gem 'yaml_db', '0.2.3'
-gem 'formtastic', '2.2.1'
-gem 'squeel', '1.0.15'
+gem 'haml'
+gem 'yaml_db'
+gem 'formtastic'
+gem 'squeel'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
-gem 'strip_attributes', '1.1.1'
-gem 'cancan', '1.6.8'
-gem 'delayed_job_active_record', '0.3.3'
+gem 'strip_attributes'
+gem 'cancan'
+gem 'delayed_job_active_record'
 gem 'daemons'
-gem 'schema_plus', '1.0.0'
+gem 'schema_plus'
 gem 'aws-s3'
 gem 'whenever', require: false
 gem 'sanitize'

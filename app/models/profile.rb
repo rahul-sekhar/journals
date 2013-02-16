@@ -24,24 +24,23 @@ module Profile
 
   def full_name=(val)
     words = val.split(" ")
+    self.first_name = words.shift
     self.last_name = words.pop
     
-    while words.length > 1 && ('a'..'z').member?(words.last[0])
+    while words.length > 0 && ('a'..'z').member?(words.last[0])
       self.last_name = "#{words.pop} #{last_name}"
     end
 
     if words.length > 0
-      self.first_name = words.join(" ")
-    else
-      self.first_name = nil
+      self.first_name = "#{first_name} #{words.join(" ")}"
     end
   end
 
   def full_name
-    if first_name.present?
+    if last_name.present?
       "#{first_name} #{last_name}"
     else
-      last_name
+      first_name
     end
   end
 
@@ -58,7 +57,7 @@ module Profile
   end
 
   def name
-    if first_name
+    if last_name
 
       initial = last_name[0]
 
@@ -66,7 +65,7 @@ module Profile
       other_profiles = ProfileName.excluding_profile(self)
       if ( other_profiles.where(first_name: first_name).exists? )
 
-        # Check for duplicate last_names
+        # Check for duplicate initials
         if ( other_profiles.where(first_name: first_name, initial: initial).exists? )
           return full_name
 
@@ -77,7 +76,7 @@ module Profile
         return first_name
       end
     else
-      return last_name
+      return first_name
     end
   end
 
@@ -100,9 +99,9 @@ module Profile
       first = SqlHelper::escapeWildcards(first)
       
       if first.blank?
-        where{ last_name.like last }
+        where{ ( first_name.like last ) & ( last_name == nil ) }
       elsif last.blank?
-        where{ last_name.like first }
+        where{ ( first_name.like first ) & ( last_name == nil ) }
       else
         where{( first_name.like first ) & ( last_name.like last )}
       end
@@ -118,8 +117,8 @@ module Profile
 
     base.after_save :reload
 
-    base.validates :last_name, presence: true, length: { maximum: 80 }
-    base.validates :first_name, length: { maximum: 80 }
+    base.validates :last_name, length: { maximum: 80 }
+    base.validates :first_name, presence: true, length: { maximum: 80 }
     base.validates :mobile, length: { maximum: 40 }
     base.validates :home_phone, length: { maximum: 40 }
     base.validates :office_phone, length: { maximum: 40 }

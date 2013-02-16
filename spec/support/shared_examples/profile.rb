@@ -147,25 +147,25 @@ shared_examples_for "a profile" do
 
   describe "#full_name=" do
     describe "for a single word" do
-      it "sets the last name when capitalized" do
+      it "sets the first name when capitalized" do
         profile.first_name = "Something"
         profile.full_name = "One"
-        profile.last_name.should == "One"
-        profile.first_name.should be_nil
+        profile.first_name.should == "One"
+        profile.last_name.should be_nil
       end
 
-      it "sets the last name when uncapitalized" do
+      it "sets the first name when uncapitalized" do
         profile.first_name = "Something"
         profile.full_name = "one"
-        profile.last_name.should == "one"
-        profile.first_name.should be_nil
+        profile.first_name.should == "one"
+        profile.last_name.should be_nil
       end
 
       it "trims the name" do
         profile.first_name = "Something"
         profile.full_name = "   One     "
-        profile.last_name.should == "One"
-        profile.first_name.should be_nil
+        profile.first_name.should == "One"
+        profile.last_name.should be_nil
       end
     end
 
@@ -295,9 +295,9 @@ shared_examples_for "a profile" do
       profile.full_name.should == "Rahul Sekhar"
     end
 
-    it "returns the last name if the first name doesn't exist" do
-      profile.first_name = nil
-      profile.last_name = "Sekhar"
+    it "returns the last name if the last name doesn't exist" do
+      profile.last_name = nil
+      profile.first_name = "Sekhar"
       profile.full_name.should == "Sekhar"
     end
   end
@@ -311,13 +311,13 @@ shared_examples_for "a profile" do
     end
 
     context "with no duplicates" do
-      context "if there is no first_name" do
+      context "if there is no last_name" do
         before do
-          profile.first_name = " "
+          profile.last_name = " "
           profile.save!
         end
 
-        it { should == "Sekhar" }
+        it { should == "Rahul" }
       end
 
       it { should == "Rahul" }

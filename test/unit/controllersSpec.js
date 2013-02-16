@@ -6,79 +6,462 @@ describe('Controllers', function() {
     this.addMatchers({
       toEqualData: function(expected) {
         return angular.equals(this.actual, expected);
+      },
+      toEqualArrayData: function(expected) {
+        return $(this.actual).not(expected).length == 0 && $(expected).not(this.actual).length == 0
       }
     });
   });
 
   beforeEach(module('journalsApp.services'));
 
-
   describe('People controllers', function() {
-    var scope, ctrl, commonPeopleCtrl;
+    var scope, $httpBackend, ctrl;
 
-    beforeEach(inject(function($rootScope) {
-      commonPeopleCtrl = { include: jasmine.createSpy() };
+    beforeEach(inject(function($rootScope, $controller, _$httpBackend_) {
+      $httpBackend = _$httpBackend_;
       scope = $rootScope.$new();
     }));
 
     describe('PeopleCtrl', function() {
-      it("includes the common people controller, passing the scope", inject(function($controller) {
-        ctrl = $controller(PeopleCtrl, {$scope: scope, commonPeopleCtrl: commonPeopleCtrl});
-        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope);
+      beforeEach(inject(function($controller) {
+        $httpBackend.expectGET('/people').respond({
+          current_page: 1,
+          total_pages: 3,
+          items: [ 
+            { id: 12, type: 'students', full_name: 'Student 1'},
+            { id: 15, type: 'teachers', full_name: 'Teacher 1'} 
+          ]
+        });
+        ctrl = $controller(PeopleCtrl, {$scope: scope});
+      }));
+      
+      it('sets the page title', function() {
+        expect(scope.pageTitle).toEqual('People')
+      });
+
+      it('sets the current page', function() {
+        $httpBackend.flush();
+        expect(scope.currentPage).toEqual(1)
+      });
+
+      it('sets the total number of pages', function() {
+        $httpBackend.flush();
+        expect(scope.totalPages).toEqual(3)
+      });
+
+      it('sets people to the list fetched via xhr', function() {
+        expect(scope.people).toBeUndefined();
+        $httpBackend.flush();
+        expect(scope.people).toEqualData([
+          { id: 12, type: 'students', full_name: 'Student 1'},
+          { id: 15, type: 'teachers', full_name: 'Teacher 1'}
+        ]);
+      });
+
+      it('gets the requested page', inject(function($controller) {
+        $httpBackend.expectGET('/people?page=2').respond({});
+        ctrl = $controller(PeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
+        $httpBackend.verifyNoOutstandingExpectation();
       }));
     });
 
-    describe('ArchivedPeopleCtrl', function() {
-      it("includes the common people controller, passing the scope and type", inject(function($controller) {
-        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, commonPeopleCtrl: commonPeopleCtrl});
-        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'archived');
+    describe('ArchivedPeopleCtrl', function() {     
+      beforeEach(inject(function($controller) {
+        $httpBackend.expectGET('/people/archived').respond({
+          current_page: 1,
+          total_pages: 3,
+          items: [
+            { id: 12, type: 'students', full_name: 'Student 1'},
+            { id: 15, type: 'teachers', full_name: 'Teacher 1'}
+          ]
+        });
+        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope});
+      }));
+
+      it('sets people to the list fetched via xhr', function() {
+        expect(scope.people).toBeUndefined();
+        $httpBackend.flush();
+        expect(scope.people).toEqualData([
+          { id: 12, type: 'students', full_name: 'Student 1'},
+          { id: 15, type: 'teachers', full_name: 'Teacher 1'}
+        ]);
+      });
+
+      it('sets the page title', function() {
+        expect(scope.pageTitle).toEqual('Archived people')
+      });
+
+      it('sets the current page', function() {
+        $httpBackend.flush();
+        expect(scope.currentPage).toEqual(1)
+      });
+
+      it('sets the total number of pages', function() {
+        $httpBackend.flush();
+        expect(scope.totalPages).toEqual(3)
+      });
+
+      it('gets the requested page', inject(function($controller) {
+        $httpBackend.expectGET('/people/archived?page=2').respond({});
+        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
+        $httpBackend.verifyNoOutstandingExpectation();
       }));
     });
 
     describe('TeachersCtrl', function() {
-      it("includes the common people controller, passing the scope, type and id", inject(function($controller) {
-        ctrl = $controller(TeachersCtrl, {
-          $scope: scope, 
-          commonPeopleCtrl: commonPeopleCtrl, 
-          $routeParams: { id: 11 }
+      beforeEach(inject(function($controller) {
+        $httpBackend.expectGET('/teachers').respond({
+          current_page: 1,
+          total_pages: 3,
+          items: [
+            { id: 17, type: 'teachers', full_name: 'Some Teacher'},
+            { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
+          ]
         });
-        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'teachers', 11);
+        ctrl = $controller(TeachersCtrl, {$scope: scope});
+      }));
+
+      it('sets people to the list fetched via xhr', function() {
+        expect(scope.people).toBeUndefined();
+        $httpBackend.flush();
+        expect(scope.people).toEqualData([
+          { id: 17, type: 'teachers', full_name: 'Some Teacher'},
+          { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
+        ]);
+      });
+
+      it('sets the page title', function() {
+        expect(scope.pageTitle).toEqual('Teachers')
+      });
+
+      it('sets the current page', function() {
+        $httpBackend.flush();
+        expect(scope.currentPage).toEqual(1)
+      });
+
+      it('sets the total number of pages', function() {
+        $httpBackend.flush();
+        expect(scope.totalPages).toEqual(3)
+      });
+
+      it('gets the requested page', inject(function($controller) {
+        $httpBackend.expectGET('/people/archived?page=2').respond({});
+        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
+        $httpBackend.verifyNoOutstandingExpectation();
       }));
     });
 
     describe('StudentsCtrl', function() {
-      it("includes the common people controller, passing the scope, type and id", inject(function($controller) {
-        ctrl = $controller(StudentsCtrl, {
-          $scope: scope, 
-          commonPeopleCtrl: commonPeopleCtrl, 
-          $routeParams: { id: 5 }
+      beforeEach(inject(function($controller) {
+        $httpBackend.expectGET('/students').respond({
+          current_page: 1,
+          total_pages: 3,
+          items: [
+            { id: 17, type: 'students', full_name: 'Some Student'},
+            { id: 20, type: 'students', full_name: 'Some Other Student'}
+          ]
         });
-        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'students', 5);
+        ctrl = $controller(StudentsCtrl, {$scope: scope});
+      }));
+
+      it('sets people to the list fetched via xhr', function() {
+        expect(scope.people).toBeUndefined();
+        $httpBackend.flush();
+        expect(scope.people).toEqualData([
+          { id: 17, type: 'students', full_name: 'Some Student'},
+          { id: 20, type: 'students', full_name: 'Some Other Student'}
+        ]);
+      });
+
+      it('sets the page title', function() {
+        expect(scope.pageTitle).toEqual('Students')
+      });
+
+      it('sets the current page', function() {
+        $httpBackend.flush();
+        expect(scope.currentPage).toEqual(1)
+      });
+
+      it('sets the total number of pages', function() {
+        $httpBackend.flush();
+        expect(scope.totalPages).toEqual(3)
+      });
+
+      it('gets the requested page', inject(function($controller) {
+        $httpBackend.expectGET('/people/archived?page=2').respond({});
+        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
+        $httpBackend.verifyNoOutstandingExpectation();
       }));
     });
 
-    describe('GuardiansCtrl', function() {
-      it("includes the common people controller, passing the scope, type and id", inject(function($controller) {
-        ctrl = $controller(GuardiansCtrl, {
-          $scope: scope, 
-          commonPeopleCtrl: commonPeopleCtrl, 
-          $routeParams: { id: 5 }
+    describe('SingleTeacherCtrl', function() {
+      describe('existing teacher', function() {
+        beforeEach(inject(function($controller) {
+          $httpBackend.expectGET('/teachers/17').respond(
+            { id: 17, type: 'teachers', full_name: 'Some Teacher'}
+          );
+          ctrl = $controller(SingleTeacherCtrl, {$scope: scope, $routeParams: {id: 17}});
+        }));
+
+        it('sets people to the list fetched via xhr', function() {
+          expect(scope.people).toBeUndefined();
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([
+            { id: 17, type: 'teachers', full_name: 'Some Teacher'}
+          ]);
         });
-        expect(commonPeopleCtrl.include).toHaveBeenCalledWith(scope, 'guardians', 5);
-      }));
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Some Teacher')
+        });
+      });
+      
+      describe('non-existent teacher', function() {
+        beforeEach(inject(function($controller) {
+          $httpBackend.expectGET('/teachers/17').respond(function() {
+            return [404, {}];
+          });
+          ctrl = $controller(SingleTeacherCtrl, {$scope: scope, $routeParams: {id: 17}});
+        }));
+
+        it('sets people to an empty array', function() {
+          expect(scope.people).toBeUndefined();
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Not found')
+        });
+      });
     });
 
+    describe('SingleStudentCtrl', function() {
+      describe('existing student', function() {
+        beforeEach(inject(function($controller) {
+          $httpBackend.expectGET('/students/17').respond(
+            { id: 17, type: 'students', full_name: 'Some Student'}
+          );
+          ctrl = $controller(SingleStudentCtrl, {$scope: scope, $routeParams: {id: 17}});
+        }));
+
+        it('sets people to the list fetched via xhr', function() {
+          expect(scope.people).toBeUndefined();
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([
+            { id: 17, type: 'students', full_name: 'Some Student'}
+          ]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Some Student')
+        });
+      });
+      
+      describe('non-existent student', function() {
+        beforeEach(inject(function($controller) {
+          $httpBackend.expectGET('/students/17').respond(function() {
+            return [404, {}];
+          });
+          ctrl = $controller(SingleStudentCtrl, {$scope: scope, $routeParams: {id: 17}});
+        }));
+
+        it('sets people to an empty array', function() {
+          expect(scope.people).toBeUndefined();
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Not found')
+        });
+      });
+    });
+    
+    describe('SingleGuardianCtrl', function() {
+      describe('existing guardian', function() {
+        beforeEach(inject(function($controller) {
+          $httpBackend.expectGET('/guardians/17').respond({
+            id: 12,
+            type: 'guardians',
+            full_name: 'Some Guardian',
+            students: [
+              { id: 13, type: 'students', full_name: 'Some Student'},
+              { id: 14, type: 'students', full_name: 'Some Other Student'}
+            ]
+          });
+          ctrl = $controller(SingleGuardianCtrl, {$scope: scope, $routeParams: {id: 17}});
+        }));
+
+        it('sets people to the list fetched via xhr', function() {
+          expect(scope.people).toBeUndefined();
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([
+            { id: 13, type: 'students', full_name: 'Some Student'},
+            { id: 14, type: 'students', full_name: 'Some Other Student'}
+          ]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Some Guardian')
+        });
+      });
+
+      describe('non-existent guardian', function() {
+        beforeEach(inject(function($controller) {
+          $httpBackend.expectGET('/guardians/17').respond(function() {
+            return [404, {}];
+          });
+          ctrl = $controller(SingleGuardianCtrl, {$scope: scope, $routeParams: {id: 17}});
+        }));
+
+        it('sets people to an empty array', function() {
+          expect(scope.people).toBeUndefined();
+          $httpBackend.flush();
+          expect(scope.people).toEqualData([]);
+        });
+
+        it('sets the page title', function() {
+          expect(scope.pageTitle).toEqual('Profile')
+          $httpBackend.flush();
+          expect(scope.pageTitle).toEqual('Profile: Not found')
+        });
+      });
+    });
+  });
+  
+
+  describe('FieldsCtrl', function() {
+    var profileFields, scope, person, $controller;
+
+    beforeEach(inject(function(_profileFields_, $rootScope, _$controller_) {
+      profileFields = _profileFields_;
+      scope = $rootScope.$new();
+      $controller = _$controller_
+    }));
+
+    describe('field lists', function() {
+      it('are set for a student', function() {
+        scope.person = { type: 'students' };
+        $controller(FieldsCtrl, {$scope: scope});
+        expect(scope.standardFields).toEqual(profileFields.standard['students']);
+        expect(scope.dateFields).toEqual(profileFields.date['students']);
+        expect(scope.multiLineFields).toEqual(profileFields.multiLine['students']);
+      });
+
+      it('are set for a teacher', function() {
+        scope.person = { type: 'teachers' };
+        $controller(FieldsCtrl, {$scope: scope});
+        expect(scope.standardFields).toEqual(profileFields.standard['teachers']);
+        expect(scope.dateFields).toEqual(profileFields.date['teachers']);
+        expect(scope.multiLineFields).toEqual(profileFields.multiLine['teachers']);
+      });
+
+      it('are set for a guardian', function() {
+        scope.person = { type: 'guardians' };
+        $controller(FieldsCtrl, {$scope: scope});
+        expect(scope.standardFields).toEqual(profileFields.standard['guardians']);
+        expect(scope.dateFields).toEqual(profileFields.date['guardians']);
+        expect(scope.multiLineFields).toEqual(profileFields.multiLine['guardians']);
+      });
+    });
+
+    describe('remainingFields()', function() {
+      it("lists remaining fields for a student", function() {
+        scope.person = { type: 'students', notes: 'some notes', address: null, mobile: null, home_phone: '1234', blood_group: 'A+' }
+        $controller(FieldsCtrl, {$scope: scope});
+        expect(scope.remainingFields()).toEqualArrayData([
+          "birthday",
+          "mobile",
+          "office_phone",
+          "email",
+          "additional_emails",
+          "address"
+        ]);
+      });
+
+      it("checks for formatted_birthday for a student", function() {
+        scope.person = { type: 'students', notes: 'some notes', formatted_birthday: '01-01-2010', mobile: null, home_phone: '1234', blood_group: 'A+' }
+        $controller(FieldsCtrl, {$scope: scope});
+        expect(scope.remainingFields()).toEqualArrayData([
+          "mobile",
+          "office_phone",
+          "email",
+          "additional_emails",
+          "address"
+        ]);
+      });
+
+      it("lists remaining fields for a teacher", function() {
+        scope.person = { type: 'teachers', notes: 'some notes', address: 'some address', mobile: 'Something', office_phone: '' }
+        $controller(FieldsCtrl, {$scope: scope});
+        expect(scope.remainingFields()).toEqualArrayData([
+          "home_phone",
+          "office_phone",
+          "email",
+          "additional_emails",
+        ]);
+      });
+
+      it("lists remaining fields for a guardian", function() {
+        scope.person = { type: 'guardians', email: 'a@b.c', mobile: 'Something', office_phone: '' }
+        $controller(FieldsCtrl, {$scope: scope});
+        expect(scope.remainingFields()).toEqualArrayData([
+          "notes",
+          "address",
+          "home_phone",
+          "office_phone",
+          "additional_emails",
+        ]);
+      });
+    });
+
+    describe("addField()", function() {
+      var child_scope;
+
+      beforeEach(function() {
+        scope.person = { type: 'teachers' };
+        $controller(FieldsCtrl, {$scope: scope});
+        child_scope = scope.$new();
+      });
+
+      it('broadcasts an event to child scopes', function() {
+        var eventSpy = jasmine.createSpy();
+        child_scope.$on("addField", eventSpy);
+        scope.addField('asdf');
+        expect(eventSpy).toHaveBeenCalled();
+      });
+
+      it('broadcasts the arguments to addField', function() {
+        var argument;
+        child_scope.$on("addField", function(e, arg) {
+          argument = arg;
+        });
+        scope.addField('asdf');
+        expect(argument).toEqual('asdf');
+      });
+    });
   });
 
 
-
   describe('InPlaceEditCtrl', function() {
-    var scope, ctrl, parentItem, errorHandlerMock, $httpBackend;
+    var scope, ctrl, parentItem, dialogHandlerMock, $httpBackend;
     
     beforeEach(function() {
       module(function($provide) {
-        errorHandlerMock = { message: jasmine.createSpy() };
-        $provide.value('errorHandler', errorHandlerMock)
+        dialogHandlerMock = { message: jasmine.createSpy() };
+        $provide.value('dialogHandler', dialogHandlerMock)
       });
     });
 
@@ -180,7 +563,7 @@ describe('Controllers', function() {
         it('displays an error message with the server response', function() {
           scope.finishEdit();
           $httpBackend.flush();
-          expect(errorHandlerMock.message).toHaveBeenCalledWith("Some error");
+          expect(dialogHandlerMock.message).toHaveBeenCalledWith("Some error");
         });
       });
     });
@@ -217,29 +600,13 @@ describe('Controllers', function() {
         rootScope = $rootScope;
       }));
       
-      it('sets editMode to true when the parent id and type and the field name are matched', function() {
-        rootScope.$broadcast("addField", { id: "13", type: "students" }, "some_field");
+      it('sets editMode to true when the field name is matched', function() {
+        rootScope.$broadcast("addField", "some_field");
         expect(scope.editMode).toEqual(true);
-      });
-
-      it('sets editMode to true when the parent id and type and the display name are matched', function() {
-        scope.displayName = 'other_field';
-        rootScope.$broadcast("addField", { id: "13", type: "students" }, "other_field");
-        expect(scope.editMode).toEqual(true);
-      });
-
-      it('does not set editMode to true when the parent id is not matched', function() {
-        rootScope.$broadcast("addField", { id: "14", type: "students" }, "some_field");
-        expect(scope.editMode).toEqual(false);
-      });
-
-      it('does not set editMode to true when the parent type is not matched', function() {
-        rootScope.$broadcast("addField", { id: "13", type: "teachers" }, "some_field");
-        expect(scope.editMode).toEqual(false);
       });
 
       it('does not set editMode to true when the field name is not matched', function() {
-        rootScope.$broadcast("addField", { id: "13", type: "students" }, "other_field");
+        rootScope.$broadcast("addField", "other_field");
         expect(scope.editMode).toEqual(false);
       });
     });

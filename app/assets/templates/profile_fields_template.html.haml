@@ -1,0 +1,12 @@
+%div
+  %date-field{ "parent"=>"person", "ng-repeat"=>"field in dateFields", "display-name"=>"{{field}}", "field-name"=>"formatted_{{field}}" }
+  
+  %field{ "parent"=>"person", "ng-repeat"=>"field in standardFields", "field-name"=>"{{field}}" }
+
+  %multi-line-field{ "parent"=>"person", "ng-repeat"=>"field in multiLineFields", "field-name"=>"{{field}}" }
+
+  .add-field-menu{ "ng-show"=>"remainingFields().length" }
+    %a{ "href" => "" } Add field
+    %ul
+      %li{ "ng-repeat"=>"field in remainingFields()" }
+        %a{ "href"=>"", "ng-click"=>"addField(field)" } {{field | capitalize}}

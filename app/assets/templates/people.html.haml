@@ -12,18 +12,7 @@
 
     .clear-left
 
-  .main-profile-fields
-    %date-field{ "parent"=>"person", "ng-repeat"=>"field in dateFieldList(person)", "display-name"=>"{{field}}", "field-name"=>"formatted_{{field}}" }
-    
-    %field{ "parent"=>"person", "ng-repeat"=>"field in fieldList(person)", "field-name"=>"{{field}}" }
-
-    %multi-line-field{ "parent"=>"person", "ng-repeat"=>"field in multiLineFieldList(person)", "field-name"=>"{{field}}" }
-
-    .add-field-menu{ "ng-show"=>"remainingFields(person).length" }
-      %a{ "href" => "" } Add field
-      %ul
-        %li{ "ng-repeat"=>"field in remainingFields(person)" }
-          %a{ "href"=>"", "ng-click"=>"addField(person, field)" } {{field | capitalize}}
+  %profile-fields.main-profile-fields{ "parent"=>"person" }
 
   .guardians{ "ng-show"=>"person.type == 'students'" }
     .guardian{ "ng-repeat"=>"guardian in person.guardians" }
@@ -32,19 +21,12 @@
         %small-heading-field{ "parent"=>"guardian", "field-name"=>"full_name" }
         .clear-left
 
-      %field{ "parent"=>"guardian", "ng-repeat"=>"field in fieldList(guardian)", "field-name"=>"{{field}}" }
-      %multi-line-field{ "parent"=>"guardian", "ng-repeat"=>"field in multiLineFieldList(guardian)", "field-name"=>"{{field}}" }
-
-      .add-field-menu{ "ng-show"=>"remainingFields(guardian).length" }
-        %a{ "href" => "" } Add field
-        %ul
-          %li{ "ng-repeat"=>"field in remainingFields(guardian)" }
-            %a{ "href"=>"", "ng-click"=>"addField(guardian, field)" } {{field | capitalize}}
+      %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
 
 .content-block{ "ng-hide"=>"people.length" }
   %p No matching people were found.
 
-#paginate{ "ng-show" => "page" }
+%pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
 
 / %header.profile-header
 /   %h3= profile.full_name

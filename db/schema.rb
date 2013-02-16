@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130210082124) do
+ActiveRecord::Schema.define(:version => 20130216045913) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(:version => 20130210082124) do
   end
 
   create_table "guardians", :force => true do |t|
-    t.string   "first_name",        :limit => 80
-    t.string   "last_name",         :limit => 80,  :null => false
+    t.string   "first_name",        :limit => 80,  :null => false
+    t.string   "last_name",         :limit => 80
     t.string   "mobile",            :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -85,8 +85,8 @@ ActiveRecord::Schema.define(:version => 20130210082124) do
   end
 
   create_table "students", :force => true do |t|
-    t.string   "first_name",            :limit => 80
-    t.string   "last_name",             :limit => 80,                     :null => false
+    t.string   "first_name",            :limit => 80,                     :null => false
+    t.string   "last_name",             :limit => 80
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "birthday"
@@ -103,8 +103,8 @@ ActiveRecord::Schema.define(:version => 20130210082124) do
   end
 
   create_table "teachers", :force => true do |t|
-    t.string   "first_name",        :limit => 80
-    t.string   "last_name",         :limit => 80,                     :null => false
+    t.string   "first_name",        :limit => 80,                     :null => false
+    t.string   "last_name",         :limit => 80
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "mobile",            :limit => 40

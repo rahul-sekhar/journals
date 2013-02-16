@@ -34,15 +34,15 @@ class ApplicationController < ActionController::Base
   end
 
   def paginate(collection, page, per_page=per_page_default)
-    collection = collection.limit(per_page)
-    collection = collection.offset((page - 1) * per_page)
+    collection = collection.limit(per_page.to_i)
+    collection = collection.offset((page.to_i - 1) * per_page.to_i)
     return collection
   end
 
   def get_total_pages(collection, per_page=per_page_default)
     count = collection.count
-    total = count / per_page
-    total = total + 1 if (count % per_page > 0)
+    total = count / per_page.to_i
+    total = total + 1 if (count % per_page.to_i > 0)
     return total
   end
 

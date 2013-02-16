@@ -15,13 +15,15 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
 
       when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
 
-      when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
+      when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleTeacherCtrl}).
 
       when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl}).
 
-      when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl}).
+      when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleStudentCtrl}).
 
-      when('/guardians/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: GuardiansCtrl}).
+      when('/guardians', {redirectTo: '/page-not-found'}).
+
+      when('/guardians/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleGuardianCtrl}).
 
       when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: ArchivedPeopleCtrl}).
 

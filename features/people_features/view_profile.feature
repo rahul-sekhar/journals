@@ -103,7 +103,6 @@ Scenario: View a guardian profile with multiple students
   Then I should see "Parvathy Manjunath"
   And I should see "Roly Jain"
   And I should not see "Shalini Sekhar"
-  Given PENDING page headings
 
 Scenario: Click on users name to reach profile
   Given PENDING posts page

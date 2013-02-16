@@ -2,27 +2,145 @@
 
 /* Controllers */
 
-function PeopleCtrl($scope, commonPeopleCtrl) {
-  commonPeopleCtrl.include($scope);
+function PeopleCtrl($scope, $routeParams, Person) {
+  $scope.pageTitle = 'People';
+  
+  var params = {};
+  if ($routeParams.page) params.page = $routeParams.page;
+  
+  Person.query(params,
+    // Success
+    function(result) {
+      $scope.people = result.items;
+      $scope.currentPage = result.current_page;
+      $scope.totalPages = result.total_pages;
+    }
+  );
 }
 
-function ArchivedPeopleCtrl($scope, commonPeopleCtrl) {
-  commonPeopleCtrl.include($scope, 'archived');
+function ArchivedPeopleCtrl($scope, $routeParams, Person) {
+  $scope.pageTitle = 'Archived people';
+  
+  var params = {};
+  if ($routeParams.page) params.page = $routeParams.page;
+  
+  Person.query_archived(params,
+    // Success
+    function(result) {
+      $scope.people = result.items;
+      $scope.currentPage = result.current_page;
+      $scope.totalPages = result.total_pages;
+    }
+  );
 }
 
-function TeachersCtrl($scope, $routeParams, commonPeopleCtrl) {
-  commonPeopleCtrl.include($scope, 'teachers', $routeParams.id);
+function TeachersCtrl($scope, $routeParams, Person) {
+  $scope.pageTitle = 'Teachers';
+
+  var params = {};
+  if ($routeParams.page) params.page = $routeParams.page;
+  
+  Person.query_teachers(params,
+    // Success
+    function(result) {
+      $scope.people = result.items;
+      $scope.currentPage = result.current_page;
+      $scope.totalPages = result.total_pages;
+    }
+  );
 }
 
-function StudentsCtrl($scope, $routeParams, commonPeopleCtrl) {
-  commonPeopleCtrl.include($scope, 'students', $routeParams.id);
+function StudentsCtrl($scope, $routeParams, Person) {
+  $scope.pageTitle = 'Students';
+  
+  var params = {};
+  if ($routeParams.page) params.page = $routeParams.page;
+  
+  Person.query_students(params,
+    // Success
+    function(result) {
+      $scope.people = result.items;
+      $scope.currentPage = result.current_page;
+      $scope.totalPages = result.total_pages;
+    }
+  );
 }
 
-function GuardiansCtrl($scope, $routeParams, commonPeopleCtrl) {
-  commonPeopleCtrl.include($scope, 'guardians', $routeParams.id);
+function SingleTeacherCtrl($scope, $routeParams, Person) {
+  $scope.pageTitle = 'Profile';
+  Person.get({ id: $routeParams.id, type: 'teachers' },
+    // Success - load the profile
+    function(result) {
+      $scope.pageTitle = 'Profile: ' + result.full_name;
+      $scope.people = [result];
+    },
+    // Failure - profile not found 
+    function() {
+      $scope.pageTitle = 'Profile: Not found';
+      $scope.people = [];
+    }
+  );
 }
 
-function InPlaceEditCtrl($scope, $http, errorHandler) {
+function SingleStudentCtrl($scope, $routeParams, Person) {
+  $scope.pageTitle = 'Profile';
+  Person.get({ id: $routeParams.id, type: 'students' },
+    // Success - load the profile
+    function(result) {
+      $scope.pageTitle = 'Profile: ' + result.full_name;
+      $scope.people = [result];
+    },
+    // Failure - profile not found 
+    function() {
+      $scope.pageTitle = 'Profile: Not found';
+      $scope.people = [];
+    }
+  );
+}
+
+function SingleGuardianCtrl($scope, $routeParams, Person) {
+  $scope.pageTitle = 'Profile';
+  Person.get({ id: $routeParams.id, type: 'guardians' },
+    // Success - load the array of students
+    function(result) {
+      $scope.pageTitle = 'Profile: ' + result.full_name;
+      $scope.people = result.students
+    },
+    // Failure - profile not found 
+    function() {
+      $scope.pageTitle = 'Profile: Not found';
+      $scope.people = [];
+    }
+  );
+}
+
+function FieldsCtrl($scope, profileFields) {
+  var person = $scope.person;
+
+  $scope.dateFields = profileFields.date[person.type];
+  $scope.standardFields = profileFields.standard[person.type];
+  $scope.multiLineFields = profileFields.multiLine[person.type];
+
+  $scope.remainingFields = function() {
+    // Handle date fields first
+    var fields = profileFields.date[person.type].filter(function(element) {
+      return !person['formatted_' + element];
+    });
+
+    // Handle other fields
+    fields = fields.concat(profileFields.standard[person.type]).concat(profileFields.multiLine[person.type]);
+
+    return fields.filter(function(element) {
+      return !person[element];
+    });
+  };
+
+  $scope.addField = function(fieldName) {
+    $scope.$broadcast("addField", fieldName);
+  }
+}
+
+function InPlaceEditCtrl($scope, $http, dialogHandler) {
   $scope.editMode = false;
   var parent = $scope.parent;
 
@@ -69,13 +187,13 @@ function InPlaceEditCtrl($scope, $http, errorHandler) {
       // Reset the field and show an error on failure
       error(function(data, status) {
         parent[$scope.fieldName] = old_val;
-        errorHandler.message(data);
+        dialogHandler.message(data);
       });
   }
 
   // Handler for addField events
-  $scope.$on('addField', function(e, person, field) {
-    if ((person.id === parent.id && person.type === parent.type) && (field === $scope.fieldName || field === $scope.displayName)) {
+  $scope.$on('addField', function(e, field) {
+    if ((field === $scope.fieldName || field === $scope.displayName)) {
       $scope.editMode = true;
     }
   });
