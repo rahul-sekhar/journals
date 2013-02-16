@@ -47,7 +47,6 @@ Scenario: View pages of archived people
 
 Scenario: View pages of teachers
   When I am on the teachers page
-  Then show me the page
   Then I should see "A" in a "h3" element
   And I should see "J" in a "h3" element
   And I should not see "K" in a "h3" element
