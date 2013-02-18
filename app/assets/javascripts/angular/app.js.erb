@@ -11,7 +11,9 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
 
       when('/', {redirectTo: '/people'}).
 
-      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: PeopleCtrl}).
+      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: PeopleCtrl, reloadOnSearch: false}).
+
+      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: ArchivedPeopleCtrl, reloadOnSearch: false}).
 
       when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
 
@@ -24,8 +26,6 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
       when('/guardians', {redirectTo: '/page-not-found'}).
 
       when('/guardians/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleGuardianCtrl}).
-
-      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: ArchivedPeopleCtrl}).
 
       when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
 

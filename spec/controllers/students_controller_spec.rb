@@ -12,14 +12,14 @@ describe StudentsController do
     ability.can :manage, Student
   end
 
-  describe "GET index" do
+  describe "GET index", :focus do
     it "raises an exception if the user cannot view students" do
       ability.cannot :read, Student
-      expect{ get :index }.to raise_exception(CanCan::AccessDenied)
+      expect{ get :index, format: :json }.to raise_exception(CanCan::AccessDenied)
     end
 
     it "has a status of 200" do
-      get :index
+      get :index, format: :json
       response.status.should == 200
     end
 
@@ -27,36 +27,49 @@ describe StudentsController do
       teacher1 = create(:teacher)
       student1 = create(:student)
       student2 = create(:student)
-      get :index
-      assigns(:profiles).should =~ [student1, student2]
+      get :index, format: :json
+      assigns(:people).should =~ [student1, student2]
     end
 
     it "does not assign archived students" do
       student1 = create(:student)
       student2 = create(:student, archived: true)
-      get :index
-      assigns(:profiles).should == [student1]
+      get :index, format: :json
+      assigns(:people).should == [student1]
     end
 
     it "sorts the students alphabetically" do
       student1 = create(:student, first_name: "Rahul", last_name: "Sekhar")
       student2 = create(:student, first_name: "Ze", last_name: "Student")
       student3 = create(:student, first_name: "A", last_name: "Student")
-      get :index
-      assigns(:profiles).should == [student3, student1, student2]
+      get :index, format: :json
+      assigns(:people).should == [student3, student1, student2]
     end
 
     it "searches for students when the search parameter is passed" do
       student1 = create(:student, first_name: "Rahul", last_name: "Sekhar")
       student2 = create(:student, first_name: "Ze", last_name: "Student")
       student3 = create(:student, first_name: "A", last_name: "Student")
-      get :index, search: "student"
-      assigns(:profiles).should =~ [student3, student2]
+      get :index, search: "student", format: :json
+      assigns(:people).should =~ [student3, student2]
     end
 
-    it "sets an empty_message" do
-      get :index
-      assigns(:empty_message).should be_present
+    describe "pagination" do
+      def create_items(num)
+        create_list(:student, num)
+      end
+
+      def make_request(page=nil)
+        if page
+          get :index, page: page, format: :json
+        else
+          get :index, format: :json
+        end
+      end
+
+      let(:item_list_name){ :people }
+
+      it_behaves_like "a paginated page"
     end
   end
 

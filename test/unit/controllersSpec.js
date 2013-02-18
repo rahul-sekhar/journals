@@ -16,184 +16,78 @@ describe('Controllers', function() {
   beforeEach(module('journalsApp.services'));
 
   describe('People controllers', function() {
-    var scope, $httpBackend, ctrl;
+    var scope, ctrl, Person, PeopleCtrlBase;
 
-    beforeEach(inject(function($rootScope, $controller, _$httpBackend_) {
-      $httpBackend = _$httpBackend_;
+    beforeEach(inject(function($rootScope, _Person_) {
       scope = $rootScope.$new();
+      Person = _Person_;
+      PeopleCtrlBase = { include: jasmine.createSpy() };
     }));
 
     describe('PeopleCtrl', function() {
       beforeEach(inject(function($controller) {
-        $httpBackend.expectGET('/people').respond({
-          current_page: 1,
-          total_pages: 3,
-          items: [ 
-            { id: 12, type: 'students', full_name: 'Student 1'},
-            { id: 15, type: 'teachers', full_name: 'Teacher 1'} 
-          ]
-        });
-        ctrl = $controller(PeopleCtrl, {$scope: scope});
+        ctrl = $controller(PeopleCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
       
       it('sets the page title', function() {
         expect(scope.pageTitle).toEqual('People')
       });
 
-      it('sets the current page', function() {
-        $httpBackend.flush();
-        expect(scope.currentPage).toEqual(1)
+      it('includes PeopleCtrlBase with the scope and query function', function() {
+        expect(PeopleCtrlBase.include).toHaveBeenCalledWith(scope, Person.query);
       });
-
-      it('sets the total number of pages', function() {
-        $httpBackend.flush();
-        expect(scope.totalPages).toEqual(3)
-      });
-
-      it('sets people to the list fetched via xhr', function() {
-        expect(scope.people).toBeUndefined();
-        $httpBackend.flush();
-        expect(scope.people).toEqualData([
-          { id: 12, type: 'students', full_name: 'Student 1'},
-          { id: 15, type: 'teachers', full_name: 'Teacher 1'}
-        ]);
-      });
-
-      it('gets the requested page', inject(function($controller) {
-        $httpBackend.expectGET('/people?page=2').respond({});
-        ctrl = $controller(PeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
-        $httpBackend.verifyNoOutstandingExpectation();
-      }));
     });
 
     describe('ArchivedPeopleCtrl', function() {     
       beforeEach(inject(function($controller) {
-        $httpBackend.expectGET('/people/archived').respond({
-          current_page: 1,
-          total_pages: 3,
-          items: [
-            { id: 12, type: 'students', full_name: 'Student 1'},
-            { id: 15, type: 'teachers', full_name: 'Teacher 1'}
-          ]
-        });
-        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope});
+        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
-
-      it('sets people to the list fetched via xhr', function() {
-        expect(scope.people).toBeUndefined();
-        $httpBackend.flush();
-        expect(scope.people).toEqualData([
-          { id: 12, type: 'students', full_name: 'Student 1'},
-          { id: 15, type: 'teachers', full_name: 'Teacher 1'}
-        ]);
-      });
-
+      
       it('sets the page title', function() {
         expect(scope.pageTitle).toEqual('Archived people')
       });
 
-      it('sets the current page', function() {
-        $httpBackend.flush();
-        expect(scope.currentPage).toEqual(1)
+      it('includes PeopleCtrlBase with the scope and query function', function() {
+        expect(PeopleCtrlBase.include).toHaveBeenCalledWith(scope, Person.query_archived);
       });
-
-      it('sets the total number of pages', function() {
-        $httpBackend.flush();
-        expect(scope.totalPages).toEqual(3)
-      });
-
-      it('gets the requested page', inject(function($controller) {
-        $httpBackend.expectGET('/people/archived?page=2').respond({});
-        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
-        $httpBackend.verifyNoOutstandingExpectation();
-      }));
     });
 
     describe('TeachersCtrl', function() {
       beforeEach(inject(function($controller) {
-        $httpBackend.expectGET('/teachers').respond({
-          current_page: 1,
-          total_pages: 3,
-          items: [
-            { id: 17, type: 'teachers', full_name: 'Some Teacher'},
-            { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
-          ]
-        });
-        ctrl = $controller(TeachersCtrl, {$scope: scope});
+        ctrl = $controller(TeachersCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
-
-      it('sets people to the list fetched via xhr', function() {
-        expect(scope.people).toBeUndefined();
-        $httpBackend.flush();
-        expect(scope.people).toEqualData([
-          { id: 17, type: 'teachers', full_name: 'Some Teacher'},
-          { id: 20, type: 'teachers', full_name: 'Some Other Teacher'}
-        ]);
-      });
-
+      
       it('sets the page title', function() {
         expect(scope.pageTitle).toEqual('Teachers')
       });
 
-      it('sets the current page', function() {
-        $httpBackend.flush();
-        expect(scope.currentPage).toEqual(1)
+      it('includes PeopleCtrlBase with the scope and query function', function() {
+        expect(PeopleCtrlBase.include).toHaveBeenCalledWith(scope, Person.query_teachers);
       });
-
-      it('sets the total number of pages', function() {
-        $httpBackend.flush();
-        expect(scope.totalPages).toEqual(3)
-      });
-
-      it('gets the requested page', inject(function($controller) {
-        $httpBackend.expectGET('/people/archived?page=2').respond({});
-        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
-        $httpBackend.verifyNoOutstandingExpectation();
-      }));
     });
 
     describe('StudentsCtrl', function() {
       beforeEach(inject(function($controller) {
-        $httpBackend.expectGET('/students').respond({
-          current_page: 1,
-          total_pages: 3,
-          items: [
-            { id: 17, type: 'students', full_name: 'Some Student'},
-            { id: 20, type: 'students', full_name: 'Some Other Student'}
-          ]
-        });
-        ctrl = $controller(StudentsCtrl, {$scope: scope});
+        ctrl = $controller(StudentsCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
-
-      it('sets people to the list fetched via xhr', function() {
-        expect(scope.people).toBeUndefined();
-        $httpBackend.flush();
-        expect(scope.people).toEqualData([
-          { id: 17, type: 'students', full_name: 'Some Student'},
-          { id: 20, type: 'students', full_name: 'Some Other Student'}
-        ]);
-      });
-
+      
       it('sets the page title', function() {
         expect(scope.pageTitle).toEqual('Students')
       });
 
-      it('sets the current page', function() {
-        $httpBackend.flush();
-        expect(scope.currentPage).toEqual(1)
+      it('includes PeopleCtrlBase with the scope and query function', function() {
+        expect(PeopleCtrlBase.include).toHaveBeenCalledWith(scope, Person.query_students);
       });
-
-      it('sets the total number of pages', function() {
-        $httpBackend.flush();
-        expect(scope.totalPages).toEqual(3)
-      });
-
-      it('gets the requested page', inject(function($controller) {
-        $httpBackend.expectGET('/people/archived?page=2').respond({});
-        ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, $routeParams: { page: 2 }});
-        $httpBackend.verifyNoOutstandingExpectation();
-      }));
     });
+  });
+
+  describe('Single person controllers', function() {
+    var scope, ctrl, $httpBackend;
+
+    beforeEach(inject(function($rootScope, _$httpBackend_) {
+      scope = $rootScope.$new();
+      $httpBackend = _$httpBackend_;
+    }));
 
     describe('SingleTeacherCtrl', function() {
       describe('existing teacher', function() {

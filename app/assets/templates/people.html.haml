@@ -1,6 +1,7 @@
 %h2 {{pageTitle}}
 
 %section#upper-bar
+  %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch()", "autocomplete"=>"off"}
   .clear-left
 
 %article.profile{ "ng-repeat"=>"person in people" }

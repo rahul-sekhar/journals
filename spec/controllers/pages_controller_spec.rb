@@ -64,49 +64,28 @@ describe PagesController do
     end
 
     describe "pagination" do
-      before do
-        create_list(:student, 15)
+      def create_items(num)
+        create_list(:student, num)
       end
 
-      it "assigns ten elements for the first page" do
-        get :people, format: :json
-        assigns(:people).length.should == 10
+      def make_request(page=nil)
+        if page
+          get :people, page: page, format: :json
+        else
+          get :people, format: :json
+        end
       end
 
-      it "assigns a total number of pages for the first page" do
-        get :people, format: :json
-        assigns(:total_pages).should == 2
-      end
+      let(:item_list_name){ :people }
 
-      it "assigns five elements for the second page" do
-        get :people, page: 2, format: :json
-        assigns(:people).length.should == 5
-      end
-
-      it "assigns a total number of pages for the second page" do
-        get :people, page: 2, format: :json
-        assigns(:total_pages).should == 2
-      end
-
-      it "assigns the correct total number of pages for an exact match" do
-        create_list(:student, 5)
-        get :people, page: 2, format: :json
-        assigns(:total_pages).should == 2
-        assigns(:people).length.should == 10
-      end
-
-      it "assigns an empty collection for a page that is too high" do
-        get :people, page: 3, format: :json
-        assigns(:people).should be_empty
-        assigns(:total_pages).should == 2
-      end
+      it_behaves_like "a paginated page"
     end
   end
 
 
   describe "GET archived" do
     it "has a status of 200" do
-      get :archived
+      get :archived, format: :json
       response.status.should == 200
     end
 
@@ -115,8 +94,8 @@ describe PagesController do
       student2 = create(:student, archived: true)
       teacher1 = create(:teacher, archived: true)
       teacher2 = create(:teacher, archived: true)
-      get :archived
-      assigns(:profiles).should =~ [student1, student2, teacher1, teacher2]
+      get :archived, format: :json
+      assigns(:people).should =~ [student1, student2, teacher1, teacher2]
     end
 
     it "does not assign archived students and teachers" do
@@ -124,8 +103,8 @@ describe PagesController do
       student2 = create(:student)
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
-      get :archived
-      assigns(:profiles).should =~ [student1, teacher2]
+      get :archived, format: :json
+      assigns(:people).should =~ [student1, teacher2]
     end
 
     it "assigns students and teachers alphabetically" do
@@ -133,8 +112,8 @@ describe PagesController do
       student2 = create(:student, archived: true, first_name: "Other", last_name: "Student")
       teacher1 = create(:teacher, archived: true, first_name: "A", last_name: "Teacher")
       teacher2 = create(:teacher, archived: true, first_name: "Rahul", last_name: "Sekhar")
-      get :archived
-      assigns(:profiles).should == [teacher1, student2, teacher2, student1]
+      get :archived, format: :json
+      assigns(:people).should == [teacher1, student2, teacher2, student1]
     end
 
     it "searches if a search parameter is passed" do
@@ -142,13 +121,26 @@ describe PagesController do
       student2 = create(:student, archived: true, first_name: "Other", last_name: "Student")
       teacher1 = create(:teacher, archived: true, first_name: "A", last_name: "Teacher")
       teacher2 = create(:teacher, archived: true, first_name: "Rahul", last_name: "Sekhar")
-      get :archived, search: "ther stu"
-      assigns(:profiles).should == [student2]
+      get :archived, search: "ther stu", format: :json
+      assigns(:people).should == [student2]
     end
 
-    it "sets an empty_message" do
-      get :archived
-      assigns(:empty_message).should be_present
+    describe "pagination" do
+      def create_items(num)
+        create_list(:student, num, archived: true)
+      end
+
+      def make_request(page=nil)
+        if page
+          get :archived, page: page, format: :json
+        else
+          get :archived, format: :json
+        end
+      end
+
+      let(:item_list_name){ :people }
+
+      it_behaves_like "a paginated page"
     end
   end
 

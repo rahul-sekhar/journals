@@ -12,6 +12,38 @@ angular.module('journalsApp.services', ['ngResource', 'journalsApp.filters']).
       query_archived: { method: 'GET', params: {type: 'people', id: 'archived'} }
     });
   }).
+
+  factory('PeopleCtrlBase', function($location) {
+    var PeopleCtrlBase = {};
+    PeopleCtrlBase.include = function(scope, query_function) {
+      var reloadPeople = function() {
+        var params = {};
+        if ($location.search().page) params.page = $location.search().page;
+        if ($location.search().search) params.search = $location.search().search;
+        
+        query_function(params,
+          // Success
+          function(result) {
+            scope.people = result.items;
+            scope.currentPage = result.current_page;
+            scope.totalPages = result.total_pages;
+          }
+        );
+      };
+
+      // Initial query
+      reloadPeople();
+
+      scope.doSearch = function() {
+        $location.search('search', scope.search).replace();
+      }
+
+      scope.$on("$routeUpdate", function() {
+        reloadPeople();
+      });
+    };
+    return PeopleCtrlBase;
+  }).
   
   factory('dialogHandler', function() {
     var dialogHandler = {};

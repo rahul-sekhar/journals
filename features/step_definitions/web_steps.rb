@@ -178,21 +178,21 @@ end
 
 # Text input for in place editing
 When /^I enter "(.*?)" in the text input$/ do |p_text|
-  page.first('input', visible: true).set p_text
+  page.first('input:not([name])', visible: true).set p_text
 
   keypress_script = "$('input:visible').blur();"
   page.execute_script(keypress_script)
 end
 
 When /^I enter "(.*?)" in the textarea$/ do |p_text|
-  page.first('textarea', visible: true).set p_text
+  page.first('textarea:not([name])', visible: true).set p_text
   script = "$('textarea:visible').blur();"
   page.execute_script(script)
 end
 
 When /^I enter the date "(.*?)"$/ do |p_date|
   script = "setTimeout(function() {" +
-    "$('input:visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
+    "$('input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
   "}, 10);"
   page.execute_script(script)
 end

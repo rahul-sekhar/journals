@@ -2,68 +2,24 @@
 
 /* Controllers */
 
-function PeopleCtrl($scope, $routeParams, Person) {
+function PeopleCtrl($scope, Person, PeopleCtrlBase) {
   $scope.pageTitle = 'People';
-  
-  var params = {};
-  if ($routeParams.page) params.page = $routeParams.page;
-  
-  Person.query(params,
-    // Success
-    function(result) {
-      $scope.people = result.items;
-      $scope.currentPage = result.current_page;
-      $scope.totalPages = result.total_pages;
-    }
-  );
+  PeopleCtrlBase.include($scope, Person.query);
 }
 
-function ArchivedPeopleCtrl($scope, $routeParams, Person) {
+function ArchivedPeopleCtrl($scope, Person, PeopleCtrlBase) {
   $scope.pageTitle = 'Archived people';
-  
-  var params = {};
-  if ($routeParams.page) params.page = $routeParams.page;
-  
-  Person.query_archived(params,
-    // Success
-    function(result) {
-      $scope.people = result.items;
-      $scope.currentPage = result.current_page;
-      $scope.totalPages = result.total_pages;
-    }
-  );
+  PeopleCtrlBase.include($scope, Person.query_archived);
 }
 
-function TeachersCtrl($scope, $routeParams, Person) {
+function TeachersCtrl($scope, Person, PeopleCtrlBase) {
   $scope.pageTitle = 'Teachers';
-
-  var params = {};
-  if ($routeParams.page) params.page = $routeParams.page;
-  
-  Person.query_teachers(params,
-    // Success
-    function(result) {
-      $scope.people = result.items;
-      $scope.currentPage = result.current_page;
-      $scope.totalPages = result.total_pages;
-    }
-  );
+  PeopleCtrlBase.include($scope, Person.query_teachers);
 }
 
-function StudentsCtrl($scope, $routeParams, Person) {
+function StudentsCtrl($scope, Person, PeopleCtrlBase) {
   $scope.pageTitle = 'Students';
-  
-  var params = {};
-  if ($routeParams.page) params.page = $routeParams.page;
-  
-  Person.query_students(params,
-    // Success
-    function(result) {
-      $scope.people = result.items;
-      $scope.currentPage = result.current_page;
-      $scope.totalPages = result.total_pages;
-    }
-  );
+  PeopleCtrlBase.include($scope, Person.query_students);
 }
 
 function SingleTeacherCtrl($scope, $routeParams, Person) {

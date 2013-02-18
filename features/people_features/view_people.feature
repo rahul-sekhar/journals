@@ -1,7 +1,7 @@
 @angular
-Feature: View students and teachers
+Feature: View students and teachers and filter them
 
-Unarchived students and teachers are both shown on the people page and. Only students, only teachers and archived students and teachers can also be viewed.
+View various categories of people and filter them by their names.
 
 Background:
   Given I have logged in as a teacher "Rahul Sekhar"
@@ -25,6 +25,21 @@ Scenario: View unarchived students and teachers on the people page
   And I should not see the heading "Tanu GB"
   And I should not see the heading "Archie Andrews"
 
+  When I fill in "search" with "a"
+  And I should not see the heading "Jim Dunlop"
+  And I should not see the heading "Ben Folds"
+  Then I should see the heading "Aditya Pandya"
+  And I should see the heading "Angela Jain"
+  And I should see the heading "Rahul Sekhar"
+
+  When I fill in "search" with "fo"
+  Then I should not see the heading "Aditya Pandya"
+  And I should not see the heading "Angela Jain"
+  And I should not see the heading "Rahul Sekhar"
+  And I should not see the heading "Jim Dunlop"
+  And I should see the heading "Ben Folds"
+
+@current
 Scenario: View archived students and teachers on the people page
   When I am on the archived people page
   Then I should see the page heading "Archived people"
@@ -35,6 +50,10 @@ Scenario: View archived students and teachers on the people page
   And I should not see the heading "Ben Folds"
   And I should see the heading "Tanu GB"
   And I should see the heading "Archie Andrews"
+
+  When I fill in "search" with "tan"
+  And I should not see the heading "Archie Andrews"
+  And I should see the heading "Tanu GB"
 
 Scenario: View only students
   When I am on the students page

@@ -13,7 +13,7 @@ describe TeachersController do
   end
 
 
-  describe "GET index", :focus do
+  describe "GET index" do
     let(:user){ create(:student_with_user).user }
 
     it "raises an exception if the user cannot view teachers" do
@@ -55,6 +55,24 @@ describe TeachersController do
       teacher3 = create(:teacher, first_name: "A", last_name: "Teacher")
       get :index, search: "ra", format: :json
       assigns(:people).should == [teacher1]
+    end
+
+    describe "pagination" do
+      def create_items(num)
+        create_list(:teacher, num)
+      end
+
+      def make_request(page=nil)
+        if page
+          get :index, page: page, format: :json
+        else
+          get :index, format: :json
+        end
+      end
+
+      let(:item_list_name){ :people }
+
+      it_behaves_like "a paginated page"
     end
   end
 

@@ -172,6 +172,22 @@ angular.module('journalsApp.directives', []).
     };
   }).
 
+  directive('onType', function() {
+    return function( scope, elem, attrs ) {
+      var typingTimer;
+      var doneTypingInterval = attrs.typingInterval || 300;
+      
+      var doneTyping = function() {
+        scope.$apply(attrs.onType);
+      }
+
+      elem.on('keyup change input', function(){
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(doneTyping, doneTypingInterval);
+      });
+    };
+  }).
+
   directive('pagination', function($location) {
     return {
       restrict: 'E',
