@@ -24,6 +24,7 @@ function StudentsCtrl($scope, Person, PeopleCtrlBase) {
 
 function SingleTeacherCtrl($scope, $routeParams, Person) {
   $scope.pageTitle = 'Profile';
+  $scope.singleProfile = true;
   Person.get({ id: $routeParams.id, type: 'teachers' },
     // Success - load the profile
     function(result) {
@@ -40,6 +41,7 @@ function SingleTeacherCtrl($scope, $routeParams, Person) {
 
 function SingleStudentCtrl($scope, $routeParams, Person) {
   $scope.pageTitle = 'Profile';
+  $scope.singleProfile = true;
   Person.get({ id: $routeParams.id, type: 'students' },
     // Success - load the profile
     function(result) {
@@ -56,6 +58,7 @@ function SingleStudentCtrl($scope, $routeParams, Person) {
 
 function SingleGuardianCtrl($scope, $routeParams, Person) {
   $scope.pageTitle = 'Profile';
+  $scope.singleProfile = true;
   Person.get({ id: $routeParams.id, type: 'guardians' },
     // Success - load the array of students
     function(result) {

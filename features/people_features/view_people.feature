@@ -1,4 +1,4 @@
-@angular
+@angular @current
 Feature: View students and teachers and filter them
 
 View various categories of people and filter them by their names.
@@ -14,7 +14,6 @@ Background:
   And a student named "Archie Andrews" exists
   And that student is archived
 
-@current
 Scenario: View unarchived students and teachers on the people page
   When I am on the people page
   Then I should see the page heading "People"
@@ -30,7 +29,7 @@ Scenario: View unarchived students and teachers on the people page
   When I click "add" in a "p" element within the "#upper-bar" block
   Then I should see "add teacher" within the "#upper-bar" block
   And I should see "add student" within the "#upper-bar" block
-  Then I should see "manage groups" within the "#upper-bar" block
+  And I should see "manage groups" within the "#upper-bar" block
   And I should see "students and teachers" within the "#upper-bar" block
 
   When I fill in "search" with "a"
@@ -62,6 +61,10 @@ Scenario: View archived students and teachers on the people page
   And I should see the heading "Tanu GB"
   And I should see the heading "Archie Andrews"
 
+  And I should see the field "search" within the "#upper-bar" block
+  And I should see "add" within the "#upper-bar" block
+  And I should see "archived students and teachers" within the "#upper-bar" block
+
   When I fill in "search" with "tan"
   And I should not see the heading "Archie Andrews"
   And I should see the heading "Tanu GB"
@@ -81,6 +84,11 @@ Scenario: View only students
   And I should not see the heading "Tanu GB"
   And I should not see the heading "Archie Andrews"
 
+  And I should see the field "search" within the "#upper-bar" block
+  And I should see "add" within the "#upper-bar" block
+  And I should see "students" within the "#upper-bar" block
+  And I should not see "teachers" within the "#upper-bar" block
+
   When I fill in "search" with "jim dunlop"
   And I should not see the heading "Ben Folds"
   And I should see the heading "Jim Dunlop"
@@ -99,6 +107,11 @@ Scenario: View only teachers
   And I should not see the heading "Ben Folds"
   And I should not see the heading "Tanu GB"
   And I should not see the heading "Archie Andrews"
+
+  And I should see the field "search" within the "#upper-bar" block
+  And I should see "add" within the "#upper-bar" block
+  And I should see "teachers" within the "#upper-bar" block
+  And I should not see "students" within the "#upper-bar" block
 
   When I fill in "search" with "RA"
   And I should not see the heading "Angela Jain"

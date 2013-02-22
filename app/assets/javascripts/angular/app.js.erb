@@ -15,11 +15,11 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
 
       when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: ArchivedPeopleCtrl, reloadOnSearch: false}).
 
-      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl}).
+      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl, reloadOnSearch: false}).
 
       when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleTeacherCtrl}).
 
-      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl}).
+      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl, reloadOnSearch: false}).
 
       when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleStudentCtrl}).
 

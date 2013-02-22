@@ -106,6 +106,10 @@ describe('Controllers', function() {
           ]);
         });
 
+        it('sets singleProfile to true', function() {
+          expect(scope.singleProfile).toEqual(true);
+        });
+
         it('sets the page title', function() {
           expect(scope.pageTitle).toEqual('Profile')
           $httpBackend.flush();
@@ -132,6 +136,10 @@ describe('Controllers', function() {
           $httpBackend.flush();
           expect(scope.pageTitle).toEqual('Profile: Not found')
         });
+
+        it('sets singleProfile to true', function() {
+          expect(scope.singleProfile).toEqual(true);
+        });
       });
     });
 
@@ -157,6 +165,10 @@ describe('Controllers', function() {
           $httpBackend.flush();
           expect(scope.pageTitle).toEqual('Profile: Some Student')
         });
+
+        it('sets singleProfile to true', function() {
+          expect(scope.singleProfile).toEqual(true);
+        });
       });
       
       describe('non-existent student', function() {
@@ -177,6 +189,10 @@ describe('Controllers', function() {
           expect(scope.pageTitle).toEqual('Profile')
           $httpBackend.flush();
           expect(scope.pageTitle).toEqual('Profile: Not found')
+        });
+
+        it('sets singleProfile to true', function() {
+          expect(scope.singleProfile).toEqual(true);
         });
       });
     });
@@ -210,6 +226,10 @@ describe('Controllers', function() {
           $httpBackend.flush();
           expect(scope.pageTitle).toEqual('Profile: Some Guardian')
         });
+
+        it('sets singleProfile to true', function() {
+          expect(scope.singleProfile).toEqual(true);
+        });
       });
 
       describe('non-existent guardian', function() {
@@ -230,6 +250,10 @@ describe('Controllers', function() {
           expect(scope.pageTitle).toEqual('Profile')
           $httpBackend.flush();
           expect(scope.pageTitle).toEqual('Profile: Not found')
+        });
+
+        it('sets singleProfile to true', function() {
+          expect(scope.singleProfile).toEqual(true);
         });
       });
     });

@@ -62,15 +62,6 @@ Then /^I should see the page heading "(.*?)"$/ do |p_content|
   page.should have_css "h2", text: p_content
 end
 
-Then /^I should see the field "(.*?)"$/ do |p_field|
-  page.should have_field p_field
-end
-
-Then /^I should not see the field "(.*?)"$/ do |p_field|
-  page.should have_no_field p_field
-end
-
-
 
 
 # Input field steps
@@ -87,8 +78,12 @@ Then /^"(.*?)" should be filled in with the lines: (.*?)$/ do |p_field, p_lines|
   find_field(p_field).value.should == p_lines
 end
 
+Then /^I should see the field "(.*?)"$/ do |p_field|
+  page.should have_field p_field, visible: true
+end
+
 Then /^I should not see the field "(.*?)"$/ do |p_field|
-  page.should have_no_field p_field
+  page.should have_no_field p_field, visible: true
 end
 
 

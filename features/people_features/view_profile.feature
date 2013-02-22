@@ -1,4 +1,4 @@
-@angular
+@angular @current
 Feature: View a profile
 
 I should be able to view a student, guardian or teacher's profile and see all stored information about them. I should be able to reach the profile by clicking on their name anywhere else on the site (for example if they authored a post)
@@ -21,6 +21,11 @@ Scenario: View teacher profile with minimal information
   And I should not see "Office Phone" in a ".field-name" element
   And I should not see "Additional Emails" in a ".field-name" element
   And I should not see "Notes" in a ".field-name" element
+
+  And I should not see the field "search" within the "#upper-bar" block
+  And I should not see "add" within the "#upper-bar" block
+  And I should not see "students" within the "#upper-bar" block
+  And I should not see "teachers" within the "#upper-bar" block
 
 Scenario: View teacher profile with all information
   Given a teacher profile for Shalini with all information exists
@@ -63,6 +68,11 @@ Scenario: View student profile with all information
   And I should see "Blood Group" in a ".field-name" element
   And I should see "B+"
 
+  And I should not see the field "search" within the "#upper-bar" block
+  And I should not see "add" within the "#upper-bar" block
+  And I should not see "students" within the "#upper-bar" block
+  And I should not see "teachers" within the "#upper-bar" block
+
 Scenario: View a student profile containing a guardian profile with minimal information
   Given a student profile for Parvathy exists
   And a guardian Manoj for that student exists
@@ -74,6 +84,11 @@ Scenario: View a student profile containing a guardian profile with minimal info
   And I should not see "Address" in a ".field-name" element within the ".guardians" block
   And I should not see "Home Phone" in a ".field-name" element within the ".guardians" block
   And I should not see "Office Phone" in a ".field-name" element within the ".guardians" block
+
+  And I should not see the field "search" within the "#upper-bar" block
+  And I should not see "add" within the "#upper-bar" block
+  And I should not see "students" within the "#upper-bar" block
+  And I should not see "teachers" within the "#upper-bar" block
 
 Scenario: View a student profile containing multiple guardians
   Given a student profile for Parvathy exists
@@ -103,6 +118,11 @@ Scenario: View a guardian profile with multiple students
   Then I should see "Parvathy Manjunath"
   And I should see "Roly Jain"
   And I should not see "Shalini Sekhar"
+
+  And I should not see the field "search" within the "#upper-bar" block
+  And I should not see "add" within the "#upper-bar" block
+  And I should not see "students" within the "#upper-bar" block
+  And I should not see "teachers" within the "#upper-bar" block
 
 Scenario: Click on users name to reach profile
   Given PENDING posts page

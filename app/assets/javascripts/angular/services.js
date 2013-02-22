@@ -64,27 +64,27 @@ angular.module('journalsApp.services', ['ngResource', 'journalsApp.filters']).
   }).
 
   factory('profileFields', function() {
-    var profileFields = {}
+    var profileFields = {};
     
     profileFields.date = {
       students: ["birthday"],
       teachers: [],
       guardians: []
-    }
+    };
 
     var standard = ["mobile", "home_phone", "office_phone", "email", "additional_emails"];
     profileFields.standard = {
       students: ["blood_group"].concat(standard),
       teachers: standard,
       guardians: standard
-    }
+    };
 
     var multiLine = ["address", "notes"];
     profileFields.multiLine = {
       students: multiLine,
       teachers: multiLine,
       guardians: multiLine
-    }
+    };
 
-    return profileFields
+    return profileFields;
   });
