@@ -39,7 +39,6 @@ Scenario: View unarchived students and teachers on the people page
   And I should not see the heading "Jim Dunlop"
   And I should see the heading "Ben Folds"
 
-@current
 Scenario: View archived students and teachers on the people page
   When I am on the archived people page
   Then I should see the page heading "Archived people"
@@ -66,6 +65,10 @@ Scenario: View only students
   And I should not see the heading "Tanu GB"
   And I should not see the heading "Archie Andrews"
 
+  When I fill in "search" with "jim dunlop"
+  And I should not see the heading "Ben Folds"
+  And I should see the heading "Jim Dunlop"
+
 Scenario: View only teachers
   When I am on the teachers page
   Then I should see the page heading "Teachers"
@@ -76,3 +79,7 @@ Scenario: View only teachers
   And I should not see the heading "Ben Folds"
   And I should not see the heading "Tanu GB"
   And I should not see the heading "Archie Andrews"
+
+  When I fill in "search" with "RA"
+  And I should not see the heading "Angela Jain"
+  And I should see the heading "Rahul Sekhar"
