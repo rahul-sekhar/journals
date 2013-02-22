@@ -1,7 +1,34 @@
-%h2 {{pageTitle}}
+%h2 {{pageTitle || "People"}}
 
 %section#upper-bar
   %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch()", "autocomplete"=>"off"}
+
+  .add.menu
+    %p.title Add
+    
+    %ul
+      %li
+        %a Add teacher
+      %li
+        %a Add student
+      %li
+        %a Manage groups
+
+  %p.label Viewing
+
+  .viewing.menu
+    %p.title {{filterName}}
+
+    %ul
+      %li{"ng-hide" => "filterName == 'Students and teachers'"}
+        %a{href: "/people"} Students and teachers
+      %li{"ng-hide" => "filterName == 'Students'"}
+        %a{href: "/students"} Students
+      %li{"ng-hide" => "filterName == 'Teachers'"}
+        %a{href: "/teachers"} Teachers
+      %li{"ng-hide" => "filterName == 'Archived students and teachers'"}
+        %a{href: "/people/archived"} Archived students and teachers
+
   .clear-left
 
 %article.profile{ "ng-repeat"=>"person in people" }

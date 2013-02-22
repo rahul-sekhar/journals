@@ -62,6 +62,15 @@ Then /^I should see the page heading "(.*?)"$/ do |p_content|
   page.should have_css "h2", text: p_content
 end
 
+Then /^I should see the field "(.*?)"$/ do |p_field|
+  page.should have_field p_field
+end
+
+Then /^I should not see the field "(.*?)"$/ do |p_field|
+  page.should have_no_field p_field
+end
+
+
 
 
 # Input field steps
@@ -132,6 +141,11 @@ end
 When /^I click "(.*?)" in a "(.*?)" element$/ do |p_text, p_element|
   page.find(p_element, text: /#{p_text}/).click
 end
+
+When /^I click the exact link "(.*?)"$/ do |p_link|
+  page.find('a', text: /^#{p_link}$/).click
+end
+
 
 
 # Select element steps

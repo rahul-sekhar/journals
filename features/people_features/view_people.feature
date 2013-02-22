@@ -14,6 +14,7 @@ Background:
   And a student named "Archie Andrews" exists
   And that student is archived
 
+@current
 Scenario: View unarchived students and teachers on the people page
   When I am on the people page
   Then I should see the page heading "People"
@@ -24,6 +25,13 @@ Scenario: View unarchived students and teachers on the people page
   And I should see the heading "Ben Folds"
   And I should not see the heading "Tanu GB"
   And I should not see the heading "Archie Andrews"
+
+  And I should see the field "search" within the "#upper-bar" block
+  When I click "add" in a "p" element within the "#upper-bar" block
+  Then I should see "add teacher" within the "#upper-bar" block
+  And I should see "add student" within the "#upper-bar" block
+  Then I should see "manage groups" within the "#upper-bar" block
+  And I should see "students and teachers" within the "#upper-bar" block
 
   When I fill in "search" with "a"
   And I should not see the heading "Jim Dunlop"
@@ -40,8 +48,12 @@ Scenario: View unarchived students and teachers on the people page
   And I should see the heading "Ben Folds"
 
 Scenario: View archived students and teachers on the people page
-  When I am on the archived people page
-  Then I should see the page heading "Archived people"
+  When I am on the people page
+  And I click "students and teachers" in a ".title" element
+  And I click "Archived students and teachers"
+  Then I should be on the archived people page
+
+  And I should see the page heading "People"
   Then I should not see the heading "Aditya Pandya"
   And I should not see the heading "Angela Jain"
   And I should not see the heading "Rahul Sekhar"
@@ -55,8 +67,12 @@ Scenario: View archived students and teachers on the people page
   And I should see the heading "Tanu GB"
 
 Scenario: View only students
-  When I am on the students page
-  Then I should see the page heading "Students"
+  When I am on the people page
+  And I click "students and teachers" in a ".title" element
+  And I click the exact link "students"
+  Then I should be on the students page
+
+  Then I should see the page heading "People"
   Then I should not see the heading "Aditya Pandya"
   And I should not see the heading "Angela Jain"
   And I should not see the heading "Rahul Sekhar"
@@ -70,8 +86,12 @@ Scenario: View only students
   And I should see the heading "Jim Dunlop"
 
 Scenario: View only teachers
-  When I am on the teachers page
-  Then I should see the page heading "Teachers"
+  When I am on the people page
+  And I click "students and teachers" in a ".title" element
+  And I click "Teachers"
+  Then I should be on the teachers page
+
+  Then I should see the page heading "People"
   Then I should see the heading "Aditya Pandya"
   And I should see the heading "Angela Jain"
   And I should see the heading "Rahul Sekhar"

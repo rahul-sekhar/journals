@@ -29,8 +29,8 @@ describe('Controllers', function() {
         ctrl = $controller(PeopleCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
       
-      it('sets the page title', function() {
-        expect(scope.pageTitle).toEqual('People')
+      it('sets the filter name', function() {
+        expect(scope.filterName).toEqual('Students and teachers')
       });
 
       it('includes PeopleCtrlBase with the scope and query function', function() {
@@ -43,8 +43,8 @@ describe('Controllers', function() {
         ctrl = $controller(ArchivedPeopleCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
       
-      it('sets the page title', function() {
-        expect(scope.pageTitle).toEqual('Archived people')
+      it('sets the filter name', function() {
+        expect(scope.filterName).toEqual('Archived students and teachers')
       });
 
       it('includes PeopleCtrlBase with the scope and query function', function() {
@@ -57,8 +57,8 @@ describe('Controllers', function() {
         ctrl = $controller(TeachersCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
       
-      it('sets the page title', function() {
-        expect(scope.pageTitle).toEqual('Teachers')
+      it('sets the filter name', function() {
+        expect(scope.filterName).toEqual('Teachers')
       });
 
       it('includes PeopleCtrlBase with the scope and query function', function() {
@@ -71,8 +71,8 @@ describe('Controllers', function() {
         ctrl = $controller(StudentsCtrl, {$scope: scope, PeopleCtrlBase: PeopleCtrlBase});
       }));
       
-      it('sets the page title', function() {
-        expect(scope.pageTitle).toEqual('Students')
+      it('sets the filter name', function() {
+        expect(scope.filterName).toEqual('Students')
       });
 
       it('includes PeopleCtrlBase with the scope and query function', function() {

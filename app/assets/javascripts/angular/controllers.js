@@ -3,22 +3,22 @@
 /* Controllers */
 
 function PeopleCtrl($scope, Person, PeopleCtrlBase) {
-  $scope.pageTitle = 'People';
+  $scope.filterName = 'Students and teachers';
   PeopleCtrlBase.include($scope, Person.query);
 }
 
 function ArchivedPeopleCtrl($scope, Person, PeopleCtrlBase) {
-  $scope.pageTitle = 'Archived people';
+  $scope.filterName = 'Archived students and teachers';
   PeopleCtrlBase.include($scope, Person.query_archived);
 }
 
 function TeachersCtrl($scope, Person, PeopleCtrlBase) {
-  $scope.pageTitle = 'Teachers';
+  $scope.filterName = 'Teachers';
   PeopleCtrlBase.include($scope, Person.query_teachers);
 }
 
 function StudentsCtrl($scope, Person, PeopleCtrlBase) {
-  $scope.pageTitle = 'Students';
+  $scope.filterName = 'Students';
   PeopleCtrlBase.include($scope, Person.query_students);
 }
 
