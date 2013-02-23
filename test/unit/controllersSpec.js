@@ -266,7 +266,7 @@ describe('Controllers', function() {
     beforeEach(inject(function(_profileFields_, $rootScope, _$controller_) {
       profileFields = _profileFields_;
       scope = $rootScope.$new();
-      $controller = _$controller_
+      $controller = _$controller_;
     }));
 
     describe('field lists', function() {
@@ -379,7 +379,7 @@ describe('Controllers', function() {
     beforeEach(function() {
       module(function($provide) {
         dialogHandlerMock = { message: jasmine.createSpy() };
-        $provide.value('dialogHandler', dialogHandlerMock)
+        $provide.value('dialogHandler', dialogHandlerMock);
       });
     });
 
@@ -418,7 +418,7 @@ describe('Controllers', function() {
 
       describe('with a valid server response', function() {
         beforeEach(function() {
-          var changedParent = { id: "13", type: "students", some_field: "some changed value", random: "random val" }
+          var changedParent = { id: "13", type: "students", some_field: "some changed value", random: "random val" };
           $httpBackend.expectPUT('/students/13', { student: { some_field: "changed value" }}).respond(200, changedParent);
         });
 
@@ -432,6 +432,35 @@ describe('Controllers', function() {
           expect(parentItem.some_field).toEqual("some value");
           scope.finishEdit();
           expect(parentItem.some_field).toEqual("changed value");
+        });
+
+        it('sends the updated field value to the server', function() {
+          scope.finishEdit();
+          $httpBackend.verifyNoOutstandingExpectation();
+        });
+
+        it('does not send anything to the server if the field is unchanged', function() {
+          scope.editorValue = "some value"
+          $httpBackend.resetExpectations();
+          scope.finishEdit();
+          $httpBackend.verifyNoOutstandingExpectation();
+        });
+
+        it('updates the parent field according to the server response', function() {
+          scope.finishEdit();
+          expect(parentItem.some_field).toEqual("changed value");
+          $httpBackend.flush();
+          expect(parentItem.some_field).toEqual("some changed value");
+        });
+      });
+
+      describe('with a parent with no type, using a default type', function() {
+        beforeEach(function() {
+          scope.type = 'groups';
+          parentItem = { id: "13", some_field: "some value" };
+          scope.parent = parentItem;
+          var changedParent = { id: "13", some_field: "some changed value", random: "random val" };
+          $httpBackend.expectPUT('/groups/13', { group: { some_field: "changed value" }}).respond(200, changedParent);
         });
 
         it('sends the updated field value to the server', function() {
@@ -488,7 +517,7 @@ describe('Controllers', function() {
 
     describe('cancelEdit()', function() {
       it('sets editMode to false', function() {
-        scope.editMode = true
+        scope.editMode = true;
         scope.cancelEdit();
         expect(scope.editMode).toEqual(false);
       });
@@ -526,6 +555,168 @@ describe('Controllers', function() {
       it('does not set editMode to true when the field name is not matched', function() {
         rootScope.$broadcast("addField", "other_field");
         expect(scope.editMode).toEqual(false);
+      });
+    });
+
+    describe('for a parent with an id', function() {
+      beforeEach(inject(function($controller) {
+        scope.parent = { id: 7, type: "students", some_field: "" };
+        ctrl = $controller(InPlaceEditCtrl, {$scope: scope});
+      }));
+
+      it('sets editMode to false', function() {
+        scope.$apply();
+        expect(scope.editMode).toEqual(false);
+      });
+    });
+
+    describe('for a parent with no id', function() {
+      beforeEach(function() {
+        parentItem = { type: "students", some_field: "" };
+        scope.parent = parentItem;
+      });
+
+      describe('with a blank value for the editors field', function() {
+        beforeEach(inject(function($controller) {
+          ctrl = $controller(InPlaceEditCtrl, {$scope: scope});
+        }));
+
+        it('sets editMode to true', function() {
+          scope.$apply();
+          expect(scope.editMode).toEqual(true);
+        });
+      });
+      
+      describe('with no value for the editors field', function() {
+        beforeEach(inject(function($controller) {
+          scope.parent = { type: "students", other_field: "" };
+          ctrl = $controller(InPlaceEditCtrl, {$scope: scope});
+        }));
+
+        it('sets editMode to true', function() {
+          scope.$apply();
+          expect(scope.editMode).toEqual(false);
+        });
+      });
+
+      describe('cancelEdit()', function() {
+        it('calls the parents destroy function', function() {
+          parentItem.destroy = jasmine.createSpy();
+          scope.parent = parentItem;
+          scope.cancelEdit();
+          expect(parentItem.destroy).toHaveBeenCalled();
+        });
+      });
+
+      describe('finishEdit()', function() {
+        it('calls the parents create function', function() {
+          parentItem.create = jasmine.createSpy();
+          scope.parent = parentItem;
+          scope.editorValue = 'some_val'
+          scope.finishEdit();
+          expect(parentItem.create).toHaveBeenCalledWith({student: {some_field: 'some_val'}});
+        });
+      });
+    });
+  });
+
+  
+  describe('GroupsCtrl', function() {
+    var scope, ctrl, $httpBackend, dialogHandlerMock;
+
+    beforeEach(inject(function($rootScope, $controller, _$httpBackend_) {
+      $httpBackend = _$httpBackend_;
+      $httpBackend.expectGET('/groups').respond([{name: "Group 1", id: 5}, {name: "Group 2", id: 10}]);
+      dialogHandlerMock = { message: jasmine.createSpy() };
+      scope = $rootScope.$new();
+      ctrl = $controller(GroupsCtrl, { $scope: scope, dialogHandler: dialogHandlerMock });
+    }));
+
+    it('retrieves a list of groups', function() {
+      expect(scope.groups).toEqualData([]);
+      $httpBackend.flush();
+      expect(scope.groups).toEqualData([{name: "Group 1", id: 5}, {name: "Group 2", id: 10}]);
+    });
+
+    it('sets the default type', function() {
+      expect(scope.defaultType).toEqual('groups');
+    });
+
+    describe('delete()', function() {
+      beforeEach(function() {
+        $httpBackend.flush();
+        $httpBackend.expectDELETE('/groups/5').respond(200);
+        scope.delete(scope.groups[0]);
+      });
+
+      it('removes the group from the groups array', function() {
+        expect(scope.groups).toEqualData([{name: "Group 2", id: 10}]);
+      });
+
+      it('sends a delete request', function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+      });
+    });
+
+    describe('add()', function() {
+      beforeEach(function() {
+        $httpBackend.flush();
+      });
+
+      it('adds a new group with a blank name to the groups array, in the first position', function() {
+        scope.add();
+        expect(scope.groups).toEqualData([{name: ""},{name: "Group 1", id: 5}, {name: "Group 2", id: 10}])
+      });
+
+      describe('the added group', function() {
+        var group;
+        
+        beforeEach(function() {
+          scope.add();
+          group = scope.groups[0]
+        });
+
+        describe('destroy()', function() {
+          it('removes the group from the groups array', function() {
+            group.destroy();
+            expect(scope.groups).toEqualData([{name: "Group 1", id: 5}, {name: "Group 2", id: 10}])
+          });
+        });
+
+        describe('create()', function() {
+          describe('on success', function() {
+            beforeEach(function() {
+              $httpBackend.expectPOST('/groups', {group: {name: 'blah'}}).respond({name: 'blah', id: 56});
+              group.create({group: {name: 'blah'}});
+            });
+
+            it('posts the data to the server', function() {
+              $httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('updates the group in the array', function() {
+              $httpBackend.flush();
+              expect(scope.groups).toEqualData([{name: 'blah', id: 56}, {name: "Group 1", id: 5}, {name: "Group 2", id: 10}])
+            });
+          });
+          
+          describe('on failure', function() {
+            beforeEach(function() {
+              $httpBackend.expectPOST('/groups', {group: {name: 'blah'}}).respond(422, 'error!');
+              group.create({group: {name: 'blah'}});
+            });
+
+            it('removes the group from the array', function() {
+              $httpBackend.flush();
+              expect(scope.groups).toEqualData([{name: "Group 1", id: 5}, {name: "Group 2", id: 10}])
+            });
+
+            it('displays an error message', function() {
+              $httpBackend.flush();
+              expect(dialogHandlerMock.message).toHaveBeenCalledWith('error!');
+            });            
+          });
+        });
       });
     });
   });

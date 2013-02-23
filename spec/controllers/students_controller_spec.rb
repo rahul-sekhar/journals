@@ -12,7 +12,7 @@ describe StudentsController do
     ability.can :manage, Student
   end
 
-  describe "GET index", :focus do
+  describe "GET index" do
     it "raises an exception if the user cannot view students" do
       ability.cannot :read, Student
       expect{ get :index, format: :json }.to raise_exception(CanCan::AccessDenied)

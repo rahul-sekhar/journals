@@ -24,3 +24,9 @@ Given /^that group has the students Roly, Lucky and Jumble$/ do
   @group.students << FactoryGirl.create(:student, full_name: "Lucky Sekhar")
   @group.students << FactoryGirl.create(:student, full_name: "Jumble Sekhar")
 end
+
+When /^I open the manage groups dialog$/ do
+  step 'I am on the people page'
+  step 'I click "add" in a "p" element'
+  step 'I click "Manage groups"'
+end

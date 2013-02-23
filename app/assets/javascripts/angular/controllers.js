@@ -101,16 +101,16 @@ function FieldsCtrl($scope, profileFields) {
 
 function InPlaceEditCtrl($scope, $http, dialogHandler) {
   $scope.editMode = false;
-  var parent = $scope.parent;
 
   $scope.startEdit = function() {
     $scope.editorValue = null;
-    $scope.editorValue = parent[$scope.fieldName];
+    $scope.editorValue = $scope.parent[$scope.fieldName];
     $scope.editMode = true;
   }
 
   $scope.cancelEdit = function() {
     $scope.editMode = false;
+    if(!$scope.parent.id) $scope.parent.destroy();
   }
 
   $scope.clearEdit = function() {
@@ -119,12 +119,14 @@ function InPlaceEditCtrl($scope, $http, dialogHandler) {
   }
 
   $scope.finishEdit = function() {
+    var parent = $scope.parent;
+    var type = parent.type || $scope.type;
     var old_val = parent[$scope.fieldName];
     var new_val = $scope.editorValue;
     $scope.editMode = false;
 
-    // Return if no change was made
-    if (old_val === new_val) return;
+    // Return if no change was made (unless the object has no ID)
+    if (old_val === new_val && $scope.parent.id) return;
 
     // Update the parent field
     parent[$scope.fieldName] = new_val;
@@ -133,10 +135,17 @@ function InPlaceEditCtrl($scope, $http, dialogHandler) {
     var profile_data = {};
     profile_data[$scope.fieldName] = new_val;
     var data = {};
-    data[parent.type.slice(0, -1)] = profile_data;
+    data[type.slice(0, -1)] = profile_data;
 
+    // Check for a parent with no ID - if so create it
+    if (!parent.id) {
+      parent.create(data);
+      return;
+    }
+
+    // Otherwise update
     // Send the data to the server
-    $http.put( '/' + parent.type + '/' + parent.id, data, { timeout: 4000 }).
+    $http.put( '/' + type + '/' + parent.id, data, { timeout: 4000 }).
 
       // Update the field according to the response on success
       success(function(data) {
@@ -156,4 +165,49 @@ function InPlaceEditCtrl($scope, $http, dialogHandler) {
       $scope.editMode = true;
     }
   });
+
+  // In case of a parent with no ID, start edit right away
+  $scope.$watch('fieldName', function() {
+    if (!$scope.parent.id && $scope.parent[$scope.fieldName] != undefined) {
+      $scope.startEdit();
+    }
+  });
+}
+
+function GroupsCtrl($scope, Group, dialogHandler) {
+  $scope.defaultType = 'groups';
+  $scope.groups = Group.query();
+
+  $scope.delete = function(group) {
+    var index = $scope.groups.indexOf(group);
+    $scope.groups.splice(index, 1);
+    group.$delete();
+  };
+
+  $scope.add = function() {
+    var new_group = {
+      name: '',
+      destroy: function() {
+        var index = $scope.groups.indexOf(new_group);
+        $scope.groups.splice(index, 1);
+      },
+      create: function(data) {
+        Group.save(data, 
+          
+          // Success
+          function(data) {
+            var index = $scope.groups.indexOf(new_group);
+            $scope.groups[index] = data;
+          },
+
+          // Error
+          function(response) {
+            new_group.destroy();
+            dialogHandler.message(response.data);
+          }
+        );
+      }
+    };
+    $scope.groups.unshift(new_group);
+  }
 }

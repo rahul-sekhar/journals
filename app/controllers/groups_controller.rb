@@ -12,31 +12,24 @@ class GroupsController < ApplicationController
     filter_and_display_people( @group.students )
   end
 
-  def new
-  end
-
   def create
     if @group.save
-      redirect_to groups_path, notice: "The group \"#{@group.name}\" has been created"
+      render "show_short"
     else
-      redirect_to new_group_path, alert: @group.errors.full_messages.first
+      render text: @group.errors.full_messages.first, status: :unprocessable_entity
     end
   end
 
-  def edit
-  end
-
   def update
-    old_name = @group.name
     if @group.update_attributes(params[:group])
-      redirect_to groups_path, notice: "\"#{old_name}\" has been renamed to \"#{@group.name}\""
+      render "show_short"
     else
-      redirect_to edit_group_path(@group), alert: @group.errors.full_messages.first
+      render text: @group.errors.full_messages.first, status: :unprocessable_entity
     end
   end
 
   def destroy
     @group.destroy
-    redirect_to groups_path, notice: "\"#{@group.name}\" has been deleted"
+    render text: "OK", status: :ok
   end
 end

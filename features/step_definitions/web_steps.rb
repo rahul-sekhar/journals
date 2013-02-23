@@ -133,6 +133,13 @@ When /^I click "(.*?)" near "(.*?)" in a list item$/ do |p_link, p_text|
   end
 end
 
+When /^I click the element "(.*?)" near "(.*?)" in a list item$/ do |p_element, p_text|
+  list_item = page.find('li', text: /#{p_text}/)
+  within(list_item) do
+    find(p_element).click
+  end
+end
+
 When /^I click "(.*?)" in a "(.*?)" element$/ do |p_text, p_element|
   page.find(p_element, text: /#{p_text}/).click
 end
@@ -206,6 +213,10 @@ When /^I enter the date "(.*?)"$/ do |p_date|
   page.execute_script(script)
 end
 
-Then /^wait for (\d) seconds$/ do |p_seconds|
+Then /^wait for (\d) seconds?$/ do |p_seconds|
   sleep p_seconds.to_i.seconds
+end
+
+Then /take a screenshot$/ do
+  page.driver.render('cucumber-screenshot.png')
 end

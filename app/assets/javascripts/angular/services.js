@@ -13,6 +13,10 @@ angular.module('journalsApp.services', ['ngResource', 'journalsApp.filters']).
     });
   }).
 
+  factory('Group', function($resource) {
+    return $resource('/groups/:id', {id: "@id"});
+  }).
+
   factory('PeopleCtrlBase', function($location) {
     var PeopleCtrlBase = {};
     PeopleCtrlBase.include = function(scope, query_function) {

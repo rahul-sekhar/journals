@@ -15,7 +15,7 @@ angular.module('journalsApp.directives', []).
       templateUrl: '<%= asset_path("profile_fields_template.html") %>',
       replace: true,
       controller: 'FieldsCtrl'
-    }
+    };
   }).
 
   directive('field', function() {
@@ -31,10 +31,11 @@ angular.module('journalsApp.directives', []).
           '<p class="field-name">{{fieldName | capitalize}}</p>' +
           '<p ng-hide="editMode" ng-click="startEdit()">{{parent[fieldName]}}</p>' +
           '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" cancel-edit="cancelEdit()" ng-trim="false" />' +
+          '<div ng-transclude></div>' +
         '</div>',
       replace: true,
       controller: 'InPlaceEditCtrl'
-    }
+    };
   }).
 
   directive('headingField', function() {
@@ -52,7 +53,7 @@ angular.module('journalsApp.directives', []).
         '</div>',
       replace: true,
       controller: 'InPlaceEditCtrl'
-    }
+    };
   }).
   
   directive('smallHeadingField', function() {
@@ -70,7 +71,7 @@ angular.module('journalsApp.directives', []).
         '</div>',
       replace: true,
       controller: 'InPlaceEditCtrl'
-    }
+    };
   }).
 
   directive('multiLineField', function() {
@@ -89,7 +90,7 @@ angular.module('journalsApp.directives', []).
         '</div>',
       replace: true,
       controller: 'InPlaceEditCtrl'
-    }
+    };
   }).
 
   directive('dateField', function() {
@@ -133,7 +134,26 @@ angular.module('journalsApp.directives', []).
         });
       },
       controller: 'InPlaceEditCtrl'
-    }
+    };
+  }).
+
+  directive('simpleField', function() {
+    return {
+      restrict: 'E',
+      transclude: true,
+      scope: { 
+        parent: '=',
+        fieldName: '@',
+        type: '@'
+      },
+      template:
+        '<div class="simple-field">' +
+          '<p ng-hide="editMode" ng-click="startEdit()">{{parent[fieldName]}}</p>' +
+          '<input ng-show="editMode" focus-on="editMode" ng-model="editorValue" finish-edit="finishEdit()" cancel-edit="cancelEdit()" ng-trim="false" />' +
+        '</div>',
+      replace: true,
+      controller: 'InPlaceEditCtrl'
+    };
   }).
   
   directive('finishEdit', function() {
@@ -219,5 +239,34 @@ angular.module('journalsApp.directives', []).
         scope.$watch('totalPages', update);
         scope.$watch('currentPage', update);
       }
-    }
+    };
+  }).
+
+  directive('modal', function() {
+    return {
+      restrict: 'E',
+      transclude: true,
+      scope: {
+        showOn: '='
+      },
+      template:
+        '<div class="modal" ng-transclude>' +
+        '</div>',
+      replace: true,
+      link: function(scope, elem, attrs) {
+        elem.dialog({
+          autoOpen: false,
+          modal: true,
+          show: 300,
+          hide: 300,
+          close: function() {
+            scope.showOn = false;
+            scope.$apply();
+          }
+        });
+        scope.$watch('showOn', function(val) {
+          if (val) elem.dialog('open');
+        });
+      }
+    };
   });

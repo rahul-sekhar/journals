@@ -13,7 +13,7 @@
         %li
           %a Add student
         %li
-          %a Manage groups
+          %a{ "ng-click"=>"manageGroups=true" } Manage groups
 
     %p.label Viewing
 
@@ -56,6 +56,17 @@
   %p No matching people were found.
 
 %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
+
+%modal{ "show-on"=>"manageGroups" }
+  #groups{ "ng-controller"=>"GroupsCtrl" }
+    %h3 Manage groups
+    %ul{ "ng-show"=>"groups.length" }
+      %li{ "ng-repeat"=>"group in groups" }
+        %simple-field{ "parent"=>"group", "field-name"=>"name", "type"=>"groups" }
+        %a.delete{ "ng-click"=>"delete(group)" } Delete
+    %p{ "ng-hide"=>"groups.length" }
+      There are no groups yet.
+    %a.add{ "ng-click"=>"add()" } Add group
 
 / %header.profile-header
 /   %h3= profile.full_name
