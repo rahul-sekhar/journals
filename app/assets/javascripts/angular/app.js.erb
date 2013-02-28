@@ -1,8 +1,14 @@
 'use strict';
 
-angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp.services', 'journalsApp.directives']).
+angular.module('journalsApp', 
+  ['ngSanitize', 'journals.people', 'journalsApp.filters', 'journalsApp.services', 'journalsApp.directives']).
+  
   config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);
+  }]).
+  config(["$httpProvider", function($httpProvider) {
+    $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   }]).
   config(['$routeProvider', function($routeProvider) {
     $routeProvider.
@@ -11,26 +17,23 @@ angular.module('journalsApp', ['ngSanitize', 'journalsApp.filters', 'journalsApp
 
       when('/', {redirectTo: '/people'}).
 
-      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: PeopleCtrl, reloadOnSearch: false}).
+      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
 
-      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: ArchivedPeopleCtrl, reloadOnSearch: false}).
+      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
 
-      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: TeachersCtrl, reloadOnSearch: false}).
+      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
 
-      when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleTeacherCtrl}).
+      when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
 
-      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: StudentsCtrl, reloadOnSearch: false}).
+      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
 
-      when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleStudentCtrl}).
+      when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
 
       when('/guardians', {redirectTo: '/page-not-found'}).
 
-      when('/guardians/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: SingleGuardianCtrl}).
+      when('/guardians/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
 
       when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
 
       otherwise({redirectTo: '/page-not-found'});
-  }]).
-  config(["$httpProvider", function(provider) {
-    provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
   }]);

@@ -55,6 +55,7 @@ Scenario: Add a group
   Then I should see "Group 2" within the "#groups" block
   Then I should see "New group" within the "#groups" block
 
+@current
 Scenario: View a student with no groups
   Given a student profile for Parvathy exists
   And I am on the page for that profile
