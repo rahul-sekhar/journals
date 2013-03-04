@@ -147,15 +147,278 @@ describe('people module', function() {
   /* ------------ Person ----------------- */
 
   describe('Person', function() {
-    var Person;
+    var Person, messageHandler;
+
+    beforeEach(module(function($provide) {
+      messageHandler = { showError: jasmine.createSpy() };
+      $provide.value('messageHandler', messageHandler);
+    }));
 
     beforeEach(inject(function(_Person_) {
       Person = _Person_;
     }));
 
     describe('create()', function() {
+      var person, inputData;
 
+      beforeEach(function() {
+        inputData = {
+          type: 'Student',
+          id: 7,
+          field1: 'value 1',
+          field2: 'value 2'
+        };
+        person = Person.create(inputData);
+      });
+
+      it('preserves input data', function() {
+        expect(person.field1).toEqual('value 1');
+        expect(person.field2).toEqual('value 2');
+      });
+
+      it('throws an exception if type is not valid', function() {
+        inputData = {
+          type: 'Something'
+        };
+        expect(function() { Person.create(inputData) }).toThrow('Invalid type for person');
+      });
+
+      describe('url()', function() {
+        it('throws an exception if id is not present', function() {
+          person.type = 'Student';
+          person.id = null
+          expect(person.url).toThrow('Invalid id for person');
+        });
+
+        it('gets the url for a student', function() {
+          person.type = 'Student';
+          person.id = 7;
+          expect(person.url()).toEqual('/students/7')
+        });
+
+        it('gets the url for a teacher', function() {
+          person.type = 'Teacher';
+          person.id = 17;
+          expect(person.url()).toEqual('/teachers/17')
+        });
+
+        it('gets the url for a guardian', function() {
+          person.type = 'Guardian';
+          person.id = 1;
+          expect(person.url()).toEqual('/guardians/1')
+        });
+      });
+
+      describe('fields', function() {
+        it('sets a students fields', function() {
+          inputData = {
+            type: 'Student'
+          };
+          person = Person.create(inputData);
+          var field_names = person.fields.map(function(obj) {
+            return obj.slug;
+          });
+          expect(field_names).toEqual([
+            "formatted_birthday",
+            "blood_group",
+            "mobile",
+            "home_phone",
+            "office_phone",
+            "email",
+            "additional_emails",
+            "address",
+            "notes"
+          ]);
+        });
+
+        it('returns a teachers fields', function() {
+          inputData = {
+            type: 'Teacher'
+          };
+          person = Person.create(inputData);
+          var field_names = person.fields.map(function(obj) {
+            return obj.slug;
+          });
+          expect(field_names).toEqual([
+            "mobile",
+            "home_phone",
+            "office_phone",
+            "email",
+            "additional_emails",
+            "address",
+            "notes"
+          ]);
+        });
+
+        it('returns a guardians fields', function() {
+          inputData = {
+            type: 'Guardian'
+          };
+          person = Person.create(inputData);
+          var field_names = person.fields.map(function(obj) {
+            return obj.slug;
+          });
+          expect(field_names).toEqual([
+            "mobile",
+            "home_phone",
+            "office_phone",
+            "email",
+            "additional_emails",
+            "address",
+            "notes"
+          ]);
+        });
+      });
+
+      describe('update(field_name, value)', function() {
+        var httpBackend;
+
+        beforeEach(inject(function($httpBackend) {
+          httpBackend = $httpBackend;
+        }));
+
+        describe('new field', function() {
+          describe('with a valid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPUT('/students/7', {
+                student: { field3: 'new field value' }
+              }).respond({
+                type: 'Student',
+                id: 7,
+                field3: 'formatted field value'
+              });
+              person.update('field3', 'new field value');
+            });
+
+            it('updates the field in the model', function() {
+              expect(person.field3).toEqual('new field value');
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('updates the model field with the server response', function() {
+              httpBackend.flush();
+              expect(person.field3).toEqual('formatted field value');
+            });
+          });
+          
+          describe('with an invalid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPUT('/students/7', {
+                student: { field3: 'new field value' }
+              }).respond(422, 'Some error');
+              person.update('field3', 'new field value');
+            });
+
+            it('updates the field in the model', function() {
+              expect(person.field3).toEqual('new field value');
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('restores the model field to an empty value with the server response', function() {
+              httpBackend.flush();
+              expect(person.field3).toBeUndefined();
+            });
+
+            it('displays an error message', function() {
+              httpBackend.flush();
+              expect(messageHandler.showError).toHaveBeenCalled();
+            });
+          });
+        });
+
+        describe('changed value', function() {
+          describe('with a valid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPUT('/students/7', {
+                student: { field2: 'new value' }
+              }).respond({
+                type: 'Student',
+                id: 7,
+                field2: 'formatted value'
+              });
+              person.update('field2', 'new value');
+            });
+
+            it('updates the field in the model', function() {
+              expect(person.field2).toEqual('new value');
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('updates the model field with the server response', function() {
+              httpBackend.flush();
+              expect(person.field2).toEqual('formatted value');
+            });
+          });
+          
+          describe('with an invalid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPUT('/students/7', {
+                student: { field2: 'new value' }
+              }).respond(422, 'Some error');
+              person.update('field2', 'new value');
+            });
+
+            it('updates the field in the model', function() {
+              expect(person.field2).toEqual('new value');
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('restores the model field to the old value with the server response', function() {
+              httpBackend.flush();
+              expect(person.field2).toEqual('value 2');
+            });
+
+            it('displays an error message', function() {
+              httpBackend.flush();
+              expect(messageHandler.showError).toHaveBeenCalled();
+            });
+          }); 
+        });
+
+        describe('unchanged value', function() {
+          beforeEach(function() {
+            person.update('field2', 'value 2');
+          });
+
+          it('leaves the field value unchanged and does not contact the server', function() {
+            expect(person.field2).toEqual('value 2');
+          });
+        });
+      });
     });
+
+    describe('createFromArray()', function() {
+      var result, args;
+
+      beforeEach(function() {
+        args = [];
+        Person.create = function(string) {
+          args.push(string);
+          return string + ' object';
+        };
+        result = Person.createFromArray(['a', 'b', 'c']);
+      });
+
+      it('calls create with each value of the array', function() {
+        expect(args).toEqual(['a', 'b', 'c']);
+      });
+
+      it('returns an array transformed into person objects', function() {
+        expect(result).toEqual(['a object', 'b object', 'c object']);
+      });
+    })
   });
 
   /* ---------- PeopleInterface -------------- */
@@ -274,5 +537,35 @@ describe('people module', function() {
         });
       });
     });
+  });
+  
+
+  /*---------------- Date with age filter ---------------*/
+
+  describe('dateWithAge', function() {
+    var currentDateMock
+
+    beforeEach(function() {
+      module(function($provide) {
+        currentDateMock = {
+          get: function() {
+            return new Date('2013-01-01')
+          }
+        };
+        $provide.value('currentDate', currentDateMock)
+      });
+    });
+
+    it('converts a date to an age', inject(function(dateWithAgeFilter) {
+      expect(dateWithAgeFilter('24-04-2007')).toEqual('24-04-2007 (5 years)');
+    }));
+
+    it('returns null for a null date', inject(function(dateWithAgeFilter) {
+      expect(dateWithAgeFilter(null)).toEqual(null);
+    }));
+
+    it('returns null for a blank date', inject(function(dateWithAgeFilter) {
+      expect(dateWithAgeFilter('')).toEqual(null);
+    }));
   });
 });

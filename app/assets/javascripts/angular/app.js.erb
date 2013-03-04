@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('journalsApp', 
-  ['ngSanitize', 'journals.people', 'journalsApp.filters', 'journalsApp.services', 'journalsApp.directives']).
+angular.module('journals', 
+  ['journals.people', 'journals.editInPlace', 'journals.filters', 'journals.onType']).
   
   config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);
@@ -17,15 +17,15 @@ angular.module('journalsApp',
 
       when('/', {redirectTo: '/people'}).
 
-      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
+      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Students and teachers'}).
 
-      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
+      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Archived students and teachers'}).
 
-      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
+      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Teachers'}).
 
       when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
 
-      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false}).
+      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Students'}).
 
       when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
 

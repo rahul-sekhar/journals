@@ -1,13 +1,36 @@
 'use strict';
 
 describe('filter', function() {
-  beforeEach(module('journalsApp.services'));
-  beforeEach(module('journalsApp.filters'));
+  beforeEach(module('journals.filters'));
 
+  describe('apply', function() {
+    it('should apply the passed filter', inject(function(applyFilter) {
+      expect(applyFilter("some\ntext", 'capitalize')).toEqual("Some\nText");
+      expect(applyFilter("some\ntext", 'multiline')).toEqual("some<br />text");
+    }));
+
+    it('should act as an identity filter if no filter is passed', inject(function(applyFilter) {
+      expect(applyFilter("some\ntext", null)).toEqual("some\ntext");
+    }));
+  });
+
+  describe('escapeHtml', function() {
+    it('should escape html entities', inject(function(escapeHtmlFilter) {
+      expect(escapeHtmlFilter("some<text")).toEqual("some&lt;text");
+    }));
+
+    it('returns null for a blank value', inject(function(escapeHtmlFilter) {
+      expect(escapeHtmlFilter(null)).toEqual(null);
+    }));
+  });
 
   describe('capitalize', function() {
     it('should capitalize each word of a passed string', inject(function(capitalizeFilter) {
       expect(capitalizeFilter('some text')).toEqual('Some Text');
+    }));
+
+    it('should capitalize each word of a passed string with multiple lines', inject(function(capitalizeFilter) {
+      expect(capitalizeFilter("some\nmultiline\ntext")).toEqual("Some\nMultiline\nText");
     }));
 
     it('should replace underscores with spaces and then capitalize each word', inject(function(capitalizeFilter) {
@@ -15,50 +38,17 @@ describe('filter', function() {
     }));
   });
 
-  describe('simpleSingularize', function() {
-    it('leaves the word alone if the last character is not an s', inject(function(simpleSingularizeFilter) {
-      expect(simpleSingularizeFilter('thing')).toEqual('thing');
+  describe('multiline', function() {
+    it('replaces new lines with brs', inject(function(multilineFilter) {
+      expect(multilineFilter("Some thing\non many\nlines")).toEqual('Some thing<br />on many<br />lines');
     }));
 
-    it('removes the last character if it is an s', inject(function(simpleSingularizeFilter) {
-      expect(simpleSingularizeFilter('things')).toEqual('thing');
-    }));
-  });
-
-  describe('simpleFormat', function() {
-    it('replaces new lines with brs', inject(function(simpleFormatFilter) {
-      expect(simpleFormatFilter("Some thing\non many\nlines")).toEqual('Some thing<br />on many<br />lines');
+    it('leaves single line values alone', inject(function(multilineFilter) {
+      expect(multilineFilter('Some thing on one line')).toEqual('Some thing on one line');
     }));
 
-    it('leaves single line values alone', inject(function(simpleFormatFilter) {
-      expect(simpleFormatFilter('Some thing on one line')).toEqual('Some thing on one line');
-    }));
-
-    it('returns null for a null value', inject(function(simpleFormatFilter) {
-      expect(simpleFormatFilter(null)).toEqual(null);
-    }));
-  });
-
-  describe('dateToAge', function() {
-    var currentDateMock
-
-    beforeEach(function() {
-      module(function($provide) {
-        currentDateMock = {
-          get: function() {
-            return new Date('2013-01-01')
-          }
-        };
-        $provide.value('currentDate', currentDateMock)
-      });
-    });
-
-    it('converts a date to an age', inject(function(dateToAgeFilter) {
-      expect(dateToAgeFilter('24-04-2007')).toEqual(5);
-    }));
-
-    it('returns null for a null date', inject(function(dateToAgeFilter) {
-      expect(dateToAgeFilter(null)).toEqual(null);
+    it('returns null for a null value', inject(function(multilineFilter) {
+      expect(multilineFilter(null)).toEqual(null);
     }));
   });
 });

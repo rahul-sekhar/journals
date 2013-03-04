@@ -2,57 +2,6 @@
 
 /* Controllers */
 
-function SingleTeacherCtrl($scope, $routeParams, Person) {
-  $scope.pageTitle = 'Profile';
-  $scope.singleProfile = true;
-  Person.get({ id: $routeParams.id, type: 'teachers' },
-    // Success - load the profile
-    function(result) {
-      $scope.pageTitle = 'Profile: ' + result.full_name;
-      $scope.people = [result];
-    },
-    // Failure - profile not found 
-    function() {
-      $scope.pageTitle = 'Profile: Not found';
-      $scope.people = [];
-    }
-  );
-}
-
-function SingleStudentCtrl($scope, $routeParams, Person) {
-  $scope.pageTitle = 'Profile';
-  $scope.singleProfile = true;
-  Person.get({ id: $routeParams.id, type: 'students' },
-    // Success - load the profile
-    function(result) {
-      $scope.pageTitle = 'Profile: ' + result.full_name;
-      $scope.people = [result];
-    },
-    // Failure - profile not found 
-    function() {
-      $scope.pageTitle = 'Profile: Not found';
-      $scope.people = [];
-    }
-  );
-}
-
-function SingleGuardianCtrl($scope, $routeParams, Person) {
-  $scope.pageTitle = 'Profile';
-  $scope.singleProfile = true;
-  Person.get({ id: $routeParams.id, type: 'guardians' },
-    // Success - load the array of students
-    function(result) {
-      $scope.pageTitle = 'Profile: ' + result.full_name;
-      $scope.people = result.students
-    },
-    // Failure - profile not found 
-    function() {
-      $scope.pageTitle = 'Profile: Not found';
-      $scope.people = [];
-    }
-  );
-}
-
 function FieldsCtrl($scope, profileFields) {
   var person = $scope.person;
 

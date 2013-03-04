@@ -1,8 +1,8 @@
-%h2 {{pageTitle || "People"}}
+%h2 {{pageTitle}}
 
 %section#upper-bar
-  .people-fields{ "ng-hide" => "singleProfile" }
-    %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch()", "autocomplete"=>"off"}
+  .people-fields{ "ng-hide" => "singlePerson" }
+    %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch(search)", "autocomplete"=>"off"}
 
     .add.menu
       %p.title Add
@@ -34,46 +34,51 @@
 
 %article.profile{ "ng-repeat"=>"person in people" }
   %header.profile-header
-    %heading-field{ "parent"=>"person", "field-name"=>"full_name" }
+    %h3{ "edit-in-place"=>"person.update('full_name', value)", "editor-attr"=>"person.full_name",
+      "display"=>"{{person.full_name}}"}
 
-    %p.type{ "ng-show"=>"person.type == 'teachers'" }
-      {{person.type | simpleSingularize | capitalize}}
+    %p.type{ "ng-show"=>"person.type == 'Teacher'" }
+      {{person.type}}
 
     .clear-left
 
   %profile-fields.main-profile-fields{ "parent"=>"person" }
 
-  .guardians{ "ng-show"=>"person.type == 'students'" }
-    .guardian{ "ng-repeat"=>"guardian in person.guardians" }
+  / .guardians{ "ng-show"=>"person.type == 'students'" }
+  /   .guardian{ "ng-repeat"=>"guardian in person.guardians" }
       
-      %header.guardian-header
-        %small-heading-field{ "parent"=>"guardian", "field-name"=>"full_name" }
-        .clear-left
+  /     %header.guardian-header
+  /       %small-heading-field{ "parent"=>"guardian", "field-name"=>"full_name" }
+  /       .clear-left
 
-      %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
+  /     %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
 
-  %footer.profile-footer
-    .groups{ "ng-show"=>"person.type == 'students'" }
-      %h4 Groups
-      %ul
-        %li{ "ng-repeat"=>"group in person.groups" }
-          {{group.name}}
+  / %footer.profile-footer
+  /   .groups{ "ng-show"=>"person.type == 'students'" }
+  /     %h4 Groups
+  /     %ul
+  /       %li{ "ng-repeat"=>"group in person.groups" }
+  /         {{group.name}}
 
 .content-block{ "ng-hide"=>"people.length" }
   %p No matching people were found.
 
-%pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
+/ %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
 
-%modal{ "show-on"=>"manageGroups" }
-  #groups{ "ng-controller"=>"GroupsCtrl" }
-    %h3 Manage groups
-    %ul{ "ng-show"=>"groups.length" }
-      %li{ "ng-repeat"=>"group in groups" }
-        %simple-field{ "parent"=>"group", "field-name"=>"name", "type"=>"groups" }
-        %a.delete{ "ng-click"=>"delete(group)" } Delete
-    %p{ "ng-hide"=>"groups.length" }
-      There are no groups yet.
-    %a.add{ "ng-click"=>"add()" } Add group
+/ %modal{ "show-on"=>"manageGroups" }
+/   #groups{ "ng-controller"=>"GroupsCtrl" }
+/     %h3 Manage groups
+/     %ul{ "ng-show"=>"groups.length" }
+/       %li{ "ng-repeat"=>"group in groups" }
+/         %simple-field{ "parent"=>"group", "field-name"=>"name", "type"=>"groups" }
+/         %a.delete{ "ng-click"=>"delete(group)" } Delete
+/     %p{ "ng-hide"=>"groups.length" }
+/       There are no groups yet.
+/     %a.add{ "ng-click"=>"add()" } Add group
+
+
+
+
 
 / %header.profile-header
 /   %h3= profile.full_name

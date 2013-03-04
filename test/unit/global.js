@@ -1,3 +1,5 @@
+'use strict';
+
 beforeEach(function() {
   this.addMatchers({
     toEqualData: function(expected) {
@@ -8,3 +10,20 @@ beforeEach(function() {
     }
   });
 });
+
+// Replace assets module
+angular.module('journals.assets', []).
+
+  factory('assets', function() {
+    var assets = {};
+
+    assets.url = function(filename) {
+      return 'http://localhost:3000/assets/' + filename
+    };
+
+    return assets;
+  });
+
+/*-------------- Pending tests -------------------------*/
+// editInPlace directive - date field
+// onType directive
