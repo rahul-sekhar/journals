@@ -1,3 +1,5 @@
+'use strict';
+
 describe('messageHandler', function() {
   beforeEach(module('journals.messageHandler'));
 

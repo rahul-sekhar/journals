@@ -1,3 +1,5 @@
+'use strict';
+
 describe('editInPlace module', function() {
   beforeEach(module('journals.editInPlace'));
 
@@ -12,14 +14,14 @@ describe('editInPlace module', function() {
       }));
 
       it('escapes html if the contains-html attribute is not set', function() {
-        elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" editor-attr="" display="Some<br>text"></p>');
+        var elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" editor-attr="" display="Some<br>text"></p>');
         compile(elem)(scope);
         scope.$apply();
         expect(elem.find('span.field').html()).toEqual('Some&lt;br&gt;text');
       });
 
       it('does not escape html if the contains-html attribute is set', function() {
-        elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" contains-html editor-attr="" display="Some<br>text"></p>');
+        var elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" contains-html editor-attr="" display="Some<br>text"></p>');
         compile(elem)(scope);
         scope.$apply();
         expect(elem.find('span.field').html()).toEqual('Some<br>text');
@@ -309,8 +311,7 @@ describe('editInPlace module', function() {
 
       beforeEach(inject(function($rootScope, $compile) {
         elem = angular.element('<p edit-in-place="someFunction(value)" type="other" edit-mode="editOn" editor-attr="someAttr">Some text</p>').appendTo('body');
-        rootScope = $rootScope
-        scope = rootScope.$new();
+        scope = $rootScope.$new();
         $compile(elem)(scope);
       }));
 

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('people module', function() {
   beforeEach(module('journals.people'));
 
@@ -552,7 +554,7 @@ describe('people module', function() {
     // Query function
     describe('query()', function() {
       describe('valid response', function() {
-        var response, error;
+        var promise, response, error;
 
         beforeEach(function() {
           httpBackend.expectGET('some_url').respond({
@@ -584,7 +586,7 @@ describe('people module', function() {
       });
 
       describe('invalid response', function() {
-        var response, error;
+        var promise, response, error;
 
         beforeEach(function() {
           httpBackend.expectGET('some_url').respond(404, 'Some error')
@@ -607,7 +609,7 @@ describe('people module', function() {
     // Get function
     describe('get()', function() {
       describe('valid response', function() {
-        var response, error;
+        var promise, response, error;
 
         beforeEach(function() {
           httpBackend.expectGET('some_url').respond({
@@ -633,7 +635,7 @@ describe('people module', function() {
       });
 
       describe('invalid response', function() {
-        var response, error;
+        var promise, response, error;
 
         beforeEach(function() {
           httpBackend.expectGET('some_url').respond(404, 'Some error')
