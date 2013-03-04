@@ -19,7 +19,14 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
       loadPeople = function() {
         PeopleInterface.get($location.url()).
           then(function(result) {
-            $scope.people = [result.person];
+            if (result.person.type === 'Guardian') {
+              // Set the people to the guardians students
+              $scope.people = result.person.students;
+            }
+            else {
+              $scope.people = [result.person];  
+            }
+            
             $scope.pageTitle = 'Profile: ' + result.person.full_name;
           }, function(message) {
             messageHandler.showError(message);
@@ -76,20 +83,30 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         throw new Error('Invalid type for person');
       }
 
+      // Convert guardians if the person is a student
+      if(person.type === 'Student' && person.guardians) {
+        person.guardians = Person.createFromArray(person.guardians);
+      }
+
+      // Convert students if the person is a guardian
+      if(person.type === 'Guardian' && person.students) {
+        person.students = Person.createFromArray(person.students);
+      }
+
       // Set the persons fields based on the type
       var fields = [
         {name: "Mobile", slug: "mobile"},
-        {name: "Home phone", slug: "home_phone"},
-        {name: "Office phone", slug: "office_phone"},
+        {name: "Home Phone", slug: "home_phone"},
+        {name: "Office Phone", slug: "office_phone"},
         {name: "Email", slug: "email"},
-        {name: "Additional emails", slug: "additional_emails"},
+        {name: "Additional Emails", slug: "additional_emails"},
         {name: "Address", slug: "address", type: "textarea", filter: "multiline"},
         {name: "Notes", slug: "notes", type: "textarea", filter: "multiline"}
       ];
       if (person.type === 'Student') {
         fields.unshift(
           {name: "Birthday", slug: "formatted_birthday", type: "date", filter: "dateWithAge"},
-          {name: "Blood group", slug: "blood_group"}
+          {name: "Blood Group", slug: "blood_group"}
         );
       }
       fields = fields.map(function(obj) {
@@ -206,7 +223,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
       if (m < 0 || (m === 0 && currDate.getDate() < birthDate.getDate())) {
         age--;
       }
-      return date_text + ' (' + age + ' years)';
+      return date_text + ' (' + age + ' yrs)';
     };
   });
 

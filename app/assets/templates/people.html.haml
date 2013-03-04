@@ -44,14 +44,16 @@
 
   %profile-fields.main-profile-fields{ "parent"=>"person" }
 
-  / .guardians{ "ng-show"=>"person.type == 'students'" }
-  /   .guardian{ "ng-repeat"=>"guardian in person.guardians" }
+  .guardians{ "ng-show"=>"person.type == 'Student'" }
+    .guardian{ "ng-repeat"=>"guardian in person.guardians" }
       
-  /     %header.guardian-header
-  /       %small-heading-field{ "parent"=>"guardian", "field-name"=>"full_name" }
-  /       .clear-left
+      %header.guardian-header
+        %h4{ "edit-in-place"=>"guardian.update('full_name', value)", "editor-attr"=>"guardian.full_name",
+          "display"=>"{{guardian.full_name}}"}
+        
+        .clear-left
 
-  /     %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
+      %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
 
   / %footer.profile-footer
   /   .groups{ "ng-show"=>"person.type == 'students'" }

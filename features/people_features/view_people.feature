@@ -1,4 +1,4 @@
-@angular @current
+@angular
 Feature: View students and teachers and filter them
 
 View various categories of people and filter them by their names.
@@ -14,7 +14,6 @@ Background:
   And a student named "Archie Andrews" exists
   And that student is archived
 
-@current
 Scenario: View unarchived students and teachers on the people page
   When I am on the people page
   Then I should see the page heading "People"

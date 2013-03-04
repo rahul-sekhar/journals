@@ -122,6 +122,32 @@ describe('people module', function() {
         })
       });
 
+      describe('when the promise is resolved with a guardian', function() {
+        beforeEach(function() {
+          deferred_result.resolve({person: {
+            full_name: 'Some person',
+            type: 'Guardian',
+            students: [
+              {full_name: 'Student A'},
+              {full_name: 'Student B'}
+            ],
+            field: 'some value'
+          }});
+          scope.$apply();
+        });
+
+        it('sets the people data to the students', function() {
+          expect(scope.people).toEqual([
+            {full_name: 'Student A'},
+            {full_name: 'Student B'}
+          ]);
+        });
+
+        it('sets the pageTitle', function() {
+          expect(scope.pageTitle).toEqual('Profile: Some person');
+        })
+      });
+
       describe('when the promise is rejected', function() {
         beforeEach(function() {
           deferred_result.reject('Some error object');
@@ -206,6 +232,57 @@ describe('people module', function() {
           person.type = 'Guardian';
           person.id = 1;
           expect(person.url()).toEqual('/guardians/1')
+        });
+      });
+
+      describe('conversion of contained people', function() {
+        var oldCreate;
+
+        beforeEach(function() {
+          oldCreate = Person.create;
+          Person.create = function(input) {
+            return 'converted ' + input;
+          }
+        });
+
+        describe('guardians', function() {
+          it('is not touched if not a student', function() {
+            inputData = {
+              type: 'Teacher',
+              guardians: ['A', 'B']
+            };
+            person = oldCreate(inputData);
+            expect(person.guardians).toEqual(['A', 'B']);
+          });
+
+          it('is converted into a person object array if a student', function() {
+            inputData = {
+              type: 'Student',
+              guardians: ['A', 'B']
+            };
+            person = oldCreate(inputData);
+            expect(person.guardians).toEqual(['converted A', 'converted B']);
+          });
+        });
+
+        describe('students', function() {
+          it('is not touched if not a guardian', function() {
+            inputData = {
+              type: 'Student',
+              students: ['A', 'B']
+            };
+            person = oldCreate(inputData);
+            expect(person.students).toEqual(['A', 'B']);
+          });
+
+          it('is converted into a person object array if a guardian', function() {
+            inputData = {
+              type: 'Guardian',
+              students: ['A', 'B']
+            };
+            person = oldCreate(inputData);
+            expect(person.students).toEqual(['converted A', 'converted B']);
+          });
         });
       });
 
@@ -557,7 +634,7 @@ describe('people module', function() {
     });
 
     it('converts a date to an age', inject(function(dateWithAgeFilter) {
-      expect(dateWithAgeFilter('24-04-2007')).toEqual('24-04-2007 (5 years)');
+      expect(dateWithAgeFilter('24-04-2007')).toEqual('24-04-2007 (5 yrs)');
     }));
 
     it('returns null for a null date', inject(function(dateWithAgeFilter) {
