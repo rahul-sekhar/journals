@@ -93,6 +93,9 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         person.students = Person.createFromArray(person.students);
       }
 
+      // Set a blank editing object
+      person.editing = {};
+
       // Set the persons fields based on the type
       var fields = [
         {name: "Mobile", slug: "mobile"},
@@ -114,6 +117,18 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         return obj;
       });
       person.fields = fields;
+
+      // Check which fields are blank
+      person.remainingFields = function() {
+        return person.fields.filter(function(field) {
+          return !person[field.slug];
+        });
+      };
+
+      // Add a field (set it's editing value to true)
+      person.addField = function(field_name) {
+        person.editing[field_name] = true;
+      };
 
       // Function to get the url for the person
       person.url = function() {

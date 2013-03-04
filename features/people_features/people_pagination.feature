@@ -1,4 +1,4 @@
-@angular @current
+@angular
 Feature: View pages of students and teachers
 
 Pages with many people are paginated, with ten people per page

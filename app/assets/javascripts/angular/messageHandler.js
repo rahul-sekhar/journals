@@ -6,7 +6,7 @@ angular.module('journals.messageHandler', []).
     var messageHandler = {};
 
     messageHandler.showError = function(error) {
-      console.log(error);
+      console.log(error, error.data);
     };
 
     return messageHandler;

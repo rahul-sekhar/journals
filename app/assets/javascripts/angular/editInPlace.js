@@ -1,12 +1,13 @@
 angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
-  .directive('editInPlace', ['$compile', function($compile) {
+  .directive('editInPlace', ['$compile', '$timeout', function($compile, $timeout) {
     return {
       restrict: 'A',
       scope: {
         saveFn: '&editInPlace',
         parentValue: '=editorAttr',
         type: '@',
-        display: '@'
+        display: '@',
+        editMode: '='
       },
       template: 
         '<span class="container">' +
@@ -44,10 +45,12 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
             input.appendTo(elem.find('.container'));
 
             if(val === 'date') {
-              var clearLink = angular.element('<a href="" class="clear-date" ng-click="clearEdit()" ng-show="editMode"' + 
+              var clearLink = angular.element('<a href="" class="clear-date" ng-click="clearDate()" ng-show="editMode"' + 
                 'ng-mouseenter="clearHover = true" ng-mouseleave="clearHover = false">clear</a>');
               $compile(clearLink)(scope);
               clearLink.appendTo(elem.find('.container'));
+
+              var dateSetPromise;
 
               input.datepicker({
                 dateFormat: 'dd-mm-yy',
@@ -56,14 +59,25 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
                 yearRange: '-30:+0',
                 onClose: function(date) {
                   scope.$apply(function() {
-                    // Make the change only if the mouse is not hovering over the clear button
+                    // If the mouse is hovering over the clear button, give the user time to click it
                     if (!scope.clearHover) {
                       scope.editorValue = date;
                       scope.finishEdit();
                     }
+                    else {
+                      dateSetPromise = $timeout(function() {
+                        scope.editorValue = date;
+                        scope.finishEdit();
+                      }, 500);
+                    }
                   });
                 }
               });
+
+              scope.clearDate = function() {
+                $timeout.cancel(dateSetPromise);
+                scope.clearEdit();
+              };
             }
             else {
               input.

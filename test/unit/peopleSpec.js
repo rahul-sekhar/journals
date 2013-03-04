@@ -202,6 +202,10 @@ describe('people module', function() {
         expect(person.field2).toEqual('value 2');
       });
 
+      it('sets a blank editing object', function() {
+        expect(person.editing).toEqual({});
+      });
+
       it('throws an exception if type is not valid', function() {
         inputData = {
           type: 'Something'
@@ -344,6 +348,39 @@ describe('people module', function() {
             "address",
             "notes"
           ]);
+        });
+      });
+
+      describe('remainingFields()', function() {
+        it('returns non bank fields', function() {
+          person.home_phone = 'blah blah';
+          person.address='something'
+          person.email = null;
+          person.mobile = ''
+          person.blood_group = 'A+'
+
+          var field_names = person.remainingFields().map(function(obj) {
+            return obj.slug;
+          });
+
+          expect(field_names).toEqual([
+            "formatted_birthday",
+            "mobile",
+            "office_phone",
+            "email",
+            "additional_emails",
+            "notes"
+          ]);
+        });
+      });
+
+      describe('addField(field_name)', function() {
+        beforeEach(function() {
+          person.addField('some_field');
+        });
+
+        it('sets editing to true for that field', function() {
+          expect(person.editing['some_field']).toEqual(true);
         });
       });
 

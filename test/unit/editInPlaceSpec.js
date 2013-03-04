@@ -12,14 +12,14 @@ describe('editInPlace module', function() {
       }));
 
       it('escapes html if the contains-html attribute is not set', function() {
-        elem = angular.element('<p edit-in-place="" type="text" editor-attr="" display="Some<br>text"></p>');
+        elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" editor-attr="" display="Some<br>text"></p>');
         compile(elem)(scope);
         scope.$apply();
         expect(elem.find('span.field').html()).toEqual('Some&lt;br&gt;text');
       });
 
       it('does not escape html if the contains-html attribute is set', function() {
-        elem = angular.element('<p edit-in-place="" type="text" contains-html editor-attr="" display="Some<br>text"></p>');
+        elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" contains-html editor-attr="" display="Some<br>text"></p>');
         compile(elem)(scope);
         scope.$apply();
         expect(elem.find('span.field').html()).toEqual('Some<br>text');
@@ -30,7 +30,7 @@ describe('editInPlace module', function() {
       var elem, scope, rootScope, input, fieldSpan;
 
       beforeEach(inject(function($rootScope, $compile) {
-        elem = angular.element('<p edit-in-place="someFunction(value)" type="text" editor-attr="someAttr" display="Some text"></p>').appendTo('body');
+        elem = angular.element('<p edit-in-place="someFunction(value)" edit-mode="editOn" type="text" editor-attr="someAttr" display="Some text"></p>').appendTo('body');
         rootScope = $rootScope
         scope = rootScope.$new();
         rootScope.someAttr = 'initial value';
@@ -55,6 +55,21 @@ describe('editInPlace module', function() {
       it('adds an initially hidden input element', function() {
         expect(input.length).toEqual(1);
         expect(input.is(':visible')).toEqual(false);
+      });
+
+      describe('when the linked editMode attribute of the parent scope is set to true', function() {
+        beforeEach(function() {
+          scope.editOn = true;
+          scope.$apply();
+        });
+
+        it('hides the fieldSpan', function() {
+          expect(fieldSpan.is(':visible')).toEqual(false);
+        });
+
+        it('shows the input', function() {
+          expect(input.is(':visible')).toEqual(true);
+        });
       });
 
       describe('when the field is clicked', function() {
@@ -165,7 +180,7 @@ describe('editInPlace module', function() {
       var elem, scope, rootScope, input, fieldSpan;
 
       beforeEach(inject(function($rootScope, $compile) {
-        elem = angular.element('<p edit-in-place="someFunction(value)" type="textarea" editor-attr="someAttr" display="Some text"></p>').appendTo('body');
+        elem = angular.element('<p edit-in-place="someFunction(value)" type="textarea" edit-mode="editOn" editor-attr="someAttr" display="Some text"></p>').appendTo('body');
         rootScope = $rootScope
         scope = rootScope.$new();
         rootScope.someAttr = 'initial value';
@@ -293,7 +308,7 @@ describe('editInPlace module', function() {
       var elem, scope;
 
       beforeEach(inject(function($rootScope, $compile) {
-        elem = angular.element('<p edit-in-place="someFunction(value)" type="other" editor-attr="someAttr">Some text</p>').appendTo('body');
+        elem = angular.element('<p edit-in-place="someFunction(value)" type="other" edit-mode="editOn" editor-attr="someAttr">Some text</p>').appendTo('body');
         rootScope = $rootScope
         scope = rootScope.$new();
         $compile(elem)(scope);

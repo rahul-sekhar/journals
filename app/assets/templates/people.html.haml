@@ -35,7 +35,7 @@
 %article.profile{ "ng-repeat"=>"person in people" }
   %header.profile-header
     %h3{ "edit-in-place"=>"person.update('full_name', value)", "editor-attr"=>"person.full_name",
-      "display"=>"{{person.full_name}}"}
+      "display"=>"{{person.full_name}}", "edit-mode"=>"person.editing['full_name']" }
 
     %p.type{ "ng-show"=>"person.type == 'Teacher'" }
       {{person.type}}
@@ -49,7 +49,7 @@
       
       %header.guardian-header
         %h4{ "edit-in-place"=>"guardian.update('full_name', value)", "editor-attr"=>"guardian.full_name",
-          "display"=>"{{guardian.full_name}}"}
+          "display"=>"{{guardian.full_name}}", "edit-mode"=>"guardian.editing['full_name']"}
         
         .clear-left
 
