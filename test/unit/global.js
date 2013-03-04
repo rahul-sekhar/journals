@@ -27,3 +27,4 @@ angular.module('journals.assets', []).
 /*-------------- Pending tests -------------------------*/
 // editInPlace directive - date field
 // onType directive
+// pagination directive

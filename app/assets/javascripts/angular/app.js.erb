@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('journals', 
-  ['journals.people', 'journals.editInPlace', 'journals.filters', 'journals.onType']).
+  ['journals.people', 'journals.editInPlace', 'journals.filters', 'journals.pagination', 'journals.onType']).
   
   config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);

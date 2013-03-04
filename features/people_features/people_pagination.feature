@@ -1,4 +1,4 @@
-@angular
+@angular @current
 Feature: View pages of students and teachers
 
 Pages with many people are paginated, with ten people per page
@@ -20,14 +20,15 @@ Scenario: View pages of people
 
   When I click "2" within the "#pagination" block
   Then I should be on the people page
-  And I should see "F" in a "h3" element
-  And I should see "J" in a "h3" element
   And I should not see "E" in a "h3" element
   And I should not see "K" in a "h3" element
+  And I should see "F" in a "h3" element
+  And I should see "J" in a "h3" element
   And I should see "2" in a "#pagination .current" element
 
   When I click "6" within the "#pagination" block
   Then I should be on the people page
+  And I should not see "F" in a "h3" element
   And I should see "Z" in a "h3" element
   And I should see "6" in a "#pagination .current" element
 
@@ -42,6 +43,7 @@ Scenario: View pages of archived people
 
   When I click "3" within the "#pagination" block
   Then I should be on the archived people page
+  And I should not see "A" in a "h3" element
   And I should see "Z" in a "h3" element
   And I should see "3" in a "#pagination .current" element
 
@@ -56,6 +58,7 @@ Scenario: View pages of teachers
 
   When I click "3" within the "#pagination" block
   Then I should be on the teachers page
+  And I should not see "A" in a "h3" element
   And I should see "Z" in a "h3" element
   And I should see "3" in a "#pagination .current" element
 
@@ -70,5 +73,6 @@ Scenario: View pages of students
 
   When I click "3" within the "#pagination" block
   Then I should be on the students page
+  And I should not see "A" in a "h3" element
   And I should see "Z" in a "h3" element
   And I should see "3" in a "#pagination .current" element

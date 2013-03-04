@@ -43,7 +43,7 @@ describe('people module', function() {
 
       it('sets the scope data when the promise is resolved', function() {
         expect(scope.people).toBeUndefined();
-        deferred_result.resolve({people: ['person1', 'person2'], metadata: { currentPage: 3, totalPages: 7 }});
+        deferred_result.resolve({people: ['person1', 'person2'], metadata: { current_page: 3, total_pages: 7 }});
         scope.$apply();
         expect(scope.people).toEqual(['person1', 'person2']);
         expect(scope.currentPage).toEqual(3);

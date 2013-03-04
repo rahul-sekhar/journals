@@ -45,8 +45,8 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         PeopleInterface.query($location.url()).
           then(function(result) {
             $scope.people = result.people;
-            $scope.currentPage = result.metadata.currentPage;
-            $scope.totalPages = result.metadata.totalPages;
+            $scope.currentPage = result.metadata.current_page;
+            $scope.totalPages = result.metadata.total_pages;
           }, function(message) {
             messageHandler.showError(message);
           });
