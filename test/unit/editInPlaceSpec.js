@@ -331,10 +331,6 @@ describe('editInPlace module', function() {
       ctrl = $controller('editInPlaceCtrl', { $scope: scope })
     }));
 
-    it('sets editMode to false initially', function() {
-      expect(scope.editMode).toEqual(false);
-    });
-
     it('does not set the editor value', function() {
       expect(scope.editorValue).toBeUndefined();
     });

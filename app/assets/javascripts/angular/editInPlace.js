@@ -101,8 +101,6 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
   }])
 
   .controller('editInPlaceCtrl', ['$scope', function($scope) {
-    $scope.editMode = false;
-
     $scope.startEdit = function() {
       $scope.editorValue = $scope.parentValue;
       $scope.editMode = true;

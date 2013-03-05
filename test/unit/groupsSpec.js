@@ -29,6 +29,82 @@ describe('Groups module', function() {
         });
       });
 
+      describe('add()', function() {
+        var group;
+
+        beforeEach(function() {
+          httpBackend.flush();
+          group = Groups.add();
+        });
+
+        it('creates an empty group with editing set to true', function() {
+          expect(all_groups).toEqualData([{editing: true}, {id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+        });
+
+        describe('save the group instance through rename()', function() {
+          describe('with a valid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/groups', {group: {name: 'New group'}}).
+                respond({id: 3, name: 'Formatted name'});
+              
+              delete group.editing;
+              group.rename('New group');
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+            
+            it('creates the group and updates its name on response from the server', function() {
+              expect(all_groups).toEqualData([{name: 'New group'}, {id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+              httpBackend.flush();
+              expect(all_groups).toEqualData([{id: 3, name: 'Formatted name'}, {id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+            });
+          });
+          
+          describe('with an invalid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/groups', {group: {name: 'New group'}}).
+                respond(422, 'Some error');
+              
+              delete group.editing;
+              group.rename('New group');
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('creates the group and deletes it on response from the server', function() {
+              expect(all_groups).toEqualData([{name: 'New group'}, {id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+              httpBackend.flush();
+              expect(all_groups).toEqualData([{id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+            });
+
+            it('sends an error to the messageHandler', function() {
+              httpBackend.flush();
+              expect(messageHandler.showError).toHaveBeenCalled();
+              expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
+            });
+          });
+          
+          describe('with a blank name', function() {
+            beforeEach(function() {
+              group.rename('');
+            });
+
+            it('sends no message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('removes the group', function() {
+              httpBackend.verifyNoOutstandingRequest();
+              expect(all_groups).toEqualData([{id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+            });
+          });
+        });
+      });
+
       describe('delete a group instance', function() {
         beforeEach(function() {
           httpBackend.flush();
@@ -191,6 +267,17 @@ describe('Groups module', function() {
     it('sets groups to the value of Groups.all()', function() {
       expect(Groups.all).toHaveBeenCalled();
       expect(scope.groups).toEqual([{id: 1, name: 'One'}, {id: 3, name: 'Three'}]);
+    });
+
+    describe('add()', function() {
+      beforeEach(function() {
+        Groups.add = jasmine.createSpy('Groups.add');
+        scope.add();
+      });
+
+      it('adds alls Groups.add()', function() {
+        expect(Groups.add).toHaveBeenCalled();
+      });
     });
   });
 });
