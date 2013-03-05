@@ -145,7 +145,7 @@ Scenario: Edit a student profile
   And I should not see "25-12-1996"
   And I should see "01-05-1980"
 
-@current
+
 Scenario: Clear student birthday
   Given a student profile for Parvathy with all information exists
   And I am on the page for that profile
@@ -160,7 +160,7 @@ Scenario: Clear student birthday
   Then I should not see "25-12-1996"
   And I should not see "Birthday" in a ".field-name" element
 
-@current
+
 Scenario: Add fields for a student
   Given a student profile for Parvathy with all information exists
   And I am on the page for that profile

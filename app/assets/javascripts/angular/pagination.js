@@ -2,7 +2,7 @@
 
 angular.module('journals.pagination', []).
   
-  directive('pagination', function($location) {
+  directive('pagination', ['$location', function($location) {
     return {
       restrict: 'E',
       transclude: true,
@@ -33,4 +33,4 @@ angular.module('journals.pagination', []).
         scope.$watch('currentPage', update);
       }
     };
-  });
+  }]);

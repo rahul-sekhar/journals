@@ -226,7 +226,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /* ---------------------- Date with age filter ---------------------*/
 
-  filter('dateWithAge', function(currentDate) {
+  filter('dateWithAge', ['currentDate', function(currentDate) {
     return function(date_text) {
       if (!date_text) return null;
 
@@ -240,5 +240,5 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
       }
       return date_text + ' (' + age + ' yrs)';
     };
-  });
+  }]);
 

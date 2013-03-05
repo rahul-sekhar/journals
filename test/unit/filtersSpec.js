@@ -1,6 +1,6 @@
 'use strict';
 
-describe('filter', function() {
+describe('general filters module', function() {
   beforeEach(module('journals.filters'));
 
   describe('apply', function() {

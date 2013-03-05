@@ -9,11 +9,11 @@
       
       %ul
         %li
-          %a Add teacher
+          %a{ "href"=>"" } Add teacher
         %li
-          %a Add student
+          %a{ "href"=>"" } Add student
         %li
-          %a{ "ng-click"=>"manageGroups=true" } Manage groups
+          %a{ "href"=>"", "ng-click"=>"manageGroups=true" } Manage groups
 
     %p.label Viewing
 
@@ -67,16 +67,17 @@
 
 %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
 
-/ %modal{ "show-on"=>"manageGroups" }
-/   #groups{ "ng-controller"=>"GroupsCtrl" }
-/     %h3 Manage groups
-/     %ul{ "ng-show"=>"groups.length" }
-/       %li{ "ng-repeat"=>"group in groups" }
-/         %simple-field{ "parent"=>"group", "field-name"=>"name", "type"=>"groups" }
-/         %a.delete{ "ng-click"=>"delete(group)" } Delete
-/     %p{ "ng-hide"=>"groups.length" }
-/       There are no groups yet.
-/     %a.add{ "ng-click"=>"add()" } Add group
+%modal{ "show-on"=>"manageGroups" }
+  #groups{ "ng-controller"=>"GroupsCtrl" }
+    %h3 Manage groups
+    %ul{ "ng-show"=>"groups.length" }
+      %li{ "ng-repeat"=>"group in groups" }
+        %p{ "edit-in-place"=>"group.rename(value)", "editor-attr"=>"group.name", "display"=>"{{group.name}}",
+          "edit-mode"=>"group.editing" }
+        %a.delete{ "href"=>"", "ng-click"=>"group.delete()" } Delete
+    %p{ "ng-hide"=>"groups.length" }
+      There are no groups yet.
+    / %a.add{ "href"=>"", "ng-click"=>"add()" } Add group
 
 
 

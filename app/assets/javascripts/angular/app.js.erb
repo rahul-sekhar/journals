@@ -1,15 +1,16 @@
 'use strict';
 
 angular.module('journals', 
-  ['journals.people', 'journals.editInPlace', 'journals.filters', 'journals.pagination', 'journals.onType']).
+  ['journals.people', 'journals.editInPlace', 'journals.filters', 'journals.pagination', 'journals.onType',
+  'journals.groups', 'journals.modals']).
   
-  config(['$locationProvider', function($locationProvider) {
+  config(['$locationProvider', '$httpProvider', function($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
-  }]).
-  config(["$httpProvider", function($httpProvider) {
+
     $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   }]).
+  
   config(['$routeProvider', function($routeProvider) {
     $routeProvider.
 

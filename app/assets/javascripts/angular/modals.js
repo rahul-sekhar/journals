@@ -1,9 +1,6 @@
 'use strict';
 
-/* Directives */
-
-
-angular.module('journalsApp.directives', []).
+angular.module('journals.modals', []).
 
   directive('modal', function() {
     return {
