@@ -101,32 +101,6 @@ describe StudentsController do
   end
 
 
-
-  describe "GET new" do
-    let(:make_request){ get :new }
-
-    it "raises an exception if the user cannot create a student" do
-      ability.cannot :create, Student
-      expect{ get :new }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns an empty student" do
-      make_request
-      assigns(:student).should be_new_record
-    end
-
-    it "assigns student data from the flash if present" do
-      get :new, nil, nil, { student_data: { mobile: "1234" } }
-      assigns(:student).mobile.should == "1234"
-    end
-  end
-
-
   describe "POST create" do
     context "with valid data" do
       let(:make_request){ post :create, student: { first_name: "Rahul", last_name: "Sekhar" } }
@@ -192,32 +166,6 @@ describe StudentsController do
         make_request
         flash[:student_data].should == { 'first_name' => ' ' }
       end
-    end
-  end
-
-
-  describe "GET edit" do
-    let(:student){ create(:student) }
-    let(:make_request){ get :edit, id: student.id }
-
-    it "raises an exception if the user cannot update a student" do
-      ability.cannot :update, student
-      expect{ get :edit, id: student.id }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns the student to be edited" do
-      make_request
-      assigns(:student).should eq(student)
-    end
-
-    it "assigns student data from the flash if present" do
-      get :edit, { id: student.id }, nil, { student_data: { mobile: "1234" } }
-      assigns(:student).mobile.should == "1234"
     end
   end
 
@@ -420,7 +368,7 @@ describe StudentsController do
   describe "POST add_group" do
     let(:student){ create(:student) }
     let(:group){ create(:group, id: 5) }
-    let(:make_request){ post :add_group, id: student.id  }
+    let(:make_request){ post :add_group, id: student.id, format: :json }
     before{ group }
 
     it "raises an exception if the user cannot add a group to a student" do
@@ -429,62 +377,42 @@ describe StudentsController do
     end
 
     context "without a group_id" do
-      it "redirects to the student page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with an invalid group_id" do
-      let(:make_request){ post :add_group, id: student.id, group_id: 4 }
+      let(:make_request){ post :add_group, id: student.id, group_id: 4, format: :json }
 
-      it "redirects to the student page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with a valid group_id" do
-      let(:make_request){ post :add_group, id: student.id, group_id: 5 }
+      let(:make_request){ post :add_group, id: student.id, group_id: 5, format: :json }
 
       context "when the student contains that group" do
         before{ student.groups = [group] }
 
-        it "redirects to the student page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to student_path(student)
-        end
-
-        it "sets a flash alert" do
-          make_request
-          flash[:alert].should be_present
+          response.status.should eq(200)
         end
       end
 
       context "when the student does not contain that group" do
-        it "redirects to the student page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to student_path(student)
+          response.status.should eq(200)
         end
 
         it "adds the group to the student" do
           make_request
           student.reload.groups.should == [group]
-        end
-
-        it "sets a flash notice" do
-          make_request
-          flash[:notice].should be_present
         end
       end
     end
@@ -495,7 +423,7 @@ describe StudentsController do
   describe "POST remove_group" do
     let(:student){ create(:student) }
     let(:group){ create(:group, id: 5) }
-    let(:make_request){ post :remove_group, id: student.id  }
+    let(:make_request){ post :remove_group, id: student.id, format: :json }
     before{ group }
 
     it "raises an exception if the user cannot remove a group to a student" do
@@ -504,62 +432,42 @@ describe StudentsController do
     end
 
     context "without a group_id" do
-      it "redirects to the student page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with an invalid group_id" do
-      let(:make_request){ post :remove_group, id: student.id, group_id: 4 }
+      let(:make_request){ post :remove_group, id: student.id, group_id: 4, format: :json }
 
-      it "redirects to the student page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with a valid group_id" do
-      let(:make_request){ post :remove_group, id: student.id, group_id: 5 }
+      let(:make_request){ post :remove_group, id: student.id, group_id: 5, format: :json }
 
       context "when the student contains that group" do
         before{ student.groups = [group] }
 
-        it "redirects to the student page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to student_path(student)
+          response.status.should eq(200)
         end
 
         it "removes the group from the student" do
           make_request
           student.reload.groups.should be_empty
         end
-
-        it "sets a flash notice" do
-          make_request
-          flash[:notice].should be_present
-        end
       end
 
       context "when the student does not contain that group" do
-        it "redirects to the student page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to student_path(student)
-        end
-
-        it "sets a flash notice" do
-          make_request
-          flash[:notice].should be_present
+          response.status.should eq(200)
         end
       end
     end

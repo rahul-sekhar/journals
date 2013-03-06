@@ -30,3 +30,4 @@ angular.module('journals.assets', []).
 // pagination directive
 // modals directive
 // arrayExtensions module
+// filteredList directive

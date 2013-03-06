@@ -10,11 +10,6 @@ class StudentsController < ApplicationController
   def show
   end
 
-  def new
-    # Pre-load data if present
-    @student.assign_attributes(flash[:student_data]) if flash[:student_data]
-  end
-
   def create
     if @student.save
       redirect_to @student
@@ -22,11 +17,6 @@ class StudentsController < ApplicationController
       flash[:student_data] = params[:student]
       redirect_to new_student_path, alert: @student.errors.full_messages.first
     end
-  end
-
-  def edit
-    # Pre-load data if present
-    @student.assign_attributes(flash[:student_data]) if flash[:student_data]
   end
 
   def update
@@ -76,14 +66,10 @@ class StudentsController < ApplicationController
     @group = Group.find_by_id(params[:group_id])
     
     if @group
-      if @student.groups.exists? @group
-        redirect_to @student, alert: "#{@student.full_name} is already in the group \"#{@group.name}\""
-      else
-        @student.groups << @group
-        redirect_to @student, notice: "#{@student.full_name} has been added to the group \"#{@group.name}\""
-      end
+      @student.groups << @group unless @student.groups.exists? @group
+      render text: "OK", status: :ok
     else
-      redirect_to @student, alert: "Invalid group"
+      render text: "Group does not exist", status: :unprocessable_entity
     end
   end
 
@@ -91,14 +77,10 @@ class StudentsController < ApplicationController
     @group = Group.find_by_id(params[:group_id])
     
     if @group
-      if @student.groups.exists? @group
-        @student.groups.delete(@group)
-        redirect_to @student, notice: "#{@student.full_name} has been removed from the group \"#{@group.name}\""
-      else
-        redirect_to @student, notice: "#{@student.full_name} was not in the group \"#{@group.name}\""
-      end
+      @student.groups.delete(@group) if @student.groups.exists? @group
+      render text: "OK", status: :ok
     else
-      redirect_to @student, alert: "Invalid group"
+      render text: "Group does not exist", status: :unprocessable_entity
     end
   end
 

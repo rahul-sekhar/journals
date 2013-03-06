@@ -2,7 +2,7 @@
 
 angular.module('journals', 
   ['journals.people', 'journals.editInPlace', 'journals.filters', 'journals.pagination', 'journals.onType',
-  'journals.groups', 'journals.modals']).
+  'journals.groups', 'journals.modals', 'journals.filteredList']).
   
   config(['$locationProvider', '$httpProvider', function($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);

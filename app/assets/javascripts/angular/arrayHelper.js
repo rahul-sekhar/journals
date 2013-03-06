@@ -22,5 +22,11 @@ angular.module('journals.arrayHelper', []).
       }
     };
 
+    arrayHelper.difference = function(array1, array2) {
+      return array1.slice(0).filter(function(x) {
+        return (array2.slice(0).indexOf(x) < 0);
+      });
+    };
+    
     return arrayHelper;
   });

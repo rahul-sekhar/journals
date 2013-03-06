@@ -79,7 +79,7 @@ describe GroupsController do
   end
 
 
-  describe "POST create", :focus do
+  describe "POST create" do
     context "with valid data" do
       let(:make_request){ post :create, group: { name: "Something" }, format: :json }
 

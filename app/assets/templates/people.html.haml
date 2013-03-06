@@ -64,6 +64,8 @@
         %li{ "ng-hide"=>"person.groups.length" }
           None
 
+      %filtered-list{ "list"=>"person.remainingGroups()", "show-property"=>"name", "on-select"=>"person.addGroup(value)" }
+
 .content-block{ "ng-hide"=>"people.length" }
   %p No matching people were found.
 

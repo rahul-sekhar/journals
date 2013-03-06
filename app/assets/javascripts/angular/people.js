@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('journals.people', ['journals.messageHandler', 'journals.assets', 'journals.currentDate', 'journals.groups']).
+angular.module('journals.people', ['journals.messageHandler', 'journals.assets', 'journals.currentDate', 
+  'journals.groups', 'journals.arrayHelper']).
   
 
   /*------- People Controller ----------*/
@@ -66,7 +67,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- Person Model ----------*/
 
-  factory('Person', ['$http', 'messageHandler', 'Groups', function($http, messageHandler, Groups) {
+  factory('Person', ['$http', 'messageHandler', 'Groups', 'arrayHelper', function($http, messageHandler, Groups, arrayHelper) {
     var Person = {};
 
     // Create a person instance
@@ -91,14 +92,32 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
       }
 
       // Convert groups
+      person.groups = [];
       if (person.group_ids) {
-        person.groups = [];
         person.group_ids.forEach(function(id) {
           Groups.get(id).then(function(group) {
             person.groups.push(group);
           });
-        });       
+        });
       }
+
+      // Add group
+      person.addGroup = function(group) {
+        person.groups.push(group);
+        $http.post(person.url() + '/add_group', { group_id: group.id }).
+          then(null, function(response) {
+            messageHandler.showError(response);
+            arrayHelper.removeItem(person.groups, group);
+          });
+      };
+
+      // Remaining groups
+      var remaining_groups = [];
+      person.remainingGroups = function() {
+        var diff = arrayHelper.difference(Groups.all(), person.groups)
+        arrayHelper.shallowCopy(diff, remaining_groups);
+        return remaining_groups;
+      };
 
       // Set a blank editing object
       person.editing = {};
