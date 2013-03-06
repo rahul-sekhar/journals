@@ -7,9 +7,7 @@ class GroupsController < ApplicationController
   end
 
   def show
-    @empty_message = "No students in the group \"#{@group.name}\" found."
-    @filter = @group
-    filter_and_display_people( @group.students )
+    filter_and_display_people(@group.students)
   end
 
   def create

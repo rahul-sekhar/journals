@@ -63,14 +63,6 @@ class Student < ActiveRecord::Base
     guardians_copy = guardians.all
     guardians.clear
     guardians_copy.each { |guardian| guardian.check_students }
-  end
-
-  def remaining_groups
-    Group.where{ id.not_in( my{ group_ids } ) }
-  end
-
-  def remaining_teachers
-    Teacher.current.where{ id.not_in( my{ mentor_ids } ) }
   end  
 
   private

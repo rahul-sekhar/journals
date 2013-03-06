@@ -14,7 +14,7 @@ describe GroupsController do
 
   describe "GET show" do
     let(:group){ create(:group) }
-    let(:make_request) { get :show, id: group.id }
+    let(:make_request) { get :show, id: group.id, format: :json }
 
     before do
       @student1 = create(:student, last_name: "Jim")
@@ -41,11 +41,6 @@ describe GroupsController do
     it "searches for a particular name with the search parameter present" do
       get :show, id: group.id, search: "Jan"
       assigns(:profiles).should == [@student3]
-    end
-
-    it "sets an empty_message" do
-      make_request
-      assigns(:empty_message).should be_present
     end
   end
 

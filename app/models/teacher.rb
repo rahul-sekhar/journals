@@ -24,20 +24,4 @@ class Teacher < ActiveRecord::Base
 
     save
   end
-
-  def remaining_students
-    Student.current.where{ id.not_in( my{ mentee_ids } ) }
-  end
-
-  def self.fields
-    [
-      { name: "Mobile", function: :mobile },
-      { name: "Home Phone", function: :home_phone },
-      { name: "Office Phone", function: :office_phone },
-      { name: "Email", function: :email },
-      { name: "Additional Emails", function: :additional_emails },
-      { name: "Address", function: :address, format: true },
-      { name: "Notes", function: :notes, format: true }
-    ]
-  end
 end
