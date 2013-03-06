@@ -7,7 +7,7 @@ describe('people module', function() {
   /* --------------- People controller --------------------- */
 
   describe('PeopleCtrl', function() {
-    var scope, route, ctrl, PeopleInterface, location, deferred_result, messageHandler;
+    var scope, route, ctrl, PeopleInterface, location, deferred_result;
 
     beforeEach(inject(function($rootScope, $location, $q, _PeopleInterface_) {
       scope = $rootScope.$new();
@@ -19,12 +19,11 @@ describe('people module', function() {
       spyOn(PeopleInterface, 'get').andReturn(deferred_result.promise);
       location = $location
       location.url('/current_path');
-      messageHandler = { showError: jasmine.createSpy() };
     }));
 
     describe('for pages with many people', function() {
       beforeEach(inject(function($controller) {
-        ctrl = $controller('PeopleCtrl', { $scope: scope, $route: route, PeopleInterface: PeopleInterface, messageHandler: messageHandler });
+        ctrl = $controller('PeopleCtrl', { $scope: scope, $route: route, PeopleInterface: PeopleInterface });
       }));
 
       it('sets filterName from the route', function() {
@@ -52,12 +51,6 @@ describe('people module', function() {
         expect(scope.totalPages).toEqual(7);
       });
 
-      it('shows an error message when the promise is rejected', function() {
-        deferred_result.reject('Some error message');
-        scope.$apply();
-        expect(messageHandler.showError).toHaveBeenCalledWith('Some error message');
-      });
-
       describe('doSearch()', function() {
         it('updates the location param', inject(function($location) {
           scope.doSearch('some value');
@@ -78,7 +71,6 @@ describe('people module', function() {
           $scope: scope,
           $route: route, 
           PeopleInterface: PeopleInterface, 
-          messageHandler: messageHandler,
           $routeParams: { id: 5 }
         });
       }));
@@ -154,10 +146,6 @@ describe('people module', function() {
         beforeEach(function() {
           deferred_result.reject('Some error object');
           scope.$apply();
-        });
-
-        it('shows an error message when the promise is', function() {
-          expect(messageHandler.showError).toHaveBeenCalledWith('Some error object');
         });
 
         it('sets the pageTitle', function() {
@@ -540,14 +528,16 @@ describe('people module', function() {
   /* ---------- PeopleInterface -------------- */
 
   describe('PeopleInterface', function() {
-    var PeopleInterface, httpBackend, Person;
+    var PeopleInterface, httpBackend, Person, messageHandler;
 
-    beforeEach(inject(function(_PeopleInterface_, _Person_, $httpBackend) {
+    beforeEach(inject(function(_PeopleInterface_, _Person_, $httpBackend, _messageHandler_) {
       PeopleInterface = _PeopleInterface_;
       httpBackend = $httpBackend;
       Person = _Person_;
       spyOn(Person, 'create').andReturn('person object');
       spyOn(Person, 'createFromArray').andReturn(['person object 1', 'person object 2']);
+      messageHandler = _messageHandler_;
+      spyOn(messageHandler, 'showError');
     }));
 
     
@@ -597,6 +587,12 @@ describe('people module', function() {
           );
         });
 
+        it('sends the error to messageHandler', function() {
+          httpBackend.flush();
+          expect(messageHandler.showError).toHaveBeenCalled();
+          expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
+        });
+
         it('rejects the response with the error object', function() {
           httpBackend.flush();
           expect(error.status).toEqual(404);
@@ -644,6 +640,12 @@ describe('people module', function() {
             function(data) { response = data; },
             function(data) { error = data; }
           );
+        });
+
+        it('sends the error to messageHandler', function() {
+          httpBackend.flush();
+          expect(messageHandler.showError).toHaveBeenCalled();
+          expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
         });
 
         it('rejects the response with the error object', function() {

@@ -1,4 +1,4 @@
-@angular
+#@angular
 Feature: Manage groups and their students
 
 Teachers can view and manage the groups for all students.
@@ -47,7 +47,7 @@ Scenario: Edit a group
   And I should not see "Group 2" within the "#groups" block
   And I should see "Some other name" within the "#groups" block
 
-@current
+
 Scenario: Add a group
   Given the groups "Group 1, Group 2" exist
   When I open the manage groups dialog
@@ -59,6 +59,7 @@ Scenario: Add a group
   Then I should see "Group 1" within the "#groups" block
   Then I should see "Group 2" within the "#groups" block
   Then I should see "New group" within the "#groups" block
+
 
 Scenario: View a student with no groups
   Given a student profile for Parvathy exists

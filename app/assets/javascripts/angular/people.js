@@ -5,8 +5,8 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- People Controller ----------*/
   
-  controller('PeopleCtrl', ['$scope', '$route', '$routeParams', '$location', 'PeopleInterface', 'messageHandler',
-      function($scope, $route, $routeParams, $location, PeopleInterface, messageHandler) {
+  controller('PeopleCtrl', ['$scope', '$route', '$routeParams', '$location', 'PeopleInterface',
+      function($scope, $route, $routeParams, $location, PeopleInterface) {
     
     var loadPeople;
     var id = $routeParams.id;
@@ -28,8 +28,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
             }
             
             $scope.pageTitle = 'Profile: ' + result.person.full_name;
-          }, function(message) {
-            messageHandler.showError(message);
+          }, function() {
             $scope.pageTitle = 'Profile not found';
           });
       };
@@ -47,8 +46,6 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
             $scope.people = result.people;
             $scope.currentPage = result.metadata.current_page;
             $scope.totalPages = result.metadata.total_pages;
-          }, function(message) {
-            messageHandler.showError(message);
           });
       };
 
@@ -172,37 +169,40 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- People Interface ----------*/
 
-  factory('PeopleInterface', ['$q', '$http', 'Person', function($q, $http, Person) {
+  factory('PeopleInterface', ['$q', '$http', 'Person', 'messageHandler', function($q, $http, Person, messageHandler) {
     var PeopleInterface = {};
 
-    PeopleInterface.query = function(url) {
+    var query_with_promise = function(url, successFn) {
       var deferred = $q.defer();
       $http.get(url).
         then(function(response) {
-          var result = {};
-          result.people = Person.createFromArray(response.data.items);
-          result.metadata = response.data;
-          delete result.metadata.items;
-          deferred.resolve(result);
+          deferred.resolve(response.data);
         }, 
         function(response) {
+          messageHandler.showError(response);
           deferred.reject(response);
         });
       return deferred.promise;
     };
 
-    PeopleInterface.get = function(url) {
-      var deferred = $q.defer();
-      $http.get(url).
-        then(function(response) {
+    PeopleInterface.query = function(url) {
+      return query_with_promise(url).
+        then(function(data) {
           var result = {};
-          result.person = Person.create(response.data);
-          deferred.resolve(result);
-        }, 
-        function(response) {
-          deferred.reject(response);
+          result.people = Person.createFromArray(data.items);
+          result.metadata = data;
+          delete result.metadata.items;
+          return result
         });
-      return deferred.promise;
+    };
+
+    PeopleInterface.get = function(url) {
+      return query_with_promise(url).
+        then(function(data) {
+          var result = {};
+          result.person = Person.create(data);
+          return result;
+        });
     };
 
     return PeopleInterface;
