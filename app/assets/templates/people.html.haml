@@ -59,7 +59,7 @@
     .groups{ "ng-show"=>"person.type == 'Student'" }
       %h4 Groups
       %ul.has-groups
-        %li{ "ng-repeat"=>"group in person.groups" }
+        %li{ "ng-repeat"=>"group in person.groups", "ng-hide"=>"group.deleted" }
           %span {{group.name}}
           %a.remove{ "href"=>"", "ng-click"=>"person.removeGroup(group)" } Remove
         %li{ "ng-hide"=>"person.groups.length" }
@@ -79,7 +79,7 @@
       %li{ "ng-repeat"=>"group in groups" }
         %p{ "edit-in-place"=>"group.rename(value)", "editor-attr"=>"group.name", "display"=>"{{group.name}}",
           "edit-mode"=>"group.editing" }
-        %a.delete{ "href"=>"", "ng-click"=>"group.delete()" } Delete
+        %a.delete{ "href"=>"", "ng-click"=>"group.delete()", "ng-show"=>"group.id" } Delete
     %p{ "ng-hide"=>"groups.length" }
       There are no groups yet.
     %a.add{ "href"=>"", "ng-click"=>"add()" } Add group

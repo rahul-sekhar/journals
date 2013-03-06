@@ -97,7 +97,8 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
         new_group.name = new_name;
         $http.post('/groups', { group: { name: new_name }}).
           then(function(response) {
-            angular.copy(create(response.data), new_group);
+            var index = groups.indexOf(new_group);
+            groups[index] = create(response.data);
           },
           function(response) {
             messageHandler.showError(response);

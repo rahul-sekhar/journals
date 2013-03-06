@@ -133,6 +133,13 @@ When /^I click "(.*?)" in a "(.*?)" element containing "(.*?)" as text$/ do |p_l
   end
 end
 
+When /^I click the element "(.*?)" in a "(.*?)" element containing "(.*?)" as text$/ do |p_link, p_element, p_text|
+  element = page.find(p_element, text: /#{p_text}/)
+  within(element) do
+    find(p_link).click
+  end
+end
+
 When /^I click "(.*?)" in a "(.*?)" element$/ do |p_text, p_element|
   page.find(p_element, text: /#{p_text}/).click
 end

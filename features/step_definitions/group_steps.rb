@@ -26,7 +26,6 @@ Given /^that group has the students Roly, Lucky and Jumble$/ do
 end
 
 When /^I open the manage groups dialog$/ do
-  step 'I am on the people page'
   step 'I click "add" in a "p" element'
   step 'I click "Manage groups"'
 end
