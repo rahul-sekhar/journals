@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('journals.people', ['journals.messageHandler', 'journals.assets', 'journals.currentDate']).
+angular.module('journals.people', ['journals.messageHandler', 'journals.assets', 'journals.currentDate', 'journals.groups']).
   
 
   /*------- People Controller ----------*/
@@ -66,7 +66,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- Person Model ----------*/
 
-  factory('Person', ['$http', 'messageHandler', function($http, messageHandler) {
+  factory('Person', ['$http', 'messageHandler', 'Groups', function($http, messageHandler, Groups) {
     var Person = {};
 
     // Create a person instance
@@ -80,14 +80,24 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         throw new Error('Invalid type for person');
       }
 
-      // Convert guardians if the person is a student
-      if(person.type === 'Student' && person.guardians) {
+      // Convert contained guardians
+      if (person.guardians) {
         person.guardians = Person.createFromArray(person.guardians);
       }
 
-      // Convert students if the person is a guardian
-      if(person.type === 'Guardian' && person.students) {
+      // Convert contained students
+      if (person.students) {
         person.students = Person.createFromArray(person.students);
+      }
+
+      // Convert groups
+      if (person.group_ids) {
+        person.groups = [];
+        person.group_ids.forEach(function(id) {
+          Groups.get(id).then(function(group) {
+            person.groups.push(group);
+          });
+        });       
       }
 
       // Set a blank editing object

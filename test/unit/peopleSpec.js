@@ -174,6 +174,8 @@ describe('people module', function() {
       Person = _Person_;
     }));
 
+
+    // People instances through the create function
     describe('create()', function() {
       var person, inputData;
 
@@ -229,7 +231,7 @@ describe('people module', function() {
         });
       });
 
-      describe('conversion of contained people', function() {
+      describe('contained people', function() {
         var oldCreate;
 
         beforeEach(function() {
@@ -239,45 +241,53 @@ describe('people module', function() {
           }
         });
 
-        describe('guardians', function() {
-          it('is not touched if not a student', function() {
-            inputData = {
-              type: 'Teacher',
-              guardians: ['A', 'B']
-            };
-            person = oldCreate(inputData);
-            expect(person.guardians).toEqual(['A', 'B']);
-          });
-
-          it('is converted into a person object array if a student', function() {
-            inputData = {
-              type: 'Student',
-              guardians: ['A', 'B']
-            };
-            person = oldCreate(inputData);
-            expect(person.guardians).toEqual(['converted A', 'converted B']);
-          });
+        it('converts students to people objects', function() {
+          inputData = {
+            type: 'Student',
+            guardians: ['A', 'B']
+          };
+          person = oldCreate(inputData);
+          expect(person.guardians).toEqual(['converted A', 'converted B']);
         });
 
-        describe('students', function() {
-          it('is not touched if not a guardian', function() {
-            inputData = {
-              type: 'Student',
-              students: ['A', 'B']
-            };
-            person = oldCreate(inputData);
-            expect(person.students).toEqual(['A', 'B']);
-          });
-
-          it('is converted into a person object array if a guardian', function() {
-            inputData = {
-              type: 'Guardian',
-              students: ['A', 'B']
-            };
-            person = oldCreate(inputData);
-            expect(person.students).toEqual(['converted A', 'converted B']);
-          });
+        it('converts students to people objects', function() {
+          inputData = {
+            type: 'Guardian',
+            students: ['A', 'B']
+          };
+          person = oldCreate(inputData);
+          expect(person.students).toEqual(['converted A', 'converted B']);
         });
+      });
+
+      describe('groups', function() {
+        var group_array, groups_deferred;
+
+        beforeEach(inject(function(Groups, $q) {
+          groups_deferred = $q.defer();
+          Groups.get = function(id) {
+            return groups_deferred.promise.then(function() {
+              console.log(id);
+              if (id == 10) return $q.reject();
+              return 'group ' + id;
+            });
+          }
+          inputData = {
+            type: 'Student',
+            group_ids: [3, 7, 10]
+          };
+          person = Person.create(inputData);
+        }));
+
+        it('initially sets groups to a blank array', function() {
+          expect(person.groups).toEqual([]);
+        });
+
+        it('gets group objects for each group, ignoring rejected ones, as the promises are resolved', inject(function($rootScope) {
+          groups_deferred.resolve();
+          $rootScope.$apply();
+          expect(person.groups).toEqual(['group 3', 'group 7']);
+        }));
       });
 
       describe('fields', function() {

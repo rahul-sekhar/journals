@@ -8,12 +8,100 @@ describe('Groups module', function() {
   describe('Groups', function() {
     var Groups, httpBackend, messageHandler, all_groups;
 
-    beforeEach(inject(function($httpBackend, _messageHandler_) {
+    beforeEach(inject(function($httpBackend, _messageHandler_, _Groups_) {
       httpBackend = $httpBackend;
       messageHandler = _messageHandler_;
       spyOn(messageHandler, 'showError');
+      Groups = _Groups_;
     }));
 
+    it('does not initially load groups', function() {
+      httpBackend.verifyNoOutstandingExpectation();
+    });
+
+    describe('on a call to the all function', function() {
+      it('loads groups', function() {
+        httpBackend.expectGET('/groups').respond([]);
+        Groups.all();
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      it('does not reload groups if the groups have already been loaded', function() {
+        httpBackend.expectGET('/groups').respond([]);
+        Groups.all();
+        httpBackend.flush();
+        Groups.all();
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      it('reloads groups if the groups have failed to load', function() {
+        httpBackend.expectGET('/groups').respond(404);
+        Groups.all();
+        httpBackend.flush();
+        httpBackend.expectGET('/groups').respond([]);
+        Groups.all();
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+    });
+
+    describe('get(id)', function() {
+      it('loads groups', function() {
+        httpBackend.expectGET('/groups').respond([]);
+        Groups.get(5);
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      it('does not reload groups if the groups have already been loaded', function() {
+        httpBackend.expectGET('/groups').respond([]);
+        Groups.all();
+        httpBackend.flush();
+        Groups.get(3);
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      it('reloads groups if the groups have failed to load', function() {
+        httpBackend.expectGET('/groups').respond(404);
+        Groups.all();
+        httpBackend.flush();
+        httpBackend.expectGET('/groups').respond([]);
+        Groups.get(7);
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      describe('the returned promise', function() {
+        var success, error;
+
+        beforeEach(function() {
+          success = jasmine.createSpy('success'), error = jasmine.createSpy('error');
+        });
+
+        it('is resolved with the relevant group with a valid server response', function() {
+          httpBackend.expectGET('/groups').respond([{id: 1, name: "One"}, {id: 5, name: "Five"}, {id: 7, name: "Seven"}]);
+          Groups.get(5).then(success, error);
+          expect(success).not.toHaveBeenCalled();
+          httpBackend.flush();
+          expect(success).toHaveBeenCalled();
+          expect(success.mostRecentCall.args[0]).toEqualData({id: 5, name: "Five"});
+        });
+
+        it('is rejected if the group is not present', function() {
+          httpBackend.expectGET('/groups').respond([{id: 1, name: "One"}, {id: 6, name: "Six"}, {id: 7, name: "Seven"}]);
+          Groups.get(5).then(success, error);
+          httpBackend.flush();
+          expect(success).not.toHaveBeenCalled();
+          expect(error).toHaveBeenCalled();
+        });
+
+        it('is rejected for an invalid server response', function() {
+          httpBackend.expectGET('/groups').respond(404, 'Some error');
+          Groups.get(5).then(success, error);
+          httpBackend.flush();
+          expect(success).not.toHaveBeenCalled();
+          expect(error).toHaveBeenCalled();
+        });
+      });
+    });
+    
     describe('with a valid server response', function() {
       beforeEach(inject(function($injector) {
         httpBackend.expectGET('/groups').respond([{id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);

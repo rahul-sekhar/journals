@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayExtensions']).
+angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHelper']).
 
-  factory('Groups', ['$http', 'messageHandler', '$q', function($http, messageHandler, $q) {
+  factory('Groups', ['$http', 'messageHandler', 'arrayHelper', '$q', function($http, messageHandler, arrayHelper, $q) {
     var GroupsObj = {};
     var groups = [];
 
@@ -19,7 +19,7 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayExt
         group.deleted = true;
         $http.delete('/groups/' + group.id).
           then(function() {
-            groups.remove(group);
+            arrayHelper.removeItem(groups, group);
           }, 
           function(response) {
             messageHandler.showError(response);
@@ -47,17 +47,40 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayExt
     };
 
     // Query groups
-    var groupsPromise = $http.get('/groups').
-      then(function(response) {
-        groups.replace(response.data.map(create));
-      }, function(response) {
-        groups.replace([]);
-        messageHandler.showError(response);
-      });
+    var groupsDeferred;
+    var queryGroups = function() {
+      groupsDeferred = $http.get('/groups').
+        then(function(response) {
+          arrayHelper.shallowCopy(response.data.map(create), groups);
+        }, function(response) {
+          arrayHelper.shallowCopy([], groups);
+          messageHandler.showError(response);
+          groupsDeferred = undefined;
+        });
+    };
 
     // Function to return a reference to all groups
     GroupsObj.all = function() {
+      if (!groupsDeferred) queryGroups();
       return groups;
+    };
+
+    // Function to get a group by ID
+    GroupsObj.get = function(id) {
+      if (!groupsDeferred) queryGroups();
+      return groupsDeferred.
+        then(function() {
+          var group = groups.filter(function(obj) {
+            return obj.id === id;
+          })[0];
+
+          if (group) {
+            return group
+          }
+          else {
+            return $q.reject('Group not found');
+          }
+        });
     };
 
     // Function to add an empty group
@@ -67,7 +90,7 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayExt
 
       new_group.rename = function(new_name) {
         if (!new_name) {
-          groups.remove(new_group);
+          arrayHelper.removeItem(groups, new_group);
           return;
         }
 
@@ -78,7 +101,7 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayExt
           },
           function(response) {
             messageHandler.showError(response);
-            groups.remove(new_group);
+            arrayHelper.removeItem(groups, new_group);
           });
       };
       

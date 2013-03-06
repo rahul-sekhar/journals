@@ -1,4 +1,4 @@
-#@angular
+@angular
 Feature: Manage groups and their students
 
 Teachers can view and manage the groups for all students.
@@ -60,13 +60,14 @@ Scenario: Add a group
   Then I should see "Group 2" within the "#groups" block
   Then I should see "New group" within the "#groups" block
 
-
+@current
 Scenario: View a student with no groups
   Given a student profile for Parvathy exists
   And I am on the page for that profile
   Then I should see "Groups"
   And I should see "None" within the ".groups" block
 
+@current
 Scenario: View a student with groups, add and remove groups
   Given a student profile for Parvathy exists
   And the groups "Group D, Group E" exist

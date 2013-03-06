@@ -55,12 +55,14 @@
 
       %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
 
-  / %footer.profile-footer
-  /   .groups{ "ng-show"=>"person.type == 'students'" }
-  /     %h4 Groups
-  /     %ul
-  /       %li{ "ng-repeat"=>"group in person.groups" }
-  /         {{group.name}}
+  %footer.profile-footer
+    .groups{ "ng-show"=>"person.type == 'Student'" }
+      %h4 Groups
+      %ul
+        %li{ "ng-repeat"=>"group in person.groups" }
+          {{group.name}}
+        %li{ "ng-hide"=>"person.groups.length" }
+          None
 
 .content-block{ "ng-hide"=>"people.length" }
   %p No matching people were found.
