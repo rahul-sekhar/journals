@@ -126,17 +126,10 @@ Then /^I should see the link "(.*?)" (\d+) times$/ do |p_content, p_count|
   page.should have_link p_content, count: p_count
 end
 
-When /^I click "(.*?)" near "(.*?)" in a list item$/ do |p_link, p_text|
-  list_item = page.find('li', text: /#{p_text}/)
-  within(list_item) do
+When /^I click "(.*?)" in a "(.*?)" element containing "(.*?)" as text$/ do |p_link, p_element, p_text|
+  element = page.find(p_element, text: /#{p_text}/)
+  within(element) do
     click_on p_link
-  end
-end
-
-When /^I click the element "(.*?)" near "(.*?)" in a list item$/ do |p_element, p_text|
-  list_item = page.find('li', text: /#{p_text}/)
-  within(list_item) do
-    find(p_element).click
   end
 end
 

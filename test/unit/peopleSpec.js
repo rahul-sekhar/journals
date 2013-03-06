@@ -377,6 +377,60 @@ describe('people module', function() {
         });
       });
 
+      describe('removeGroup()', function() {
+        var group1, group2, group3;
+
+        beforeEach(function() {
+          group1 = {id: 1, name: "One"};
+          group2 = {id: 2, name: "Two"};
+          group3 = {id: 3, name: "Three"};
+          person.groups = [group1, group2, group3];
+        });
+
+        describe('with a valid server response', function() {
+          beforeEach(function() {
+            httpBackend.expectPOST('/students/7/remove_group', { group_id: 2 }).respond(200, 'OK');
+            person.removeGroup(group2);
+          });
+
+          it('removes the group from the persons groups', function() {
+            expect(person.groups).toEqual([group1, group3]);
+            httpBackend.flush();
+            expect(person.groups).toEqual([group1, group3]);
+          });
+
+          it('sends a message to the server', function() {
+            httpBackend.verifyNoOutstandingExpectation();
+          });
+        });
+
+        describe('with an invalid server response', function() {
+          beforeEach(function() {
+            httpBackend.expectPOST('/students/7/remove_group', { group_id: 2 }).respond(422, 'Some error');
+            person.removeGroup(group2);
+          });
+
+          it('removes the group from the persons groups', function() {
+            expect(person.groups).toEqual([group1, group3]);
+          });
+
+          it('sends a message to the server', function() {
+            httpBackend.verifyNoOutstandingExpectation();
+          });
+
+          it('restores the group on getting a response from the server', function() {
+            httpBackend.flush();
+            expect(person.groups).toEqual([group1, group3, group2]);
+          });
+
+          it('shows an error', function() {
+            httpBackend.flush();
+            expect(messageHandler.showError).toHaveBeenCalled();
+            expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
+          })
+        });
+      });
+
       describe('fields', function() {
         it('sets a students fields', function() {
           inputData = {

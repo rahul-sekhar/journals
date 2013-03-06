@@ -111,6 +111,16 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
           });
       };
 
+      // Remove group
+      person.removeGroup = function(group) {
+        arrayHelper.removeItem(person.groups, group);
+        $http.post(person.url() + '/remove_group', { group_id: group.id }).
+          then(null, function(response) {
+            messageHandler.showError(response);
+            person.groups.push(group);
+          });
+      };
+
       // Remaining groups
       var remaining_groups = [];
       person.remainingGroups = function() {

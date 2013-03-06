@@ -60,22 +60,22 @@ Scenario: Add a group
   Then I should see "Group 2" within the "#groups" block
   Then I should see "New group" within the "#groups" block
 
-@current
+
 Scenario: View a student with no groups
   Given a student profile for Parvathy exists
   And I am on the page for that profile
   Then I should see "Groups"
   And I should see "None" within the ".groups" block
 
-@current
+
 Scenario: View a student with groups, add and remove groups
   Given a student profile for Parvathy exists
   And the groups "Group D, Group E" exist
   And that student belongs to the groups "Group A, Group B, Group C"
   And I am on the page for that profile
-  Then I should see "Group A" within the ".groups" block
-  And I should see "Group B" within the ".groups" block
-  And I should see "Group C" within the ".groups" block
+  Then I should see "Group A" within the ".has-groups" block
+  And I should see "Group B" within the ".has-groups" block
+  And I should see "Group C" within the ".has-groups" block
   
   When I click the element ".add" within the ".groups" block
   Then I should see "Group D" within the ".groups .filtered-list" block
@@ -90,20 +90,32 @@ Scenario: View a student with groups, add and remove groups
 
   When I click "Group E" within the ".groups .filtered-list" block
   Then I should not see "Group E" within the ".groups .filtered-list" block
-  Then I should see "Group E" within the ".groups" block
+  Then I should see "Group E" within the ".has-groups" block
 
   When I go to the page for that profile
-  Then I should see "Group A" within the ".groups" block
-  And I should see "Group B" within the ".groups" block
-  And I should see "Group C" within the ".groups" block
-  And I should see "Group E" within the ".groups" block
+  Then I should see "Group A" within the ".has-groups" block
+  And I should see "Group B" within the ".has-groups" block
+  And I should see "Group C" within the ".has-groups" block
+  And I should see "Group E" within the ".has-groups" block
 
   When I click the element ".add" within the ".groups" block
   Then I should see "Group D" within the ".groups .filtered-list" block
   And I should not see "Group E" within the ".groups .filtered-list" block
 
-  When I click "Remove" near "Group B" in a list item
-  Then I should be on the page for that profile
-  And I should see "Parvathy Manjunath has been removed from the group "Group B""
-  And I should not see "Group B" within the ".groups ul" block
-  And "Remaining groups" should have the options "Group B, Group D"
+  When I click "Remove" in a ".has-groups li" element containing "Group B" as text
+  And I should not see "Group B" within the ".has-groups" block
+  Then I should see "Group A" within the ".has-groups" block
+  And I should see "Group C" within the ".has-groups" block
+  And I should see "Group E" within the ".has-groups" block
+  And I should see "Group D" within the ".groups .filtered-list" block
+  And I should see "Group B" within the ".groups .filtered-list" block
+
+  When I go to the page for that profile
+  Then I should not see "Group B" within the ".has-groups" block
+  Then I should see "Group A" within the ".has-groups" block
+  And I should see "Group C" within the ".has-groups" block
+  And I should see "Group E" within the ".has-groups" block
+
+  When I click the element ".add" within the ".groups" block
+  Then I should see "Group D" within the ".groups .filtered-list" block
+  And I should see "Group B" within the ".groups .filtered-list" block

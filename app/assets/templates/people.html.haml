@@ -58,9 +58,10 @@
   %footer.profile-footer
     .groups{ "ng-show"=>"person.type == 'Student'" }
       %h4 Groups
-      %ul
+      %ul.has-groups
         %li{ "ng-repeat"=>"group in person.groups" }
-          {{group.name}}
+          %span {{group.name}}
+          %a.remove{ "href"=>"", "ng-click"=>"person.removeGroup(group)" } Remove
         %li{ "ng-hide"=>"person.groups.length" }
           None
 
