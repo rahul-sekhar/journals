@@ -143,7 +143,7 @@ Scenario: View a student with groups, add and remove groups
   Then I should see "Group D" within the ".groups .filtered-list" block
   And I should see "Group B" within the ".groups .filtered-list" block
 
-@current
+
 Scenario: Manage a group and view the reflected changes in each student
   Given a student profile for Parvathy exists
   And the groups "Group D, Group E" exist

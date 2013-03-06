@@ -8,23 +8,12 @@ class TeachersController < ApplicationController
   def show
   end
 
-  def new
-    # Pre-load data if present
-    @teacher.assign_attributes(flash[:teacher_data]) if flash[:teacher_data]
-  end
-
   def create
     if @teacher.save
-      redirect_to @teacher
+      render 'show'
     else
-      flash[:teacher_data] = params[:teacher]
-      redirect_to new_teacher_path, alert: @teacher.errors.full_messages.first
+      render text: @teacher.errors.full_messages.first, status: :unprocessable_entity
     end
-  end
-
-  def edit
-    # Pre-load data if present
-    @teacher.assign_attributes(flash[:teacher_data]) if flash[:teacher_data]
   end
 
   def update
@@ -37,7 +26,7 @@ class TeachersController < ApplicationController
 
   def destroy
     @teacher.destroy
-    redirect_to people_path, notice: "The user \"#{@teacher.full_name}\" has been deleted"
+    rende text: 'OK', status: :ok
   end
 
   def reset

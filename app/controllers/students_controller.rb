@@ -2,8 +2,6 @@ class StudentsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @empty_message = "No students found."
-    @filter = "students"
     filter_and_display_people( @students.current )
   end
 
@@ -12,10 +10,9 @@ class StudentsController < ApplicationController
 
   def create
     if @student.save
-      redirect_to @student
+      render 'show'
     else
-      flash[:student_data] = params[:student]
-      redirect_to new_student_path, alert: @student.errors.full_messages.first
+      render text: @student.errors.full_messages.first, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +26,7 @@ class StudentsController < ApplicationController
 
   def destroy
     @student.destroy
-    redirect_to people_path, notice: "The user \"#{@student.full_name}\" has been deleted"
+    render text: 'OK', status: :ok
   end
 
   def reset
