@@ -2,7 +2,7 @@
 
 angular.module('journals', 
   ['journals.people', 'journals.editInPlace', 'journals.filters', 'journals.pagination', 'journals.onType',
-  'journals.groups', 'journals.modals', 'journals.filteredList']).
+  'journals.modals', 'journals.filteredList']).
   
   config(['$locationProvider', '$httpProvider', function($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
@@ -12,27 +12,49 @@ angular.module('journals',
   }]).
   
   config(['$routeProvider', function($routeProvider) {
+    
+    var peopleRouteParams = function(pageData) {
+      return {
+        templateUrl: '<%= asset_path("people.html") %>', 
+        controller: 'PeopleCtrl', 
+        reloadOnSearch: false,
+        pageData: (pageData || {})
+      }
+    };
+
     $routeProvider.
 
       when('/login', {redirectTo: '/'}).
 
       when('/', {redirectTo: '/people'}).
 
-      when('/people', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Students and teachers'}).
+      when('/people', peopleRouteParams({
+        filter: 'Students and teachers',
+        canAddTeacher: true,
+        canAddStudent: true
+      })).
 
-      when('/people/archived', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Archived students and teachers'}).
+      when('/people/archived', peopleRouteParams({
+        filter: 'Archived students and teachers'
+      })).
 
-      when('/teachers', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Teachers'}).
+      when('/teachers', peopleRouteParams({
+        filter: 'Teachers',
+        canAddTeacher: true
+      })).
 
-      when('/teachers/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
+      when('/teachers/:id', peopleRouteParams()).
 
-      when('/students', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl', reloadOnSearch: false, filterName: 'Students'}).
+      when('/students', peopleRouteParams({
+        filter: 'Students',
+        canAddStudent: true
+      })).
 
-      when('/students/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
+      when('/students/:id', peopleRouteParams()).
+
+      when('/guardians/:id', peopleRouteParams()).
 
       when('/guardians', {redirectTo: '/page-not-found'}).
-
-      when('/guardians/:id', {templateUrl: '<%= asset_path("people.html") %>', controller: 'PeopleCtrl'}).
 
       when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
 

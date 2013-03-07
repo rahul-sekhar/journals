@@ -9,25 +9,25 @@
       
       %ul
         %li
-          %a{ "href"=>"" } Add teacher
+          %a{ "href"=>"", "ng-show"=>"pageData.canAddTeacher" } Add teacher
         %li
-          %a{ "href"=>"" } Add student
+          %a{ "href"=>"", "ng-show"=>"pageData.canAddStudent" } Add student
         %li
           %a{ "href"=>"", "ng-click"=>"manageGroups=true" } Manage groups
 
     %p.label Viewing
 
     .viewing.menu
-      %p.title {{filterName}}
+      %p.title {{pageData.filter}}
 
       %ul
-        %li{"ng-hide" => "filterName == 'Students and teachers'"}
+        %li{"ng-hide" => "pageData.filter == 'Students and teachers'"}
           %a{href: "/people"} Students and teachers
-        %li{"ng-hide" => "filterName == 'Students'"}
+        %li{"ng-hide" => "pageData.filter == 'Students'"}
           %a{href: "/students"} Students
-        %li{"ng-hide" => "filterName == 'Teachers'"}
+        %li{"ng-hide" => "pageData.filter == 'Teachers'"}
           %a{href: "/teachers"} Teachers
-        %li{"ng-hide" => "filterName == 'Archived students and teachers'"}
+        %li{"ng-hide" => "pageData.filter == 'Archived students and teachers'"}
           %a{href: "/people/archived"} Archived students and teachers
 
   .clear-left

@@ -1,9 +1,21 @@
+@angular
 Feature: Perform administrative functions on a profile
 
 Teachers can activate a profile, reset its password, archive it and delete it
 
 Background:
   Given I have logged in as a teacher "Rahul Sekhar"
+
+Scenario: Delete a teacher from the people page
+  Given a teacher profile for Shalini exists
+  When I am on the people page
+  Then I should see "Shalini Sekhar" in a "h3" element
+  When I click "Delete user"
+  Then I should be on the people page
+  And I should not see "Shalini Sekhar" in a "h3" element
+
+  When I go to the people page
+  Then I should not see "Shalini Sekhar" in a "h3" element
 
 Scenario: Delete a teacher
   Given a teacher profile for Shalini exists

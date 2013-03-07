@@ -12,7 +12,7 @@ describe('people module', function() {
     beforeEach(inject(function($rootScope, $location, $q, _PeopleInterface_) {
       scope = $rootScope.$new();
       route = {};
-      route.current = { filterName: 'Some filter' };
+      route.current = { pageData: 'Some data' };
       PeopleInterface = _PeopleInterface_;
       deferred_result = $q.defer();
       spyOn(PeopleInterface, 'query').andReturn(deferred_result.promise);
@@ -26,8 +26,8 @@ describe('people module', function() {
         ctrl = $controller('PeopleCtrl', { $scope: scope, $route: route, PeopleInterface: PeopleInterface });
       }));
 
-      it('sets filterName from the route', function() {
-        scope.filterName.should == 'Some filter';
+      it('sets pageData from the route', function() {
+        scope.pageData.should == 'Some data';
       });
 
       it('sets singlePerson to false', function() {
@@ -79,8 +79,8 @@ describe('people module', function() {
         expect(scope.singlePerson).toEqual(true);
       });
 
-      it('does not set filterName', function() {
-        expect(scope.filterName).toBeUndefined();
+      it('sets pageData from the route', function() {
+        scope.pageData.should == 'Some data';
       });
 
       it('sets pageTitle', function() {

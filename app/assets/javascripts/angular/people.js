@@ -11,6 +11,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
     
     var loadPeople;
     var id = $routeParams.id;
+    $scope.pageData = $route.current.pageData;
 
     // For a single person
     if (id) {
@@ -37,7 +38,6 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
     // For pages of people
     else {
-      $scope.filterName = $route.current.filterName;
       $scope.singlePerson = false;
       $scope.pageTitle = 'People';
 
