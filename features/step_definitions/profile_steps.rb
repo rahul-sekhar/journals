@@ -13,85 +13,113 @@ Given /^a guardian "(.*?)" exists for that student$/ do |p_name|
   @guardian = @profile.guardians.create!(full_name: p_name)
 end
 
-# Specific profiles
-Given /^a teacher Shalini exists$/ do
-  step 'a teacher "Shalini Sekhar" exists'
-  @profile.update_attributes(
-    mobile: '1122334455',
-    address: "Some house,\nBanashankari,\nBangalore - 55",
-    home_phone: '080-12345',
-    office_phone: '080-67890',
-    additional_emails: 'shalu@short.com, shalini_sekhar@long.com',
-    notes: 'A test sister'
-  )
-end
-
-Given /^a student Parvathy exists$/ do
-  step 'a student "Parvathy Manjunath" exists'
-  @profile.update_attributes(
-    mobile: '12345678',
-    address: "Apartment,\nThe hill,\nDarjeeling - 10",
-    home_phone: '5678',
-    office_phone: '1432',
-    formatted_birthday: '25-12-1996',
-    blood_group: 'B+'
-  )
-end
-
-Given /^a guardian Poonam exists for that student$/ do
-  @guardian = @profile.guardians.create!(
-    full_name: "Poonam Jain", 
-    email: "poonam@mail.com",
-    mobile: "987654",
-    address: "A house,\n\nSomewhere",
-    home_phone: "111-222",
-    office_phone: "333-444"
-  )
-end
-
-Given /^a guardian Manoj with multiple students exists$/ do
-  step 'a student "Parvathy Manjunath" exists'
-  @profile = @profile.guardians.create!(full_name: "Manoj Jain")
-  @student = FactoryGirl.create(:student, full_name: "Roly Jain", email: "roly@mail.com")
-  @profile.students << @student
-end
-
 
 # Test profiles
 Then /^I should see a profile for "(.*?)"$/ do |p_name|
-  page.should have_css(".profile h3", text: /#{p_name}/, visible: true)
+  page.should have_css(".profile h3", text: /#{Regexp.escape(p_name)}/, visible: true)
 end
 
 Then /^I should not see a profile for "(.*?)"$/ do |p_name|
-  page.should have_no_css(".profile h3", text: /#{p_name}/, visible: true)
+  page.should have_no_css(".profile h3", text: /#{Regexp.escape(p_name)}/, visible: true)
 end
 
-When /^looking at the profile for "(.*?)"$/ do |p_name|
-  @viewing = page.find(".profile", text: /#{p_name}/, visible: true)
+When /^I look at the profile for "(.*?)"$/ do |p_name|
+  @viewing = page.find(".profile", text: /#{Regexp.escape(p_name)}/, visible: true)
 end
 
-When /^looking at the guardian "(.*?)"$/ do |p_guardian|
-  @viewing = @viewing.find(".guardian", text: /#{p_guardian}/, visible: true)
+When /^I look at the guardian "(.*?)"$/ do |p_guardian|
+  @viewing = @viewing.find(".guardian", text: /#{Regexp.escape(p_guardian)}/, visible: true)
 end
 
 Then /^I should see the guardian "(.*?)"$/ do |p_guardian|
-  @viewing.should have_css(".guardian", text: /#{p_guardian}/, visible: true)
+  @viewing.should have_css(".guardian", text: /#{Regexp.escape(p_guardian)}/, visible: true)
 end
 
+Then /^I should not see the guardian "(.*?)"$/ do |p_guardian|
+  @viewing.should have_no_css(".guardian", text: /#{Regexp.escape(p_guardian)}/, visible: true)
+end
+
+
+# Fields
 Then /^I should see the field "(.*?)" with "(.*?)"$/ do |p_field, p_content|
   within @viewing do
-    field = page.find('.field-name', text: /^#{p_field}$/i, visible: true)
+    field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i, visible: true)
     parent = field.first(:xpath,".//..")
-    parent.should have_content(p_content)
+    parent.should have_css('.value', text: /#{Regexp.escape(p_content)}/, visible: true)
   end
 end
 
 Then /^I should not see the field "(.*?)"$/ do |p_field|
   within @viewing do
-    page.should have_no_css('.field-name', text: /^#{p_field}$/i, visible: true)
+    page.should have_no_css('.field-name', text: /^#{Regexp.escape(p_field)}$/i, visible: true)
   end
 end
 
+def fill_input_for_field(field, value)
+  field.find('input, textarea', visible: true).set(value)
+  script = "$('input:visible, textarea:visible').blur();"
+  field.should have_css('input, textarea', visible: false)
+  page.execute_script(script)
+end
+
+When /^I change the (field ".*"|name|guardian name) to "(.*?)"$/ do |p_field, p_value|
+  within @viewing do
+    if p_field == 'name'
+      field = page.find('h3')
+    elsif p_field == 'guardian name'
+      field = page.find('h4')
+    else
+      p_field = p_field[7..-2]
+      field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
+    end
+    field.find('.value').click
+    fill_input_for_field field, p_value
+  end
+end
+
+When /^I change the date field "(.*?)" to "(.*?)"$/ do |p_field, p_date|
+  within @viewing do
+    field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
+    field.find('.value').click
+    script = "setTimeout(function() {" +
+      "$('input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
+    "}, 10);"
+    page.execute_script(script)
+  end
+end
+
+When /^I clear the (field ".*"|name|guardian name)$/ do |p_field|
+  within @viewing do
+    step 'I change the ' + p_field + ' to ""'
+  end
+end
+
+When /^I clear the date field "(.*?)"$/ do |p_field|
+  within @viewing do
+    field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
+    field.find('.value').click
+    field.find('.clear-date').click
+  end
+end
+
+When /^I add the field "(.*?)" with "(.*?)"$/ do |p_field, p_value|
+  within @viewing do
+    step 'I select "' + p_field + '" from the add-field menu'
+    field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
+    fill_input_for_field field, p_value
+  end
+end
+
+When /^I add the date field "(.*?)" with "(.*?)"$/ do |p_field, p_date|
+  within @viewing do
+    step 'I select "' + p_field + '" from the add-field menu'
+    field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
+    script = "setTimeout(function() {" +
+      "$('input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
+    "}, 10);"
+    page.execute_script(script)
+  end
+end
 
 
 # Internal functions
@@ -140,23 +168,4 @@ end
 # When /^I click the "Edit profile" link for the guardian "(.*?)"$/ do |p_guardian_name|
 #   guardian_node = page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/../..')
 #   guardian_node.find('.edit-link').click
-# end
-
-# Given /^a teacher for each alphabet exists$/ do
-#   ('A'..'Z').each do |letter|
-#     Teacher.create!(full_name: letter)
-#   end
-# end
-
-# Given /^a student for each alphabet exists$/ do
-#   ('A'..'Z').each do |letter|
-#     Student.create!(full_name: letter)
-#   end
-# end
-
-# Given /^an archived student for each alphabet exists$/ do
-#   ('A'..'Z').each do |letter|
-#     student = Student.create!(full_name: letter)
-#     student.toggle_archive
-#   end
 # end

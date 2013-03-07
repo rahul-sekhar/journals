@@ -1,4 +1,3 @@
-@angular
 Feature: Perform administrative functions on a profile
 
 Teachers can activate a profile, reset its password, archive it and delete it

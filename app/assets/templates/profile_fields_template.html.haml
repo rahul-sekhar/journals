@@ -5,8 +5,8 @@
       "editor-attr"=>"person[field.slug]", "display"=>"{{person[field.slug] | escapeHtml | apply:field.filter}}",
       "contains-html"=>true, "edit-mode"=>"person.editing[field.slug]" }
 
-  .add-field-menu{ "ng-show"=>"person.remainingFields().length" }
-    %a{ "href" => "" } Add field
+  .add-field.menu{ "ng-show"=>"person.remainingFields().length" }
+    %p.title Add field
     %ul
       %li{ "ng-repeat"=>"field in person.remainingFields()" }
         %a{ "href"=>"", "ng-click"=>"person.addField(field.slug)" } {{field.name}}

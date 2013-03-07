@@ -11,7 +11,7 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
       },
       template: 
         '<span class="container">' +
-          '<span class="field" ng-bind-html="display | apply:conditionalEscapeHtml" ng-hide="editMode" ng-click="startEdit()"></span>' +
+          '<span class="value" ng-bind-html="display | apply:conditionalEscapeHtml" ng-hide="editMode" ng-click="startEdit()"></span>' +
         '</span>',
         controller: 'editInPlaceCtrl',
       link: function(scope, elem, attrs) {

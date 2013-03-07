@@ -1,285 +1,266 @@
 @angular
 Feature: Edit a profile
-
 I should be able to edit a student, guardian or teacher's profile
 
 Background:
-  Given I have logged in as a teacher "Rahul Sekhar"
+  Given I have logged in as the teacher Rahul
+
 
 Scenario: Change the profile name for a teacher
-  Given a teacher profile for Shalini with all information exists
+  Given a teacher Shalini exists
   And I am on the page for that profile
   
-  When I click "Shalini Sekhar" in a "h3 .field" element
-  And I enter "Shalu Pandya" in the text input
-  Then I should not see "Shalini Sekhar" in a "h3" element
-  And I should see "Shalu Pandya"
+  When I look at the profile for "Shalini Sekhar"
+  And I change the name to "Shalu Pandya"
+  Then I should see a profile for "Shalu Pandya"
+  Then I should not see a profile for "Shalini Sekhar"
   
   When I go to the page for that profile
-  Then I should not see "Shalini Sekhar"
-  And I should see "Shalu Pandya" in a "h3" element
+  Then I should see a profile for "Shalu Pandya"
+  And I should not see a profile for "Shalini Sekhar"
 
 
 Scenario: Set an invalid profile name for a teacher
-  Given a teacher profile for Shalini with all information exists
+  Given a teacher Shalini exists
   And I am on the page for that profile
   
-  When I click "Shalini Sekhar" in a "h3 .field" element
-  And I enter " " in the text input
-  Then I should see "Shalini Sekhar" in a "h3" element
+  When I look at the profile for "Shalini Sekhar"
+  And I clear the name
+  Then I should see a profile for "Shalini Sekhar"
   
   When I go to the page for that profile
-  Then I should see "Shalini Sekhar" in a "h3" element
+  Then I should see a profile for "Shalini Sekhar"
 
 
 Scenario: Edit fields for a teacher
-  Given a teacher profile for Shalini with all information exists
+  Given a teacher Shalini exists
   And I am on the page for that profile
   
-  When I click "shalini@mail.com" in a "p .field" element
-  And I enter "shalu@mail.com" in the text input
-  Then I should not see "shalini@mail.com"
-  And I should see "shalu@mail.com"
+  When I look at the profile for "Shalini Sekhar"
+  And I change the field "Email" to "shalu@mail.com"
+  Then I should see the field "Email" with "shalu@mail.com"
 
-  When I click "080-12345" in a "p .field" element
-  And I enter "1234" in the text input
-  Then I should not see "080-12345"
-  And I should see "1234"
+  When I change the field "Home phone" to "1234"
+  Then I should see the field "Home phone" with "1234"
 
-  When I click "080-67890" in a "p .field" element
-  And I enter " " in the text input
-  Then I should not see "080-67890"
-  And I should not see "Office Phone" in a ".field-name" element
+  When I clear the field "Office phone"
+  Then I should not see the field "Office phone"
 
-  When I click "Some house, Banashankari, Bangalore - 55" in a "p .field" element
-  And I enter "Some Other Address" in the textarea
-  Then I should not see "Some house, Banashankari, Bangalore - 55"
-  And I should see "Some Other Address"
+  When I change the field "Address" to "Some other address"
+  Then I should see the field "Address" with "Some other address"
 
   When I go to the page for that profile
-  Then I should see "Shalini Sekhar"
-  And I should see "1122334455"
-  And I should not see "shalini@mail.com"
-  And I should see "shalu@mail.com"
-  And I should not see "080-12345"
-  And I should see "1234"
-  And I should not see "080-67890"
-  And I should not see "Office Phone" in a ".field-name" element
+  And I look at the profile for "Shalini Sekhar"
+  Then I should see the field "Mobile" with "1122334455"
+  And I should see the field "Email" with "shalu@mail.com"
+  And I should see the field "Home phone" with "1234"
+  And I should not see the field "Office phone"
+  And I should see the field "Address" with "Some other address"
 
 
 Scenario: Add fields for a teacher
-  Given a teacher profile for Shalini with all information exists
+  Given a teacher Shalini exists
   And I am on the page for that profile
 
-  Then I should not see "Add field" in a ".add-field-menu" element
-  And I should not see "Additional Emails" in a ".add-field-menu" element
-  
-  When I click "shalu@short.com" in a "p .field" element
-  And I enter " " in the text input
-  Then I should not see "Additional Emails" in a ".field-name" element
-  And I should see "Add field" in a ".add-field-menu" element
-  And I should see "Additional Emails" in a ".add-field-menu" element
+  When I look at the profile for "Shalini Sekhar"
+  Then I should not see the add-field menu
 
-  When I click "Additional Emails"
-  And I enter "new@mail.com" in the text input
-  Then I should see "new@mail.com"
-  Then I should see "Additional Emails" in a ".field-name" element
-  And I should not see "Add field" in a ".add-field-menu" element
-  And I should not see "Additional Emails" in a ".add-field-menu" element
+  When I clear the field "Additional Emails"
+  Then I should not see the field "Additional Emails"
+  And I should see the add-field menu
+  And the add-field menu should have the option "Additional Emails"
+
+  When I add the field "Additional Emails" with "new@mail.com"
+  Then I should see the field "Additional Emails" with "new@mail.com"
+  And I should not see the add-field menu
 
   When I go to the page for that profile
-  Then I should see "new@mail.com"
-  Then I should see "Additional Emails" in a ".field-name" element
-  And I should not see "Add field" in a ".add-field-menu" element
-  And I should not see "Additional Emails" in a ".add-field-menu" element
+  And I look at the profile for "Shalini Sekhar"
+  Then I should see the field "Additional Emails" with "new@mail.com"
+  And I should not see the add-field menu
 
 
 Scenario: Set an invalid email for a student
-  Given a student profile for Parvathy with all information exists
+  Given a student Parvathy exists
   And I am on the page for that profile
 
-  When I click "parvathy@mail.com" in a "p .field" element
-  And I enter "asdf" in the text input
-  Then I should see "parvathy@mail.com"
-  And I should not see "asdf"
+  When I look at the profile for "Parvathy Manjunath"
+  And I change the field "Email" to "asdf"
+  Then I should see the field "Email" with "parvathy.manjunath@mail.com"
+
+  When I go to the page for that profile
+  And I look at the profile for "Parvathy Manjunath"
+  Then I should see the field "Email" with "parvathy.manjunath@mail.com"
 
 
 Scenario: Edit a student profile
-  Given a student profile for Parvathy with all information exists
+  Given a student Parvathy exists
   And I am on the page for that profile
-  
-  When I click "Parvathy Manjunath" in a "h3 .field" element
-  And I enter " Parvathy  " in the text input
-  Then I should not see "Parvathy Manjunath" in a "h3" element
-  And I should see "Parvathy"
 
-  When I click "parvathy@mail.com" in a "p .field" element
-  And I enter " " in the text input
-  Then I should not see "parvathy@mail.com"
-  And I should not see "Email" in a ".field-name" element
+  When I look at the profile for "Parvathy Manjunath"
+  And I change the name to "Parvathy   "
+  Then I should see a profile for "Parvathy"
+  And I should not see a profile for "Parvathy Manjunath"
 
-  When I click "12345678" in a "p .field" element
-  And I enter " " in the text input
-  Then I should not see "12345678"
-  And I should not see "Mobile" in a ".field-name" element
+  When I clear the field "Email"
+  Then I should not see the field "Email"
 
-  When I click "B\+" in a "p .field" element
-  And I enter "A-" in the text input
-  Then I should not see "B+"
-  And I should see "A-"
+  When I clear the field "Mobile"
+  Then I should not see the field "Email"
 
-  When I click "25-12-1996" in a "p .field" element
-  And I enter the date "01-05-1980"
-  Then I should not see "25-12-1996"
-  And I should see "01-05-1980"
+  When I change the field "Blood group" to "A-"
+  Then I should see the field "Blood group" with "A-"
+
+  When I change the date field "Birthday" to "01-08-1980"
+  Then I should see the field "Birthday" with "01-08-1980 (32 yrs)"
 
   When I go to the page for that profile
-  Then I should not see "Parvathy Manjunath"
-  And I should see "Parvathy"
-  And I should not see "parvathy@mail.com"
-  And I should not see "Email" in a ".field-name" element
-  And I should not see "12345678"
-  And I should not see "Mobile" in a ".field-name" element
-  And I should not see "B+"
-  And I should see "A-"
-  And I should not see "25-12-1996"
-  And I should see "01-05-1980"
+  Then I should see a profile for "Parvathy"
+  And I should not see a profile for "Parvathy Manjunath"
+  When I look at the profile for "Parvathy"
+  Then I should not see the field "Email"
+  And I should not see the field "Mobile"
+  And I should see the field "Blood group" with "A-"
+  And I should see the field "Birthday" with "01-08-1980 (32 yrs)"
 
 
 Scenario: Clear student birthday
-  Given a student profile for Parvathy with all information exists
+  Given a student Parvathy exists
   And I am on the page for that profile
-  Then I should see "Birthday" in a ".field-name" element
 
-  When I click "25-12-1996" in a "p .field" element
-  And I click the element ".clear-date"
-  Then I should not see "25-12-1996"
-  And I should not see "Birthday" in a ".field-name" element
+  When I look at the profile for "Parvathy Manjunath"
+  And I clear the date field "Birthday"
+  Then I should not see the field "Birthday"
 
   When I go to the page for that profile
-  Then I should not see "25-12-1996"
-  And I should not see "Birthday" in a ".field-name" element
+  And I look at the profile for "Parvathy Manjunath"
+  Then I should not see the field "Birthday"
 
 
 Scenario: Add fields for a student
-  Given a student profile for Parvathy with all information exists
+  Given a student Parvathy exists
   And I am on the page for that profile
 
-  Then I should see "Add field" in a ".add-field-menu" element
-  And I should see "Additional Emails" in a ".add-field-menu" element
-  And I should see "Notes" in a ".add-field-menu" element
+  When I look at the profile for "Parvathy Manjunath"
+  Then I should see the add-field menu
+  And the add-field menu should have the option "Additional Emails"
+  And the add-field menu should have the option "Notes"
   
-  When I click "25-12-1996" in a "p .field" element
-  And I click the element ".clear-date"
-  And I click "Birthday" within the ".add-field-menu" block
-  And I enter the date "11-07-2001"
+  When I clear the date field "Birthday"
+  Then I should not see the field "Birthday"
+  And the add-field menu should have the option "Birthday"
+  When I add the date field "Birthday" with "11-07-2001"
+  Then I should see the field "Birthday" with "11-07-2001 (11 yrs)"
 
-  When I click "B\+" in a "p .field" element
-  And I enter " " in the text input
+  When I clear the field "Blood group"
+  Then the add-field menu should have the option "Blood group"
 
   When I am on the page for that profile
-  Then I should see "Add field" in a ".add-field-menu" element
-  And I should see "Additional Emails" in a ".add-field-menu" element
-  And I should see "Notes" in a ".add-field-menu" element
-  And I should see "Blood Group" in a ".add-field-menu" element
-  And I should not see "B+"
-  And I should not see "Blood Group" in a ".field-name" element
-  And I should not see "25-12-1996"
-  And I should see "11-07-2001"
+  And I look at the profile for "Parvathy Manjunath"
+  Then I should see the add-field menu in it
+  And the add-field menu should have the option "Additional Emails" in it
+  And the add-field menu should have the option "Notes" in it
+  And the add-field menu should have the option "Blood Group" in it
+  And I should see the field "Birthday" with "11-07-2001 (11 yrs)"
 
 
 Scenario: Add an invalid email field
-  Given a student profile for Parvathy exists
+  Given a student Parvathy exists
   And I am on the page for that profile
-  Then I should see "Email\b" in a ".field-name" element
-  And I should not see "Email\b" in a ".add-field-menu" element
-  
-  When I click "parvathy@mail.com" in a "p .field" element
-  And I enter " " in the text input
-  Then I should not see "Email\b" in a ".field-name" element
-  And I should see "Email\b" in a ".add-field-menu" element
 
-  When I click "Email\b" in a ".add-field-menu a" element
-  And I enter "invalidmail" in the text input
-  And I should not see "Email\b" in a ".field-name" element
-  And I should see "Email\b" in a ".add-field-menu" element
+  When I look at the profile for "Parvathy Manjunath"
+  Then I should see the field "Email" with "parvathy.manjunath@mail.com"
+  And the add-field menu should not have the option "Email"
+  
+  When I clear the field "Email"
+  Then I should not see the field "Email"
+  And the add-field menu should have the option "Email"
+
+  When I add the field "Email" with "invalidmail"
+  Then I should not see the field "Email"
+  And the add-field menu should have the option "Email"
 
   When I am on the page for that profile
-  Then I should not see "Email\b" in a ".field-name" element
-  And I should see "Email\b" in a ".add-field-menu" element
+  And I look at the profile for "Parvathy Manjunath"
+  Then I should not see the field "Email"
+  And the add-field menu should have the option "Email"
 
 
 Scenario: Edit a guardian profile
-  Given a student profile for Parvathy exists
-  And a guardian Poonam for that student exists
+  Given a student Parvathy exists
+  And a guardian Poonam exists for that student
   When I am on the page for that profile
 
-  When I click "Poonam Jain" in a "h4 .field" element
-  And I enter "Parvathys Mom" in the text input
-  Then I should not see "Poonam Jain"
-  And I should see "Parvathys Mom" within the ".guardians" block
+  When I look at the profile for "Parvathy Manjunath"
+  And I look at the guardian "Poonam Jain"
+  And I change the guardian name to "Parvathys Mom"
+  When I look at the profile for "Parvathy Manjunath"
+  Then I should not see the guardian "Poonam Jain"
+  And I should see the guardian "Parvathys Mom"
 
-  When I click "poonam@mail.com" in a "p .field" element
-  And I enter "jain@mail.com" in the text input
-  Then I should not see "poonam@mail.com"
-  And I should see "jain@mail.com" within the ".guardians" block
+  When I look at the guardian "Parvathys Mom"
+  And I change the field "Email" to "jain@mail.com"
+  Then I should see the field "Email" with "jain@mail.com"
 
-  When I click "333-444" in a "p .field" element
-  And I enter " " in the text input
-  Then I should not see "333-444"
-  And I should not see "Office Phone" in a ".field-name" element within the ".guardians" block
+  When I clear the field "Office Phone"
+  Then I should not see the field "Office Phone"
+  And the add-field menu should have the option "Office Phone" in it
 
   When I go to the page for that profile
-  Then I should not see "Manoj Jain"
-  And I should see "Parvathys Mom"
-  And I should not see "poonam@mail.com"
-  And I should see "jain@mail.com"
-  And I should not see "333-444"
-  And I should not see "Office Phone" in a ".field-name" element within the ".guardians" block
+  And I look at the profile for "Parvathy Manjunath"
+  Then I should not see the guardian "Poonam Jain"
+  And I should see the guardian "Parvathys Mom"
+  
+  When I look at the guardian "Parvathys Mom"
+  Then I should see the field "Email" with "jain@mail.com"
+  And I should not see the field "Office Phone"
+  And the add-field menu should have the option "Office Phone" in it
 
 
 Scenario: Add fields for a guardian
-  Given a student profile for Parvathy exists
-  And a guardian Poonam for that student exists
+  Given a student Parvathy exists
+  And a guardian Poonam exists for that student
   When I am on the page for that profile
 
-  Then I should see "Add field" in a ".add-field-menu" element within the ".guardians" block
-  And I should see "Additional Emails" in a ".add-field-menu" element within the ".guardians" block
-  And I should see "Notes" in a ".add-field-menu" element within the ".guardians" block
-  And I should not see "Notes" in a ".field-name" element within the ".guardians" block
+  When I look at the profile for "Parvathy Manjunath"
+  And I look at the guardian "Poonam Jain"
+  Then I should see the add-field menu in it
+  And the add-field menu should have the option "Additional Emails" in it
+  And the add-field menu should have the option "Notes" in it
   
-  When I click "Notes" within the ".guardians .add-field-menu" block
-  And I enter "Some notes here" in the textarea within the ".guardians" block
-
-  And I should see "Notes" in a ".field-name" element within the ".guardians" block
-  And I should see "Some notes here" within the ".guardians" block
-  And I should not see "Notes" in a ".add-field-menu" element within the ".guardians" block
+  When I add the field "Notes" with "Some notes here"
+  Then I should see the field "Notes" with "Some notes here"
+  And the add-field menu should not have the option "Notes" in it
 
   When I am on the page for that profile
-  Then I should see "Add field" in a ".add-field-menu" element within the ".guardians" block
-  And I should see "Additional Emails" in a ".add-field-menu" element within the ".guardians" block
-  And I should not see "Notes" in a ".add-field-menu" element within the ".guardians" block
-  And I should see "Notes" in a ".field-name" element within the ".guardians" block
-  And I should see "Some notes here" within the ".guardians" block
+  And I look at the profile for "Parvathy Manjunath"
+  And I look at the guardian "Poonam Jain"
+  Then I should see the add-field menu in it
+  And the add-field menu should have the option "Additional Emails" in it
+  And the add-field menu should not have the option "Notes" in it
+  And I should see the field "Notes" with "Some notes here"
 
 
 Scenario: Add an invalid email field for a guardian
-  Given a student profile for Parvathy exists
-  And a guardian Poonam for that student exists
+  Given a student Parvathy exists
+  And a guardian Poonam exists for that student
   When I am on the page for that profile
-  Then I should see "Email\b" in a ".field-name" element within the ".guardians" block
-  And I should not see "Email\b" in a ".add-field-menu" element within the ".guardians" block
+
+  When I look at the profile for "Parvathy Manjunath"
+  And I look at the guardian "Poonam Jain"
+  Then I should see the field "Email" with "poonam@mail.com"
+  And the add-field menu should not have the option "Email" in it
   
-  When I click "poonam@mail.com" in a "p" element within the ".guardians" block
-  And I enter " " in the text input within the ".guardians" block
-  Then I should not see "Email\b" in a ".field-name" element within the ".guardians" block
-  And I should see "Email\b" in a ".add-field-menu" element within the ".guardians" block
+  When I clear the field "Email"
+  Then I should not see the field "Email"
+  And the add-field menu should have the option "Email" in it
 
-  When I click "Email\b" in a ".add-field-menu a" element within the ".guardians" block
-  And I enter "invalidmail" in the text input within the ".guardians" block
-  And I should not see "Email\b" in a ".field-name" element within the ".guardians" block
-  And I should see "Email\b" in a ".add-field-menu" element within the ".guardians" block
+  When I add the field "Email" with "invalid@mail"
+  Then I should not see the field "Email"
+  And the add-field menu should have the option "Email" in it
 
   When I am on the page for that profile
-  Then I should not see "Email\b" in a ".field-name" element within the ".guardians" block
-  And I should see "Email\b" in a ".add-field-menu" element within the ".guardians" block
+  And I look at the profile for "Parvathy Manjunath"
+  And I look at the guardian "Poonam Jain"
+  Then I should not see the field "Email"
+  And the add-field menu should have the option "Email" in it

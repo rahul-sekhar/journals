@@ -17,14 +17,14 @@ describe('editInPlace module', function() {
         var elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" editor-attr="" display="Some<br>text"></p>');
         compile(elem)(scope);
         scope.$apply();
-        expect(elem.find('span.field').html()).toEqual('Some&lt;br&gt;text');
+        expect(elem.find('span.value').html()).toEqual('Some&lt;br&gt;text');
       });
 
       it('does not escape html if the contains-html attribute is set', function() {
         var elem = angular.element('<p edit-in-place="" edit-mode="editOn" type="text" contains-html editor-attr="" display="Some<br>text"></p>');
         compile(elem)(scope);
         scope.$apply();
-        expect(elem.find('span.field').html()).toEqual('Some<br>text');
+        expect(elem.find('span.value').html()).toEqual('Some<br>text');
       });
     });
 
@@ -40,7 +40,7 @@ describe('editInPlace module', function() {
         $compile(elem)(scope);
         scope.$apply();
         input = elem.find('input');
-        fieldSpan = elem.find('span.field');
+        fieldSpan = elem.find('span.value');
       }));
 
       it('adds a .container span', function() {
@@ -48,7 +48,7 @@ describe('editInPlace module', function() {
         expect(elem.children('span.container').length).toEqual(1);
       });
 
-      it('adds a .field span with the original contents, initially shown', function() {
+      it('adds a .value span with the original contents, initially shown', function() {
         expect(fieldSpan.length).toEqual(1);
         expect(fieldSpan.text()).toEqual('Some text');
         expect(fieldSpan.is(':visible')).toEqual(true);
@@ -190,7 +190,7 @@ describe('editInPlace module', function() {
         $compile(elem)(scope);
         scope.$apply();
         input = elem.find('textarea');
-        fieldSpan = elem.find('span.field');
+        fieldSpan = elem.find('span.value');
       }));
 
       it('adds an initially hidden textarea element', function() {
