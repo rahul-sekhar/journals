@@ -1,13 +1,13 @@
-# Given /^the groups "(.*?)" exist$/ do |p_groups|
-#   Group.find_or_build_list(p_groups).each do |group|
-#     group.save!
-#   end
-# end
+Given /^the groups "(.*?)" exist$/ do |p_groups|
+  Group.find_or_build_list(p_groups).each do |group|
+    group.save!
+  end
+end
 
-# Given /^that student belongs to the groups "(.*?)"$/ do |p_groups|
-#   @profile.groups = Group.find_or_build_list(p_groups)
-#   @profile.save!
-# end
+Given /^that student belongs to the groups "(.*?)"$/ do |p_groups|
+  @profile.groups = Group.find_or_build_list(p_groups)
+  @profile.save!
+end
 
 # Given /^I belong to the groups "(.*?)"$/ do |p_groups|
 #   profile = @logged_in_user.profile
@@ -25,7 +25,33 @@
 #   @group.students << FactoryGirl.create(:student, full_name: "Jumble Sekhar")
 # end
 
-# When /^I open the manage groups dialog$/ do
-#   step 'I click "add" in a "p" element'
-#   step 'I click "Manage groups"'
-# end
+When /^I delete the group "(.*?)"$/ do |p_group|
+  page.find('#groups li', text: /^#{p_group}/i, visible: true).find('.delete').click
+end
+
+When /^I change the group "(.*?)" to "(.*?)"$/ do |p_from, p_to|
+  field = page.find('#groups li', text: /^#{Regexp.escape(p_from)}/i)
+  field.find('.value').click
+  fill_input_inside field, p_to
+end
+
+When /^I add the group "(.*?)"$/ do |p_group|
+  groups = page.find('#groups')
+  groups.find('.add').click
+  fill_input_inside groups, p_group
+end
+
+# Profile groups
+Then /^I should see "(.*?)" in its groups$/ do |p_content|
+  @viewing.find('.has-groups').should have_content p_content
+end
+
+Then /^I should not see "(.*?)" in its groups$/ do |p_content|
+  @viewing.find('.has-groups').should have_no_content p_content
+end
+
+When /^I remove the group "(.*?)" from it$/ do |p_group|
+  @viewing.find('.has-groups span', text: /^#{Regexp.escape(p_group)}$/i, visible: true).first(:xpath, './/..').find('.remove').click
+end
+
+

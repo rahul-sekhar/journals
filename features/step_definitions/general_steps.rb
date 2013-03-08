@@ -32,6 +32,19 @@ Then /^I should not see "(.*?)"$/ do |p_content|
   page.should have_no_content p_content
 end
 
+# Link and button steps
+When /^I click "(.*?)"$/ do |p_link|
+  click_on p_link
+end
+
+# General internal functions
+def fill_input_inside(node, value)
+  node.find('input, textarea', visible: true).set(value)
+  script = "$('input:visible, textarea:visible').blur();"
+  page.execute_script(script)
+  node.should have_css('input, textarea', visible: false)
+end
+
 
 
 # # Input field steps

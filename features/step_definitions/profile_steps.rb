@@ -55,13 +55,6 @@ Then /^I should not see the field "(.*?)"$/ do |p_field|
   end
 end
 
-def fill_input_for_field(field, value)
-  field.find('input, textarea', visible: true).set(value)
-  script = "$('input:visible, textarea:visible').blur();"
-  field.should have_css('input, textarea', visible: false)
-  page.execute_script(script)
-end
-
 When /^I change the (field ".*"|name|guardian name) to "(.*?)"$/ do |p_field, p_value|
   within @viewing do
     if p_field == 'name'
@@ -73,7 +66,7 @@ When /^I change the (field ".*"|name|guardian name) to "(.*?)"$/ do |p_field, p_
       field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
     end
     field.find('.value').click
-    fill_input_for_field field, p_value
+    fill_input_inside field, p_value
   end
 end
 
@@ -106,7 +99,7 @@ When /^I add the field "(.*?)" with "(.*?)"$/ do |p_field, p_value|
   within @viewing do
     step 'I select "' + p_field + '" from the add-field menu'
     field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
-    fill_input_for_field field, p_value
+    fill_input_inside field, p_value
   end
 end
 

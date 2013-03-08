@@ -33,6 +33,7 @@ angular.module('journals.filteredList', []).
 
         $scope.select = function(item) {
           $scope.listShown = false;
+          $scope.filter = '';
           $scope.onSelect({value:item});
         };
       }
