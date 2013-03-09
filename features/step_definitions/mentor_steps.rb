@@ -1,3 +1,15 @@
+Given /^I have the mentees "(.*?)"$/ do |p_students|
+  profile = @logged_in_profile
+  profile.mentees = p_students.split(", ").map{ |student| Student.find_by_first_name!(student) }
+  profile.save!
+end
+
+Given /^all the students are my mentees$/ do
+  profile = @logged_in_profile
+  profile.mentees = Student.all
+  profile.save!
+end
+
 # Given /^the teachers Angela, Shalini, Aditya and Sharad exist$/ do
 #   FactoryGirl.create(:teacher, full_name: "Angela Jain")
 #   FactoryGirl.create(:teacher, full_name: "Shalini Sekhar")
@@ -20,12 +32,6 @@
 #   FactoryGirl.create(:student, full_name: "Roly Sekhar")
 #   FactoryGirl.create(:student, full_name: "Lucky Sekhar")
 #   FactoryGirl.create(:student, full_name: "Jumble Sekhar")
-# end
-
-# Given /^I have the mentees "(.*?)"$/ do |p_students|
-#   profile = @logged_in_user.profile
-#   profile.mentees = p_students.split(", ").map{ |student| Student.find_by_first_name!(student) }
-#   profile.save!
 # end
 
 # Given /^that profile has the mentees "(.*?)"$/ do |p_students|

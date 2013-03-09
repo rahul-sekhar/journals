@@ -30,8 +30,8 @@ class Ability
         (post.visible_to_guardians && (post.students & guardian.students).present?)
       end
 
-      # Can create, update and destroy posts that they authored
-      can [:create, :update, :destroy], Post, author_id: guardian.id, author_type: "Guardian"
+      # Can manage posts that they authored
+      can :manage, Post, author_id: guardian.id, author_type: "Guardian"
 
       # Can edit its students pages
       can :update, Student do |student|

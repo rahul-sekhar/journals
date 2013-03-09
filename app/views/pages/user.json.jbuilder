@@ -1,0 +1,1 @@
+json.type @profile.class.to_s

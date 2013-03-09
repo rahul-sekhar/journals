@@ -34,14 +34,18 @@ describe('Groups module', function() {
         httpBackend.verifyNoOutstandingExpectation();
       });
 
-      it('reloads groups if the groups have failed to load', function() {
+      it('reloads groups if the groups have failed to load after a timeout', inject(function($timeout) {
         httpBackend.expectGET('/groups').respond(404);
         Groups.all();
         httpBackend.flush();
-        httpBackend.expectGET('/groups').respond([]);
         Groups.all();
         httpBackend.verifyNoOutstandingExpectation();
-      });
+
+        httpBackend.expectGET('/groups').respond([]);
+        $timeout.flush();
+        Groups.all();
+        httpBackend.verifyNoOutstandingExpectation();
+      }));
     });
 
     describe('get(id)', function() {
@@ -59,14 +63,18 @@ describe('Groups module', function() {
         httpBackend.verifyNoOutstandingExpectation();
       });
 
-      it('reloads groups if the groups have failed to load', function() {
+      it('reloads groups if the groups have failed to load', inject(function($timeout) {
         httpBackend.expectGET('/groups').respond(404);
         Groups.all();
         httpBackend.flush();
-        httpBackend.expectGET('/groups').respond([]);
         Groups.get(7);
         httpBackend.verifyNoOutstandingExpectation();
-      });
+
+        httpBackend.expectGET('/groups').respond([]);
+        $timeout.flush();
+        Groups.get(7);
+        httpBackend.verifyNoOutstandingExpectation();
+      }));
 
       describe('the returned promise', function() {
         var success, error;

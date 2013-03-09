@@ -46,11 +46,6 @@ describe GroupsController do
 
 
   describe "GET index" do
-    it "raises an exception if the user cannot manage groups" do
-      ability.cannot :manage, Group
-      expect{ get :index, format: :json }.to raise_exception(CanCan::AccessDenied)
-    end
-
     it "has a status of 200" do
       get :index, format: :json
       response.status.should eq(200)

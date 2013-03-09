@@ -11,6 +11,8 @@ Journals::Application.routes.draw do
   get "change_password" => "pages#change_password"
   put "change_password" => "pages#update_password"
 
+  get "user" => "pages#user"
+
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]
   end

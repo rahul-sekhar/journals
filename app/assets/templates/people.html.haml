@@ -27,6 +27,8 @@
           %a{href: "/students"} Students
         %li{"ng-hide" => "pageData.filter == 'Teachers'"}
           %a{href: "/teachers"} Teachers
+        %li{"ng-hide" => "(pageData.filter == 'Your mentees') || (!isTeacher)"}
+          %a{href: "/mentees"} Your mentees
         %li{"ng-hide" => "pageData.filter == 'Archived students and teachers'"}
           %a{href: "/people/archived"} Archived students and teachers
 

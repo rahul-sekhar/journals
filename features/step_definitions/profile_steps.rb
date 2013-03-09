@@ -4,6 +4,12 @@ Given /^a (teacher|student) Rahul exists$/ do |p_type|
   set_profile_password(@profile, 'pass')
 end
 
+Given /^a guardian Rahul exists$/ do
+  student = create_profile('student', 'Roly Sekhar')
+  @profile = student.guardians.create!(full_name: 'Rahul Sekhar', email: 'rahul@mail.com')
+  set_profile_password(@profile, 'pass')
+end
+
 Given /^an?( archived)? (teacher|student) "(.*?)" exists$/ do |p_archived, p_type, p_name|
   @profile = create_profile(p_type, p_name)
   @profile.toggle_archive if p_archived.present?

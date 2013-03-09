@@ -2,7 +2,7 @@
 
 angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHelper']).
 
-  factory('Groups', ['$http', 'messageHandler', 'arrayHelper', '$q', function($http, messageHandler, arrayHelper, $q) {
+  factory('Groups', ['$http', 'messageHandler', 'arrayHelper', '$q', '$timeout', function($http, messageHandler, arrayHelper, $q, $timeout) {
     var GroupsObj = {};
     var groups = [];
 
@@ -47,28 +47,33 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
     };
 
     // Query groups
-    var groupsDeferred;
+    var groupsPromise;
     var queryGroups = function() {
-      groupsDeferred = $http.get('/groups').
+      groupsPromise = $http.get('/groups').
         then(function(response) {
           arrayHelper.shallowCopy(response.data.map(create), groups);
         }, function(response) {
           arrayHelper.shallowCopy([], groups);
           messageHandler.showError(response);
-          groupsDeferred = undefined;
+
+          // Set a timeout for the next try
+          $timeout(function() {
+            groupsPromise = undefined;
+          }, 30000)
+          
         });
     };
 
     // Function to return a reference to all groups
     GroupsObj.all = function() {
-      if (!groupsDeferred) queryGroups();
+      if (!groupsPromise) queryGroups();
       return groups;
     };
 
     // Function to get a group by ID
     GroupsObj.get = function(id) {
-      if (!groupsDeferred) queryGroups();
-      return groupsDeferred.
+      if (!groupsPromise) queryGroups();
+      return groupsPromise.
         then(function() {
           var group = groups.filter(function(obj) {
             return obj.id === id;

@@ -21,6 +21,17 @@ describe PagesController do
   end
 
 
+  describe "GET user" do
+    let(:profile){ mock_model(Teacher) }
+    before { controller.stub(:current_profile).and_return(profile) }
+
+    it "sets the profile to the current profile" do
+      get :user, format: :json
+      assigns(:profile).should eq(profile)
+    end
+  end
+
+
   describe "GET people" do
     it "has a status of 200" do
       get :people, format: :json
@@ -149,16 +160,18 @@ describe PagesController do
     context "when logged in as a student" do
       before{ user.stub(:profile).and_return(create(:student)) }
 
-      it "raises a page not found exception" do
-        expect{ get :mentees }.to raise_exception( ActiveRecord::RecordNotFound )
+      it "assigns an empty array to people" do
+        get :mentees, format: :json
+        assigns(:people).should be_empty
       end
     end
 
     context "when logged in as a guardian" do
       before{ user.stub(:profile).and_return(create(:guardian)) }
 
-      it "raises a page not found exception" do
-        expect{ get :mentees }.to raise_exception( ActiveRecord::RecordNotFound )
+      it "assigns an empty array to people" do
+        get :mentees, format: :json
+        assigns(:people).should be_empty
       end
     end
 

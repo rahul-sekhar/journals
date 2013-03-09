@@ -5,6 +5,10 @@ class PagesController < ApplicationController
     redirect_to posts_path
   end
 
+  def user
+    @profile = current_profile
+  end
+
   def people
     filter_and_display_people( People.current, true )
   end
@@ -14,9 +18,12 @@ class PagesController < ApplicationController
   end
 
   def mentees
-    raise ActiveRecord::RecordNotFound unless current_profile.is_a? Teacher
-
-    filter_and_display_people( current_profile.mentees )
+    if current_profile.is_a? Teacher
+      mentees = current_profile.mentees
+    else
+      mentees = Student.where("1 = 0")
+    end
+    filter_and_display_people( mentees )
   end
 
   def change_password
