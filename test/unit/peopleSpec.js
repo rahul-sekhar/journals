@@ -7,9 +7,9 @@ describe('people module', function() {
   /* --------------- People controller --------------------- */
 
   describe('PeopleCtrl', function() {
-    var scope, route, ctrl, PeopleInterface, location, deferred_result;
+    var scope, route, ctrl, PeopleInterface, Groups, location, deferred_result;
 
-    beforeEach(inject(function($rootScope, $location, $q, _PeopleInterface_) {
+    beforeEach(inject(function($rootScope, $location, $q, _PeopleInterface_, _Groups_) {
       scope = $rootScope.$new();
       route = {};
       route.current = { pageData: 'Some data' };
@@ -19,6 +19,8 @@ describe('people module', function() {
       spyOn(PeopleInterface, 'get').andReturn(deferred_result.promise);
       location = $location
       location.url('/current_path');
+      Groups = _Groups_;
+      spyOn(Groups, 'all').andReturn([{id: 1, name: 'something'}]);
     }));
 
     describe('for pages with many people', function() {
@@ -36,6 +38,11 @@ describe('people module', function() {
 
       it('sets pageTitle to the title', function() {
         expect(scope.pageTitle).toEqual('People');
+      });
+
+      it('loads groups', function() {
+        expect(Groups.all).toHaveBeenCalled();
+        expect(scope.groups).toEqual([{id: 1, name: 'something'}])
       });
 
       it('loads data through PeopleInterface', function() {
@@ -85,6 +92,11 @@ describe('people module', function() {
 
       it('sets pageTitle', function() {
         expect(scope.pageTitle).toEqual('Profile');
+      });
+
+      it('does not load groups', function() {
+        expect(Groups.all).not.toHaveBeenCalled();
+        expect(scope.groups).toBeUndefined();
       });
 
       it('loads data through PeopleInterface', function() {

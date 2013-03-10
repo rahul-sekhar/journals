@@ -6,15 +6,16 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- People Controller ----------*/
   
-  controller('PeopleCtrl', ['$scope', '$route', '$routeParams', '$location', 'PeopleInterface',
-      function($scope, $route, $routeParams, $location, PeopleInterface) {
+  controller('PeopleCtrl', ['$scope', '$route', '$routeParams', '$location', 'PeopleInterface', 'Groups', 'messageHandler',
+      function($scope, $route, $routeParams, $location, PeopleInterface, Groups, messageHandler) {
     
     var loadPeople;
     var id = $routeParams.id;
     $scope.pageData = $route.current.pageData;
+    var isGroup = $scope.pageData.isGroup;
 
     // For a single person
-    if (id) {
+    if (id && !isGroup) {
       $scope.singlePerson = true;
       $scope.pageTitle = 'Profile';
 
@@ -40,6 +41,16 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
     else {
       $scope.singlePerson = false;
       $scope.pageTitle = 'People';
+      $scope.groups = Groups.all();
+
+      if (isGroup) {
+        Groups.get(id).
+          then(function(group) {
+            $scope.pageData.filter = group.name;
+          }, function(response) {
+            messageHandler.showError(null, response);
+          });
+      }
 
       loadPeople = function() {
         PeopleInterface.query($location.url()).
@@ -106,7 +117,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         person.groups.push(group);
         $http.post(person.url() + '/add_group', { group_id: group.id }).
           then(null, function(response) {
-            messageHandler.showError(response);
+            messageHandler.showError(response, 'Group could not be added.');
             arrayHelper.removeItem(person.groups, group);
           });
       };
@@ -116,7 +127,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         arrayHelper.removeItem(person.groups, group);
         $http.post(person.url() + '/remove_group', { group_id: group.id }).
           then(null, function(response) {
-            messageHandler.showError(response);
+            messageHandler.showError(response, 'Group could not be removed.');
             person.groups.push(group);
           });
       };
@@ -190,7 +201,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
           },
           function(response) {
             person[field_name] = old_val;
-            messageHandler.showError(response);
+            messageHandler.showError(response, 'An error occured while updating ' + person.full_name + '.');
           });
       };
 
@@ -218,8 +229,8 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
           deferred.resolve(response.data);
         }, 
         function(response) {
-          messageHandler.showError(response);
           deferred.reject(response);
+          messageHandler.showError(response, 'Profiles could not be loaded.');
         });
       return deferred.promise;
     };
@@ -231,7 +242,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
           result.people = Person.createFromArray(data.items);
           result.metadata = data;
           delete result.metadata.items;
-          return result
+          return result;
         });
     };
 

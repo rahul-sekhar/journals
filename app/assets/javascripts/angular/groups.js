@@ -17,13 +17,15 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
       // Delete function
       group.delete = function() {
         group.deleted = true;
+        messageHandler.showProcess('Deleting the group ' + group.name + '...');
         $http.delete('/groups/' + group.id).
           then(function() {
             arrayHelper.removeItem(groups, group);
+            messageHandler.showNotification('The group ' + group.name + ' has been deleted.');
           }, 
           function(response) {
-            messageHandler.showError(response);
             delete group.deleted;
+            messageHandler.showError(response, 'Group ' + group.name + ' could not be deleted.');
           });
       };
 
@@ -33,13 +35,15 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
         if (old_name === new_name) return;
 
         group.name = new_name;
+        messageHandler.showProcess('Renaming group...')
         $http.put('/groups/' + group.id, { group: { name: new_name }}).
           then(function(response) {
             group.name = response.data.name;
+            messageHandler.showNotification('Group renamed to ' + new_name);
           },
           function(response) {
-            messageHandler.showError(response);
             group.name = old_name;
+            messageHandler.showError(response, 'Group could not be renamed.');
           });
       };
 
@@ -54,7 +58,7 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
           arrayHelper.shallowCopy(response.data.map(create), groups);
         }, function(response) {
           arrayHelper.shallowCopy([], groups);
-          messageHandler.showError(response);
+          messageHandler.showError(response, 'Information about groups could not be loaded.');
 
           // Set a timeout for the next try
           $timeout(function() {
@@ -76,14 +80,14 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
       return groupsPromise.
         then(function() {
           var group = groups.filter(function(obj) {
-            return obj.id === id;
+            return obj.id == id;
           })[0];
 
           if (group) {
             return group
           }
           else {
-            return $q.reject('Group not found');
+            return $q.reject('The requested group could not be found.');
           }
         });
     };
@@ -100,14 +104,16 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
         }
 
         new_group.name = new_name;
+        messageHandler.showProcess('Adding group ' + new_name + '...');
         $http.post('/groups', { group: { name: new_name }}).
           then(function(response) {
             var index = groups.indexOf(new_group);
             groups[index] = create(response.data);
+            messageHandler.showNotification('Group ' + new_name + ' added.')
           },
           function(response) {
-            messageHandler.showError(response);
             arrayHelper.removeItem(groups, new_group);
+            messageHandler.showError(response, 'Group ' + new_name + ' could not be added.');
           });
       };
       

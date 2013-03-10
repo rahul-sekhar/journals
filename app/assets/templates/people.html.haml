@@ -32,6 +32,10 @@
         %li{"ng-hide" => "pageData.filter == 'Archived students and teachers'"}
           %a{href: "/people/archived"} Archived students and teachers
 
+        %li.divider{"ng-show"=>"groups.length"}
+        %li{"ng-repeat"=>"group in groups", "ng-hide"=>"pageData.filter == group.name"}
+          %a{"ng-href" => "/groups/{{group.id}}"} {{group.name}}
+
   .clear-left
 
 %article.profile{ "ng-repeat"=>"person in people" }

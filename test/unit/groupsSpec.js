@@ -251,7 +251,6 @@ describe('Groups module', function() {
           it('sends an error to the messageHandler', function() {
             httpBackend.flush();
             expect(messageHandler.showError).toHaveBeenCalled();
-            expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
           });
 
           it('does not remove the group', function() {
@@ -304,7 +303,6 @@ describe('Groups module', function() {
           it('sends an error to the messageHandler', function() {
             httpBackend.flush();
             expect(messageHandler.showError).toHaveBeenCalled();
-            expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
           });
         });
 
@@ -336,7 +334,6 @@ describe('Groups module', function() {
         it('sends an error to the messageHandler', function() {
           httpBackend.flush();
           expect(messageHandler.showError).toHaveBeenCalled();
-          expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
         });
 
         it('updates references to the function to an empty array', function() {

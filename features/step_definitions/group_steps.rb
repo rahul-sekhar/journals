@@ -4,6 +4,10 @@ Given /^the groups "(.*?)" exist$/ do |p_groups|
   end
 end
 
+Given /^a group "(.*?)" exists$/ do |p_group|
+  @group = Group.create!(name: p_group)
+end
+
 Given /^that student belongs to the groups "(.*?)"$/ do |p_groups|
   @profile.groups = Group.find_or_build_list(p_groups)
   @profile.save!
@@ -15,9 +19,6 @@ end
 #   profile.save!
 # end
 
-# Given /^a group "(.*?)" exists$/ do |p_group|
-#   @group = Group.create!(name: p_group)
-# end
 
 # Given /^that group has the students Roly, Lucky and Jumble$/ do
 #   @group.students << FactoryGirl.create(:student, full_name: "Roly Sekhar")

@@ -67,6 +67,10 @@ angular.module('journals',
         filter: 'Your mentees'
       })).
 
+      when('/groups/:id', peopleRouteParams({
+        isGroup: true
+      })).
+
       when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
 
       otherwise({redirectTo: '/page-not-found'});
