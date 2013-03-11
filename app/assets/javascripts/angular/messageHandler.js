@@ -21,6 +21,13 @@ angular.module('journals.messageHandler', []).
       scope.message = { type: 'notification', text: text };
     };
 
+    messageHandler.notifyOnRouteChange = function(text) {
+      var clearBind = scope.$on('$routeChangeSuccess', function() {
+        clearBind();
+        messageHandler.showNotification(text);
+      });
+    };
+
     messageHandler.showError = function(error, text) {
       if (!error) {
         scope.message = { type: 'error', text: text };

@@ -7,11 +7,12 @@ describe('people module', function() {
   /* --------------- People controller --------------------- */
 
   describe('PeopleCtrl', function() {
-    var scope, route, ctrl, PeopleInterface, Groups, location, deferred_result;
+    var scope, route, ctrl, PeopleInterface, Groups, location, deferred_result, messageHandler;
 
-    beforeEach(inject(function($rootScope, $location, $q, _PeopleInterface_, _Groups_) {
+    beforeEach(inject(function($rootScope, $location, $q, _PeopleInterface_, _Groups_, _messageHandler_) {
       scope = $rootScope.$new();
       route = {};
+      messageHandler = _messageHandler_;
       route.current = { pageData: 'Some data' };
       PeopleInterface = _PeopleInterface_;
       deferred_result = $q.defer();
@@ -68,6 +69,27 @@ describe('people module', function() {
           scope.doSearch('some value');
           scope.$broadcast('$routeUpdate');
           expect(PeopleInterface.query.mostRecentCall.args).toEqual([encodeURI('/current_path?search=some value')]);
+        });
+      });
+
+      describe('delete(person)', function() {
+        var window, person;
+
+        beforeEach(inject(function($window) {
+          window = $window;
+          person = { delete: jasmine.createSpy() };
+        }));
+
+        it('calls the delete function for the person when the action is confirmed', function() {
+          spyOn(window, 'confirm').andReturn(true)
+          scope.delete(person);
+          expect(person.delete).toHaveBeenCalled();
+        });
+
+        it('does calls the delete function when the action is cancelled', function() {
+          spyOn(window, 'confirm').andReturn(false)
+          scope.delete(person);
+          expect(person.delete).not.toHaveBeenCalled();
         });
       });
     });
@@ -168,6 +190,63 @@ describe('people module', function() {
       it('has no doSearch method', function() {
         expect(scope.doSearch).toBeUndefined();
       });
+
+      describe('delete(person)', function() {
+        var person1, person2, deferred, window;
+
+        beforeEach(inject(function($q, $window) {
+          window = $window;
+          deferred = $q.defer();
+          person1 = { delete: jasmine.createSpy().andReturn(deferred.promise) };
+          person2 = {};
+          scope.people = [person1, person2];
+        }));
+
+        describe('when confirmed', function() {
+          beforeEach(function() {
+            spyOn(window, 'confirm').andReturn(true);
+            scope.delete(person1);
+          });
+
+          it('calls the delete function for the person', function() {
+            expect(person1.delete).toHaveBeenCalled();
+          });
+
+          it('remains on the same page if there are non deleted people when the promise is resolved', function() {
+            deferred.resolve();
+            expect(location.url()).toEqual('/current_path');
+          });
+
+          describe('if all people are deleted when the promise is resolved', function() {
+            beforeEach(function() {
+              spyOn(messageHandler, 'notifyOnRouteChange');
+              person1.deleted = true;
+              person2.deleted = true;
+              deferred.resolve();
+              scope.$apply();
+            });
+
+            it('switches to the people page', function() {
+              expect(location.url()).toEqual('/people');
+            });
+
+            it('shows a notification on route change', function() {
+              expect(messageHandler.notifyOnRouteChange).toHaveBeenCalled();
+            });
+          });
+        });
+
+        describe('when cancelled', function() {
+          beforeEach(function() {
+            spyOn(window, 'confirm').andReturn(false);
+            scope.delete(person1);
+          });
+
+          it('does not call the delete function for the person', function() {
+            expect(person1.delete).not.toHaveBeenCalled();
+          });
+        });
+      });
     });
   });
 
@@ -177,12 +256,9 @@ describe('people module', function() {
   describe('Person', function() {
     var Person, messageHandler;
 
-    beforeEach(module(function($provide) {
-      messageHandler = { showError: jasmine.createSpy() };
-      $provide.value('messageHandler', messageHandler);
-    }));
-
-    beforeEach(inject(function(_Person_) {
+    beforeEach(inject(function(_Person_, _messageHandler_) {
+      messageHandler = _messageHandler_;
+      spyOn(messageHandler, 'showError');
       Person = _Person_;
     }));
 
@@ -655,6 +731,362 @@ describe('people module', function() {
 
           it('leaves the field value unchanged and does not contact the server', function() {
             expect(person.field2).toEqual('value 2');
+          });
+        });
+      });
+
+      describe('delete', function() {
+        describe('with a valid server response', function() {
+          var promise;
+
+          beforeEach(function() {
+            httpBackend.expectDELETE('/students/7').respond(200, 'OK');
+            promise = person.delete();
+          });
+
+          it('sends a message to the server', function() {
+            httpBackend.verifyNoOutstandingExpectation();
+          });
+
+          it('sets the deleted attribute', function() {
+            expect(person.deleted).toEqual(true);
+            httpBackend.flush();
+            expect(person.deleted).toEqual(true);
+          });
+
+          it('resolves the promise', function() {
+            var success = jasmine.createSpy();
+            var error = jasmine.createSpy();
+            promise.then(success, error);
+            httpBackend.flush();
+            expect(success).toHaveBeenCalled();
+            expect(error).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('with an invalid server response', function() {
+          var promise;
+
+          beforeEach(function() {
+            httpBackend.expectDELETE('/students/7').respond(404, 'Some error');
+            promise = person.delete();
+          });
+
+          it('sends a message to the server', function() {
+            httpBackend.verifyNoOutstandingExpectation();
+          });
+
+          it('sets the deleted attribute and removes it when the response is received', function() {
+            expect(person.deleted).toEqual(true);
+            httpBackend.flush();
+            expect(person.deleted).toBeUndefined();
+          });
+
+          it('shows an error message', function() {
+            httpBackend.flush();
+            expect(messageHandler.showError).toHaveBeenCalled();
+          });
+
+          it('rejects the promise', function() {
+            var success = jasmine.createSpy();
+            var error = jasmine.createSpy();
+            promise.then(success, error);
+            httpBackend.flush();
+            expect(success).not.toHaveBeenCalled();
+            expect(error).toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('removeGuardian(guardian)', function() {
+        var guardian;
+
+        beforeEach(function() {
+          guardian = Person.create({
+            type: 'Guardian',
+            id: 3,
+            number_of_students: 1
+          });
+        });
+
+        it('throws an error when not a guardian', function() {
+          inputData = {
+            type: 'Teacher',
+            id: 7,
+            field1: 'value 1',
+            field2: 'value 2'
+          };
+          person = Person.create(inputData);
+          expect(person.removeGuardian).toThrow('Can only delete guardians for a student')
+        });
+
+        describe('when number_of_students is above 1', function() {
+          var window;
+
+          beforeEach(inject(function($window) {
+            guardian = Person.create({
+              type: 'Guardian',
+              id: 3,
+              number_of_students: 2
+            });
+            httpBackend.expectDELETE('/students/7/guardians/3').respond(200, 'OK');
+            window = $window;
+            spyOn(window, 'confirm');
+            person.removeGuardian(guardian);
+          }));
+
+          it('does not ask for a confirmation', function() {
+            expect(window.confirm).not.toHaveBeenCalled();
+          });
+
+          it('sends a message to the server', function() {
+            httpBackend.verifyNoOutstandingExpectation();
+          });
+
+          it('reduces number_of_students by 1', function() {
+            expect(guardian.number_of_students).toEqual(1);
+            httpBackend.flush();
+            expect(guardian.number_of_students).toEqual(1);
+          });
+        })
+
+        describe('when cancelled', function() {
+          beforeEach(inject(function($window) {
+            spyOn($window, 'confirm').andReturn(false);
+            person.removeGuardian(guardian);
+          }));
+
+          it('does not send a message to the server', function() {
+            httpBackend.verifyNoOutstandingRequest();
+          });
+
+          it('does not set the deleted attribute', function() {
+            expect(guardian.deleted).toBeUndefined();
+          });
+
+          it('does not change number_of_students', function() {
+            expect(guardian.number_of_students).toEqual(1);
+          });
+        })
+
+        describe('when confirmed', function() {
+          beforeEach(inject(function($window) {
+            spyOn($window, 'confirm').andReturn(true);
+          }));
+
+          describe('with a valid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectDELETE('/students/7/guardians/3').respond(200, 'OK');
+              person.removeGuardian(guardian);
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('sets the deleted attribute', function() {
+              expect(guardian.deleted).toEqual(true);
+              httpBackend.flush();
+              expect(guardian.deleted).toEqual(true);
+            });
+
+            it('reduces number_of_students by 1', function() {
+              expect(guardian.number_of_students).toEqual(0);
+              httpBackend.flush();
+              expect(guardian.number_of_students).toEqual(0);
+            });
+          });
+
+          describe('with an invalid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectDELETE('/students/7/guardians/3').respond(404, 'Error!');
+              person.removeGuardian(guardian);
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('sets the deleted attribute and removes it when the response is received', function() {
+              expect(guardian.deleted).toEqual(true);
+              httpBackend.flush();
+              expect(guardian.deleted).toBeUndefined();
+            });
+
+            it('reduces number_of_students by 1 then restores it', function() {
+              expect(guardian.number_of_students).toEqual(0);
+              httpBackend.flush();
+              expect(guardian.number_of_students).toEqual(1);
+            });
+
+            it('shows an error message', function() {
+              httpBackend.flush();
+              expect(messageHandler.showError).toHaveBeenCalled();
+            });
+          });
+        });
+      });
+
+      describe('resetPassword()', function() {
+        describe('when cancelled', function() {
+          beforeEach(inject(function($window) {
+            spyOn($window, 'confirm').andReturn(false);
+            person.resetPassword();
+          }));
+
+          it('does not send a message to the server', function() {
+              httpBackend.verifyNoOutstandingRequest();
+            });
+
+          it('does not set active to true', function() {
+            expect(person.active).toBeUndefined();
+          });
+        });
+
+        describe('when confirmed', function() {
+          beforeEach(inject(function($window) {
+            spyOn($window, 'confirm').andReturn(true);
+            spyOn(messageHandler, 'showNotification');
+          }));
+
+          describe('for a valid response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/students/7/reset').respond(200, 'OK')
+              person.resetPassword();
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('sets active to true', function() {
+              expect(person.active).toEqual(true);
+              httpBackend.flush();
+              expect(person.active).toEqual(true);
+            });
+
+            it('displays a notification', function() {
+              httpBackend.flush();
+              expect(messageHandler.showNotification).toHaveBeenCalled();
+            });
+          });
+
+          describe('for an invalid response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/students/7/reset').respond(422, 'Error')
+              person.resetPassword();
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('sets active to true and then restores it', function() {
+              expect(person.active).toEqual(true);
+              httpBackend.flush();
+              expect(person.active).toBeUndefined();
+            });
+
+            it('shows an error', function() {
+              httpBackend.flush();
+              expect(messageHandler.showError).toHaveBeenCalled();
+            });
+          });
+        });
+      });
+
+      describe('toggleArchive()', function() {
+        var window;
+
+        describe('when archived', function() {
+          beforeEach(inject(function($window) {
+            person.archived = true;
+            window = $window;
+            spyOn(window, 'confirm');
+            httpBackend.expectPOST('/students/7/archive').respond(200, 'OK');
+            person.toggleArchive();
+          }));
+
+          it('does not ask for confirmation', function() {
+            expect(window.confirm).not.toHaveBeenCalled();
+          });
+
+          it('sends a message to the server', function() {
+            httpBackend.verifyNoOutstandingExpectation();
+          });
+
+          it('sets archived to false', function() {
+            expect(person.archived).toEqual(false);
+            httpBackend.flush();
+            expect(person.archived).toEqual(false);
+          });
+        });
+
+        describe('when unarchived', function() {
+          describe('when cancelled', function() {
+            beforeEach(inject(function($window) {
+              spyOn($window, 'confirm').andReturn(false);
+              person.toggleArchive();
+            }));
+
+            it('does not send a message to the server', function() {
+                httpBackend.verifyNoOutstandingRequest();
+              });
+
+            it('does not set archived to true', function() {
+              expect(person.archived).toBeUndefined();
+            });
+          });
+
+          describe('when confirmed', function() {
+            beforeEach(inject(function($window) {
+              spyOn($window, 'confirm').andReturn(true);
+              spyOn(messageHandler, 'showNotification');
+            }));
+
+            describe('for a valid response', function() {
+              beforeEach(function() {
+                httpBackend.expectPOST('/students/7/archive').respond(200, 'OK')
+                person.toggleArchive();
+              });
+
+              it('sends a message to the server', function() {
+                httpBackend.verifyNoOutstandingExpectation();
+              });
+
+              it('sets archived to true', function() {
+                expect(person.archived).toEqual(true);
+                httpBackend.flush();
+                expect(person.archived).toEqual(true);
+              });
+
+              it('displays a notification', function() {
+                httpBackend.flush();
+                expect(messageHandler.showNotification).toHaveBeenCalled();
+              });
+            });
+
+            describe('for an invalid response', function() {
+              beforeEach(function() {
+                httpBackend.expectPOST('/students/7/archive').respond(422, 'Error')
+                person.toggleArchive();
+              });
+
+              it('sends a message to the server', function() {
+                httpBackend.verifyNoOutstandingExpectation();
+              });
+
+              it('sets archived to true and then restores it', function() {
+                expect(person.archived).toEqual(true);
+                httpBackend.flush();
+                expect(person.archived).toEqual(false);
+              });
+
+              it('shows an error', function() {
+                httpBackend.flush();
+                expect(messageHandler.showError).toHaveBeenCalled();
+              });
+            });
           });
         });
       });

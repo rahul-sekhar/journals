@@ -19,6 +19,21 @@ Given /^a guardian "(.*?)" exists for that student$/ do |p_name|
   @guardian = @profile.guardians.create!(full_name: p_name)
 end
 
+Given /^the profile has been activated$/ do
+  @profile.user.generate_password
+  @profile.save!
+end
+
+Given /^the profile has no email address$/ do
+  @profile.email = nil
+  @profile.save!
+end
+
+Given /^the guardian has no email address$/ do
+  @guardian.email = nil
+  @guardian.save!
+end
+
 
 # Test profiles
 Then /^I should see a profile for "(.*?)"$/ do |p_name|
@@ -146,25 +161,6 @@ end
 #   @guardian = @logged_in_user.profile.guardians.create!(full_name: p_full_name)
 # end
 
-# Given /^the profile has been activated$/ do
-#   @profile.user.generate_password
-#   @profile.save!
-# end
-
-# Given /^the profile has no email address$/ do
-#   @profile.email = nil
-#   @profile.save!
-# end
-
-# Given /^a (teacher|student) named "(.*?)" exists$/ do |p_type, p_full_name|
-#   @profile = FactoryGirl.create(p_type, full_name: p_full_name)
-# end
-
 # Given /^the profile in question is my students profile$/ do
 #   @profile = @student
-# end
-
-# When /^I click the "Edit profile" link for the guardian "(.*?)"$/ do |p_guardian_name|
-#   guardian_node = page.find(:xpath, '//h4[text()="' + p_guardian_name + '"]/../..')
-#   guardian_node.find('.edit-link').click
 # end

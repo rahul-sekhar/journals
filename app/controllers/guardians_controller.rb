@@ -5,10 +5,6 @@ class GuardiansController < ApplicationController
     @students = @guardian.students.alphabetical
   end
 
-  def new
-    @student = Student.find(params[:student_id])
-  end
-
   def create
     @student = Student.find(params[:student_id])
 
@@ -41,11 +37,6 @@ class GuardiansController < ApplicationController
     end
   end
 
-  def edit
-    # Pre-load data if present
-    @guardian.assign_attributes(flash[:guardian_data]) if flash[:guardian_data]
-  end
-
   def update
     if @guardian.update_attributes(params[:guardian])
       render "show"
@@ -58,17 +49,12 @@ class GuardiansController < ApplicationController
     @student = Student.find(params[:student_id])
     @student.guardians.delete(@guardian)
     @guardian.check_students
-
-    if @guardian.destroyed?
-      redirect_to @student, notice: "The user \"#{@guardian.full_name}\" has been deleted"
-    else
-      redirect_to @student, notice: "The user \"#{@guardian.full_name}\" has been removed for the student \"#{@student.full_name}\""
-    end
+    render text: 'OK', status: :ok
   end
 
   def reset
     if @guardian.email.nil?
-      redirect_to @guardian, alert: "You must add an email address before you can activate the user"
+      render text: "You must add an email address before you can activate the user", status: :unprocessable_entity
       return
     end
 
@@ -81,6 +67,6 @@ class GuardiansController < ApplicationController
       UserMailer.delay.activation_mail(@guardian, password)
     end
 
-    redirect_to @guardian, notice: "An email has been sent to the user with a randomly generated password"
+    render text: 'OK', status: :ok
   end
 end

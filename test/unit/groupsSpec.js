@@ -202,12 +202,31 @@ describe('Groups module', function() {
       });
 
       describe('delete a group instance', function() {
-        beforeEach(function() {
+        var window;
+
+        beforeEach(inject(function($window) {
+          window = $window
           httpBackend.flush();
+        }));
+
+        describe('when the user chooses cancel', function() {
+          beforeEach(function() {
+            spyOn(window, 'confirm').andReturn(false);
+            all_groups[0].delete();
+          });
+          
+          it('does not send a message to the server', function() {
+            httpBackend.verifyNoOutstandingRequest();
+          });
+
+          it('does not set the deleted attribute of the group', function() {
+            expect(all_groups).toEqualData([{id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+          });
         });
 
         describe('with a valid server response', function() {
           beforeEach(function() {
+            spyOn(window, 'confirm').andReturn(true);
             httpBackend.expectDELETE('/groups/2').respond(200, 'OK');
             all_groups[0].delete();
           });
@@ -234,6 +253,7 @@ describe('Groups module', function() {
 
         describe('with an invalid server response', function() {
           beforeEach(function() {
+            spyOn(window, 'confirm').andReturn(true);
             httpBackend.expectDELETE('/groups/2').respond(422, 'Some error');
             all_groups[0].delete();
           });

@@ -4,10 +4,11 @@ describe('messageHandler module', function() {
   beforeEach(module('journals.messageHandler'));
 
   describe('messageHandler', function() {
-    var scope, messageHandler;
+    var scope, messageHandler, rootScope;
 
-    beforeEach(inject(function(_messageHandler_) {
-      scope = {};
+    beforeEach(inject(function(_messageHandler_, $rootScope) {
+      rootScope = $rootScope;
+      scope = $rootScope.$new();
       messageHandler = _messageHandler_;
       messageHandler.setScope(scope);
     }));
@@ -29,6 +30,32 @@ describe('messageHandler module', function() {
 
       it('sets the scope message', function() {
         expect(scope.message).toEqual({type: 'notification', text: 'Some text'});
+      });
+    });
+
+    describe('notifyOnRouteChange(text', function() {
+      beforeEach(function() {
+        messageHandler.notifyOnRouteChange('Some text');
+      });
+
+      it('does not immediately set the scope message', function() {
+        expect(scope.message).toBeUndefined();
+      });
+
+      describe('after a route change', function() {
+        beforeEach(function() {
+          rootScope.$broadcast('$routeChangeSuccess');
+        });
+
+        it('sets the scope message', function() {
+          expect(scope.message).toEqual({type: 'notification', text: 'Some text'});
+        });
+
+        it('does not set the scope message after a second route change', function() {
+          scope.message = {};
+          rootScope.$broadcast('$routeChangeSuccess');
+          expect(scope.message).toEqual({});
+        });
       });
     });
 

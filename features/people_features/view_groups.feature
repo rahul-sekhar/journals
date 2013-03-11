@@ -20,7 +20,7 @@ Scenario: View empty group
 
   When I select "Empty" from the viewing menu
   Then the viewing menu should have "Empty" selected
-  Then the viewing menu should have the option "Dogs"
+  And the viewing menu should have the option "Dogs"
   And the viewing menu should have the option "Puppies"
   And the viewing menu should not have the option "Empty"
   
@@ -32,7 +32,7 @@ Scenario: View empty group
 
 Scenario: View groups with students
   When I am on the people page
-  When I select "Dogs" from the viewing menu
+  And I select "Dogs" from the viewing menu
   Then the viewing menu should have "Dogs" selected
   And I should see a profile for "Roly Sekhar"
   And I should see a profile for "Lucky Sekhar"

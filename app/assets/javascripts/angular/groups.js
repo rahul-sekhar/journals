@@ -2,7 +2,9 @@
 
 angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHelper']).
 
-  factory('Groups', ['$http', 'messageHandler', 'arrayHelper', '$q', '$timeout', function($http, messageHandler, arrayHelper, $q, $timeout) {
+  factory('Groups', ['$http', 'messageHandler', 'arrayHelper', '$q', '$timeout', '$window',
+    function($http, messageHandler, arrayHelper, $q, $timeout, $window) {
+
     var GroupsObj = {};
     var groups = [];
 
@@ -16,12 +18,13 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
 
       // Delete function
       group.delete = function() {
+        var conf = $window.confirm('Are you sure you want to delete the group "' + group.name + '"');
+        if (!conf) return;
+
         group.deleted = true;
-        messageHandler.showProcess('Deleting the group ' + group.name + '...');
         $http.delete('/groups/' + group.id).
           then(function() {
             arrayHelper.removeItem(groups, group);
-            messageHandler.showNotification('The group ' + group.name + ' has been deleted.');
           }, 
           function(response) {
             delete group.deleted;
@@ -35,11 +38,9 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
         if (old_name === new_name) return;
 
         group.name = new_name;
-        messageHandler.showProcess('Renaming group...')
         $http.put('/groups/' + group.id, { group: { name: new_name }}).
           then(function(response) {
             group.name = response.data.name;
-            messageHandler.showNotification('Group renamed to ' + new_name);
           },
           function(response) {
             group.name = old_name;
@@ -104,12 +105,10 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
         }
 
         new_group.name = new_name;
-        messageHandler.showProcess('Adding group ' + new_name + '...');
         $http.post('/groups', { group: { name: new_name }}).
           then(function(response) {
             var index = groups.indexOf(new_group);
             groups[index] = create(response.data);
-            messageHandler.showNotification('Group ' + new_name + ' added.')
           },
           function(response) {
             arrayHelper.removeItem(groups, new_group);

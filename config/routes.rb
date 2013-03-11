@@ -23,10 +23,10 @@ Journals::Application.routes.draw do
     member do
       post :reset
       post :archive
-      post :add_group, as: "add_group_to"
-      post :remove_group, as: "remove_group_from"
-      post :add_mentor, as: "add_mentor_to"
-      post :remove_mentor, as: "remove_mentor_from"
+      post :add_group
+      post :remove_group
+      post :add_mentor
+      post :remove_mentor
     end
   end
 
@@ -34,8 +34,8 @@ Journals::Application.routes.draw do
     member do
       post :reset
       post :archive
-      post :add_mentee, as: "add_mentee_to"
-      post :remove_mentee, as: "remove_mentee_from"
+      post :add_mentee
+      post :remove_mentee
     end
   end
 

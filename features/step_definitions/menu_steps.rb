@@ -9,7 +9,7 @@ end
 Then /^the (\S*) menu should have the option "(.*?)"$/ do |p_menu, p_item|
   within ".#{p_menu}.menu" do
     page.find('.title').click
-    page.should have_css('a', text: /^#{Regexp.escape(p_item)}$/i, visible: true)
+    page.should have_css('li a', text: /^#{Regexp.escape(p_item)}$/i, visible: true)
   end
 end
 
@@ -17,7 +17,7 @@ Then /^the (\S*) menu should not have the option "(.*?)"$/ do |p_menu, p_item|
   within ".#{p_menu}.menu" do
     page.find('.title').click
     page.should have_css('li a', text:/.+/ , visible: true)
-    page.should have_no_css('a', text: /^#{Regexp.escape(p_item)}$/i, visible: true)
+    page.should have_no_css('li a', text: /^#{Regexp.escape(p_item)}$/i, visible: true)
   end
 end
 

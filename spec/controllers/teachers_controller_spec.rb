@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TeachersController do
+describe TeachersController, :focus do
   let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new
@@ -83,47 +83,22 @@ describe TeachersController do
 
     it "raises an exception if the user cannot view the teacher" do
       ability.cannot :read, teacher
-      expect{ get :show, id: 5 }.to raise_exception(CanCan::AccessDenied)
+      expect{ get :show, id: 5, format: :json }.to raise_exception(CanCan::AccessDenied)
     end
     
     it "has a status of 200" do
-      get :show, id: 5
+      get :show, id: 5, format: :json
       response.status.should eq(200)
     end
 
     it "finds the teacher given by the passed ID" do
       Teacher.should_receive(:find).with("5")
-      get :show, id: 5
+      get :show, id: 5, format: :json
     end
 
     it "assigns the found teacher" do
-      get :show, id: 5
+      get :show, id: 5, format: :json
       assigns(:teacher).should == teacher
-    end
-  end
-
-
-  describe "GET new" do
-    let(:make_request){ get :new }
-
-    it "raises an exception if the user cannot create a teacher" do
-      ability.cannot :create, Teacher
-      expect{ get :new }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns an empty teacher" do
-      make_request
-      assigns(:teacher).should be_new_record
-    end
-
-    it "assigns teacher data from the flash if present" do
-      get :new, nil, nil, { teacher_data: { mobile: "1234" } }
-      assigns(:teacher).mobile.should == "1234"
     end
   end
 
@@ -197,32 +172,6 @@ describe TeachersController do
   end
 
 
-  describe "GET edit" do
-    let(:teacher){ create(:teacher) }
-    let(:make_request){ get :edit, id: teacher.id }
-
-    it "raises an exception if the user cannot update a teacher" do
-      ability.cannot :update, teacher
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns the teacher to be edited" do
-      make_request
-      assigns(:teacher).should eq(teacher)
-    end
-
-    it "assigns teacher data from the flash if present" do
-      get :edit, { id: teacher.id }, nil, { teacher_data: { mobile: "1234" } }
-      assigns(:teacher).mobile.should == "1234"
-    end
-  end
-
-
   describe "PUT update" do
     let(:teacher){ create(:teacher) }
 
@@ -278,7 +227,7 @@ describe TeachersController do
 
   describe "DELETE destroy" do
     let(:teacher){ create(:teacher) }
-    let(:make_request){ delete :destroy, id: teacher.id }
+    let(:make_request){ delete :destroy, id: teacher.id, format: :json }
 
     it "raises an exception if the user cannot destroy a teacher" do
       ability.cannot :destroy, teacher
@@ -295,20 +244,15 @@ describe TeachersController do
       assigns(:teacher).should be_destroyed
     end
 
-    it "redirects to the people page" do
+    it "has a status of 200" do
       make_request
-      response.should redirect_to people_path
-    end
-
-    it "sets a flash message" do
-      make_request
-      flash[:notice].should be_present
+      response.status.should eq(200)
     end
   end
 
 
   describe "POST reset" do
-    let(:make_request){ post :reset, id: teacher.id }
+    let(:make_request){ post :reset, id: teacher.id, format: :json }
 
     context "when email is present" do
       let(:teacher){ create(:teacher_with_user) }
@@ -329,9 +273,9 @@ describe TeachersController do
         teacher.reload.should be_active
       end
 
-      it "redirects to the teacher page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to teacher_path(teacher)
+        response.status.should eq(200)
       end
 
       it "should deliver a user activated mail if the user was inactive" do
@@ -348,19 +292,14 @@ describe TeachersController do
         mock_delay.should_receive(:reset_password_mail)
         make_request
       end
-
-      it "sets a flash message" do
-        make_request
-        flash[:notice].should be_present
-      end
     end
 
     context "when email is not present" do
       let(:teacher){ create(:teacher) }
 
-      it "redirects to the guardian page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to teacher_path(teacher)
+        response.status.should eq(422)
       end
 
       it "does not deliver a mail" do
@@ -372,18 +311,14 @@ describe TeachersController do
         make_request
         teacher.reload.should_not be_active
       end
-
-      it "sets a flash error" do
-        make_request
-        flash[:alert].should be_present
-      end
     end
   end
 
 
   describe "POST archive" do
     let(:teacher){ create(:teacher) }
-    let(:make_request){ post :archive, id: teacher.id }
+    let(:make_request){ post :archive, id: teacher.id, format: :json }
+    before{ teacher }
 
     it "raises an exception if the user cannot archive a teacher" do
       ability.cannot :archive, teacher
@@ -401,14 +336,9 @@ describe TeachersController do
       make_request
     end
 
-    it "redirects to the teacher page" do
+    it "has a status of 200" do
       make_request
-      response.should redirect_to teacher_path(teacher)
-    end
-
-    it "sets a flash message" do
-      make_request
-      flash[:notice].should be_present
+      response.status.should eq(200)
     end
   end
 
@@ -416,7 +346,7 @@ describe TeachersController do
   describe "POST add_mentee" do
     let(:teacher){ create(:teacher) }
     let(:student){ create(:student, id: 5) }
-    let(:make_request){ post :add_mentee, id: teacher.id  }
+    let(:make_request){ post :add_mentee, id: teacher.id, format: :json  }
     before{ student }
 
     it "raises an exception if the user cannot add a mentee to a teacher" do
@@ -425,62 +355,42 @@ describe TeachersController do
     end
 
     context "without a student_id" do
-      it "redirects to the teacher page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to teacher_path(teacher)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with an invalid student_id" do
-      let(:make_request){ post :add_mentee, id: teacher.id, student_id: 4 }
+      let(:make_request){ post :add_mentee, id: teacher.id, student_id: 4, format: :json }
 
-      it "redirects to the teacher page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to teacher_path(teacher)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with a valid student_id" do
-      let(:make_request){ post :add_mentee, id: teacher.id, student_id: 5 }
+      let(:make_request){ post :add_mentee, id: teacher.id, student_id: 5, format: :json }
 
       context "when the teacher contains that student" do
         before{ teacher.mentees = [student] }
 
-        it "redirects to the teacher page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to teacher_path(teacher)
-        end
-
-        it "sets a flash alert" do
-          make_request
-          flash[:alert].should be_present
+          response.status.should eq(200)
         end
       end
 
       context "when the teacher does not contain that student" do
-        it "redirects to the teacher page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to teacher_path(teacher)
+          response.status.should eq(200)
         end
 
         it "adds the student to the teacher" do
           make_request
           teacher.reload.mentees.should == [student]
-        end
-
-        it "sets a flash notice" do
-          make_request
-          flash[:notice].should be_present
         end
       end
     end
@@ -490,7 +400,7 @@ describe TeachersController do
   describe "POST remove_mentee" do
     let(:teacher){ create(:teacher) }
     let(:student){ create(:student, id: 5) }
-    let(:make_request){ post :remove_mentee, id: teacher.id  }
+    let(:make_request){ post :remove_mentee, id: teacher.id, format: :json }
     before{ student }
 
     it "raises an exception if the user cannot remove a student to a teacher" do
@@ -499,62 +409,42 @@ describe TeachersController do
     end
 
     context "without a student_id" do
-      it "redirects to the teacher page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to teacher_path(teacher)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with an invalid student_id" do
-      let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 4 }
+      let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 4, format: :json }
 
-      it "redirects to the teacher page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to teacher_path(teacher)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
 
     context "with a valid student_id" do
-      let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 5 }
+      let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 5, format: :json }
 
       context "when the teacher contains that student" do
         before{ teacher.mentees = [student] }
 
-        it "redirects to the teacher page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to teacher_path(teacher)
+          response.status.should eq(200)
         end
 
         it "removes the student from the teacher" do
           make_request
           teacher.reload.mentees.should be_empty
         end
-
-        it "sets a flash notice" do
-          make_request
-          flash[:notice].should be_present
-        end
       end
 
       context "when the teacher does not contain that student" do
-        it "redirects to the teacher page" do
+        it "has a status of 200" do
           make_request
-          response.should redirect_to teacher_path(teacher)
-        end
-
-        it "sets a flash notice" do
-          make_request
-          flash[:notice].should be_present
+          response.status.should eq(200)
         end
       end
     end

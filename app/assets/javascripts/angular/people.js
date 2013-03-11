@@ -6,8 +6,9 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- People Controller ----------*/
   
-  controller('PeopleCtrl', ['$scope', '$route', '$routeParams', '$location', 'PeopleInterface', 'Groups', 'messageHandler',
-      function($scope, $route, $routeParams, $location, PeopleInterface, Groups, messageHandler) {
+  controller('PeopleCtrl', ['$scope', '$route', '$routeParams', '$location', 'PeopleInterface', 
+      'Groups', 'messageHandler', '$window',
+      function($scope, $route, $routeParams, $location, PeopleInterface, Groups, messageHandler, $window) {
     
     var loadPeople;
     var id = $routeParams.id;
@@ -47,8 +48,8 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         Groups.get(id).
           then(function(group) {
             $scope.pageData.filter = group.name;
-          }, function(response) {
-            messageHandler.showError(null, response);
+          }, function(message) {
+            messageHandler.showError(null, message);
           });
       }
 
@@ -66,6 +67,29 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
       };
     }
 
+    // Delete people
+    $scope.delete = function(person) {
+      var conf = $window.confirm("Are you sure you want to delete the profile for '" + person.full_name + "'?" +
+        "Anything that has been created by that person will be lost. You can archive the profile if you don't want to lose data.");
+      if (!conf) return;
+
+      var promise = person.delete();
+      
+      if ($scope.singlePerson) {
+        promise.then(function() {
+          var remaining = $scope.people.filter(function(obj) {
+            return !obj.deleted;
+          });
+          
+          // Redirect if there are no remaining people
+          if (!remaining.length) {
+            $location.url('/people');
+            messageHandler.notifyOnRouteChange(person.full_name + ' has been deleted.');
+          }
+        });
+      }
+    };
+
     // Handle changes in route params
     $scope.$on("$routeUpdate", function() {
       loadPeople();
@@ -78,7 +102,9 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- Person Model ----------*/
 
-  factory('Person', ['$http', 'messageHandler', 'Groups', 'arrayHelper', function($http, messageHandler, Groups, arrayHelper) {
+  factory('Person', ['$http', 'messageHandler', 'Groups', 'arrayHelper', '$q', '$window',
+    function($http, messageHandler, Groups, arrayHelper, $q, $window) {
+
     var Person = {};
 
     // Create a person instance
@@ -202,6 +228,80 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
           function(response) {
             person[field_name] = old_val;
             messageHandler.showError(response, 'An error occured while updating ' + person.full_name + '.');
+          });
+      };
+
+      // Delete the person
+      person.delete = function() {
+        person.deleted = true;
+        return $http.delete(person.url()).
+          then(null, function(response) {
+            delete person.deleted;
+            messageHandler.showError(response, 'An error occured while deleting ' + person.full_name + '.');
+            return $q.reject();
+          });
+      };
+
+      // Delete a guardian
+      person.removeGuardian = function(guardian) {
+        if (person.type != 'Student') throw new Error('Can only delete guardians for a student');
+
+        if (guardian.number_of_students <= 1) {
+          var conf = $window.confirm("Are you sure you want to delete the guardian '" + guardian.full_name + "'?" +
+        "Anything that has been created by that person will be lost.");
+          if (!conf) return;
+        }
+        
+        guardian.deleted = true;
+        guardian.number_of_students--;
+        $http.delete(person.url() + guardian.url()).
+          then(null, function(response) {
+            delete guardian.deleted;
+            guardian.number_of_students++;
+            messageHandler.showError(response, 'An error occured while removing ' + guardian.full_name + '.');
+          });
+      };
+
+      // Reset password
+      person.resetPassword = function() {
+        var action = person.active ? 'reset the password for' : 'activate';
+        var conf = $window.confirm("Are you sure you want to " + action + " '" + person.full_name +
+          "? A randomly generated password will be emailed to " + person.email + ".");
+        if (!conf) return;
+
+        var old = person.active;
+        person.active = true;
+        $http.post(person.url() + '/reset').
+          then(function() {
+            messageHandler.showNotification('An email has been sent to ' + person.email + ' with a randomly generated password.')
+          }, 
+          function(response) {
+            person.active = old;
+            messageHandler.showError(response, 'Could not ' + action + ' ' + person.full_name + '.');
+          });
+      };
+
+      person.toggleArchive = function() {
+        if (!person.archived) {
+          var conf = $window.confirm("Are you sure you want to archive '" + person.full_name +
+            "? Created data will remain but the user will not be able to log in.");
+          if (!conf) return;
+        }
+
+        person.archived = !person.archived;
+        $http.post(person.url() + '/archive').
+          then(function() {
+            if (person.archived) {
+              messageHandler.showNotification(person.full_name + ' has been archived and can no longer login.');
+            }
+            else {
+              messageHandler.showNotification(person.full_name + ' is no longer archived, but must be activated to be able to login.');
+            }
+            
+          },
+          function(response) {
+            person.archived = !person.archived;
+            messageHandler.showError(response, 'Could not ' + (person.archived ? 'archive ' : 'unarchive ') + person.full_name + '.');
           });
       };
 

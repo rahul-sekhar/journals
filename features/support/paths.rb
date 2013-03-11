@@ -32,9 +32,6 @@ module NavigationHelpers
     when /the edit page for the guardian/
       edit_profile_path(@guardian)
 
-    when /the page for one of the students/
-      student_path(@student)
-
     when /the page for that group/
       group_path(@group)
 

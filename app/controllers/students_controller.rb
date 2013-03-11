@@ -31,7 +31,7 @@ class StudentsController < ApplicationController
 
   def reset
     if @student.email.nil?
-      redirect_to @student, alert: "You must add an email address before you can activate the user"
+      render text: "You must add an email address before you can activate the user", status: :unprocessable_entity
       return
     end
 
@@ -44,19 +44,12 @@ class StudentsController < ApplicationController
       UserMailer.delay.activation_mail(@student, password)
     end
 
-    redirect_to @student, notice: "An email has been sent to the user with a randomly generated password"
+    render text: 'OK', status: :ok
   end
 
   def archive
     @student.toggle_archive
-
-    if @student.archived
-      message = "The user has been archived and can no longer login"
-    else
-      message = "The user is no longer archived and must be activated to allow a login"
-    end
-
-    redirect_to @student, notice: message
+    render text: 'OK', status: :ok
   end
 
   def add_group
@@ -85,14 +78,10 @@ class StudentsController < ApplicationController
     @teacher = Teacher.find_by_id(params[:teacher_id])
     
     if @teacher
-      if @student.mentors.exists? @teacher
-        redirect_to @student, alert: "#{@teacher.full_name} is already #{@student.full_name}'s mentor"
-      else
-        @student.mentors << @teacher
-        redirect_to @student, notice: "#{@teacher.full_name} is now #{@student.full_name}'s mentor"
-      end
+      @student.mentors << @teacher unless @student.mentors.exists? @teacher
+      render text: "OK", status: :ok
     else
-      redirect_to @student, alert: "Invalid teacher"
+      render text: "Teacher does not exist", status: :unprocessable_entity
     end
   end
 
@@ -100,14 +89,10 @@ class StudentsController < ApplicationController
     @teacher = Teacher.find_by_id(params[:teacher_id])
     
     if @teacher
-      if @student.mentors.exists? @teacher
-        @student.mentors.delete(@teacher)
-        redirect_to @student, notice: "#{@teacher.full_name} is no longer #{@student.full_name}'s mentor"
-      else
-        redirect_to @student, notice: "#{@teacher.full_name} was not #{@student.full_name}'s mentor"
-      end
+      @student.mentors.delete(@teacher) if @student.mentors.exists? @teacher
+      render text: 'OK', status: :ok
     else
-      redirect_to @student, alert: "Invalid teacher"
+      render text: "Teacher does not exist", status: :unprocessable_entity
     end
   end
 end

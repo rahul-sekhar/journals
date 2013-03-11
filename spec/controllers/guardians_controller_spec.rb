@@ -50,32 +50,6 @@ describe GuardiansController do
   end
 
 
-  describe "GET new" do
-    let(:student){ create(:student) }
-    let(:make_request){ get :new, student_id: student.id }
-
-    it "raises an exception if the user cannot create a guardian" do
-      ability.cannot :create, Guardian
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns the student" do
-      make_request
-      assigns(:student).should == student
-    end
-
-    it "assigns an empty guardian" do
-      make_request
-      assigns(:guardian).should be_new_record
-    end
-  end
-
-
   describe "POST create" do
     let(:student){ create(:student) }
 
@@ -226,33 +200,6 @@ describe GuardiansController do
 
 
 
-  describe "GET edit" do
-    let(:guardian){ create(:guardian) }
-    let(:make_request){ get :edit, id: guardian.id }
-
-    it "raises an exception if the user cannot update a guardian" do
-      ability.cannot :update, guardian
-      expect{ get :edit, id: guardian.id }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns the guardian to be edited" do
-      make_request
-      assigns(:guardian).should eq(guardian)
-    end
-
-    it "assigns guardian data from the flash if present" do
-      get :edit, { id: guardian.id }, nil, { guardian_data: { mobile: "1234" } }
-      assigns(:guardian).mobile.should == "1234"
-    end
-  end
-
-
-
   describe "PUT update" do
     let(:guardian){ create(:guardian) }
 
@@ -311,7 +258,7 @@ describe GuardiansController do
     context "guardian with one student" do
       let(:guardian){ create(:guardian) }
       let(:student){ guardian.students.first }
-      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id }
+      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id, format: :json }
 
       it "raises an exception if the user cannot destroy a guardian" do
         ability.cannot :destroy, guardian
@@ -334,21 +281,16 @@ describe GuardiansController do
         student.guardians.should be_empty
       end
 
-      it "redirects to the student page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash message" do
-        make_request
-        flash[:notice].should be_present
+        response.status.should eq(200)
       end
     end
 
-    context "guardian with multiple student" do
+    context "guardian with multiple students" do
       let(:guardian){ create(:guardian) }
       let(:student){ create(:student) }
-      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id }
+      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id, format: :json }
       before do
         @other_student = guardian.students.first
         guardian.students << student
@@ -381,14 +323,9 @@ describe GuardiansController do
         @other_student.guardians.should == [guardian]
       end
 
-      it "redirects to the student page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash message" do
-        make_request
-        flash[:notice].should be_present
+        response.status.should eq(200)
       end
     end
   end
@@ -396,7 +333,7 @@ describe GuardiansController do
 
 
   describe "POST reset" do
-    let(:make_request){ post :reset, id: guardian.id }
+    let(:make_request){ post :reset, id: guardian.id, format: :json }
 
     context "when email is present" do
       let(:guardian){ create(:guardian_with_user) }
@@ -417,9 +354,9 @@ describe GuardiansController do
         guardian.reload.should be_active
       end
 
-      it "redirects to the guardian page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to guardian_path(guardian)
+        response.status.should eq(200)
       end
 
       it "should deliver a user activated mail if the user was inactive" do
@@ -438,19 +375,14 @@ describe GuardiansController do
         mock_delay.should_receive(:reset_password_mail)
         make_request
       end
-
-      it "sets a flash message" do
-        make_request
-        flash[:notice].should be_present
-      end
     end
 
     context "when email is not present" do
       let(:guardian){ create(:guardian) }
 
-      it "redirects to the guardian page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to guardian_path(guardian)
+        response.status.should eq(422)
       end
 
       it "does not deliver a mail" do
@@ -462,11 +394,6 @@ describe GuardiansController do
         guardian.should_not be_active
         make_request
         guardian.reload.should_not be_active
-      end
-
-      it "sets a flash error" do
-        make_request
-        flash[:alert].should be_present
       end
     end
   end

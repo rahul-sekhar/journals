@@ -5,7 +5,7 @@
     %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch(search)", "autocomplete"=>"off"}
 
     .add.menu
-      %p.title Add
+      %a.title{ href: "" } Add
       
       %ul
         %li
@@ -18,7 +18,7 @@
     %p.label Viewing
 
     .viewing.menu
-      %p.title {{pageData.filter}}
+      %a.title{ href: "" } {{pageData.filter}}
 
       %ul
         %li{"ng-hide" => "pageData.filter == 'Students and teachers'"}
@@ -38,7 +38,7 @@
 
   .clear-left
 
-%article.profile{ "ng-repeat"=>"person in people" }
+%article.profile{ "ng-repeat"=>"person in people", "ng-hide"=>"person.deleted" }
   %header.profile-header
     %h3{ "edit-in-place"=>"person.update('full_name', value)", "editor-attr"=>"person.full_name",
       "display"=>"{{person.full_name}}", "edit-mode"=>"person.editing['full_name']" }
@@ -46,16 +46,35 @@
     %p.type{ "ng-show"=>"person.type == 'Teacher'" }
       {{person.type}}
 
+    .manage.menu
+      .icon.title
+      %ul
+        %li{ "ng-hide"=>"person.archived || !person.email" }
+          %a{ "href"=>"", "ng-click"=>"person.resetPassword()" } {{person.active && "Reset password" || "Activate"}}
+        %li
+          %a{ "href"=>"", "ng-click"=>"person.toggleArchive()" } {{person.archived && "Unarchive" || "Archive"}}
+        %li
+          %a{ "href"=>"", "ng-click"=>"delete(person)" } Delete
+
     .clear-left
 
   %profile-fields.main-profile-fields{ "parent"=>"person" }
 
   .guardians{ "ng-show"=>"person.type == 'Student'" }
-    .guardian{ "ng-repeat"=>"guardian in person.guardians" }
+    .guardian{ "ng-repeat"=>"guardian in person.guardians", "ng-hide"=>"guardian.deleted" }
       
       %header.guardian-header
         %h4{ "edit-in-place"=>"guardian.update('full_name', value)", "editor-attr"=>"guardian.full_name",
           "display"=>"{{guardian.full_name}}", "edit-mode"=>"guardian.editing['full_name']"}
+
+        .manage.menu
+          .icon.title
+          %ul
+            %li{ "ng-hide"=>"guardian.archived || !guardian.email" }
+              %a{ "href"=>"", "ng-click"=>"guardian.resetPassword()" } {{guardian.active && "Reset password" || "Activate"}}
+            %li
+              %a{ "href"=>"", "ng-click"=>"person.removeGuardian(guardian)" } 
+                {{(guardian.number_of_students > 1) && "Remove" || "Delete"}}
         
         .clear-left
 

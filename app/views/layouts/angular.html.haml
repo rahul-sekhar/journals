@@ -22,4 +22,5 @@
       #main-content
         .ng-view
 
-    %notifications#notifications
+    #notifications{ "ng-controller"=>"messageCtrl", "ng-show"=>"show" }
+      %p{ "ng-class"=>"message.type" } {{message.text}}

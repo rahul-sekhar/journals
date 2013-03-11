@@ -8,6 +8,7 @@ Background:
   And a teacher for each alphabet exists
   And a student for each alphabet exists
   And all the students are my mentees
+  And all the students have a group "Bats"
   And an archived student for each alphabet exists
 
 Scenario: View pages of people
@@ -71,6 +72,20 @@ Scenario: View pages of students
 
 Scenario: View pages of mentees
   When I am on the mentees page
+  Then I should see a profile for "A"
+  And I should see a profile for "J"
+  And I should not see a profile for "K"
+  And the selected page should be 1
+  And the pages 1-3 should be visible
+
+  When I select page 3
+  Then I should not see a profile for "A"
+  And I should see a profile for "Z"
+  And the selected page should be 3
+
+Scenario: View pages of a group
+  When I am on the people page
+  And I select "Bats" from the viewing menu
   Then I should see a profile for "A"
   And I should see a profile for "J"
   And I should not see a profile for "K"
