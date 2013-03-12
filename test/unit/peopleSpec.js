@@ -1244,6 +1244,56 @@ describe('people module', function() {
         });
       });
     });
+
+    describe('student functions', function() {
+      beforeEach(function() {
+        httpBackend.expectGET('/students/all').respond([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
+      });
+
+      describe('students()', function() {
+        it('retrieves students', function() {
+          var students = PeopleInterface.students();
+          expect(students).toEqual([]);
+          httpBackend.flush();
+          expect(students).toEqual([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
+        });
+      });
+
+      describe('get_student(id)', function() {
+        it('retrieves a particular student', function() {
+          var student;
+          PeopleInterface.get_student(3).then(function(obj) { student = obj; })
+          expect(student).toBeUndefined();
+          httpBackend.flush();
+          expect(student).toEqual({id: 3, name: 'Three'});
+        })
+      });
+    });
+
+    describe('teacher functions', function() {
+      beforeEach(function() {
+        httpBackend.expectGET('/teachers/all').respond([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
+      });
+
+      describe('teachers()', function() {
+        it('retrieves teachers', function() {
+          var teachers = PeopleInterface.teachers();
+          expect(teachers).toEqual([]);
+          httpBackend.flush();
+          expect(teachers).toEqual([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
+        });
+      });
+
+      describe('get_teacher(id)', function() {
+        it('retrieves a particular teacher', function() {
+          var teacher;
+          PeopleInterface.get_teacher(3).then(function(obj) { teacher = obj; })
+          expect(teacher).toBeUndefined();
+          httpBackend.flush();
+          expect(teacher).toEqual({id: 3, name: 'Three'});
+        })
+      });
+    });
   });
   
 

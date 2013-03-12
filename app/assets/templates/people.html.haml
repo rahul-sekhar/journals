@@ -83,7 +83,7 @@
   %footer.profile-footer
     .groups{ "ng-show"=>"person.type == 'Student'" }
       %h4 Groups
-      %ul.has-groups
+      %ul.existing
         %li{ "ng-repeat"=>"group in person.groups", "ng-hide"=>"group.deleted" }
           %span {{group.name}}
           %a.remove{ "href"=>"", "ng-click"=>"person.removeGroup(group)" } Remove
@@ -91,6 +91,17 @@
           None
 
       %filtered-list{ "list"=>"person.remainingGroups()", "show-property"=>"name", "on-select"=>"person.addGroup(value)" }
+
+    .mentors{ "ng-show"=>"person.type == 'Student'" }
+      %h4 {{person.mentors.length > 1 && 'Mentors' || 'Mentor'}}
+      %ul.existing
+        %li{ "ng-repeat"=>"mentor in person.mentors", "ng-hide"=>"mentor.deleted" }
+          %span {{mentor.name}}
+          %a.remove{ "href"=>"", "ng-click"=>"person.removeMentor(mentor)" } Remove
+        %li{ "ng-hide"=>"person.mentors.length" }
+          None
+
+      %filtered-list{ "list"=>"person.remainingMentors()", "show-property"=>"name", "on-select"=>"person.addMentor(value)" }
 
 .content-block{ "ng-hide"=>"people.length" }
   %p No matching people were found.

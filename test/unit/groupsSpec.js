@@ -14,101 +14,6 @@ describe('Groups module', function() {
       spyOn(messageHandler, 'showError');
       Groups = _Groups_;
     }));
-
-    it('does not initially load groups', function() {
-      httpBackend.verifyNoOutstandingExpectation();
-    });
-
-    describe('on a call to the all function', function() {
-      it('loads groups', function() {
-        httpBackend.expectGET('/groups').respond([]);
-        Groups.all();
-        httpBackend.verifyNoOutstandingExpectation();
-      });
-
-      it('does not reload groups if the groups have already been loaded', function() {
-        httpBackend.expectGET('/groups').respond([]);
-        Groups.all();
-        httpBackend.flush();
-        Groups.all();
-        httpBackend.verifyNoOutstandingExpectation();
-      });
-
-      it('reloads groups if the groups have failed to load after a timeout', inject(function($timeout) {
-        httpBackend.expectGET('/groups').respond(404);
-        Groups.all();
-        httpBackend.flush();
-        Groups.all();
-        httpBackend.verifyNoOutstandingExpectation();
-
-        httpBackend.expectGET('/groups').respond([]);
-        $timeout.flush();
-        Groups.all();
-        httpBackend.verifyNoOutstandingExpectation();
-      }));
-    });
-
-    describe('get(id)', function() {
-      it('loads groups', function() {
-        httpBackend.expectGET('/groups').respond([]);
-        Groups.get(5);
-        httpBackend.verifyNoOutstandingExpectation();
-      });
-
-      it('does not reload groups if the groups have already been loaded', function() {
-        httpBackend.expectGET('/groups').respond([]);
-        Groups.all();
-        httpBackend.flush();
-        Groups.get(3);
-        httpBackend.verifyNoOutstandingExpectation();
-      });
-
-      it('reloads groups if the groups have failed to load', inject(function($timeout) {
-        httpBackend.expectGET('/groups').respond(404);
-        Groups.all();
-        httpBackend.flush();
-        Groups.get(7);
-        httpBackend.verifyNoOutstandingExpectation();
-
-        httpBackend.expectGET('/groups').respond([]);
-        $timeout.flush();
-        Groups.get(7);
-        httpBackend.verifyNoOutstandingExpectation();
-      }));
-
-      describe('the returned promise', function() {
-        var success, error;
-
-        beforeEach(function() {
-          success = jasmine.createSpy('success'), error = jasmine.createSpy('error');
-        });
-
-        it('is resolved with the relevant group with a valid server response', function() {
-          httpBackend.expectGET('/groups').respond([{id: 1, name: "One"}, {id: 5, name: "Five"}, {id: 7, name: "Seven"}]);
-          Groups.get(5).then(success, error);
-          expect(success).not.toHaveBeenCalled();
-          httpBackend.flush();
-          expect(success).toHaveBeenCalled();
-          expect(success.mostRecentCall.args[0]).toEqualData({id: 5, name: "Five"});
-        });
-
-        it('is rejected if the group is not present', function() {
-          httpBackend.expectGET('/groups').respond([{id: 1, name: "One"}, {id: 6, name: "Six"}, {id: 7, name: "Seven"}]);
-          Groups.get(5).then(success, error);
-          httpBackend.flush();
-          expect(success).not.toHaveBeenCalled();
-          expect(error).toHaveBeenCalled();
-        });
-
-        it('is rejected for an invalid server response', function() {
-          httpBackend.expectGET('/groups').respond(404, 'Some error');
-          Groups.get(5).then(success, error);
-          httpBackend.flush();
-          expect(success).not.toHaveBeenCalled();
-          expect(error).toHaveBeenCalled();
-        });
-      });
-    });
     
     describe('with a valid server response', function() {
       beforeEach(inject(function($injector) {
@@ -118,10 +23,18 @@ describe('Groups module', function() {
       }));
 
       describe('all()', function() {
-        it('updates references to the function with the loaded data', function() {
-          expect(all_groups).toEqual([]);
+        it('retrieves the groups', function() {
           httpBackend.flush();
           expect(all_groups).toEqualData([{id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
+        });
+      });
+
+      describe('get(id)', function() {
+        it('retrieves the specified group', function() {
+          var result;
+          Groups.get(10).then(function(obj) { result = obj });
+          httpBackend.flush();
+          expect(result).toEqualData({id: 10, name: 'Another group'});
         });
       });
 
@@ -339,27 +252,6 @@ describe('Groups module', function() {
             httpBackend.verifyNoOutstandingRequest();
             expect(all_groups).toEqualData([{id: 2, name: 'Some group'}, {id: 10, name: 'Another group'}]);
           });
-        });
-      });
-    });
-
-    describe('with an invalid server response', function() {
-      beforeEach(inject(function($injector) {
-        httpBackend.expectGET('/groups').respond(404, 'Some error');
-        Groups = $injector.get('Groups');
-        all_groups = Groups.all();
-      }));
-
-      describe('all()', function() {
-        it('sends an error to the messageHandler', function() {
-          httpBackend.flush();
-          expect(messageHandler.showError).toHaveBeenCalled();
-        });
-
-        it('updates references to the function to an empty array', function() {
-          expect(all_groups).toEqual([]);
-          httpBackend.flush();
-          expect(all_groups).toEqual([]);
         });
       });
     });

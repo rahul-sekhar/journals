@@ -1,12 +1,11 @@
 'use strict';
 
-angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHelper']).
+angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHelper', 'journals.cachedCollection']).
 
-  factory('Groups', ['$http', 'messageHandler', 'arrayHelper', '$q', '$timeout', '$window',
-    function($http, messageHandler, arrayHelper, $q, $timeout, $window) {
+  factory('Groups', ['$http', 'messageHandler', 'arrayHelper', '$q', '$timeout', '$window', 'cachedCollection',
+    function($http, messageHandler, arrayHelper, $q, $timeout, $window, cachedCollection) {
 
     var GroupsObj = {};
-    var groups = [];
 
     // Create a group instance
     var create = function(inputData) {
@@ -51,47 +50,10 @@ angular.module('journals.groups', ['journals.messageHandler', 'journals.arrayHel
       return group;
     };
 
-    // Query groups
-    var groupsPromise;
-    var queryGroups = function() {
-      groupsPromise = $http.get('/groups').
-        then(function(response) {
-          arrayHelper.shallowCopy(response.data.map(create), groups);
-        }, function(response) {
-          arrayHelper.shallowCopy([], groups);
-          messageHandler.showError(response, 'Information about groups could not be loaded.');
-
-          // Set a timeout for the next try
-          $timeout(function() {
-            groupsPromise = undefined;
-          }, 30000)
-          
-        });
-    };
-
-    // Function to return a reference to all groups
-    GroupsObj.all = function() {
-      if (!groupsPromise) queryGroups();
-      return groups;
-    };
-
-    // Function to get a group by ID
-    GroupsObj.get = function(id) {
-      if (!groupsPromise) queryGroups();
-      return groupsPromise.
-        then(function() {
-          var group = groups.filter(function(obj) {
-            return obj.id == id;
-          })[0];
-
-          if (group) {
-            return group
-          }
-          else {
-            return $q.reject('The requested group could not be found.');
-          }
-        });
-    };
+    var groupsCollection = cachedCollection('/groups', 'group', create);
+    var groups = groupsCollection.collection;
+    GroupsObj.all = groupsCollection.all;
+    GroupsObj.get = groupsCollection.get;
 
     // Function to add an empty group
     GroupsObj.add = function() {

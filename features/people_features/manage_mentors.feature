@@ -1,15 +1,17 @@
+@angular
 Feature: Manage mentors and mentees
 
 Teachers can view and manage mentors and mentees
 
 Background:
-  Given I have logged in as a teacher "Rahul Sekhar"
+  Given I have logged in as the teacher Rahul
 
+@current
 Scenario: View a student with no mentors
-  Given a student profile for Parvathy exists
+  Given a student Parvathy exists
   And I am on the page for that profile
-  Then I should see "Mentor"
-  And I should see "None" within the ".mentors" block
+  Then I should see "Mentor" in it
+  And I should see "None" in its mentors
 
 
 Scenario: View a student with mentors, add and remove mentors

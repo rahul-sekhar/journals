@@ -50,15 +50,15 @@ end
 
 # Profile groups
 Then /^I should see "(.*?)" in its groups$/ do |p_content|
-  @viewing.find('.has-groups').should have_content p_content
+  @viewing.find('.groups .existing').should have_content p_content
 end
 
 Then /^I should not see "(.*?)" in its groups$/ do |p_content|
-  @viewing.find('.has-groups').should have_no_content p_content
+  @viewing.find('.groups .existing').should have_no_content p_content
 end
 
 When /^I remove the group "(.*?)" from it$/ do |p_group|
-  @viewing.find('.has-groups span', text: /^#{Regexp.escape(p_group)}$/i, visible: true).first(:xpath, './/..').find('.remove').click
+  @viewing.find('.groups .existing span', text: /^#{Regexp.escape(p_group)}$/i, visible: true).first(:xpath, './/..').find('.remove').click
 end
 
 

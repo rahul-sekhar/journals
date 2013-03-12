@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('journals.people', ['journals.messageHandler', 'journals.assets', 'journals.currentDate', 
-  'journals.groups', 'journals.arrayHelper']).
+  'journals.groups', 'journals.arrayHelper', 'journals.cachedCollection']).
   
 
   /*------- People Controller ----------*/
@@ -319,7 +319,9 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- People Interface ----------*/
 
-  factory('PeopleInterface', ['$q', '$http', 'Person', 'messageHandler', function($q, $http, Person, messageHandler) {
+  factory('PeopleInterface', ['$q', '$http', 'Person', 'messageHandler', 'cachedCollection', 
+    function($q, $http, Person, messageHandler, cachedCollection) {
+
     var PeopleInterface = {};
 
     var query_with_promise = function(url, successFn) {
@@ -354,6 +356,14 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
           return result;
         });
     };
+
+    var studentsCollection = cachedCollection('/students/all', 'students')
+    PeopleInterface.students = studentsCollection.all;
+    PeopleInterface.get_student = studentsCollection.get;
+
+    var teachersCollection = cachedCollection('/teachers/all', 'teachers')
+    PeopleInterface.teachers = teachersCollection.all;
+    PeopleInterface.get_teacher = teachersCollection.get;
 
     return PeopleInterface;
   }]).

@@ -10,6 +10,18 @@ Given /^all the students are my mentees$/ do
   profile.save!
 end
 
+Then /^I should see "(.*?)" in its mentors$/ do |p_content|
+  @viewing.find('.mentors .existing').should have_content p_content
+end
+
+Then /^I should not see "(.*?)" in its mentors$/ do |p_content|
+  @viewing.find('.mentors .existing').should have_no_content p_content
+end
+
+When /^I remove the mentor "(.*?)" from it$/ do |p_mentor|
+  @viewing.find('.mentors .existing span', text: /^#{Regexp.escape(p_mentor)}$/i, visible: true).first(:xpath, './/..').find('.remove').click
+end
+
 # Given /^the teachers Angela, Shalini, Aditya and Sharad exist$/ do
 #   FactoryGirl.create(:teacher, full_name: "Angela Jain")
 #   FactoryGirl.create(:teacher, full_name: "Shalini Sekhar")
