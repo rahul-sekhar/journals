@@ -10,6 +10,8 @@ angular.module('journals.cachedCollection', ['journals.arrayHelper', 'journals.m
       var collectionObj = {};
       var collection = [];
       var promise;
+      var pluralObject = objectName + 's'
+      var capitalizedObject = 
 
       collectionObj.collection = collection;
 
@@ -19,7 +21,7 @@ angular.module('journals.cachedCollection', ['journals.arrayHelper', 'journals.m
             arrayHelper.shallowCopy(response.data.map(callback), collection);
           }, function(response) {
             arrayHelper.shallowCopy([], collection);
-            messageHandler.showError(response, 'Information about ' + objectName + 's could not be loaded.');
+            messageHandler.showError(response, 'Information about ' + pluralObject + ' could not be loaded.');
 
             // Set an interval for the next try
             $timeout(function() {

@@ -41,7 +41,7 @@ describe('people module', function() {
         expect(scope.pageTitle).toEqual('People');
       });
 
-      it('loads groups', function() {
+      it('loads group', function() {
         expect(Groups.all).toHaveBeenCalled();
         expect(scope.groups).toEqual([{id: 1, name: 'something'}])
       });
@@ -350,172 +350,158 @@ describe('people module', function() {
       });
 
       describe('groups', function() {
-        var group_array, groups_deferred;
+        describe('conversion of contained groups', function() {
+          var group_array, groups_deferred;
 
-        beforeEach(inject(function(Groups, $q) {
-          groups_deferred = $q.defer();
-          Groups.get = function(id) {
-            return groups_deferred.promise.then(function() {
-              if (id == 10) return $q.reject();
-              return 'group ' + id;
+          beforeEach(inject(function(Groups, $q) {
+            groups_deferred = $q.defer();
+            Groups.get = function(id) {
+              return groups_deferred.promise.then(function() {
+                if (id == 10) return $q.reject();
+                return 'group ' + id;
+              });
+            }
+            inputData = {
+              type: 'Student',
+              group_ids: [3, 7, 10]
+            };
+            person = Person.create(inputData);
+          }));
+
+          it('initially sets groups to a blank array', function() {
+            expect(person.groups).toEqual([]);
+          });
+
+          it('gets group objects for each group, ignoring rejected ones, as the promises are resolved', inject(function($rootScope) {
+            groups_deferred.resolve();
+            $rootScope.$apply();
+            expect(person.groups).toEqual(['group 3', 'group 7']);
+          }));
+        });
+        
+        describe('remainingGroups()', function() {
+          var group1, group2, group3, group4;
+
+          beforeEach(inject(function(Groups) {
+            group1 = {id: 1, name: "One"};
+            group2 = {id: 2, name: "Two"};
+            group3 = {id: 3, name: "Three"};
+            group4 = {id: 4, name: "Four"};
+            
+            Groups.all = function() { return [group1, group2, group3, group4] };
+          }));
+
+          describe('with no groups present', function() {
+            it('returns all groups', function() {
+              expect(person.remainingGroups()).toEqual([group1, group2, group3, group4]);
             });
-          }
-          inputData = {
-            type: 'Student',
-            group_ids: [3, 7, 10]
-          };
-          person = Person.create(inputData);
-        }));
+          });
 
-        it('initially sets groups to a blank array', function() {
-          expect(person.groups).toEqual([]);
-        });
+          describe('with groups', function() {
+            beforeEach(function() {
+              person.groups = [group4, group2]
+            });
 
-        it('gets group objects for each group, ignoring rejected ones, as the promises are resolved', inject(function($rootScope) {
-          groups_deferred.resolve();
-          $rootScope.$apply();
-          expect(person.groups).toEqual(['group 3', 'group 7']);
-        }));
-      });
+            it('returns the remaining groups', function() {
+              expect(person.remainingGroups()).toEqual([group1, group3]);
+            });
 
-      describe('remainingGroups()', function() {
-        var group1, group2, group3, group4;
-
-        beforeEach(inject(function(Groups) {
-          group1 = {id: 1, name: "One"};
-          group2 = {id: 2, name: "Two"};
-          group3 = {id: 3, name: "Three"};
-          group4 = {id: 4, name: "Four"};
-          
-          Groups.all = function() { return [group1, group2, group3, group4] };
-        }));
-
-        describe('with no groups present', function() {
-          it('returns all groups', function() {
-            expect(person.remainingGroups()).toEqual([group1, group2, group3, group4]);
+            it('returns a reference to the same object each time', function() {
+              expect(person.remainingGroups()).toBe(person.remainingGroups());
+            });
           });
         });
 
-        describe('with groups', function() {
+        describe('addGroup()', function() {
+          var group1, group2, group3;
+
           beforeEach(function() {
-            person.groups = [group4, group2]
+            group1 = {id: 1, name: "One"};
+            group2 = {id: 2, name: "Two"};
+            group3 = {id: 3, name: "Three"};
+            person.groups = [group1];
           });
 
-          it('returns the remaining groups', function() {
-            expect(person.remainingGroups()).toEqual([group1, group3]);
+          describe('with a valid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/students/7/add_group', { group_id: 3 }).respond(200, 'OK');
+              person.addGroup(group3);
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('adds the group to the persons groups', function() {
+              expect(person.groups).toEqual([group1, group3]);
+              httpBackend.flush();
+              expect(person.groups).toEqual([group1, group3]);
+            });
           });
 
-          it('returns a reference to the same object each time', function() {
-            expect(person.remainingGroups()).toBe(person.remainingGroups());
+          describe('with an invalid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/students/7/add_group', { group_id: 3 }).respond(422, 'Some error');
+              person.addGroup(group3);
+            });
+
+            it('adds the group to the persons groups and removes it after a response', function() {
+              expect(person.groups).toEqual([group1, group3]);
+              httpBackend.flush();
+              expect(person.groups).toEqual([group1]);
+            });
+
+            it('shows an error', function() {
+              httpBackend.flush();
+              expect(messageHandler.showError).toHaveBeenCalled();
+            })
           });
         });
-      });
 
-      describe('addGroup()', function() {
-        var group1, group2, group3;
+        describe('removeGroup()', function() {
+          var group1, group2, group3;
 
-        beforeEach(function() {
-          group1 = {id: 1, name: "One"};
-          group2 = {id: 2, name: "Two"};
-          group3 = {id: 3, name: "Three"};
-          person.groups = [group1];
-        });
-
-        describe('with a valid server response', function() {
           beforeEach(function() {
-            httpBackend.expectPOST('/students/7/add_group', { group_id: 3 }).respond(200, 'OK');
-            person.addGroup(group3);
+            group1 = {id: 1, name: "One"};
+            group2 = {id: 2, name: "Two"};
+            group3 = {id: 3, name: "Three"};
+            person.groups = [group1, group2, group3];
           });
 
-          it('adds the group to the persons groups', function() {
-            expect(person.groups).toEqual([group1, group3]);
-            httpBackend.flush();
-            expect(person.groups).toEqual([group1, group3]);
+          describe('with a valid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/students/7/remove_group', { group_id: 2 }).respond(200, 'OK');
+              person.removeGroup(group2);
+            });
+
+            it('sends a message to the server', function() {
+              httpBackend.verifyNoOutstandingExpectation();
+            });
+
+            it('removes the group from the persons groups', function() {
+              expect(person.groups).toEqual([group1, group3]);
+              httpBackend.flush();
+              expect(person.groups).toEqual([group1, group3]);
+            });
           });
 
-          it('sends a message to the server', function() {
-            httpBackend.verifyNoOutstandingExpectation();
+          describe('with an invalid server response', function() {
+            beforeEach(function() {
+              httpBackend.expectPOST('/students/7/remove_group', { group_id: 2 }).respond(422, 'Some error');
+              person.removeGroup(group2);
+            });
+
+            it('removes the group from the persons groups and restores it after a response', function() {
+              expect(person.groups).toEqual([group1, group3]);
+              httpBackend.flush();
+              expect(person.groups).toEqual([group1, group3, group2]);
+            });
+
+            it('shows an error', function() {
+              httpBackend.flush();
+              expect(messageHandler.showError).toHaveBeenCalled();
+            })
           });
-        });
-
-        describe('with an invalid server response', function() {
-          beforeEach(function() {
-            httpBackend.expectPOST('/students/7/add_group', { group_id: 3 }).respond(422, 'Some error');
-            person.addGroup(group3);
-          });
-
-          it('adds the group to the persons groups', function() {
-            expect(person.groups).toEqual([group1, group3]);
-          });
-
-          it('sends a message to the server', function() {
-            httpBackend.verifyNoOutstandingExpectation();
-          });
-
-          it('removes the group from the persons group on getting a response from the server', function() {
-            httpBackend.flush();
-            expect(person.groups).toEqual([group1]);
-          });
-
-          it('shows an error', function() {
-            httpBackend.flush();
-            expect(messageHandler.showError).toHaveBeenCalled();
-            expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
-          })
-        });
-      });
-
-      describe('removeGroup()', function() {
-        var group1, group2, group3;
-
-        beforeEach(function() {
-          group1 = {id: 1, name: "One"};
-          group2 = {id: 2, name: "Two"};
-          group3 = {id: 3, name: "Three"};
-          person.groups = [group1, group2, group3];
-        });
-
-        describe('with a valid server response', function() {
-          beforeEach(function() {
-            httpBackend.expectPOST('/students/7/remove_group', { group_id: 2 }).respond(200, 'OK');
-            person.removeGroup(group2);
-          });
-
-          it('removes the group from the persons groups', function() {
-            expect(person.groups).toEqual([group1, group3]);
-            httpBackend.flush();
-            expect(person.groups).toEqual([group1, group3]);
-          });
-
-          it('sends a message to the server', function() {
-            httpBackend.verifyNoOutstandingExpectation();
-          });
-        });
-
-        describe('with an invalid server response', function() {
-          beforeEach(function() {
-            httpBackend.expectPOST('/students/7/remove_group', { group_id: 2 }).respond(422, 'Some error');
-            person.removeGroup(group2);
-          });
-
-          it('removes the group from the persons groups', function() {
-            expect(person.groups).toEqual([group1, group3]);
-          });
-
-          it('sends a message to the server', function() {
-            httpBackend.verifyNoOutstandingExpectation();
-          });
-
-          it('restores the group on getting a response from the server', function() {
-            httpBackend.flush();
-            expect(person.groups).toEqual([group1, group3, group2]);
-          });
-
-          it('shows an error', function() {
-            httpBackend.flush();
-            expect(messageHandler.showError).toHaveBeenCalled();
-            expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
-          })
         });
       });
 
@@ -653,10 +639,6 @@ describe('people module', function() {
               expect(person.field3).toEqual('new field value');
             });
 
-            it('sends a message to the server', function() {
-              httpBackend.verifyNoOutstandingExpectation();
-            });
-
             it('restores the model field to an empty value with the server response', function() {
               httpBackend.flush();
               expect(person.field3).toBeUndefined();
@@ -706,10 +688,6 @@ describe('people module', function() {
 
             it('updates the field in the model', function() {
               expect(person.field2).toEqual('new value');
-            });
-
-            it('sends a message to the server', function() {
-              httpBackend.verifyNoOutstandingExpectation();
             });
 
             it('restores the model field to the old value with the server response', function() {
@@ -770,10 +748,6 @@ describe('people module', function() {
           beforeEach(function() {
             httpBackend.expectDELETE('/students/7').respond(404, 'Some error');
             promise = person.delete();
-          });
-
-          it('sends a message to the server', function() {
-            httpBackend.verifyNoOutstandingExpectation();
           });
 
           it('sets the deleted attribute and removes it when the response is received', function() {
@@ -903,10 +877,6 @@ describe('people module', function() {
               person.removeGuardian(guardian);
             });
 
-            it('sends a message to the server', function() {
-              httpBackend.verifyNoOutstandingExpectation();
-            });
-
             it('sets the deleted attribute and removes it when the response is received', function() {
               expect(guardian.deleted).toEqual(true);
               httpBackend.flush();
@@ -975,10 +945,6 @@ describe('people module', function() {
             beforeEach(function() {
               httpBackend.expectPOST('/students/7/reset').respond(422, 'Error')
               person.resetPassword();
-            });
-
-            it('sends a message to the server', function() {
-              httpBackend.verifyNoOutstandingExpectation();
             });
 
             it('sets active to true and then restores it', function() {
@@ -1070,10 +1036,6 @@ describe('people module', function() {
               beforeEach(function() {
                 httpBackend.expectPOST('/students/7/archive').respond(422, 'Error')
                 person.toggleArchive();
-              });
-
-              it('sends a message to the server', function() {
-                httpBackend.verifyNoOutstandingExpectation();
               });
 
               it('sets archived to true and then restores it', function() {
@@ -1244,6 +1206,49 @@ describe('people module', function() {
         });
       });
     });
+  });
+
+  /*-------------- Students and Teachers --------------------*/
+
+  describe('Teachers', function() {
+    var httpBackend, Teachers;
+    beforeEach(inject(function($httpBackend, _Teachers_) {
+      httpBackend = $httpBackend;
+      Teachers = _Teachers_;
+    }));
+
+    describe('teacher functions', function() {
+      beforeEach(function() {
+        httpBackend.expectGET('/teachers/all').respond([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
+      });
+
+      describe('all()', function() {
+        it('retrieves teachers', function() {
+          var teachers = Teachers.all();
+          expect(teachers).toEqual([]);
+          httpBackend.flush();
+          expect(teachers).toEqual([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
+        });
+      });
+
+      describe('get(id)', function() {
+        it('retrieves a particular teacher', function() {
+          var teacher;
+          Teachers.get(3).then(function(obj) { teacher = obj; })
+          expect(teacher).toBeUndefined();
+          httpBackend.flush();
+          expect(teacher).toEqual({id: 3, name: 'Three'});
+        })
+      });
+    });
+  });
+
+  describe('Students', function() {
+    var httpBackend, Students;
+    beforeEach(inject(function($httpBackend, _Students_) {
+      httpBackend = $httpBackend;
+      Students = _Students_;
+    }));
 
     describe('student functions', function() {
       beforeEach(function() {
@@ -1252,7 +1257,7 @@ describe('people module', function() {
 
       describe('students()', function() {
         it('retrieves students', function() {
-          var students = PeopleInterface.students();
+          var students = Students.all();
           expect(students).toEqual([]);
           httpBackend.flush();
           expect(students).toEqual([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
@@ -1262,39 +1267,16 @@ describe('people module', function() {
       describe('get_student(id)', function() {
         it('retrieves a particular student', function() {
           var student;
-          PeopleInterface.get_student(3).then(function(obj) { student = obj; })
+          Students.get(3).then(function(obj) { student = obj; })
           expect(student).toBeUndefined();
           httpBackend.flush();
           expect(student).toEqual({id: 3, name: 'Three'});
         })
       });
     });
-
-    describe('teacher functions', function() {
-      beforeEach(function() {
-        httpBackend.expectGET('/teachers/all').respond([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
-      });
-
-      describe('teachers()', function() {
-        it('retrieves teachers', function() {
-          var teachers = PeopleInterface.teachers();
-          expect(teachers).toEqual([]);
-          httpBackend.flush();
-          expect(teachers).toEqual([{id: 3, name: 'Three'}, {id: 7, name: 'Seven'}]);
-        });
-      });
-
-      describe('get_teacher(id)', function() {
-        it('retrieves a particular teacher', function() {
-          var teacher;
-          PeopleInterface.get_teacher(3).then(function(obj) { teacher = obj; })
-          expect(teacher).toBeUndefined();
-          httpBackend.flush();
-          expect(teacher).toEqual({id: 3, name: 'Three'});
-        })
-      });
-    });
   });
+
+    
   
 
   /*---------------- Date with age filter ---------------*/

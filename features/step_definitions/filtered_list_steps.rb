@@ -4,6 +4,18 @@ Given /^get its add group list$/ do
   button.click if button.text == 'Add'
 end
 
+Given /^get its add mentor list$/ do
+  @list = @viewing.find('.mentors .filtered-list', visible: true)
+  button = @list.find('.add')
+  button.click if button.text == 'Add'
+end
+
+Given /^get its add mentee list$/ do
+  @list = @viewing.find('.mentees .filtered-list', visible: true)
+  button = @list.find('.add')
+  button.click if button.text == 'Add'
+end
+
 When /^I open (.*) list$/ do |p_list|
   step "get #{p_list} list"
 end

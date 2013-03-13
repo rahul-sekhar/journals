@@ -28,6 +28,10 @@ Journals::Application.routes.draw do
       post :add_mentor
       post :remove_mentor
     end
+
+    collection do
+      get :all
+    end
   end
 
   resources :teachers do
@@ -36,6 +40,10 @@ Journals::Application.routes.draw do
       post :archive
       post :add_mentee
       post :remove_mentee
+    end
+
+    collection do
+      get :all
     end
   end
 

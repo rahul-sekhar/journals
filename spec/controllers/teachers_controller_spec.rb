@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TeachersController, :focus do
+describe TeachersController do
   let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new
@@ -73,6 +73,35 @@ describe TeachersController, :focus do
       let(:item_list_name){ :people }
 
       it_behaves_like "a paginated page"
+    end
+  end
+
+  describe "GET all" do
+    let(:user){ create(:student_with_user).user }
+
+    it "raises an exception if the user cannot view teachers" do
+      ability.cannot :read, Teacher
+      expect{ get :all, format: :json }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      get :all, format: :json
+      response.status.should == 200
+    end
+
+    it "assigns any teachers into a teachers collection" do
+      student1 = create(:student)
+      teacher1 = create(:teacher)
+      teacher2 = create(:teacher)
+      get :all, format: :json
+      assigns(:teachers).should =~ [teacher1, teacher2]
+    end
+
+    it "does not assign archived teachers" do
+      teacher1 = create(:teacher)
+      teacher2 = create(:teacher, archived: true)
+      get :all, format: :json
+      assigns(:teachers).should == [teacher1]
     end
   end
 

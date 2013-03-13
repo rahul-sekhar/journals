@@ -8,9 +8,13 @@ if person.is_a? Guardian
 end
 
 if person.is_a? Student
-  json.(person, :formatted_birthday, :blood_group, :group_ids)
+  json.(person, :formatted_birthday, :blood_group, :group_ids, :mentor_ids)
 
   json.guardians person.guardians do |guardian|
     json.partial! "shared/person", person: guardian
   end
+end
+
+if person.is_a? Teacher
+  json.(person, :mentee_ids)
 end

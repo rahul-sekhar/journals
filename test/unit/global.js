@@ -31,3 +31,4 @@ angular.module('journals.assets', []).
 // modals directive
 // arrayExtensions module
 // filteredList directive
+// person - mentors and mentees associations

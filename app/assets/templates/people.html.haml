@@ -103,6 +103,17 @@
 
       %filtered-list{ "list"=>"person.remainingMentors()", "show-property"=>"name", "on-select"=>"person.addMentor(value)" }
 
+    .mentees{ "ng-show"=>"person.type == 'Teacher'" }
+      %h4 {{person.mentees.length > 1 && 'Mentees' || 'Mentee'}}
+      %ul.existing
+        %li{ "ng-repeat"=>"mentee in person.mentees", "ng-hide"=>"mentee.deleted" }
+          %span {{mentee.name}}
+          %a.remove{ "href"=>"", "ng-click"=>"person.removeMentee(mentee)" } Remove
+        %li{ "ng-hide"=>"person.mentees.length" }
+          None
+
+      %filtered-list{ "list"=>"person.remainingMentees()", "show-property"=>"name", "on-select"=>"person.addMentee(value)" }
+
 .content-block{ "ng-hide"=>"people.length" }
   %p No matching people were found.
 

@@ -125,6 +125,7 @@ Scenario: View a student with groups, add and remove groups
   And I should see "Group B" in the list
 
   When I go to the page for that profile
+  And I look at the profile for "Parvathy Manjunath"
   Then I should not see "Group B" in its groups
   Then I should see "Group A" in its groups
   And I should see "Group C" in its groups

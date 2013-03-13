@@ -34,6 +34,18 @@ Given /^the guardian has no email address$/ do
   @guardian.save!
 end
 
+Given /^the teachers (.*) exist$/ do |p_teachers|
+  p_teachers.split(',').each do |name|
+    create_profile('Teacher', name)
+  end
+end
+
+Given /^the students (.*) exist$/ do |p_students|
+  p_students.split(',').each do |name|
+    create_profile('Student', name)
+  end
+end
+
 
 # Test profiles
 Then /^I should see a profile for "(.*?)"$/ do |p_name|

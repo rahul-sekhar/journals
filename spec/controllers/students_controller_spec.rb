@@ -74,6 +74,35 @@ describe StudentsController do
   end
 
 
+  describe "GET all" do
+    let(:user){ create(:teacher_with_user).user }
+
+    it "raises an exception if the user cannot view teachers" do
+      ability.cannot :read, Student
+      expect{ get :all, format: :json }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      get :all, format: :json
+      response.status.should == 200
+    end
+
+    it "assigns any students into a students collection" do
+      teacher1 = create(:teacher)
+      student1 = create(:student)
+      student2 = create(:student)
+      get :all, format: :json
+      assigns(:students).should =~ [student1, student2]
+    end
+
+    it "does not assign archived students" do
+      student1 = create(:student)
+      student2 = create(:student, archived: true)
+      get :all, format: :json
+      assigns(:students).should == [student1]
+    end
+  end
+
 
   describe "GET show" do
     let(:student){ mock_model(Student) }

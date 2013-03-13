@@ -102,8 +102,8 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- Person Model ----------*/
 
-  factory('Person', ['$http', 'messageHandler', 'Groups', 'arrayHelper', '$q', '$window',
-    function($http, messageHandler, Groups, arrayHelper, $q, $window) {
+  factory('Person', ['$http', 'messageHandler', 'Groups', 'arrayHelper', '$q', '$window', 'Students', 'Teachers',
+    function($http, messageHandler, Groups, arrayHelper, $q, $window, Students, Teachers) {
 
     var Person = {};
 
@@ -128,43 +128,125 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         person.students = Person.createFromArray(person.students);
       }
 
-      // Convert groups
-      person.groups = [];
-      if (person.group_ids) {
-        person.group_ids.forEach(function(id) {
-          Groups.get(id).then(function(group) {
-            person.groups.push(group);
+      if (person.type == 'Student') {
+        /* Handle group associations */
+        person.groups = [];
+        if (person.group_ids) {
+          person.group_ids.forEach(function(id) {
+            Groups.get(id).then(function(group) {
+              person.groups.push(group);
+            });
           });
-        });
+        }
+
+        // Remaining groups
+        var remaining_groups = [];
+        person.remainingGroups = function() {
+          var diff = arrayHelper.difference(Groups.all(), person.groups)
+          arrayHelper.shallowCopy(diff, remaining_groups);
+          return remaining_groups;
+        };
+
+        // Add group
+        person.addGroup = function(group) {
+          person.groups.push(group);
+          $http.post(person.url() + '/add_group', { group_id: group.id }).
+            then(null, function(response) {
+              messageHandler.showError(response, 'Group could not be added.');
+              arrayHelper.removeItem(person.groups, group);
+            });
+        };
+
+        // Remove group
+        person.removeGroup = function(group) {
+          arrayHelper.removeItem(person.groups, group);
+          $http.post(person.url() + '/remove_group', { group_id: group.id }).
+            then(null, function(response) {
+              messageHandler.showError(response, 'Group could not be removed.');
+              person.groups.push(group);
+            });
+        };
+
+
+        /* Handle mentor associations */
+        person.mentors = [];
+        if (person.mentor_ids) {
+          person.mentor_ids.forEach(function(id) {
+            Teachers.get(id).then(function(mentor) {
+              person.mentors.push(mentor);
+            });
+          });
+        }
+
+        // Remaining mentors
+        var remaining_mentors = [];
+        person.remainingMentors = function() {
+          var diff = arrayHelper.difference(Teachers.all(), person.mentors)
+          arrayHelper.shallowCopy(diff, remaining_mentors);
+          return remaining_mentors;
+        };
+
+        // Add mentor
+        person.addMentor = function(mentor) {
+          person.mentors.push(mentor);
+          $http.post(person.url() + '/add_mentor', { teacher_id: mentor.id }).
+            then(null, function(response) {
+              messageHandler.showError(response, 'Mentor could not be added.');
+              arrayHelper.removeItem(person.mentors, mentor);
+            });
+        };
+
+        // Remove mentor
+        person.removeMentor = function(mentor) {
+          arrayHelper.removeItem(person.mentors, mentor);
+          $http.post(person.url() + '/remove_mentor', { teacher_id: mentor.id }).
+            then(null, function(response) {
+              messageHandler.showError(response, 'Mentor could not be removed.');
+              person.mentors.push(mentor);
+            });
+        };
       }
 
-      // Add group
-      person.addGroup = function(group) {
-        person.groups.push(group);
-        $http.post(person.url() + '/add_group', { group_id: group.id }).
-          then(null, function(response) {
-            messageHandler.showError(response, 'Group could not be added.');
-            arrayHelper.removeItem(person.groups, group);
+      if (person.type == 'Teacher') {
+        /* Handle mentee associations */
+        person.mentees = [];
+        if (person.mentee_ids) {
+          person.mentee_ids.forEach(function(id) {
+            Students.get(id).then(function(mentee) {
+              person.mentees.push(mentee);
+            });
           });
-      };
+        }
 
-      // Remove group
-      person.removeGroup = function(group) {
-        arrayHelper.removeItem(person.groups, group);
-        $http.post(person.url() + '/remove_group', { group_id: group.id }).
-          then(null, function(response) {
-            messageHandler.showError(response, 'Group could not be removed.');
-            person.groups.push(group);
-          });
-      };
+        // Remaining mentees
+        var remaining_mentees = [];
+        person.remainingMentees = function() {
+          var diff = arrayHelper.difference(Students.all(), person.mentees)
+          arrayHelper.shallowCopy(diff, remaining_mentees);
+          return remaining_mentees;
+        };
 
-      // Remaining groups
-      var remaining_groups = [];
-      person.remainingGroups = function() {
-        var diff = arrayHelper.difference(Groups.all(), person.groups)
-        arrayHelper.shallowCopy(diff, remaining_groups);
-        return remaining_groups;
-      };
+        // Add mentee
+        person.addMentee = function(mentee) {
+          person.mentees.push(mentee);
+          $http.post(person.url() + '/add_mentee', { student_id: mentee.id }).
+            then(null, function(response) {
+              messageHandler.showError(response, 'Mentee could not be added.');
+              arrayHelper.removeItem(person.mentees, mentee);
+            });
+        };
+
+        // Remove mentee
+        person.removeMentee = function(mentee) {
+          arrayHelper.removeItem(person.mentees, mentee);
+          $http.post(person.url() + '/remove_mentee', { student_id: mentee.id }).
+            then(null, function(response) {
+              messageHandler.showError(response, 'Mentee could not be removed.');
+              person.mentees.push(mentee);
+            });
+        };
+      }
+      
 
       // Set a blank editing object
       person.editing = {};
@@ -319,8 +401,7 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
 
   /*------- People Interface ----------*/
 
-  factory('PeopleInterface', ['$q', '$http', 'Person', 'messageHandler', 'cachedCollection', 
-    function($q, $http, Person, messageHandler, cachedCollection) {
+  factory('PeopleInterface', ['$q', '$http', 'Person', 'messageHandler', function($q, $http, Person, messageHandler) {
 
     var PeopleInterface = {};
 
@@ -357,15 +438,27 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
         });
     };
 
-    var studentsCollection = cachedCollection('/students/all', 'students')
-    PeopleInterface.students = studentsCollection.all;
-    PeopleInterface.get_student = studentsCollection.get;
-
-    var teachersCollection = cachedCollection('/teachers/all', 'teachers')
-    PeopleInterface.teachers = teachersCollection.all;
-    PeopleInterface.get_teacher = teachersCollection.get;
-
     return PeopleInterface;
+  }]).
+
+  /* Teachers */
+
+  factory('Teachers', ['cachedCollection', function(cachedCollection) {
+    var Teachers = {};
+    var teachersCollection = cachedCollection('/teachers/all', 'teachers');
+    Teachers.all = teachersCollection.all;
+    Teachers.get = teachersCollection.get;
+    return Teachers;
+  }]).
+
+  /* Students */
+
+  factory('Students', ['cachedCollection', function(cachedCollection) {
+    var Students = {};
+    var studentsCollection = cachedCollection('/students/all', 'students');
+    Students.all = studentsCollection.all;
+    Students.get = studentsCollection.get;
+    return Students;
   }]).
 
 
