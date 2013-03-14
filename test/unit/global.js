@@ -24,6 +24,23 @@ angular.module('journals.assets', []).
     return assets;
   });
 
+// Replace confirm module
+angular.module('journals.confirm', []).
+
+  factory('confirm', function() {
+    var ret = true;
+    
+    var confirm = jasmine.createSpy().andCallFake(function() {
+      return ret;
+    });
+
+    confirm.set = function(val) {
+      ret = val;
+    };
+
+    return confirm;
+  });
+
 /*-------------- Pending tests -------------------------*/
 // editInPlace directive - date field
 // onType directive
@@ -32,3 +49,7 @@ angular.module('journals.assets', []).
 // arrayExtensions module
 // filteredList directive
 // person - mentors and mentees associations
+// ajax service
+
+/* Pending functionality */
+// Mentors and mentees - updating one person should update associations

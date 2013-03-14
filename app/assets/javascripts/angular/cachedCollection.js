@@ -1,4 +1,4 @@
-angular.module('journals.cachedCollection', ['journals.arrayHelper', 'journals.messageHandler']).
+angular.module('journals.cachedCollection', ['journals.helpers', 'journals.messageHandler']).
   
   factory('cachedCollection', ['$http', '$timeout', '$q', 'arrayHelper', 'messageHandler', 
     function($http, $timeout, $q, arrayHelper, messageHandler) {

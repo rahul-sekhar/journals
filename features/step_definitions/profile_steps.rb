@@ -73,6 +73,15 @@ Then /^I should not see the guardian "(.*?)"$/ do |p_guardian|
 end
 
 
+# Adding
+When /^I add the teacher "(.*?)"$/ do |p_name|
+  step 'I select "Add teacher" from the add menu'
+  @viewing = page.first('.profile')
+  fill_input_inside @viewing.find('h3'), p_name
+end
+
+
+
 # Fields
 Then /^I should see the field "(.*?)" with "(.*?)"$/ do |p_field, p_content|
   within @viewing do
@@ -166,13 +175,3 @@ end
 def mail_from_name(p_name)
   "#{p_name.downcase.gsub(' ', '.')}@mail.com"
 end
-
-
-
-# Given /^I have the guardian "(.*?)"$/ do |p_full_name|
-#   @guardian = @logged_in_user.profile.guardians.create!(full_name: p_full_name)
-# end
-
-# Given /^the profile in question is my students profile$/ do
-#   @profile = @student
-# end

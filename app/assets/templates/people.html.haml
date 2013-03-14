@@ -9,7 +9,7 @@
       
       %ul
         %li
-          %a{ "href"=>"", "ng-show"=>"pageData.canAddTeacher" } Add teacher
+          %a{ "href"=>"", "ng-show"=>"pageData.canAddTeacher", "ng-click"=>"addTeacher()" } Add teacher
         %li
           %a{ "href"=>"", "ng-show"=>"pageData.canAddStudent" } Add student
         %li
@@ -123,9 +123,9 @@
   #groups{ "ng-controller"=>"GroupsCtrl" }
     %h3 Manage groups
     %ul{ "ng-show"=>"groups.length" }
-      %li{ "ng-repeat"=>"group in groups" }
-        %p{ "edit-in-place"=>"group.rename(value)", "editor-attr"=>"group.name", "display"=>"{{group.name}}",
-          "edit-mode"=>"group.editing" }
+      %li{ "ng-repeat"=>"group in groups", "ng-hide"=>"group.deleted" }
+        %p{ "edit-in-place"=>"group.updateField('name', value)", "editor-attr"=>"group.name", "display"=>"{{group.name}}",
+          "edit-mode"=>"group.editing.name" }
         %a.delete{ "href"=>"", "ng-click"=>"group.delete()", "ng-show"=>"group.id" } Delete
     %p{ "ng-hide"=>"groups.length" }
       There are no groups yet.

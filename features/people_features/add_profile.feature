@@ -1,20 +1,20 @@
 Feature: Add profiles
 
-Students, teachers and guardians are added by entering their first and last name. If a single name is given as a first name, it is saved as the last name. 
+Students, teachers and guardians are added by entering their first and last name.
 
 Guardians check for other guardians with the same name when they are added and ask whether the other students are siblings.
 
 Background:
-  Given I have logged in as a teacher "Rahul Sekhar"
+  Given I have logged in as the teacher Rahul
 
+@current
 Scenario: Add a teacher
   When I am on the people page
-  And I click "Add teacher"
-  And I fill in "First name" with "Angela"
-  And I fill in "Last name" with "Jain"
-  And I click "Create"
-  And I go to the teachers page
-  Then I should see the heading "Angela Jain"
+  And I add the teacher "Angela Jain"
+  Then I should see a profile for "Angela Jain"
+  
+  When I go to the people page
+  Then I should see a profile for "Angela Jain"
 
 Scenario: Add a student
   When I am on the people page

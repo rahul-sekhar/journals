@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('journals.people', ['journals.messageHandler', 'journals.assets', 'journals.currentDate', 
-  'journals.groups', 'journals.arrayHelper', 'journals.cachedCollection']).
+  'journals.groups', 'journals.helpers', 'journals.cachedCollection']).
   
 
   /*------- People Controller ----------*/
   
   controller('PeopleCtrl', ['$scope', '$route', '$routeParams', '$location', 'PeopleInterface', 
-      'Groups', 'messageHandler', '$window',
-      function($scope, $route, $routeParams, $location, PeopleInterface, Groups, messageHandler, $window) {
+      'Groups', 'messageHandler', '$window', 'arrayHelper', 'Person', '$http',
+      function($scope, $route, $routeParams, $location, PeopleInterface, Groups, messageHandler, $window, arrayHelper, Person, $http) {
     
     var loadPeople;
     var id = $routeParams.id;
@@ -88,6 +88,49 @@ angular.module('journals.people', ['journals.messageHandler', 'journals.assets',
           }
         });
       }
+    };
+
+    var addPerson = function(type) {
+      var newPerson = {type: type};
+      newPerson.editing = {full_name: true};
+
+      var remove = function() {
+        arrayHelper.removeItem($scope.people, newPerson);
+      };
+      
+      newPerson.update = function(field_name, value) {
+        if (field_name != 'full_name') throw new Error('Can only update the name for a newly created person');
+
+        // Replace the function with a blank function so as to prevent subsequent calls
+        newPerson.update = function() {};
+        
+        // Remove if a blank value is passed
+        if (!value) {
+          remove();
+          return;
+        }
+
+        var params = {};
+        var personData = params[newPerson.type.toLowerCase()] = {full_name: value};
+
+        $http.post('/' + newPerson.type.toLowerCase() + 's', params).
+          then(function(response) {
+            var index = $scope.people.indexOf(newPerson);
+            $scope.people[index] = response.data
+            newPerson[field_name] = Person.create(response.data);
+          },
+          function(response) {
+            remove();
+            messageHandler.showError(response, 'An error occured while creating ' + newPerson.full_name + '.');
+          });
+      };
+
+      $scope.people.unshift(newPerson);
+    };
+
+    // Add people
+    $scope.addTeacher = function() {
+      addPerson('Teacher');
     };
 
     // Handle changes in route params
