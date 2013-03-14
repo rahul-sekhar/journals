@@ -45,7 +45,7 @@ angular.module('journals.confirm', []).
 // editInPlace directive - date field
 // onType directive
 // pagination directive
-// modals directive
+// modal directive
 // arrayExtensions module
 // filteredList directive
 // person - mentors and mentees associations

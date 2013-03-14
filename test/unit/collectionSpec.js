@@ -19,6 +19,7 @@ describe('Collection module', function() {
     describe('with defaults', function() {
       beforeEach(inject(function(_collection_) {
         collection = _collection_(model);
+        spyOn(collection, 'update').andCallThrough();
       }));
 
       describe('all()', function() {
@@ -43,10 +44,10 @@ describe('Collection module', function() {
               httpBackend.flush();
             });
 
-            it('calls the model create function for each object recieved', function() {
-              expect(model.create.callCount).toEqual(2);
-              expect(model.create.argsForCall[0][0]).toEqual({id: 1, name: "One"});
-              expect(model.create.argsForCall[1][0]).toEqual({id: 2, name: "Two"});
+            it('calls the update function for each object recieved', function() {
+              expect(collection.update.callCount).toEqual(2);
+              expect(collection.update.argsForCall[0][0]).toEqual({id: 1, name: "One"});
+              expect(collection.update.argsForCall[1][0]).toEqual({id: 2, name: "Two"});
             });
 
             it('sets the result to the created instances', function() {
@@ -210,6 +211,65 @@ describe('Collection module', function() {
 
         it('returns the added instance', function() {
           expect(result).toBe(instances[0]);
+        });
+      });
+
+      describe('update()', function() {
+        var instances, result;
+
+        beforeEach(function() {
+          httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
+          instances = collection.all();
+          httpBackend.flush();
+          model.create.reset();
+        });
+
+        describe('when the passed object has no ID', function() {
+          it('throws an error', function() {
+            expect(function() {
+              collection.update({name: 'asdf'});
+            }).toThrow('Object has no ID');
+          });
+        });
+
+        describe('when the collection contains the passed object', function() {
+          var targetInstance;
+
+          beforeEach(function() {
+            targetInstance = instances[1];
+            targetInstance.load = jasmine.createSpy();
+            result = collection.update({id: 2, name: "New name"})
+          });
+
+          it('loads the matching instance with the passed data', function() {
+            expect(targetInstance.load).toHaveBeenCalledWith({id: 2, name: "New name"});
+          });
+
+          it('returns the matching instance', function() {
+            expect(result).toBe(targetInstance);
+          });
+        });
+
+        describe('when the collection does not contain the passed object', function() {
+          beforeEach(function() {
+            result = collection.update({id: 3, name: "Some name"})
+          });
+
+          it('creates an instance with the passed data', function() {
+            expect(model.create).toHaveBeenCalledWith({id: 3, name: "Some name"});
+          });
+
+          it('adds the created instance to the collection object', function() {
+            expect(instances).toEqualData([
+              {id: 1, name: "One", model: true}, 
+              {id: 2, name: "Two", model: true}, 
+              {id: 3, name: "Some name", model: true}
+            ]);
+          });
+
+          it('returns the matching instance', function() {
+            expect(result).toBe(instances[2]);
+          });
         });
       });
     });

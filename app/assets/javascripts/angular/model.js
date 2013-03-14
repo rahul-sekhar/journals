@@ -1,12 +1,13 @@
 'use strict';
 
-angular.module('journals.model', ['journals.ajax']).
+angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
   
-  factory('model', ['ajax', function(ajax) {
+  factory('model', ['ajax', '$rootScope', function(ajax, $rootScope) {
 
     return function(name, path, options) {
       var defaults = {
-        extensions: []
+        extensions: [],
+        saveFields: ['name']
       }
       options = angular.extend(defaults, options);
       var model = {};
@@ -22,25 +23,28 @@ angular.module('journals.model', ['journals.ajax']).
       model.create = function(inputData) {
         var instance = {};
 
-        var url = function() {
-          return path + '/' + instance.id;
-        };
-
         var formatHttpData = function(inData) {
           var outData = {};
-          outData[name] = inData;
+          outData[name] = {};
 
-          // Call extensions
-          angular.forEach(options.extensions, function(extension) {
-            if(extension.formatHttpData) extension.formatHttpData(outData[name]);
+          angular.forEach(options.saveFields, function(field) {
+            outData[name][field] = inData[field];
           });
 
-          if (outData[name].id) delete outData[name].id;
           return outData;
         };
 
-        var load = function(data) {
-          angular.extend(instance, data);
+        instance.url = function() {
+          return path + '/' + instance.id;
+        };
+
+        // Load data into the model
+        instance.load = function(data) {
+          angular.forEach(data, function(value, key) {
+            if (!angular.isFunction(value)) {
+              instance[key] = value;
+            }
+          });
 
           // Call extensions
           angular.forEach(options.extensions, function(extension) {
@@ -51,15 +55,15 @@ angular.module('journals.model', ['journals.ajax']).
         // Save instance
         instance.save = function() {
           if (instance.id) {
-            ajax({ url: url(), method: 'PUT', data: formatHttpData(instance) }).
+            ajax({ url: instance.url(), method: 'PUT', data: formatHttpData(instance) }).
               then(function(response) {
-                load(response.data);
+                instance.load(response.data);
               });
           }
           else {
             ajax({ url: path, method: 'POST', data: formatHttpData(instance) }).
               then(function(response) {
-                load(response.data);
+                instance.load(response.data);
               }, function() {
                 instance.delete();
               });
@@ -77,9 +81,9 @@ angular.module('journals.model', ['journals.ajax']).
 
             var data = {};
             data[field] = value;
-            ajax({ url: url(), method: 'PUT', data: formatHttpData(data) }).
+            ajax({ url: instance.url(), method: 'PUT', data: formatHttpData(data) }).
               then(function(response) {
-                load(response.data);
+                instance.load(response.data);
               },
               function() {
                 instance[field] = oldVal;
@@ -101,15 +105,20 @@ angular.module('journals.model', ['journals.ajax']).
           instance.deleted = true;
 
           if (instance.id) {
-            ajax({ url: url(), method: 'DELETE' }).
+            ajax({ url: instance.url(), method: 'DELETE' }).
               then(null, function(response) {
                 delete instance.deleted;
               });
           }
         };
 
+        // Call extension setup functions
+          angular.forEach(options.extensions, function(extension) {
+            if (extension.setup) extension.setup(instance);
+          });
+
         // Initial load
-        load(inputData);
+        instance.load(inputData);
 
         return instance;
       };
@@ -119,21 +128,104 @@ angular.module('journals.model', ['journals.ajax']).
   }]).
   
   /*---- extension to allow for editable fields for a model -----*/
+  
   factory('editableFieldsExtension', function() {
     return function(primaryField) {
-      var extension = function(model) {
-        model.editing = {};
+      return function(instance) {
+        if (!angular.isObject(instance.editing)) {
+          instance.editing = {};
+        }
 
-        // Set the primary field for a new model
-        if (primaryField && !model.id) {
-          model.editing[primaryField] = true;
+        // Set the primary field for a new instance
+        if (primaryField && !instance.id) {
+          instance.editing[primaryField] = true;
         }
       };
+    };
+  }).
 
-      extension.formatHttpData = function(data) {
-        delete data.editing;
+
+  /*------------ model association extension -------------*/
+
+  factory('association', ['arrayHelper', 'ajax', function(arrayHelper, ajax) {
+    return function(targetCollection, name, options) {
+      var defaults = {
+        loaded: false,
+        mirror: false
+      };
+      options = angular.extend(defaults, options);
+
+      var assocName = name + 's';
+      var idsName = name + '_ids';
+      var capitalizedName = name.substring(0, 1).toUpperCase() + name.substring(1);
+      if (options.mirror) {
+        options.mirror = options.mirror.substring(0, 1).toUpperCase() + options.mirror.substring(1);
+      }
+
+      var association = function(instance) {
+        // For preloaded objects
+        if (options.loaded) {
+          if (instance[assocName]) {
+            instance[assocName] = instance[assocName].map(targetCollection.update);
+          }  
+        }
+
+        // For objects that need to be loaded
+        else {
+          var assocs = [];
+          
+          if (instance[idsName]) {
+            angular.forEach(instance[idsName], function(id) {
+              targetCollection.get(id).then(function(match) {
+                assocs.push(match);
+              });
+            });
+          }
+
+          instance[assocName] = assocs;
+        }
+      };  
+
+      association.setup = function(instance) {
+        // Remaining instances
+        var remaining = []
+        instance['remaining' + capitalizedName + 's'] = function() {
+          var diff = arrayHelper.difference(targetCollection.all(), instance[assocName])
+          arrayHelper.shallowCopy(diff, remaining);
+          return remaining;
+        };
+
+        // Add instance
+        instance['add' + capitalizedName] = function(target, local) {
+          instance[assocName].push(target);
+          if (local) return;
+
+          var data = {}
+          data[name + '_id'] = target.id;
+          ajax({ url: instance.url() + '/' + assocName, method: 'POST', data: data }).
+            then(function() {
+              if (options.mirror) target['add' + options.mirror](instance, true);
+            }, 
+            function(response) {
+              arrayHelper.removeItem(instance[assocName], target);
+            });
+        };
+
+        // Remove instance
+         instance['remove' + capitalizedName] = function(target, local) {
+          arrayHelper.removeItem(instance[assocName], target);
+          if(local) return;
+
+          ajax({ url: instance.url() + '/' + assocName + '/' + target.id, method: 'DELETE'}).
+            then(function() {
+              if (options.mirror) target['remove' + options.mirror](instance, true);
+            }, 
+            function(response) {
+              instance[assocName].push(target);
+            });
+        };
       };
 
-      return extension;
+      return association;
     };
-  });
+  }]);

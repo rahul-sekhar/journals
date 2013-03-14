@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('journals.collection', ['journals.model', 'journals.ajax', 'journals.helpers']).
+angular.module('journals.collection', ['journals.model', 'journals.ajax']).
   
-  factory('collection', ['ajax', 'arrayHelper', '$timeout', '$q',
-    function(ajax, arrayHelper, $timeout, $q) {
+  factory('collection', ['ajax', '$timeout', '$q',
+    function(ajax, $timeout, $q) {
 
     return function(model, options) {
       var defaults = {
@@ -19,8 +19,7 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax', 'journ
         promise = ajax({url: options.url, method: 'GET'}).
           
           then(function(response) {
-            var instances = response.data.map(model.create);
-            arrayHelper.shallowCopy(instances, collection);
+            response.data.map(collectionObj.update);
           },
 
           function() {
@@ -28,6 +27,32 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax', 'journ
               promise = null;
             }, options.reloadInterval);
           });
+      };
+
+      var find = function(id) {
+        var match = collection.filter(function(x) {
+          return (x.id == id);
+        })[0];
+
+        if (match) return match;
+        return false;
+      };
+
+
+      // Updates an instance of the collection
+      collectionObj.update = function(data) {
+        if (!data.id) throw new Error('Object has no ID');
+
+        var match = find(data.id);
+        if (match) {
+          match.load(data);
+          return match;
+        }
+        else {
+          var newInstance = model.create(data);
+          collection.push(newInstance);
+          return newInstance;
+        }
       };
 
 
@@ -43,16 +68,10 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax', 'journ
         if (!promise) query();
         
         return promise.then(function() {
-          var instance = collection.filter(function(x) {
-            return (x.id == id);
-          })[0];
+          var match = find(id)
 
-          if (instance) {
-            return instance;
-          }
-          else {
-            return $q.reject('Instance not found');
-          }
+          if (match) return match;
+          return $q.reject('Instance not found');
         });
       };
 

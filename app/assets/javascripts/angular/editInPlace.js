@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
   .directive('editInPlace', ['$compile', '$timeout', function($compile, $timeout) {
     return {
@@ -102,9 +104,12 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
 
   .controller('editInPlaceCtrl', ['$scope', function($scope) {
     $scope.startEdit = function() {
-      $scope.editorValue = $scope.parentValue;
       $scope.editMode = true;
     };
+
+    $scope.$watch('editMode', function(value) {
+      if (value) $scope.editorValue = $scope.parentValue;
+    });
 
     $scope.finishEdit = function() {
       $scope.saveFn({value: $scope.editorValue});

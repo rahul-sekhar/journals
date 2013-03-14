@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('journals.user', ['journals.messageHandler']).
   
   factory('User', ['$http', 'messageHandler', '$timeout', function($http, messageHandler, $timeout) {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('journals.modals', []).
+angular.module('journals.modal', []).
 
   directive('modal', function() {
     return {

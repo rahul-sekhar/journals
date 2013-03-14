@@ -49,7 +49,7 @@ Scenario: View archived students and teachers on the people page
   When I am on the people page
   And I select "Archived students and teachers" from the viewing menu
   Then I should be on the archived people page
-  And the page heading should be "People"
+  And the page heading should be "Archived"
 
   Then I should not see a profile for "Aditya Pandya"
   And I should not see a profile for "Angela Jain"
@@ -73,7 +73,7 @@ Scenario: View only students
   When I am on the people page
   And I select "Students" from the viewing menu
   Then I should be on the students page
-  And the page heading should be "People"
+  And the page heading should be "Students"
 
   And I should not see a profile for "Aditya Pandya"
   And I should not see a profile for "Angela Jain"
@@ -97,7 +97,7 @@ Scenario: View only teachers
   When I am on the people page
   And I select "Teachers" from the viewing menu
   Then I should be on the teachers page
-  And the page heading should be "People"
+  And the page heading should be "Teachers"
 
   And I should see a profile for "Aditya Pandya"
   And I should see a profile for "Angela Jain"

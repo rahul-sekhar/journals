@@ -106,7 +106,7 @@ Scenario: Edit a student profile
   Then I should not see the field "Email"
 
   When I clear the field "Mobile"
-  Then I should not see the field "Email"
+  Then I should not see the field "Mobile"
 
   When I change the field "Blood group" to "A-"
   Then I should see the field "Blood group" with "A-"
@@ -264,3 +264,4 @@ Scenario: Add an invalid email field for a guardian
   And I look at the guardian "Poonam Jain"
   Then I should not see the field "Email"
   And the add-field menu should have the option "Email" in it
+  

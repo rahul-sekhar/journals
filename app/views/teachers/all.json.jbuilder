@@ -1,4 +1,4 @@
 json.array!(@teachers) do |teacher|
-  json.id teacher.id
-  json.name teacher.full_name
+  json.type 'Teacher'
+  json.(teacher, :id, :full_name)
 end

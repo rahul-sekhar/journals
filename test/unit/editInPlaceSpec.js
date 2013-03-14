@@ -343,9 +343,19 @@ describe('editInPlace module', function() {
       it('sets editMode to true', function() {
         expect(scope.editMode).toEqual(true);
       });
+    });
 
-      it('sets the editorValue to the parentValue', function() {
+    describe('when editMode is changed', function() {
+      it('sets the editorValue to the parentValue if true', function() {
+        scope.editMode = true;
+        scope.$apply();
         expect(scope.editorValue).toEqual('initial value');
+      });
+
+      it('does nothing if false', function() {
+        scope.editMode = false;
+        scope.$apply();
+        expect(scope.editorValue).toBeUndefined();
       });
     });
 

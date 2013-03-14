@@ -1,12 +1,12 @@
 %div
-  .field{ "ng-repeat"=>"field in person.fields", "ng-show"=>"person[field.slug] || person.editing[field.slug]" }
+  .field{ "ng-repeat"=>"field in fields", "ng-show"=>"person[field.slug] || person.editing[field.slug]" }
     %p.field-name {{field.name}}
-    %p{ "edit-in-place"=>"person.update(field.slug, value)", "type"=>"{{field.type}}",
+    %p{ "edit-in-place"=>"person.updateField(field.slug, value)", "type"=>"{{field.type}}",
       "editor-attr"=>"person[field.slug]", "display"=>"{{person[field.slug] | escapeHtml | apply:field.filter}}",
       "contains-html"=>true, "edit-mode"=>"person.editing[field.slug]" }
 
-  .add-field.menu{ "ng-show"=>"person.remainingFields().length" }
+  .add-field.menu{ "ng-show"=>"hasRemainingFields()" }
     %p.title Add field
     %ul
-      %li{ "ng-repeat"=>"field in person.remainingFields()" }
-        %a{ "href"=>"", "ng-click"=>"person.addField(field.slug)" } {{field.name}}
+      %li{ "ng-repeat"=>"field in fields" }
+        %a{ "href"=>"", "ng-click"=>"addField(field.slug)", "ng-hide"=>"person[field.slug] || person.editing[field.slug]" } {{field.name}}

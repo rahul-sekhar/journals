@@ -23,10 +23,10 @@ Journals::Application.routes.draw do
     member do
       post :reset
       post :archive
-      post :add_group
-      post :remove_group
-      post :add_mentor
-      post :remove_mentor
+      post :groups, action: "add_group"
+      delete "groups/:group_id", action: "remove_group"
+      post :mentors, action: "add_mentor"
+      delete "mentors/:teacher_id", action: "remove_mentor"
     end
 
     collection do
@@ -38,8 +38,8 @@ Journals::Application.routes.draw do
     member do
       post :reset
       post :archive
-      post :add_mentee
-      post :remove_mentee
+      post :mentees, action: "add_mentee"
+      delete "mentees/:student_id", action: "remove_mentee"
     end
 
     collection do

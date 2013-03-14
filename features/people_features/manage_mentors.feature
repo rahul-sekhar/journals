@@ -14,7 +14,7 @@ Scenario: View a student with no mentors
   Then I should see "Mentor" in it
   And I should see "None" in its mentors
 
-
+@current
 Scenario: View a student with mentors, add and remove mentors
   Given the teachers Angela Jain, Shalini Sekhar, Aditya Pandya, Sharad Jain exist
   And a student Parvathy exists

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('User module', function() {
   beforeEach(module('journals.user'));
 

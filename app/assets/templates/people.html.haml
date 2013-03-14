@@ -1,7 +1,7 @@
 %h2 {{pageTitle}}
 
 %section#upper-bar
-  .people-fields{ "ng-hide" => "singlePerson" }
+  .people-fields{ "ng-hide" => "profile" }
     %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch(search)", "autocomplete"=>"off"}
 
     .add.menu
@@ -9,38 +9,38 @@
       
       %ul
         %li
-          %a{ "href"=>"", "ng-show"=>"pageData.canAddTeacher", "ng-click"=>"addTeacher()" } Add teacher
+          %a{ "href"=>"", "ng-show"=>"canAddTeacher", "ng-click"=>"addTeacher()" } Add teacher
         %li
-          %a{ "href"=>"", "ng-show"=>"pageData.canAddStudent" } Add student
+          %a{ "href"=>"", "ng-show"=>"canAddStudent" } Add student
         %li
           %a{ "href"=>"", "ng-click"=>"manageGroups=true" } Manage groups
 
     %p.label Viewing
 
     .viewing.menu
-      %a.title{ href: "" } {{pageData.filter}}
+      %a.title{ href: "" } {{filterName}}
 
       %ul
-        %li{"ng-hide" => "pageData.filter == 'Students and teachers'"}
+        %li{"ng-hide" => "filterName == 'Students and teachers'"}
           %a{href: "/people"} Students and teachers
-        %li{"ng-hide" => "pageData.filter == 'Students'"}
+        %li{"ng-hide" => "filterName == 'Students'"}
           %a{href: "/students"} Students
-        %li{"ng-hide" => "pageData.filter == 'Teachers'"}
+        %li{"ng-hide" => "filterName == 'Teachers'"}
           %a{href: "/teachers"} Teachers
-        %li{"ng-hide" => "(pageData.filter == 'Your mentees') || (!isTeacher)"}
+        %li{"ng-hide" => "(filterName == 'Your mentees') || (!isTeacher)"}
           %a{href: "/mentees"} Your mentees
-        %li{"ng-hide" => "pageData.filter == 'Archived students and teachers'"}
+        %li{"ng-hide" => "filterName == 'Archived students and teachers'"}
           %a{href: "/people/archived"} Archived students and teachers
 
         %li.divider{"ng-show"=>"groups.length"}
-        %li{"ng-repeat"=>"group in groups", "ng-hide"=>"pageData.filter == group.name"}
+        %li{"ng-repeat"=>"group in groups", "ng-hide"=>"filterName == group.name"}
           %a{"ng-href" => "/groups/{{group.id}}"} {{group.name}}
 
   .clear-left
 
 %article.profile{ "ng-repeat"=>"person in people", "ng-hide"=>"person.deleted" }
   %header.profile-header
-    %h3{ "edit-in-place"=>"person.update('full_name', value)", "editor-attr"=>"person.full_name",
+    %h3{ "edit-in-place"=>"person.updateField('full_name', value)", "editor-attr"=>"person.full_name",
       "display"=>"{{person.full_name}}", "edit-mode"=>"person.editing['full_name']" }
 
     %p.type{ "ng-show"=>"person.type == 'Teacher'" }
@@ -64,7 +64,7 @@
     .guardian{ "ng-repeat"=>"guardian in person.guardians", "ng-hide"=>"guardian.deleted" }
       
       %header.guardian-header
-        %h4{ "edit-in-place"=>"guardian.update('full_name', value)", "editor-attr"=>"guardian.full_name",
+        %h4{ "edit-in-place"=>"guardian.updateField('full_name', value)", "editor-attr"=>"guardian.full_name",
           "display"=>"{{guardian.full_name}}", "edit-mode"=>"guardian.editing['full_name']"}
 
         .manage.menu
@@ -96,23 +96,23 @@
       %h4 {{person.mentors.length > 1 && 'Mentors' || 'Mentor'}}
       %ul.existing
         %li{ "ng-repeat"=>"mentor in person.mentors", "ng-hide"=>"mentor.deleted" }
-          %span {{mentor.name}}
+          %span {{mentor.full_name}}
           %a.remove{ "href"=>"", "ng-click"=>"person.removeMentor(mentor)" } Remove
         %li{ "ng-hide"=>"person.mentors.length" }
           None
 
-      %filtered-list{ "list"=>"person.remainingMentors()", "show-property"=>"name", "on-select"=>"person.addMentor(value)" }
+      %filtered-list{ "list"=>"person.remainingMentors()", "show-property"=>"full_name", "on-select"=>"person.addMentor(value)" }
 
     .mentees{ "ng-show"=>"person.type == 'Teacher'" }
       %h4 {{person.mentees.length > 1 && 'Mentees' || 'Mentee'}}
       %ul.existing
         %li{ "ng-repeat"=>"mentee in person.mentees", "ng-hide"=>"mentee.deleted" }
-          %span {{mentee.name}}
+          %span {{mentee.full_name}}
           %a.remove{ "href"=>"", "ng-click"=>"person.removeMentee(mentee)" } Remove
         %li{ "ng-hide"=>"person.mentees.length" }
           None
 
-      %filtered-list{ "list"=>"person.remainingMentees()", "show-property"=>"name", "on-select"=>"person.addMentee(value)" }
+      %filtered-list{ "list"=>"person.remainingMentees()", "show-property"=>"full_name", "on-select"=>"person.addMentee(value)" }
 
 .content-block{ "ng-hide"=>"people.length" }
   %p No matching people were found.
