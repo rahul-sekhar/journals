@@ -193,7 +193,8 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
       $scope.pageTitle = 'Group';
       $scope.filterName = 'Group';
 
-      id = parseInt($routeParams.id, 10)
+      id = parseInt($routeParams.id, 10);
+
       Groups.get(id).
         then(function (group) {
           $scope.pageTitle = 'Group: ' + group.name;
