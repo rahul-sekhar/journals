@@ -2,9 +2,9 @@
 
 angular.module('journals.user', ['journals.messageHandler']).
   factory('User', ['$http', 'messageHandler', '$timeout', function ($http, messageHandler, $timeout) {
-    var promise, User = {};
+    var promise, User = {}, loadFn;
 
-    var load = function () {
+    loadFn = function () {
       promise = $http.get('/user').
         then(function (response) {
           angular.copy(response.data, User);
@@ -13,13 +13,13 @@ angular.module('journals.user', ['journals.messageHandler']).
 
           // Set a timeout for the next try
           $timeout(function () {
-            load();
+            loadFn();
           }, 30000);
 
         });
     };
 
-    load();
+    loadFn();
 
     return User;
   }]);

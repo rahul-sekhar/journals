@@ -1,104 +1,106 @@
 'use strict';
 
-angular.module('journals.people', ['journals.model', 'journals.collection', 'journals.groups', 
+angular.module('journals.people', ['journals.model', 'journals.collection', 'journals.groups',
   'journals.ajax', 'journals.assets', 'journals.currentDate']).
-  
+
   /*---- Students collection -----*/
 
   factory('Students', ['model', 'collection', 'editableFieldsExtension', 'Guardians', 'association',
-    function(model, collection, editableFieldsExtension, Guardians, association, Groups, Teachers) {
+    function (model, collection, editableFieldsExtension, Guardians, association, Groups, Teachers) {
 
-    var studentModel = model('student', '/students', {
-      extensions: [
-        association('Guardians', 'guardian', { loaded: true }),
-        association('Groups', 'group'),
-        association('Teachers', 'mentor', { mirror: 'mentee' }),
-        editableFieldsExtension('full_name')
-      ],
-      saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
-        'address', 'blood_group', 'formatted_birthday', 'additional_emails', 'notes']
-    });
+      var studentModel = model('student', '/students', {
+        extensions: [
+          association('Guardians', 'guardian', { loaded: true }),
+          association('Groups', 'group'),
+          association('Teachers', 'mentor', { mirror: 'mentee' }),
+          editableFieldsExtension('full_name')
+        ],
+        saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
+          'address', 'blood_group', 'formatted_birthday', 'additional_emails', 'notes']
+      });
 
-    return collection(studentModel, { url: '/students/all' });
-  }]).
+      return collection(studentModel, { url: '/students/all' });
+    }]).
 
 
   /*---- Teachers collection -----*/
 
   factory('Teachers', ['model', 'collection', 'editableFieldsExtension', 'association',
-    function(model, collection, editableFieldsExtension, association) {
+    function (model, collection, editableFieldsExtension, association) {
 
-    var teacherModel = model('teacher', '/teachers', {
-      extensions: [
-        association('Students', 'mentee', { mirror: 'mentor' }),
-        editableFieldsExtension('full_name')
-      ],
-      saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
-        'address', 'additional_emails', 'notes']
-    });
+      var teacherModel = model('teacher', '/teachers', {
+        extensions: [
+          association('Students', 'mentee', { mirror: 'mentor' }),
+          editableFieldsExtension('full_name')
+        ],
+        saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
+          'address', 'additional_emails', 'notes']
+      });
 
-    return collection(teacherModel, { url: '/teachers/all' });
-  }]).
+      return collection(teacherModel, { url: '/teachers/all' });
+    }]).
 
 
   /*---- Guardians collection -----*/
 
-  factory('Guardians', ['model', 'collection', 'editableFieldsExtension', 
-    function(model, collection, editableFieldsExtension) {
+  factory('Guardians', ['model', 'collection', 'editableFieldsExtension',
+    function (model, collection, editableFieldsExtension) {
 
-    var guardianModel = model('guardian', '/guardians', {
-      extensions: [editableFieldsExtension('full_name')],
-      saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
-        'address', 'additional_emails', 'notes']
-    });
+      var guardianModel = model('guardian', '/guardians', {
+        extensions: [editableFieldsExtension('full_name')],
+        saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
+          'address', 'additional_emails', 'notes']
+      });
 
-    return collection(guardianModel);
-  }]).
+      return collection(guardianModel);
+    }]).
 
   /*---------- People interface ------------*/
 
-  factory('peopleInterface', ['ajax', 'Teachers', 'Students', function(ajax, Teachers, Students) {
+  factory('peopleInterface', ['ajax', 'Teachers', 'Students', function (ajax, Teachers, Students) {
     var peopleInterface = {};
 
-    peopleInterface.load = function(url) {
+    peopleInterface.load = function (url) {
       return ajax({ url: url, method: 'GET' }).
-        then(function(response) {
-          var people = response.data.items.map(function(person) {
-            switch(person.type) {
-              case 'Teacher':
-                return Teachers.update(person);
-              case 'Student':
-                return Students.update(person);
-              default:
-                throw new Error('Invalid type for person');
+        then(function (response) {
+          var people, metadata;
+
+          people = response.data.items.map(function (person) {
+            switch (person.type) {
+            case 'Teacher':
+              return Teachers.update(person);
+            case 'Student':
+              return Students.update(person);
+            default:
+              throw new Error('Invalid type for person');
             }
           });
 
-          var metadata = response.data;
+          metadata = response.data;
           delete metadata.items;
 
           return { metadata: metadata, people: people };
         });
     };
 
-    peopleInterface.loadProfile = function(url) {
+    peopleInterface.loadProfile = function (url) {
       return ajax({ url: url, method: 'GET' }).
-        then(function(response) {
-          var person = response.data;
-          var people;
+        then(function (response) {
+          var people, person;
+          person = response.data;
 
-          switch(person.type) {
-            case 'Teacher':
-              people = [Teachers.update(person)];
-              break;
-            case 'Student':
-              people = [Students.update(person)];
-              break;
-            case 'Guardian':
-              people = person.students.map(Students.update);
-              break;
-            default:
-              throw new Error('Invalid type for person');
+          switch (person.type) {
+          case 'Teacher':
+            people = [Teachers.update(person)];
+            break;
+          case 'Student':
+            people = [Students.update(person)];
+            break;
+          case 'Guardian':
+            people = person.students.map(Students.update);
+            break;
+          default:
+            throw new Error('Invalid type for person');
           }
 
           return { name: person.full_name, people: people };
@@ -110,11 +112,11 @@ angular.module('journals.people', ['journals.model', 'journals.collection', 'jou
 
   /* -------------------- Profile fields directive ----------------------- */
 
-  directive('profileFields', ['assets', function(assets) {
+  directive('profileFields', ['assets', function (assets) {
     return {
       restrict: 'E',
       transclude: true,
-      scope: { 
+      scope: {
         person: '=parent'
       },
       templateUrl: assets.url('profile_fields_template.html'),
@@ -123,10 +125,10 @@ angular.module('journals.people', ['journals.model', 'journals.collection', 'jou
     };
   }]).
 
-  controller('profileFieldsCtrl', ['$scope', function($scope) {
+  controller('profileFieldsCtrl', ['$scope', function ($scope) {
     $scope.fields = [];
 
-    $scope.$watch('person.type', function(type) {
+    $scope.$watch('person.type', function (type) {
       var fields = [
         {name: "Mobile", slug: "mobile"},
         {name: "Home Phone", slug: "home_phone"},
@@ -142,39 +144,49 @@ angular.module('journals.people', ['journals.model', 'journals.collection', 'jou
           {name: "Blood Group", slug: "blood_group"}
         );
       }
-      fields = fields.map(function(obj) {
-        if (!obj.type) obj.type = 'text';
+      fields = fields.map(function (obj) {
+        if (!obj.type) {
+          obj.type = 'text';
+        }
         return obj;
       });
       $scope.fields = fields;
     });
 
-    $scope.hasRemainingFields = function() {
-      for ( var i = 0; i < $scope.fields.length; i++ ) {
+    $scope.hasRemainingFields = function () {
+      var i;
+
+      for (i = 0; i < $scope.fields.length; i += 1) {
         // Return true if any field is empty
-        if (!$scope.person[$scope.fields[i].slug]) return true;
+        if (!$scope.person[$scope.fields[i].slug]) {
+          return true;
+        }
       }
       return false;
     };
 
-    $scope.addField = function(field) {
+    $scope.addField = function (field) {
       $scope.person.editing[field] = true;
-    }
+    };
   }]).
 
   /* ---------------------- Date with age filter ---------------------*/
 
-  filter('dateWithAge', ['currentDate', function(currentDate) {
-    return function(date_text) {
-      if (!date_text) return null;
+  filter('dateWithAge', ['currentDate', function (currentDate) {
+    return function (date_text) {
+      if (!date_text) {
+        return null;
+      }
 
-      var birthDate = $.datepicker.parseDate('dd-mm-yy', date_text);
-      var currDate = currentDate.get();
+      var birthDate, currDate, age, m;
 
-      var age = currDate.getFullYear() - birthDate.getFullYear();
-      var m = currDate.getMonth() - birthDate.getMonth();
+      birthDate = $.datepicker.parseDate('dd-mm-yy', date_text);
+      currDate = currentDate.get();
+
+      age = currDate.getFullYear() - birthDate.getFullYear();
+      m = currDate.getMonth() - birthDate.getMonth();
       if (m < 0 || (m === 0 && currDate.getDate() < birthDate.getDate())) {
-        age--;
+        age -= 1;
       }
       return date_text + ' (' + age + ' yrs)';
     };
