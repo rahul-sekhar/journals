@@ -4,7 +4,7 @@ json.active person.active?
 json.archived person.archived
 
 if person.is_a? Guardian
-  json.number_of_students person.students.length
+  json.parent_count person.students.length
 end
 
 if person.is_a? Student

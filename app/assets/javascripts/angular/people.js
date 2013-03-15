@@ -4,7 +4,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   /*--------- People base controller ---------*/
 
-  factory('peopleBaseCtrl', ['$location', 'confirm', function ($location, confirm) {
+  factory('peopleBaseCtrl', ['$location', 'confirm', '$timeout', function ($location, confirm, $timeout) {
     return function ($scope) {
       $scope.doSearch = function (value) {
         $location.search('search', value).replace();
@@ -44,13 +44,21 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
         }
       };
 
+      // Handle adding a guardian
+      $scope.addGuardian = function (profile) {
+        var guardian = profile.newGuardian();
+        $timeout(function() {
+          $scope.$broadcast('editField', guardian, 'full_name');
+        }, 0);
+      };
+
       // Handle removing guardians
       $scope.removeGuardian = function (profile, guardian) {
         var message = 'Are you sure you want to delete the guardian "' + guardian.full_name + '"?' +
           'Anything that has been created by that guardian will be lost.';
 
         // Skip confirm if the guardian has more than 1 student
-        if ((guardian.number_of_students > 1) || confirm(message)) {
+        if ((guardian.parent_count > 1) || confirm(message)) {
           profile.removeGuardian(guardian);
         }
       };
@@ -67,8 +75,8 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   /*--------- Service to load a people collection -------- */
 
-  factory('loadPeopleCollection', ['peopleInterface', '$location', 'Groups',
-    function (peopleInterface, $location, Groups) {
+  factory('peopleCollectionMixin', ['peopleInterface', '$location', 'Groups', '$timeout',
+    function (peopleInterface, $location, Groups, $timeout) {
       return function ($scope) {
         $scope.load = function () {
           peopleInterface.load($location.url()).
@@ -80,6 +88,23 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
         };
 
         $scope.groups = Groups.all();
+
+        // Handle adding profiles
+        $scope.addTeacher = function() {
+          var teacher = peopleInterface.addTeacher();
+          $scope.people.unshift(teacher);
+          $timeout(function () {
+            $scope.$broadcast('editField', teacher, 'full_name');
+          }, 0);
+        };
+
+        $scope.addStudent = function() {
+          var student = peopleInterface.addStudent();
+          $scope.people.unshift(student);
+          $timeout(function () {
+            $scope.$broadcast('editField', student, 'full_name');
+          }, 0);
+        };
       };
     }]).
 
@@ -116,78 +141,78 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   /*--------- People page ---------*/
 
-  controller('PeopleCtrl', ['$scope', 'peopleBaseCtrl', 'loadPeopleCollection',
-    function ($scope, peopleBaseCtrl, loadPeopleCollection) {
+  controller('PeopleCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
+    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
       $scope.pageTitle = 'People';
       $scope.canAddStudent = true;
       $scope.canAddTeacher = true;
       $scope.filterName = 'Students and teachers';
 
-      loadPeopleCollection($scope);
+      peopleCollectionMixin($scope);
       peopleBaseCtrl($scope);
     }]).
 
 
   /*--------- Archived people page ---------*/
 
-  controller('ArchivedPeopleCtrl', ['$scope', 'peopleBaseCtrl', 'loadPeopleCollection',
-    function ($scope, peopleBaseCtrl, loadPeopleCollection) {
+  controller('ArchivedPeopleCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
+    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
       $scope.pageTitle = 'Archived';
       $scope.canAddStudent = false;
       $scope.canAddTeacher = false;
       $scope.filterName = 'Archived students and teachers';
 
-      loadPeopleCollection($scope);
+      peopleCollectionMixin($scope);
       peopleBaseCtrl($scope);
     }]).
 
 
   /*--------- Teachers page ---------*/
 
-  controller('TeachersCtrl', ['$scope', 'peopleBaseCtrl', 'loadPeopleCollection',
-    function ($scope, peopleBaseCtrl, loadPeopleCollection) {
+  controller('TeachersCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
+    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
       $scope.pageTitle = 'Teachers';
       $scope.canAddStudent = false;
       $scope.canAddTeacher = true;
       $scope.filterName = 'Teachers';
 
-      loadPeopleCollection($scope);
+      peopleCollectionMixin($scope);
       peopleBaseCtrl($scope);
     }]).
 
 
   /*--------- Students page ---------*/
 
-  controller('StudentsCtrl', ['$scope', 'peopleBaseCtrl', 'loadPeopleCollection',
-    function ($scope, peopleBaseCtrl, loadPeopleCollection) {
+  controller('StudentsCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
+    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
       $scope.pageTitle = 'Students';
       $scope.canAddStudent = true;
       $scope.canAddTeacher = false;
       $scope.filterName = 'Students';
 
-      loadPeopleCollection($scope);
+      peopleCollectionMixin($scope);
       peopleBaseCtrl($scope);
     }]).
 
 
   /*--------- Mentees page ---------*/
 
-  controller('MenteesCtrl', ['$scope', 'peopleBaseCtrl', 'loadPeopleCollection',
-    function ($scope, peopleBaseCtrl, loadPeopleCollection) {
+  controller('MenteesCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
+    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
       $scope.pageTitle = 'Mentees';
       $scope.canAddStudent = false;
       $scope.canAddTeacher = false;
       $scope.filterName = 'Your mentees';
 
-      loadPeopleCollection($scope);
+      peopleCollectionMixin($scope);
       peopleBaseCtrl($scope);
     }]).
 
 
    /*--------- Groups page ---------*/
 
-  controller('GroupsPageCtrl', ['$scope', 'peopleBaseCtrl', 'loadPeopleCollection', 'Groups', '$routeParams',
-    function ($scope, peopleBaseCtrl, loadPeopleCollection, Groups, $routeParams) {
+  controller('GroupsPageCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin', 'Groups', '$routeParams',
+    function ($scope, peopleBaseCtrl, peopleCollectionMixin, Groups, $routeParams) {
       var id;
 
       $scope.pageTitle = 'Group';
@@ -207,6 +232,6 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
       $scope.canAddStudent = false;
       $scope.canAddTeacher = false;
 
-      loadPeopleCollection($scope);
+      peopleCollectionMixin($scope);
       peopleBaseCtrl($scope);
     }]);

@@ -32,15 +32,15 @@ angular.module('journals.messageHandler', []).
       });
     };
 
-    messageHandler.setScope = function (inScope) {
-      scope = inScope;
+    messageHandler.registerScope = function (recievedScope) {
+      scope = recievedScope;
     };
 
     return messageHandler;
   }).
 
   controller('messageCtrl', ['$scope', 'messageHandler', '$timeout', function ($scope, messageHandler, $timeout) {
-    messageHandler.setScope($scope);
+    messageHandler.registerScope($scope);
     $scope.show = false;
 
     var clearMessage;

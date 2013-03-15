@@ -107,12 +107,12 @@ describe('people directives module', function() {
 
     describe('addField(field_name)', function() {
       beforeEach(function() {
-        scope.person = { editing: {}};
+        scope.editing = {};
         scope.addField('some_field');
       });
 
       it('sets editing to true for that field', function() {
-        expect(scope.person.editing['some_field']).toEqual(true);
+        expect(scope.editing['some_field']).toEqual(true);
       });
     });
   });

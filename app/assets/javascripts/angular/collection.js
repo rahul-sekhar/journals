@@ -84,8 +84,8 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax']).
         };
 
         // Adds a new instance
-        collectionObj.add = function () {
-          var newInstance = model.create();
+        collectionObj.add = function (data) {
+          var newInstance = model.create(data);
           collection.unshift(newInstance);
           return newInstance;
         };

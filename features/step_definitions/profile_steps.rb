@@ -75,12 +75,19 @@ end
 
 
 # Adding
-When /^I add the teacher "(.*?)"$/ do |p_name|
-  step 'I select "Add teacher" from the add menu'
+When /^I add the (teacher|student) "(.*?)"$/ do |p_type, p_name|
+  step 'I select "Add ' + p_type + '" from the add menu'
   @viewing = page.first('.profile')
   fill_input_inside @viewing.find('h3'), p_name
 end
 
+When /^I add the guardian "(.*?)"$/ do |p_name|
+  within @viewing do
+    click_on "Add guardian"
+    guardian = page.first('.guardians')
+    fill_input_inside guardian.find('h4'), p_name
+  end
+end
 
 
 # Fields
@@ -118,7 +125,7 @@ When /^I change the date field "(.*?)" to "(.*?)"$/ do |p_field, p_date|
     field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
     field.find('.value').click
     script = "setTimeout(function() {" +
-      "$('input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
+      "$('input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');" +
     "}, 10);"
     page.execute_script(script)
   end
@@ -151,7 +158,7 @@ When /^I add the date field "(.*?)" with "(.*?)"$/ do |p_field, p_date|
     step 'I select "' + p_field + '" from the add-field menu'
     field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
     script = "setTimeout(function() {" +
-      "$('input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');" + 
+      "$('input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');" +
     "}, 10);"
     page.execute_script(script)
   end

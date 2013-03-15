@@ -1,3 +1,4 @@
+@angular @current
 Feature: Profile permissions for a teacher
 
 As a teacher, I can view, edit and administrate any profile

@@ -1,6 +1,6 @@
 Journals::Application.routes.draw do
   root :to => "pages#home"
-  
+
   get "login" => "sessions#new"
   post "login" => "sessions#create"
   get "logout" => "sessions#destroy"
@@ -18,7 +18,11 @@ Journals::Application.routes.draw do
   end
 
   resources :students do
-    resources :guardians, only: [:new, :create, :destroy]
+    resources :guardians, only: [:new, :create, :destroy] do
+      collection do
+        get :check_duplicates
+      end
+    end
 
     member do
       post :reset

@@ -19,7 +19,6 @@ Scenario: View empty group
   And the viewing menu should have the option "Empty"
 
   When I select "Empty" from the viewing menu
-  Then show me the page
   Then the viewing menu should have "Empty" selected
   And the viewing menu should have the option "Dogs"
   And the viewing menu should have the option "Puppies"

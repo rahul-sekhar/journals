@@ -5,35 +5,35 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
     return {
       restrict: 'A',
       scope: {
-        saveFn: '&editInPlace',
-        parentValue: '=editorAttr',
+        instance: '=',
+        field: '@',
         type: '@',
-        display: '@',
         editMode: '='
       },
       template:
         '<span class="container">' +
-          '<span class="value" ng-bind-html="display | apply:conditionalEscapeHtml" ng-hide="editMode" ng-click="startEdit()"></span>' +
+          '<span class="value" ng-bind-html="instance[field] | escapeHtml | apply:filter" ng-hide="editMode" ng-click="startEdit()"></span>' +
         '</span>',
       controller: 'editInPlaceCtrl',
       link: function (scope, elem, attrs) {
-        // Escape HTML unless a contains-html attribute is present
-        if (attrs.containsHtml === undefined) {
-          scope.conditionalEscapeHtml = 'escapeHtml';
-        } else {
-          scope.conditionalEscapeHtml = null;
-        }
 
         // Compile the inputs on the fly because we don't expect 'type' to change once it is set
         // If changes are expected, add a compile step to sort out possible performance issues
         scope.$watch('type', function (val) {
           var input, clearLink, dateSetPromise;
 
-          // Text input
+          // Change the input and filter depending on type
           if (val === undefined || val === null || val === 'text' || val === 'date') {
             input = angular.element('<input class="editor" ng-show="editMode" focus-on="editMode" ng-model="editorValue" />');
+            scope.filter = null;
+            if (val === 'date') {
+              scope.filter = 'dateWithAge';
+            }
+
           } else if (val === 'textarea') {
             input = angular.element('<textarea class="editor" ng-show="editMode" focus-on="editMode" ng-model="editorValue"></textarea>');
+            scope.filter = 'multiline';
+
           } else {
             throw new Error('editInPlace type not recognized - ' + val);
           }
@@ -98,14 +98,20 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
       $scope.editMode = true;
     };
 
+    $scope.$on('editField', function (e, target, field) {
+      if ((target === $scope.instance) && (field === $scope.field)) {
+        $scope.startEdit();
+      }
+    });
+
     $scope.$watch('editMode', function (value) {
       if (value) {
-        $scope.editorValue = $scope.parentValue;
+        $scope.editorValue = $scope.instance[$scope.field];
       }
     });
 
     $scope.finishEdit = function () {
-      $scope.saveFn({value: $scope.editorValue});
+      $scope.instance.updateField($scope.field, $scope.editorValue);
       $scope.editMode = false;
     };
 
@@ -114,7 +120,7 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
     };
 
     $scope.clearEdit = function () {
-      $scope.saveFn({value: null});
+      $scope.instance.updateField($scope.field, null);
       $scope.editMode = false;
     };
   }]).
@@ -129,4 +135,8 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
         }
       });
     };
+  }]).
+
+  controller('EditObjectCtrl', ['$scope', function ($scope) {
+    $scope.editing = {};
   }]);

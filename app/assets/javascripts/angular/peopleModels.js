@@ -1,24 +1,25 @@
 'use strict';
 
-angular.module('journals.people.models', ['journals.model', 'journals.collection', 'journals.groups', 'journals.ajax']).
+angular.module('journals.people.models', ['journals.model', 'journals.collection', 'journals.groups',
+  'journals.ajax', 'journals.people.guardianExtensions']).
 
   /*---- Students collection -----*/
 
-  factory('Students', ['model', 'collection', 'editableFieldsExtension', 'Guardians', 'association',
+  factory('Students', ['model', 'collection', 'Guardians', 'association',
     'resetPasswordExtension', 'archiveExtension',
-    function (model, collection, editableFieldsExtension, Guardians, association, resetPasswordExtension, archiveExtension) {
+    function (model, collection, Guardians, association, resetPasswordExtension, archiveExtension) {
 
       var studentModel = model('student', '/students', {
         extensions: [
           association('Guardians', 'guardian', { loaded: true }),
           association('Groups', 'group'),
           association('Teachers', 'mentor', { mirror: 'mentee' }),
-          editableFieldsExtension('full_name'),
           resetPasswordExtension(),
           archiveExtension()
         ],
         saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
-          'address', 'blood_group', 'formatted_birthday', 'additional_emails', 'notes']
+          'address', 'blood_group', 'formatted_birthday', 'additional_emails', 'notes'],
+        defaultData: { type: 'Student' }
       });
 
       return collection(studentModel, { url: '/students/all' });
@@ -27,19 +28,19 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
 
   /*---- Teachers collection -----*/
 
-  factory('Teachers', ['model', 'collection', 'editableFieldsExtension', 'association', 'resetPasswordExtension',
+  factory('Teachers', ['model', 'collection', 'association', 'resetPasswordExtension',
     'archiveExtension',
-    function (model, collection, editableFieldsExtension, association, resetPasswordExtension, archiveExtension) {
+    function (model, collection, association, resetPasswordExtension, archiveExtension) {
 
       var teacherModel = model('teacher', '/teachers', {
         extensions: [
           association('Students', 'mentee', { mirror: 'mentor' }),
-          editableFieldsExtension('full_name'),
           resetPasswordExtension(),
           archiveExtension()
         ],
         saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
-          'address', 'additional_emails', 'notes']
+          'address', 'additional_emails', 'notes'],
+          defaultData: { type: 'Teacher' }
       });
 
       return collection(teacherModel, { url: '/teachers/all' });
@@ -48,16 +49,17 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
 
   /*---- Guardians collection -----*/
 
-  factory('Guardians', ['model', 'collection', 'editableFieldsExtension', 'resetPasswordExtension',
-    function (model, collection, editableFieldsExtension, resetPasswordExtension) {
+  factory('Guardians', ['model', 'collection', 'resetPasswordExtension','guardianExtension',
+    function (model, collection, resetPasswordExtension, guardianExtension) {
 
       var guardianModel = model('guardian', '/guardians', {
         extensions: [
-          editableFieldsExtension('full_name'),
-          resetPasswordExtension()
+          resetPasswordExtension(),
+          guardianExtension()
         ],
         saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
-          'address', 'additional_emails', 'notes']
+          'address', 'additional_emails', 'notes'],
+          defaultData: { type: 'Guardian' }
       });
 
       return collection(guardianModel);
@@ -113,6 +115,14 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
 
           return { name: person.full_name, people: people };
         });
+    };
+
+    peopleInterface.addTeacher = function() {
+      return Teachers.add();
+    };
+
+    peopleInterface.addStudent = function() {
+      return Students.add();
     };
 
     return peopleInterface;

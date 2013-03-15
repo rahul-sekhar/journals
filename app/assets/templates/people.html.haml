@@ -11,7 +11,7 @@
         %li
           %a{ "href"=>"", "ng-show"=>"canAddTeacher", "ng-click"=>"addTeacher()" } Add teacher
         %li
-          %a{ "href"=>"", "ng-show"=>"canAddStudent" } Add student
+          %a{ "href"=>"", "ng-show"=>"canAddStudent", "ng-click"=>"addStudent()" } Add student
         %li
           %a{ "href"=>"", "ng-click"=>"manageGroups=true" } Manage groups
 
@@ -38,10 +38,9 @@
 
   .clear-left
 
-%article.profile{ "ng-repeat"=>"person in people", "ng-hide"=>"person.deleted" }
+%article.profile{ "ng-repeat"=>"person in people", "ng-hide"=>"person.deleted", "ng-controller"=>"EditObjectCtrl" }
   %header.profile-header
-    %h3{ "edit-in-place"=>"person.updateField('full_name', value)", "editor-attr"=>"person.full_name",
-      "display"=>"{{person.full_name}}", "edit-mode"=>"person.editing['full_name']" }
+    %h3{ "edit-in-place"=>true, "instance"=>"person", "field"=>"full_name", "edit-mode"=>"editing['full_name']" }
 
     %p.type{ "ng-show"=>"person.type == 'Teacher'" }
       {{person.type}}
@@ -58,14 +57,15 @@
 
     .clear-left
 
-  %profile-fields.main-profile-fields{ "parent"=>"person" }
+  %profile-fields.main-profile-fields{ "parent"=>"person", "editing"=>"editing" }
 
   .guardians{ "ng-show"=>"person.type == 'Student'" }
-    .guardian{ "ng-repeat"=>"guardian in person.guardians", "ng-hide"=>"guardian.deleted" }
+    %a.add-guardian{ "href"=>"", "ng-click"=>"addGuardian(person)" } Add guardian
+
+    .guardian{ "ng-repeat"=>"guardian in person.guardians", "ng-hide"=>"guardian.deleted", "ng-controller"=>"EditObjectCtrl" }
 
       %header.guardian-header
-        %h4{ "edit-in-place"=>"guardian.updateField('full_name', value)", "editor-attr"=>"guardian.full_name",
-          "display"=>"{{guardian.full_name}}", "edit-mode"=>"guardian.editing['full_name']"}
+        %h4{ "edit-in-place"=>true, "instance"=>"guardian", "field"=>"full_name", "edit-mode"=>"editing['full_name']" }
 
         .manage.menu
           .icon.title
@@ -74,11 +74,11 @@
               %a{ "href"=>"", "ng-click"=>"resetPassword(guardian)" } {{guardian.active && "Reset password" || "Activate"}}
             %li
               %a{ "href"=>"", "ng-click"=>"removeGuardian(person, guardian)" }
-                {{(guardian.number_of_students > 1) && "Remove" || "Delete"}}
+                {{(guardian.parent_count > 1) && "Remove" || "Delete"}}
 
         .clear-left
 
-      %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
+      %profile-fields.guardian-profile-fields{ "parent"=>"guardian", "editing"=>"editing" }
 
   %footer.profile-footer
     .groups{ "ng-show"=>"person.type == 'Student'" }
@@ -119,64 +119,36 @@
 
 %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
 
-%modal{ "show-on"=>"manageGroups" }
-  #groups{ "ng-controller"=>"GroupsCtrl" }
+
+%modal#groups{ "show-on"=>"manageGroups" }
+  %div{ "ng-controller"=>"GroupsCtrl" }
     %h3 Manage groups
     %ul{ "ng-show"=>"(groups | filterDeleted).length" }
-      %li{ "ng-repeat"=>"group in groups", "ng-hide"=>"group.deleted" }
-        %p{ "edit-in-place"=>"group.updateField('name', value)", "editor-attr"=>"group.name", "display"=>"{{group.name}}",
-          "edit-mode"=>"group.editing.name" }
+      %li{ "ng-repeat"=>"group in groups", "ng-hide"=>"group.deleted", "ng-controller"=>"EditObjectCtrl" }
+        %p{ "edit-in-place"=>true, "instance"=>"group", "field"=>"name", "edit-mode"=>"editing.name" }
         %a.delete{ "href"=>"", "ng-click"=>"group.delete()", "ng-show"=>"group.id" } Delete
     %p{ "ng-hide"=>"groups.length" }
       There are no groups yet.
     %a.add{ "href"=>"", "ng-click"=>"add()" } Add group
 
+%div{ "ng-controller"=>"DuplicateGuardiansCtrl" }
+  %modal#guardian-duplicates{ "show-on"=>"shown" }
+    %p A guardian named {{guardianName}} already exists.
+    %ul
+      %li{ "ng-repeat"=>"duplicate in duplicates" }
+        %label
+          %input{ "type"=>"radio", "ng-model"=>"response.value", "value"=>"{{duplicate.id}}" }
+          %strong {{studentName}} is a sibling of {{duplicate.students}}
+          %br
+          Use the same login and profile for the guardian.
 
+      %li
+        %label
+          %input{ "type"=>"radio", "ng-model"=>"response.value", "value"=>"0" }
+          %strong
+            {{studentName}} is not a sibling of {{allStudents()}}.
+          %br
+          Create another guardian with the same name but a different profile.
 
-
-
-/ %header.profile-header
-/   %h3= profile.full_name
-/   - if profile.is_a? Teacher
-/     %p.type Teacher
-
-
-/   !!
-/   - if can? :administrate, profile
-/     = render 'shared/profile/administrate_menu', profile: profile
-/   !!
-
-/   .clear-left
-
-/ .main-profile-fields
-/   - profile.class.fields.each do |field|
-/     = render 'shared/profile/field', field_data: field, field_value: profile.send(field[:function])
-
-/   - if can? :update, profile
-/     .edit
-/       = link_to "Edit profile", edit_profile_path(profile), class: 'edit-link'
-
-
-/ - if profile.is_a? Student
-/   .guardians
-/     !!
-/     - if can? :create, Guardian
-/       = link_to "Add guardian", new_student_guardian_path(profile), class: "add-guardian"
-/     !!
-
-/     - profile.guardians.each do |guardian|
-/       = render "shared/profile/guardian", guardian: guardian, student: profile
-
-/ !!
-/ %footer.profile-footer
-/   - if profile.is_a? Student
-/     .groups
-/       = render "shared/profile/groups", student: profile
-
-/     .mentors
-/       = render "shared/profile/mentors", student: profile
-
-/   - if profile.is_a? Teacher
-/     .mentees
-/       = render "shared/profile/mentees", teacher: profile
-/ !!
+    %button{ "ng-click"=>"submit(response.value)" } Continue
+    %button{ "ng-click"=>"cancel()" } Cancel

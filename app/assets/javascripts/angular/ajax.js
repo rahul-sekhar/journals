@@ -7,14 +7,23 @@ angular.module('journals.ajax', ['journals.messageHandler']).
       var defaults = {
         method: 'GET',
         data: null,
-        process: 'Working...',
+        params: null,
         notification: 'Done.',
         error: 'An error occured. Please contact us if this problem persists.'
       };
       options = angular.extend(defaults, options);
 
+      if (!options.process) {
+        if (options.method.toLowerCase() === 'get') {
+          options.process = 'Loading...'
+        }
+        else {
+          options.process = 'Saving...'
+        }
+      };
+
       messageHandler.showProcess(options.process);
-      return $http({ url: options.url, method: options.method, data: options.data }).
+      return $http({ url: options.url, method: options.method, data: options.data, params: options.params }).
 
         then(function (response) {
           messageHandler.showNotification(options.notification);

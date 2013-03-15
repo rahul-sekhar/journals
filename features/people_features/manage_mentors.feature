@@ -19,7 +19,7 @@ Scenario: View a student with mentors, add and remove mentors
   Given the teachers Angela Jain, Shalini Sekhar, Aditya Pandya, Sharad Jain exist
   And a student Parvathy exists
   And that student belongs to the mentors Angela, Sharad
-  
+
   When I am on the page for that profile
   And I look at the profile for "Parvathy Manjunath"
   Then I should see "Angela" in its mentors
@@ -39,7 +39,7 @@ Scenario: View a student with mentors, add and remove mentors
   When I click "Aditya" in the list
   Then I should not see "Aditya" in the list
   And I should see "Aditya" in its mentors
-  
+
   When I remove the mentor "Angela Jain" from it
   Then I should not see "Angela" in its mentors
   And I should see "Sharad" in its mentors
@@ -73,7 +73,7 @@ Scenario: View a teacher with mentees, add and remove mentees
   Given the students Roly Sekhar, Lucky Sekhar, Jumble Dog exist
   And a teacher Shalini exists
   And that teacher has the mentees Roly, Lucky
-  
+
   When I am on the page for that profile
   And I look at the profile for "Shalini Sekhar"
   Then I should see "Roly" in its mentees
@@ -91,7 +91,7 @@ Scenario: View a teacher with mentees, add and remove mentees
   When I click "Jumble" in the list
   Then I should not see "Jumble" in the list
   And I should see "Jumble" in its mentees
-  
+
   When I remove the mentee "Lucky Sekhar" from it
   Then I should not see "Lucky" in its mentees
   And I should see "Roly" in its mentees

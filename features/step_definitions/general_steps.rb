@@ -37,6 +37,15 @@ When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
 end
 
+# Option steps
+Then /^I should see an option containing "(.*?)"$/ do |p_option|
+  page.should have_field p_option, type: 'radio'
+end
+
+When /^I select the option containing "(.*?)"$/ do |p_option|
+  page.choose p_option
+end
+
 # General internal functions
 def fill_input_inside(node, value)
   node.find('input, textarea', visible: true).set(value)
@@ -44,6 +53,7 @@ def fill_input_inside(node, value)
   page.execute_script(script)
   node.should have_css('input, textarea', visible: false)
 end
+
 
 
 
@@ -62,14 +72,7 @@ end
 # end
 
 
-# # Option steps
-# Then /^I should see the option "(.*?)"$/ do |p_option|
-#   page.should have_field p_option, type: 'radio'
-# end
 
-# When /^I select the option "(.*?)"$/ do |p_option|
-#   page.choose p_option
-# end
 
 
 # # Link and button steps

@@ -59,7 +59,7 @@ Scenario: Add a group
 
   When I add the group "New group"
   Then I should see "New group" in it
-  
+
   When I go to the people page
   And I open the manage groups dialog
   Then I should see "Group 1" in it
@@ -96,12 +96,12 @@ Scenario: View a student with groups, add and remove groups
   And the groups "Group D, Group E" exist
   And I am on the page for that profile
   And I look at the profile for "Parvathy Manjunath"
-  
+
   Then I should see "Group A" in its groups
   And I should see "Group B" in its groups
   And I should see "Group C" in its groups
-  
-  When I open its add group list 
+
+  When I open its add group list
   Then I should see "Group D" in the list
   And I should see "Group E" in the list
   And I should not see "Group A" in the list
@@ -131,7 +131,7 @@ Scenario: View a student with groups, add and remove groups
   And I should see "Group C" in its groups
   And I should see "Group E" in its groups
 
-  When I open its add group list 
+  When I open its add group list
   Then I should see "Group D" in the list
   And I should see "Group B" in the list
 

@@ -1,5 +1,6 @@
 class GuardiansController < ApplicationController
   load_and_authorize_resource
+  skip_authorize_resource only: :check_duplicates
 
   def show
     @students = @guardian.students.alphabetical
@@ -8,22 +9,11 @@ class GuardiansController < ApplicationController
   def create
     @student = Student.find(params[:student_id])
 
-    # Check for existing guardians with the same name for that student
-    if @student.guardians.name_is(@guardian.first_name, @guardian.last_name)
-      redirect_to @student, alert: "#{@student.full_name} already has a guardian named #{@guardian.full_name}"
-      return
-    end
+    if params[:guardian_id]
+      @guardian = Guardian.find_by_id(params[:guardian_id])
 
-    # Skip duplicate check if use_duplicate is set
-    if (params[:use_duplicate].present?)
-      if params[:use_duplicate].to_i > 0
-        @guardian = Guardian.find(params[:use_duplicate])
-      end
-    else
-      # Check for guardians with the same name for other students
-      @duplicate_guardians = Guardian.names_are(@guardian.first_name, @guardian.last_name)
-      if @duplicate_guardians.present?
-        render "check_duplicates"
+      if !@guardian
+        render text: 'Guardian does not exist', status: :unprocessable_entity
         return
       end
     end
@@ -31,10 +21,31 @@ class GuardiansController < ApplicationController
     @guardian.students << @student
 
     if @guardian.save
-      redirect_to @student
+      render "show"
     else
-      redirect_to new_student_guardian_path(@student), alert: @guardian.errors.full_messages.first
+      render text: @guardian.errors.full_messages.first, status: :unprocessable_entity
     end
+  end
+
+  def check_duplicates
+    authorize! :create, Guardian
+
+    @student = Student.find(params[:student_id])
+    name = params[:name]
+
+    if name.blank?
+      render text: 'Name required to check duplicates', status: :unprocessable_entity
+      return
+    end
+
+    guardian = Guardian.new(full_name: name)
+
+    # Check for existing guardians with the same name for that student
+    if @student.guardians.name_is(guardian.first_name, guardian.last_name)
+      render text: "#{@student.full_name} already has a guardian named #{name}", status: :unprocessable_entity
+      return
+    end
+    @duplicate_guardians = Guardian.names_are(guardian.first_name, guardian.last_name)
   end
 
   def update

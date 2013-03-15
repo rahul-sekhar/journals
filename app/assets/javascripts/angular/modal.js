@@ -28,6 +28,9 @@ angular.module('journals.modal', []).
           if (val) {
             elem.dialog('open');
           }
+          else {
+            elem.dialog('close');
+          }
         });
       }
     };

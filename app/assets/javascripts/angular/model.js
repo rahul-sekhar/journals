@@ -23,12 +23,17 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
       model.create = function (inputData) {
         var instance = {};
 
-        var formatHttpData = function (inData) {
+        // Insert default data if present
+        angular.extend(instance, options.defaultData);
+
+        // Format data to be sent to the server
+        instance.formatHttpData = function () {
           var outData = {};
           outData[name] = {};
 
+          // Send only required fields
           angular.forEach(options.saveFields, function (field) {
-            outData[name][field] = inData[field];
+            outData[name][field] = instance[field];
           });
 
           return outData;
@@ -55,13 +60,13 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
         // Save instance
         instance.save = function () {
           if (instance.id) {
-            ajax({ url: instance.url(), method: 'PUT', data: formatHttpData(instance) }).
+            ajax({ url: instance.url(), method: 'PUT', data: instance.formatHttpData() }).
               then(function (response) {
                 instance.load(response.data);
               });
           }
           else {
-            ajax({ url: path, method: 'POST', data: formatHttpData(instance) }).
+            ajax({ url: path, method: 'POST', data: instance.formatHttpData() }).
               then(function (response) {
                 instance.load(response.data);
               }, function () {
@@ -81,7 +86,7 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
             var data = {};
             data[field] = value;
-            ajax({ url: instance.url(), method: 'PUT', data: formatHttpData(data) }).
+            ajax({ url: instance.url(), method: 'PUT', data: instance.formatHttpData() }).
               then(function (response) {
                 instance.load(response.data);
               },
@@ -126,23 +131,6 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
       return model
     }
   }]).
-
-  /*---- extension to allow for editable fields for a model -----*/
-
-  factory('editableFieldsExtension', function () {
-    return function (primaryField) {
-      return function (instance) {
-        if (!angular.isObject(instance.editing)) {
-          instance.editing = {};
-        }
-
-        // Set the primary field for a new instance
-        if (primaryField && !instance.id) {
-          instance.editing[primaryField] = true;
-        }
-      };
-    };
-  }).
 
 
   /*------------ model association extension -------------*/
@@ -199,6 +187,13 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
           return remaining;
         };
 
+        // Create new instance
+        instance['new' + capitalizedName] = function () {
+          var newAssoc = targetCollection.add({ _parent: instance });
+          instance[assocName].unshift(newAssoc);
+          return newAssoc;
+        };
+
         // Add instance
         instance['add' + capitalizedName] = function (target, local) {
           instance[assocName].push(target);
@@ -220,6 +215,9 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
           ajax({ url: instance.url() + '/' + assocName + '/' + target.id, method: 'DELETE'}).
             then(function () {
+              if (target.parent_count) {
+                target.parent_count -= 1;
+              }
               if (options.mirror) target['remove' + mirrorName](instance, true);
             },
             function (response) {

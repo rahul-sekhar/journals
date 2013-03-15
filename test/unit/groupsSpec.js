@@ -1,20 +1,18 @@
 'use strict';
 
-describe('Groups module', function() {  
+describe('Groups module', function() {
   beforeEach(module('journals.groups'));
 
   /*---------- Groups service -----------------*/
 
   describe('Groups', function() {
-    var collection, model, Groups, editableFieldsExtension;
+    var collection, model, Groups;
 
     beforeEach(module(function($provide) {
       model = jasmine.createSpy().andReturn('model');
       collection = jasmine.createSpy().andReturn('collection');
-      editableFieldsExtension = jasmine.createSpy().andReturn('editableFieldsExtension');
       $provide.value('model', model);
       $provide.value('collection', collection);
-      $provide.value('editableFieldsExtension', editableFieldsExtension);
     }));
 
     beforeEach(inject(function(_Groups_) {
@@ -29,11 +27,6 @@ describe('Groups module', function() {
       expect(model.mostRecentCall.args[1]).toEqual('/groups');
     });
 
-    it('adds the editableFieldsExtension, setting the primary field to name', function() {
-      expect(editableFieldsExtension).toHaveBeenCalledWith('name');
-      expect(model.mostRecentCall.args[2]).toEqual({extensions: ['editableFieldsExtension']});
-    });
-
     it('calls the collection with the model object', function() {
       expect(collection).toHaveBeenCalledWith('model');
     });
@@ -45,9 +38,11 @@ describe('Groups module', function() {
 
   /*---------- Groups controller --------------------*/
   describe('GroupsCtrl', function() {
-    var scope, ctrl, Groups;
+    var scope, ctrl, Groups, timeout;
 
-    beforeEach(inject(function($rootScope, $controller, $injector) {
+    beforeEach(inject(function($rootScope, $controller, $injector, $timeout) {
+      timeout = $timeout;
+
       Groups = { all: jasmine.createSpy('Groups.all').
         andReturn([{id: 1, name: 'One'}, {id: 3, name: 'Three'}]) };
 
@@ -61,13 +56,24 @@ describe('Groups module', function() {
     });
 
     describe('add()', function() {
+      var listener;
+
       beforeEach(function() {
-        Groups.add = jasmine.createSpy('Groups.add');
+        Groups.add = jasmine.createSpy('Groups.add').andReturn('group');
+        listener = jasmine.createSpy();
+        scope.$on('editField', listener);
         scope.add();
       });
 
       it('adds alls Groups.add()', function() {
         expect(Groups.add).toHaveBeenCalled();
+      });
+
+      it('broadcasts an editField event after a timeout', function() {
+        timeout.flush();
+        expect(listener).toHaveBeenCalled();
+        expect(listener.mostRecentCall.args[1]).toEqual('group');
+        expect(listener.mostRecentCall.args[2]).toEqual('name');
       });
     });
   });

@@ -9,12 +9,12 @@ Background:
 Scenario: Change the profile name for a teacher
   Given a teacher Shalini exists
   And I am on the page for that profile
-  
+
   When I look at the profile for "Shalini Sekhar"
   And I change the name to "Shalu Pandya"
   Then I should see a profile for "Shalu Pandya"
   Then I should not see a profile for "Shalini Sekhar"
-  
+
   When I go to the page for that profile
   Then I should see a profile for "Shalu Pandya"
   And I should not see a profile for "Shalini Sekhar"
@@ -23,11 +23,11 @@ Scenario: Change the profile name for a teacher
 Scenario: Set an invalid profile name for a teacher
   Given a teacher Shalini exists
   And I am on the page for that profile
-  
+
   When I look at the profile for "Shalini Sekhar"
   And I clear the name
   Then I should see a profile for "Shalini Sekhar"
-  
+
   When I go to the page for that profile
   Then I should see a profile for "Shalini Sekhar"
 
@@ -35,7 +35,7 @@ Scenario: Set an invalid profile name for a teacher
 Scenario: Edit fields for a teacher
   Given a teacher Shalini exists
   And I am on the page for that profile
-  
+
   When I look at the profile for "Shalini Sekhar"
   And I change the field "Email" to "shalu@mail.com"
   Then I should see the field "Email" with "shalu@mail.com"
@@ -145,7 +145,7 @@ Scenario: Add fields for a student
   Then I should see the add-field menu
   And the add-field menu should have the option "Additional Emails"
   And the add-field menu should have the option "Notes"
-  
+
   When I clear the date field "Birthday"
   Then I should not see the field "Birthday"
   And the add-field menu should have the option "Birthday"
@@ -171,7 +171,7 @@ Scenario: Add an invalid email field
   When I look at the profile for "Parvathy Manjunath"
   Then I should see the field "Email" with "parvathy.manjunath@mail.com"
   And the add-field menu should not have the option "Email"
-  
+
   When I clear the field "Email"
   Then I should not see the field "Email"
   And the add-field menu should have the option "Email"
@@ -210,7 +210,7 @@ Scenario: Edit a guardian profile
   And I look at the profile for "Parvathy Manjunath"
   Then I should not see the guardian "Poonam Jain"
   And I should see the guardian "Parvathys Mom"
-  
+
   When I look at the guardian "Parvathys Mom"
   Then I should see the field "Email" with "jain@mail.com"
   And I should not see the field "Office Phone"
@@ -227,7 +227,7 @@ Scenario: Add fields for a guardian
   Then I should see the add-field menu in it
   And the add-field menu should have the option "Additional Emails" in it
   And the add-field menu should have the option "Notes" in it
-  
+
   When I add the field "Notes" with "Some notes here"
   Then I should see the field "Notes" with "Some notes here"
   And the add-field menu should not have the option "Notes" in it
@@ -250,7 +250,7 @@ Scenario: Add an invalid email field for a guardian
   And I look at the guardian "Poonam Jain"
   Then I should see the field "Email" with "poonam@mail.com"
   And the add-field menu should not have the option "Email" in it
-  
+
   When I clear the field "Email"
   Then I should not see the field "Email"
   And the add-field menu should have the option "Email" in it
@@ -264,4 +264,3 @@ Scenario: Add an invalid email field for a guardian
   And I look at the guardian "Poonam Jain"
   Then I should not see the field "Email"
   And the add-field menu should have the option "Email" in it
-  

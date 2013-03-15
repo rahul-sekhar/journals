@@ -9,6 +9,7 @@ angular.module('journals.people.directives', ['journals.assets', 'journals.curre
       restrict: 'E',
       transclude: true,
       scope: {
+        editing: '=',
         person: '=parent'
       },
       templateUrl: assets.url('profile_fields_template.html'),
@@ -58,7 +59,7 @@ angular.module('journals.people.directives', ['journals.assets', 'journals.curre
     };
 
     $scope.addField = function (field) {
-      $scope.person.editing[field] = true;
+      $scope.editing[field] = true;
     };
   }]).
 

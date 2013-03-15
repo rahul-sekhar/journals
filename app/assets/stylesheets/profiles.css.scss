@@ -109,6 +109,8 @@ article.profile {
     top: 0;
     left: 439px;
     line-height: 48px;
+    max-height: 48px;
+    overflow: hidden;
     color: $cream;
     @include semibold;
   }
@@ -154,9 +156,9 @@ article.profile {
     }
 
     label { display: none; }
-    
+
     .remove-link {
-      display: block; 
+      display: block;
       @include hide-text;
       background: image-url('small-icons.png') no-repeat center -229px;
       width: 20px;

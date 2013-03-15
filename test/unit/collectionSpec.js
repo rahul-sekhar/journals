@@ -65,7 +65,7 @@ describe('Collection module', function() {
             })
           });
         });
-        
+
         describe('on failure', function() {
           beforeEach(function() {
             httpBackend.expectGET('/objects').respond(400);
@@ -76,7 +76,7 @@ describe('Collection module', function() {
             beforeEach(function() {
               httpBackend.flush();
             });
-            
+
             it('leaves the result unchanged', function() {
               expect(result).toEqual([]);
             });
@@ -140,7 +140,7 @@ describe('Collection module', function() {
                 promise = collection.get(3);
                 promise.then(success, error);
               });
-              
+
               it('rejects the promise on server response', function() {
                 httpBackend.flush();
                 expect(success).not.toHaveBeenCalled();
@@ -148,7 +148,7 @@ describe('Collection module', function() {
               });
             });
           });
-          
+
           describe('on failure', function() {
             beforeEach(function() {
               httpBackend.expectGET('/objects').respond(400);
@@ -198,15 +198,16 @@ describe('Collection module', function() {
 
       describe('add()', function() {
         var instances, result;
+
         beforeEach(function() {
           httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
           instances = collection.all();
           httpBackend.flush();
-          result = collection.add();
+          result = collection.add({data: 'something'});
         });
 
-        it('adds an empty instance to the beginning of the collection', function() {
-          expect(instances).toEqualData([{model: true}, {id: 1, name: "One", model: true}, {id: 2, name: "Two", model: true}]);
+        it('adds a new instance to the beginning of the collection', function() {
+          expect(instances).toEqualData([{data: 'something', model: true}, {id: 1, name: "One", model: true}, {id: 2, name: "Two", model: true}]);
         });
 
         it('returns the added instance', function() {
@@ -261,8 +262,8 @@ describe('Collection module', function() {
 
           it('adds the created instance to the collection object', function() {
             expect(instances).toEqualData([
-              {id: 1, name: "One", model: true}, 
-              {id: 2, name: "Two", model: true}, 
+              {id: 1, name: "One", model: true},
+              {id: 2, name: "Two", model: true},
               {id: 3, name: "Some name", model: true}
             ]);
           });

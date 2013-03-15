@@ -10,9 +10,9 @@ describe('messageHandler module', function() {
       rootScope = $rootScope;
       scope = $rootScope.$new();
       messageHandler = _messageHandler_;
-      messageHandler.setScope(scope);
+      messageHandler.registerScope(scope);
     }));
-    
+
     describe('showProcess(text)', function() {
       beforeEach(function() {
         messageHandler.showProcess('Some text');
@@ -69,20 +69,20 @@ describe('messageHandler module', function() {
       });
     });
   });
-  
+
 
   describe('messageCtrl', function() {
     var scope, messageHandler;
 
     beforeEach(inject(function($rootScope, $controller, _messageHandler_) {
       messageHandler = _messageHandler_;
-      spyOn(messageHandler, 'setScope');
+      spyOn(messageHandler, 'registerScope');
       scope = $rootScope.$new();
       $controller('messageCtrl', {$scope: scope});
     }));
 
     it('sets the scope of the messageHandler', function() {
-      expect(messageHandler.setScope).toHaveBeenCalledWith(scope);
+      expect(messageHandler.registerScope).toHaveBeenCalledWith(scope);
     });
 
     it('sets show to false', function() {
@@ -94,7 +94,7 @@ describe('messageHandler module', function() {
         scope.message = { type: 'error', text: 'Some error' };
         scope.$apply();
       });
-      
+
       it('sets show to true', function() {
         expect(scope.show).toEqual(true);
       });
@@ -111,7 +111,7 @@ describe('messageHandler module', function() {
         scope.message = { type: 'notification', text: 'Some error' };
         scope.$apply();
       });
-      
+
       it('sets show to true', function() {
         expect(scope.show).toEqual(true);
       });
@@ -128,7 +128,7 @@ describe('messageHandler module', function() {
         scope.message = { type: 'process', text: 'Some error' };
         scope.$apply();
       });
-      
+
       it('sets show to true', function() {
         expect(scope.show).toEqual(true);
       });
