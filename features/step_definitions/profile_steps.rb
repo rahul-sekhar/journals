@@ -57,7 +57,8 @@ Then /^I should not see a profile for "(.*?)"$/ do |p_name|
 end
 
 When /^I look at the profile for "(.*?)"$/ do |p_name|
-  @viewing = page.find(".profile", text: /#{Regexp.escape(p_name)}/, visible: true)
+  @viewing = page.find(".profile header", text: /#{Regexp.escape(p_name)}/, visible: true).
+    first(:xpath, ".//..")
 end
 
 When /^I look at the guardian "(.*?)"$/ do |p_guardian|
@@ -86,7 +87,7 @@ end
 Then /^I should see the field "(.*?)" with "(.*?)"$/ do |p_field, p_content|
   within @viewing do
     field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i, visible: true)
-    parent = field.first(:xpath,".//..")
+    parent = field.first(:xpath, ".//..")
     parent.should have_css('.value', text: /#{Regexp.escape(p_content)}/, visible: true)
   end
 end

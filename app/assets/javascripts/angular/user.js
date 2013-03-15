@@ -1,27 +1,25 @@
 'use strict';
 
 angular.module('journals.user', ['journals.messageHandler']).
-  
-  factory('User', ['$http', 'messageHandler', '$timeout', function($http, messageHandler, $timeout) {
-    var User = {};
+  factory('User', ['$http', 'messageHandler', '$timeout', function ($http, messageHandler, $timeout) {
+    var promise, User = {};
 
-    var promise;
-    var load = function() {
+    var load = function () {
       promise = $http.get('/user').
-        then(function(response) {
+        then(function (response) {
           angular.copy(response.data, User);
-        }, function(response) {
+        }, function (response) {
           messageHandler.showError(response);
 
           // Set a timeout for the next try
-          $timeout(function() {
+          $timeout(function () {
             load();
-          }, 30000)
-          
+          }, 30000);
+
         });
     };
 
     load();
 
-    return User
+    return User;
   }]);

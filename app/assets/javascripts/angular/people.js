@@ -5,14 +5,14 @@ angular.module('journals.people', ['journals.model', 'journals.collection', 'jou
   
   /*---- Students collection -----*/
 
-  factory('Students', ['model', 'collection', 'editableFieldsExtension', 'Guardians', 'association', 'Groups', 'Teachers',
+  factory('Students', ['model', 'collection', 'editableFieldsExtension', 'Guardians', 'association',
     function(model, collection, editableFieldsExtension, Guardians, association, Groups, Teachers) {
 
     var studentModel = model('student', '/students', {
       extensions: [
-        association(Guardians, 'guardian', { loaded: true }),
-        association(Groups, 'group'),
-        association(Teachers, 'mentor'),
+        association('Guardians', 'guardian', { loaded: true }),
+        association('Groups', 'group'),
+        association('Teachers', 'mentor', { mirror: 'mentee' }),
         editableFieldsExtension('full_name')
       ],
       saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
@@ -25,11 +25,14 @@ angular.module('journals.people', ['journals.model', 'journals.collection', 'jou
 
   /*---- Teachers collection -----*/
 
-  factory('Teachers', ['model', 'collection', 'editableFieldsExtension', 
-    function(model, collection, editableFieldsExtension) {
+  factory('Teachers', ['model', 'collection', 'editableFieldsExtension', 'association',
+    function(model, collection, editableFieldsExtension, association) {
 
     var teacherModel = model('teacher', '/teachers', {
-      extensions: [editableFieldsExtension('full_name')],
+      extensions: [
+        association('Students', 'mentee', { mirror: 'mentor' }),
+        editableFieldsExtension('full_name')
+      ],
       saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
         'address', 'additional_emails', 'notes']
     });

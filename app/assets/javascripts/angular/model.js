@@ -147,8 +147,8 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
   /*------------ model association extension -------------*/
 
-  factory('association', ['arrayHelper', 'ajax', function(arrayHelper, ajax) {
-    return function(targetCollection, name, options) {
+  factory('association', ['arrayHelper', 'ajax', '$injector', function(arrayHelper, ajax, $injector) {
+    return function(targetString, name, options) {
       var defaults = {
         loaded: false,
         mirror: false
@@ -159,10 +159,12 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
       var idsName = name + '_ids';
       var capitalizedName = name.substring(0, 1).toUpperCase() + name.substring(1);
       if (options.mirror) {
-        options.mirror = options.mirror.substring(0, 1).toUpperCase() + options.mirror.substring(1);
+        var mirrorName = options.mirror.substring(0, 1).toUpperCase() + options.mirror.substring(1);
       }
 
       var association = function(instance) {
+        var targetCollection = $injector.get(targetString);
+
         // For preloaded objects
         if (options.loaded) {
           if (instance[assocName]) {
@@ -187,6 +189,8 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
       };  
 
       association.setup = function(instance) {
+        var targetCollection = $injector.get(targetString);
+
         // Remaining instances
         var remaining = []
         instance['remaining' + capitalizedName + 's'] = function() {
@@ -200,11 +204,9 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
           instance[assocName].push(target);
           if (local) return;
 
-          var data = {}
-          data[name + '_id'] = target.id;
-          ajax({ url: instance.url() + '/' + assocName, method: 'POST', data: data }).
+          ajax({ url: instance.url() + '/' + assocName + '/' + target.id, method: 'POST' }).
             then(function() {
-              if (options.mirror) target['add' + options.mirror](instance, true);
+              if (options.mirror) target['add' + mirrorName](instance, true);
             }, 
             function(response) {
               arrayHelper.removeItem(instance[assocName], target);
@@ -218,7 +220,7 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
           ajax({ url: instance.url() + '/' + assocName + '/' + target.id, method: 'DELETE'}).
             then(function() {
-              if (options.mirror) target['remove' + options.mirror](instance, true);
+              if (options.mirror) target['remove' + mirrorName](instance, true);
             }, 
             function(response) {
               instance[assocName].push(target);

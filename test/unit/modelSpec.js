@@ -469,11 +469,18 @@ describe('Model module', function() {
   describe('association', function() {
     var extension, collection, model, deferred;
 
+    beforeEach(function() {
+      collection = {};
+
+      module(function($provide) {
+        $provide.value('collection', collection);
+      });
+    });
+
     describe('with defaults', function() {
       beforeEach(inject(function(association, $q) {
         deferred = $q.defer();
-
-        collection = {};
+        
         // get resolves promises with a string for each instance
         // it rejects the promise for an ID of 6
         collection.get = jasmine.createSpy().andCallFake(function(id) {
@@ -485,7 +492,10 @@ describe('Model module', function() {
               return 'instance ' + id;
             });
         });
-        extension = association(collection, 'assoc');
+
+        
+
+        extension = association('collection', 'assoc');
       }));
 
       describe('with no association id field present', function() {
@@ -562,7 +572,7 @@ describe('Model module', function() {
         describe('addAssoc(instance, local)', function() {
           describe('on success', function() {
             beforeEach(function() { 
-              httpBackend.expectPOST('/objects/3/assocs', { assoc_id: 5 }).respond(200);
+              httpBackend.expectPOST('/objects/3/assocs/5').respond(200);
               model.assocs = [{id: 1, name: "One"}, {id: 2, name: "Two"}];
               model.addAssoc({id: 5, name: "Five"});
             });
@@ -580,7 +590,7 @@ describe('Model module', function() {
 
           describe('on failure', function() {
             beforeEach(function() { 
-              httpBackend.expectPOST('/objects/3/assocs').respond(400);
+              httpBackend.expectPOST('/objects/3/assocs/5').respond(400);
               model.assocs = [{id: 1, name: "One"}, {id: 2, name: "Two"}];
               model.addAssoc({id: 5, name: "Five"});
               httpBackend.flush();
@@ -659,11 +669,11 @@ describe('Model module', function() {
 
     describe('with loaded set to true', function() {
       beforeEach(inject(function(association) {
-        collection = {};
+        
         collection.update = jasmine.createSpy().andCallFake(function(obj) {
           return obj + ' instance';
         });
-        extension = association(collection, 'assoc', { loaded: true });
+        extension = association('collection', 'assoc', { loaded: true });
       }));
 
       describe('with no association field present', function() {
@@ -703,8 +713,8 @@ describe('Model module', function() {
       var httpBackend, instance1, instance2;
 
       beforeEach(inject(function(association, $httpBackend) {
-        collection = {};
-        extension = association(collection, 'assoc', { loaded: true, mirror: 'field' });
+        
+        extension = association('collection', 'assoc', { loaded: true, mirror: 'field' });
         httpBackend = $httpBackend;
         model = { url: function() { return '/objects/3' } };
         extension.setup(model);
@@ -721,7 +731,7 @@ describe('Model module', function() {
         describe('without local set', function() {
           describe('on success', function() {
             beforeEach(function() {
-              httpBackend.expectPOST('/objects/3/assocs').respond(200);
+              httpBackend.expectPOST('/objects/3/assocs/2').respond(200);
               model.addAssoc(instance2);
             });
 
@@ -737,7 +747,7 @@ describe('Model module', function() {
           
           describe('on failure', function() {
             beforeEach(function() {
-              httpBackend.expectPOST('/objects/3/assocs').respond(400);
+              httpBackend.expectPOST('/objects/3/assocs/2').respond(400);
               model.addAssoc(instance2);
               httpBackend.flush();
             });

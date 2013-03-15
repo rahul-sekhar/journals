@@ -14,7 +14,7 @@ Scenario: View a student with no mentors
   Then I should see "Mentor" in it
   And I should see "None" in its mentors
 
-@current
+
 Scenario: View a student with mentors, add and remove mentors
   Given the teachers Angela Jain, Shalini Sekhar, Aditya Pandya, Sharad Jain exist
   And a student Parvathy exists
@@ -106,3 +106,75 @@ Scenario: View a teacher with mentees, add and remove mentees
   And I should see "Jumble" in its mentees
   When I open its add mentee list
   Then I should see "Lucky" in the list
+
+
+Scenario: Changes in mentors show in associated mentees
+  Given the students Roly Sekhar, Lucky Sekhar, Jumble Dog exist
+  And a teacher Shalini exists
+  And that teacher has the mentees Roly, Lucky
+
+  When I am on the people page
+  When I look at the profile for "Rahul Sekhar"
+  Then I should see "None" in its mentees
+
+  When I look at the profile for "Roly Sekhar"
+  Then I should see "Shalini" in its mentors
+  When I open its add mentor list
+  And I click "Rahul" in the list
+  And I look at the profile for "Rahul Sekhar"
+  Then I should see "Roly" in its mentees
+
+  When I look at the profile for "Roly Sekhar"
+  When I remove the mentor "Shalini Sekhar" from it
+  And I look at the profile for "Shalini Sekhar"
+  Then I should not see "Roly" in its mentees
+
+  When I go to the people page
+  And I look at the profile for "Shalini Sekhar"
+  Then I should not see "Roly" in its mentees
+  And I should see "Lucky" in its mentees
+
+  When I look at the profile for "Rahul Sekhar"
+  Then I should see "Roly" in its mentees
+
+  When I look at the profile for "Roly Sekhar"
+  Then I should not see "Shalini" in its mentors
+  And I should see "Rahul" in its mentors
+
+
+Scenario: Changes in mentees show in associated mentors
+  Given the students Roly Sekhar, Lucky Sekhar, Jumble Dog exist
+  And a teacher Shalini exists
+  And that teacher has the mentees Roly, Lucky
+
+  When I am on the people page
+  When I look at the profile for "Lucky Sekhar"
+  Then I should see "Shalini" in its mentors
+
+  When I look at the profile for "Shalini Sekhar"
+  And I remove the mentee "Lucky Sekhar" from it
+  And I look at the profile for "Lucky Sekhar"
+  Then I should not see "Shalini" in its mentors
+  And I should see "None" in its mentors
+
+  When I look at the profile for "Rahul Sekhar"
+  And I open its add mentee list
+  And I click "Roly" in the list
+  And I look at the profile for "Roly Sekhar"
+  Then I should see "Rahul" in its mentors
+
+  When I go to the people page
+  And I look at the profile for "Shalini Sekhar"
+  Then I should see "Roly" in its mentees
+  And I should not see "Lucky" in its mentees
+
+  When I look at the profile for "Rahul Sekhar"
+  Then I should see "Roly" in its mentees
+  And I should not see "Lucky" in its mentees
+
+  When I look at the profile for "Roly Sekhar"
+  Then I should see "Shalini" in its mentors
+  And I should see "Rahul" in its mentors
+
+  When I look at the profile for "Lucky Sekhar"
+  Then I should see "None" in its mentors
