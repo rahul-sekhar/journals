@@ -29,7 +29,7 @@ angular.module('journals.confirm', []).
 
   factory('confirm', function() {
     var ret = true;
-    
+
     var confirm = jasmine.createSpy().andCallFake(function() {
       return ret;
     });
@@ -46,10 +46,5 @@ angular.module('journals.confirm', []).
 // onType directive
 // pagination directive
 // modal directive
-// arrayExtensions module
+// helpers module
 // filteredList directive
-// person - mentors and mentees associations
-// ajax service
-
-/* Pending functionality */
-// Mentors and mentees - updating one person should update associations

@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
-  
-  factory('model', ['ajax', '$rootScope', function(ajax, $rootScope) {
 
-    return function(name, path, options) {
+  factory('model', ['ajax', '$rootScope', function (ajax, $rootScope) {
+
+    return function (name, path, options) {
       var defaults = {
         extensions: [],
         saveFields: ['name']
@@ -14,57 +14,57 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
       /*------ reader for the path ---------*/
 
-      model.getPath = function() {
+      model.getPath = function () {
         return path;
       };
 
       /* ----- Function to create an instance ---- */
 
-      model.create = function(inputData) {
+      model.create = function (inputData) {
         var instance = {};
 
-        var formatHttpData = function(inData) {
+        var formatHttpData = function (inData) {
           var outData = {};
           outData[name] = {};
 
-          angular.forEach(options.saveFields, function(field) {
+          angular.forEach(options.saveFields, function (field) {
             outData[name][field] = inData[field];
           });
 
           return outData;
         };
 
-        instance.url = function() {
+        instance.url = function () {
           return path + '/' + instance.id;
         };
 
         // Load data into the model
-        instance.load = function(data) {
-          angular.forEach(data, function(value, key) {
+        instance.load = function (data) {
+          angular.forEach(data, function (value, key) {
             if (!angular.isFunction(value)) {
               instance[key] = value;
             }
           });
 
           // Call extensions
-          angular.forEach(options.extensions, function(extension) {
+          angular.forEach(options.extensions, function (extension) {
             extension(instance);
           });
         };
 
         // Save instance
-        instance.save = function() {
+        instance.save = function () {
           if (instance.id) {
             ajax({ url: instance.url(), method: 'PUT', data: formatHttpData(instance) }).
-              then(function(response) {
+              then(function (response) {
                 instance.load(response.data);
               });
           }
           else {
             ajax({ url: path, method: 'POST', data: formatHttpData(instance) }).
-              then(function(response) {
+              then(function (response) {
                 instance.load(response.data);
-              }, function() {
+              }, function () {
                 instance.delete();
               });
           }
@@ -72,7 +72,7 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
 
         // Update a field
-        instance.updateField = function(field, value) {
+        instance.updateField = function (field, value) {
           var oldVal = instance[field];
           instance[field] = value;
 
@@ -82,10 +82,10 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
             var data = {};
             data[field] = value;
             ajax({ url: instance.url(), method: 'PUT', data: formatHttpData(data) }).
-              then(function(response) {
+              then(function (response) {
                 instance.load(response.data);
               },
-              function() {
+              function () {
                 instance[field] = oldVal;
               });
           }
@@ -101,19 +101,19 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
 
         // Delete function
-        instance.delete = function() {
+        instance.delete = function () {
           instance.deleted = true;
 
           if (instance.id) {
             ajax({ url: instance.url(), method: 'DELETE' }).
-              then(null, function(response) {
+              then(null, function (response) {
                 delete instance.deleted;
               });
           }
         };
 
         // Call extension setup functions
-          angular.forEach(options.extensions, function(extension) {
+          angular.forEach(options.extensions, function (extension) {
             if (extension.setup) extension.setup(instance);
           });
 
@@ -126,12 +126,12 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
       return model
     }
   }]).
-  
+
   /*---- extension to allow for editable fields for a model -----*/
-  
-  factory('editableFieldsExtension', function() {
-    return function(primaryField) {
-      return function(instance) {
+
+  factory('editableFieldsExtension', function () {
+    return function (primaryField) {
+      return function (instance) {
         if (!angular.isObject(instance.editing)) {
           instance.editing = {};
         }
@@ -147,8 +147,8 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
   /*------------ model association extension -------------*/
 
-  factory('association', ['arrayHelper', 'ajax', '$injector', function(arrayHelper, ajax, $injector) {
-    return function(targetString, name, options) {
+  factory('association', ['arrayHelper', 'ajax', '$injector', function (arrayHelper, ajax, $injector) {
+    return function (targetString, name, options) {
       var defaults = {
         loaded: false,
         mirror: false
@@ -162,23 +162,23 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
         var mirrorName = options.mirror.substring(0, 1).toUpperCase() + options.mirror.substring(1);
       }
 
-      var association = function(instance) {
+      var association = function (instance) {
         var targetCollection = $injector.get(targetString);
 
         // For preloaded objects
         if (options.loaded) {
           if (instance[assocName]) {
             instance[assocName] = instance[assocName].map(targetCollection.update);
-          }  
+          }
         }
 
         // For objects that need to be loaded
         else {
           var assocs = [];
-          
+
           if (instance[idsName]) {
-            angular.forEach(instance[idsName], function(id) {
-              targetCollection.get(id).then(function(match) {
+            angular.forEach(instance[idsName], function (id) {
+              targetCollection.get(id).then(function (match) {
                 assocs.push(match);
               });
             });
@@ -186,43 +186,43 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
           instance[assocName] = assocs;
         }
-      };  
+      };
 
-      association.setup = function(instance) {
+      association.setup = function (instance) {
         var targetCollection = $injector.get(targetString);
 
         // Remaining instances
         var remaining = []
-        instance['remaining' + capitalizedName + 's'] = function() {
+        instance['remaining' + capitalizedName + 's'] = function () {
           var diff = arrayHelper.difference(targetCollection.all(), instance[assocName])
           arrayHelper.shallowCopy(diff, remaining);
           return remaining;
         };
 
         // Add instance
-        instance['add' + capitalizedName] = function(target, local) {
+        instance['add' + capitalizedName] = function (target, local) {
           instance[assocName].push(target);
           if (local) return;
 
           ajax({ url: instance.url() + '/' + assocName + '/' + target.id, method: 'POST' }).
-            then(function() {
+            then(function () {
               if (options.mirror) target['add' + mirrorName](instance, true);
-            }, 
-            function(response) {
+            },
+            function (response) {
               arrayHelper.removeItem(instance[assocName], target);
             });
         };
 
         // Remove instance
-         instance['remove' + capitalizedName] = function(target, local) {
+         instance['remove' + capitalizedName] = function (target, local) {
           arrayHelper.removeItem(instance[assocName], target);
           if(local) return;
 
           ajax({ url: instance.url() + '/' + assocName + '/' + target.id, method: 'DELETE'}).
-            then(function() {
+            then(function () {
               if (options.mirror) target['remove' + mirrorName](instance, true);
-            }, 
-            function(response) {
+            },
+            function (response) {
               instance[assocName].push(target);
             });
         };

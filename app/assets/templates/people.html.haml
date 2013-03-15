@@ -6,7 +6,7 @@
 
     .add.menu
       %a.title{ href: "" } Add
-      
+
       %ul
         %li
           %a{ "href"=>"", "ng-show"=>"canAddTeacher", "ng-click"=>"addTeacher()" } Add teacher
@@ -50,9 +50,9 @@
       .icon.title
       %ul
         %li{ "ng-hide"=>"person.archived || !person.email" }
-          %a{ "href"=>"", "ng-click"=>"person.resetPassword()" } {{person.active && "Reset password" || "Activate"}}
+          %a{ "href"=>"", "ng-click"=>"resetPassword(person)" } {{person.active && "Reset password" || "Activate"}}
         %li
-          %a{ "href"=>"", "ng-click"=>"person.toggleArchive()" } {{person.archived && "Unarchive" || "Archive"}}
+          %a{ "href"=>"", "ng-click"=>"toggleArchive(person)" } {{person.archived && "Unarchive" || "Archive"}}
         %li
           %a{ "href"=>"", "ng-click"=>"delete(person)" } Delete
 
@@ -62,7 +62,7 @@
 
   .guardians{ "ng-show"=>"person.type == 'Student'" }
     .guardian{ "ng-repeat"=>"guardian in person.guardians", "ng-hide"=>"guardian.deleted" }
-      
+
       %header.guardian-header
         %h4{ "edit-in-place"=>"guardian.updateField('full_name', value)", "editor-attr"=>"guardian.full_name",
           "display"=>"{{guardian.full_name}}", "edit-mode"=>"guardian.editing['full_name']"}
@@ -71,11 +71,11 @@
           .icon.title
           %ul
             %li{ "ng-hide"=>"guardian.archived || !guardian.email" }
-              %a{ "href"=>"", "ng-click"=>"guardian.resetPassword()" } {{guardian.active && "Reset password" || "Activate"}}
+              %a{ "href"=>"", "ng-click"=>"resetPassword(guardian)" } {{guardian.active && "Reset password" || "Activate"}}
             %li
-              %a{ "href"=>"", "ng-click"=>"person.removeGuardian(guardian)" } 
+              %a{ "href"=>"", "ng-click"=>"removeGuardian(person, guardian)" }
                 {{(guardian.number_of_students > 1) && "Remove" || "Delete"}}
-        
+
         .clear-left
 
       %profile-fields.guardian-profile-fields{ "parent"=>"guardian" }
@@ -114,7 +114,7 @@
 
       %filtered-list{ "list"=>"person.remainingMentees()", "show-property"=>"full_name", "on-select"=>"person.addMentee(value)" }
 
-.content-block{ "ng-hide"=>"people.length" }
+.content-block{ "ng-hide"=>"(people | filterDeleted).length" }
   %p No matching people were found.
 
 %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
@@ -122,7 +122,7 @@
 %modal{ "show-on"=>"manageGroups" }
   #groups{ "ng-controller"=>"GroupsCtrl" }
     %h3 Manage groups
-    %ul{ "ng-show"=>"groups.length" }
+    %ul{ "ng-show"=>"(groups | filterDeleted).length" }
       %li{ "ng-repeat"=>"group in groups", "ng-hide"=>"group.deleted" }
         %p{ "edit-in-place"=>"group.updateField('name', value)", "editor-attr"=>"group.name", "display"=>"{{group.name}}",
           "edit-mode"=>"group.editing.name" }
@@ -139,7 +139,7 @@
 /   %h3= profile.full_name
 /   - if profile.is_a? Teacher
 /     %p.type Teacher
-    
+
 
 /   !!
 /   - if can? :administrate, profile

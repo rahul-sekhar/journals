@@ -19,11 +19,12 @@ Scenario: View empty group
   And the viewing menu should have the option "Empty"
 
   When I select "Empty" from the viewing menu
+  Then show me the page
   Then the viewing menu should have "Empty" selected
   And the viewing menu should have the option "Dogs"
   And the viewing menu should have the option "Puppies"
   And the viewing menu should not have the option "Empty"
-  
+
   And I should see "No matching people were found"
   And I should not see a profile for "Roly Sekhar"
   And I should not see a profile for "Lucky Sekhar"

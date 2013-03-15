@@ -2,17 +2,15 @@
 
 angular.module('journals.assets', []).
 
-  factory('assets', function() {
-    var assets = {};
+  factory('assets', function () {
+    var assets = {}, assetList = {};
 
-    var assetList = {}
-    assetList['profile_fields_template.html'] = '<%= asset_path("profile_fields_template.html") %>'
-
-    assets.url = function(filename) {
-      var url = assetList[filename]
+    assetList['profile_fields_template.html'] = '<%= asset_path("profile_fields_template.html") %>';
+    assets.url = function (filename) {
+      var url = assetList[filename];
 
       if (url === undefined) {
-        throw new Error('Template ' + filename + ' is not defined')
+        throw new Error('Template ' + filename + ' is not defined');
       }
 
       return url;

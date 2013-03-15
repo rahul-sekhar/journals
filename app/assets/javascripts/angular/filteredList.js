@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('journals.filteredList', []).
-  
-  directive('filteredList', function() {
+
+  directive('filteredList', function () {
     return {
       restrict: 'E',
       scope: {
@@ -22,19 +22,19 @@ angular.module('journals.filteredList', []).
             '</ul>' +
           '</div>' +
         '</div>',
-      controller: function($scope) {
-        $scope.toggleList = function() {
+      controller: function ($scope) {
+        $scope.toggleList = function () {
           $scope.listShown = !$scope.listShown;
         };
 
-        $scope.$watch('listShown', function(value) {
+        $scope.$watch('listShown', function (value) {
           $scope.buttonText = value ? "Cancel" : "Add";
         });
 
-        $scope.select = function(item) {
+        $scope.select = function (item) {
           $scope.listShown = false;
           $scope.filter = '';
-          $scope.onSelect({value:item});
+          $scope.onSelect({value: item});
         };
       }
     };

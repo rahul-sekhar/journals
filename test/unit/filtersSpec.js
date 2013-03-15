@@ -51,4 +51,17 @@ describe('general filters module', function() {
       expect(multilineFilter(null)).toEqual(null);
     }));
   });
+
+  describe('filterDeleted', function() {
+    it('returns all members without the deleted key set', inject(function(filterDeletedFilter) {
+      var input = [{id: 1}, {id: 2, deleted: true}, {id: 3, deleted: false}, {id: 4, deleted: 'yes'}, {id: 5}]
+      var output = filterDeletedFilter(input);
+
+      expect(output).toEqual([{id: 1}, {id: 3, deleted: false}, {id: 5}])
+    }));
+
+    it('returns an empty array for an undefined value', inject(function(filterDeletedFilter) {
+      expect(filterDeletedFilter(null)).toEqual([]);
+    }));
+  })
 });

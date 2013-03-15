@@ -1,28 +1,27 @@
 'use strict';
 
-angular.module('journals', 
-  ['journals.user', 'journals.people.controllers', 'journals.editInPlace', 'journals.filters', 'journals.pagination', 
-  'journals.onType', 'journals.modal', 'journals.filteredList']).
-  
-  config(['$locationProvider', '$httpProvider', function($locationProvider, $httpProvider) {
+angular.module('journals', ['journals.user', 'journals.people', 'journals.editInPlace',
+  'journals.filters', 'journals.pagination', 'journals.onType', 'journals.modal', 'journals.filteredList']).
+
+  config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
 
     $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   }]).
 
-  run(['User', '$rootScope', function(User, $rootScope) {
+  run(['User', '$rootScope', function (User, $rootScope) {
     $rootScope.user = User;
-    $rootScope.$watch('user.type', function(value) {
-      $rootScope.isTeacher = (value == 'Teacher');
+    $rootScope.$watch('user.type', function (value) {
+      $rootScope.isTeacher = (value === 'Teacher');
     });
   }]).
-  
-  config(['$routeProvider', function($routeProvider) {
-    
+
+  config(['$routeProvider', function ($routeProvider) {
+
     var profileParams = {
-      templateUrl: '<%= asset_path("people.html") %>', 
-      controller: 'ProfileCtrl', 
+      templateUrl: '<%= asset_path("people.html") %>',
+      controller: 'ProfileCtrl',
       reloadOnSearch: false
     };
 
@@ -33,28 +32,28 @@ angular.module('journals',
       when('/', {redirectTo: '/people'}).
 
       when('/people', {
-        templateUrl: '<%= asset_path("people.html") %>', 
-        controller: 'PeopleCtrl', 
+        templateUrl: '<%= asset_path("people.html") %>',
+        controller: 'PeopleCtrl',
         reloadOnSearch: false
       }).
 
       when('/people/archived', {
-        templateUrl: '<%= asset_path("people.html") %>', 
-        controller: 'ArchivedPeopleCtrl', 
+        templateUrl: '<%= asset_path("people.html") %>',
+        controller: 'ArchivedPeopleCtrl',
         reloadOnSearch: false
       }).
 
       when('/teachers', {
-        templateUrl: '<%= asset_path("people.html") %>', 
-        controller: 'TeachersCtrl', 
+        templateUrl: '<%= asset_path("people.html") %>',
+        controller: 'TeachersCtrl',
         reloadOnSearch: false
       }).
 
       when('/teachers/:id', profileParams).
 
       when('/students', {
-        templateUrl: '<%= asset_path("people.html") %>', 
-        controller: 'StudentsCtrl', 
+        templateUrl: '<%= asset_path("people.html") %>',
+        controller: 'StudentsCtrl',
         reloadOnSearch: false
       }).
 
@@ -65,14 +64,14 @@ angular.module('journals',
       when('/guardians', {redirectTo: '/page-not-found'}).
 
       when('/mentees', {
-        templateUrl: '<%= asset_path("people.html") %>', 
-        controller: 'MenteesCtrl', 
+        templateUrl: '<%= asset_path("people.html") %>',
+        controller: 'MenteesCtrl',
         reloadOnSearch: false
       }).
 
       when('/groups/:id', {
-        templateUrl: '<%= asset_path("people.html") %>', 
-        controller: 'GroupsPageCtrl', 
+        templateUrl: '<%= asset_path("people.html") %>',
+        controller: 'GroupsPageCtrl',
         reloadOnSearch: false
       }).
 

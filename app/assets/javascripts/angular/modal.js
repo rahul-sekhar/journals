@@ -2,7 +2,7 @@
 
 angular.module('journals.modal', []).
 
-  directive('modal', function() {
+  directive('modal', function () {
     return {
       restrict: 'E',
       transclude: true,
@@ -13,19 +13,21 @@ angular.module('journals.modal', []).
         '<div class="modal" ng-transclude>' +
         '</div>',
       replace: true,
-      link: function(scope, elem, attrs) {
+      link: function (scope, elem, attrs) {
         elem.dialog({
           autoOpen: false,
           modal: true,
           show: 300,
           hide: 300,
-          close: function() {
+          close: function () {
             scope.showOn = false;
             scope.$apply();
           }
         });
-        scope.$watch('showOn', function(val) {
-          if (val) elem.dialog('open');
+        scope.$watch('showOn', function (val) {
+          if (val) {
+            elem.dialog('open');
+          }
         });
       }
     };

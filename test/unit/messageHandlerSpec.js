@@ -60,24 +60,12 @@ describe('messageHandler module', function() {
     });
 
     describe('showError(error, text)', function() {
-      it('sets a message when the status is 0', function() {
-        messageHandler.showError({status: 0, data: 'Error!'}, 'Some message');
-        expect(scope.message).toEqual({type: 'error', text: 'The server could not be reached. Please check your connection.'});
+      beforeEach(function() {
+        messageHandler.showError('Some text');
       });
 
-      it('sets the passed text for a null error object', function() {
-        messageHandler.showError(null, 'Some message.');
-        expect(scope.message).toEqual({type: 'error', text: 'Some message.'});
-      });
-
-      it('sets the error object text for a status of 422', function() {
-        messageHandler.showError({status: 422, data: 'Error!'}, 'Some message');
-        expect(scope.message).toEqual({type: 'error', text: 'Error!'});
-      })
-
-      it('sets the passed text with an added message for any other status', function() {
-        messageHandler.showError({status: 402, data: 'Error!'}, 'Some message.');
-        expect(scope.message).toEqual({type: 'error', text: 'Some message. Please contact us if the problem persists.'});
+      it('sets the scope message', function() {
+        expect(scope.message).toEqual({type: 'error', text: 'Some text'});
       });
     });
   });

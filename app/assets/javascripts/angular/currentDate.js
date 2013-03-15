@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('journals.currentDate', []).
-  factory('currentDate', function() {
+  factory('currentDate', function () {
     return {
-      get: function() {
+      get: function () {
         return new Date();
       }
     };
