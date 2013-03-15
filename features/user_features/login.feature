@@ -30,10 +30,10 @@ Scenario: Log in with a valid email and password
   And I should see "You are signed in as Rahul Sekhar"
 
 Scenario: Log in when accessing a page other than the home page
-  Given PENDING a new posts page
   Given a teacher Rahul exists
-  When I am on the new post page
+  When I am on the teachers page
   Then I should be on the login page
   When I log in with "rahul@mail.com" and "pass"
-  Then I should be on the new post page
+  Then I should be on the teachers page
+  And the page heading should be "Teachers"
   And I should see "You are signed in as Rahul Sekhar"

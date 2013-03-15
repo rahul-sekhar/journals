@@ -1,0 +1,20 @@
+%modal#guardian-duplicates{ "show-on"=>"shown" }
+  %p A guardian named {{guardianName}} already exists.
+  %ul
+    %li{ "ng-repeat"=>"duplicate in duplicates" }
+      %label
+        %input{ "type"=>"radio", "ng-model"=>"response.value", "value"=>"{{duplicate.id}}" }
+        %strong {{studentName}} is a sibling of {{duplicate.students}}
+        %br
+        Use the same login and profile for the guardian.
+
+    %li
+      %label
+        %input{ "type"=>"radio", "ng-model"=>"response.value", "value"=>"0" }
+        %strong
+          {{studentName}} is not a sibling of {{allStudents()}}.
+        %br
+        Create another guardian with the same name but a different profile.
+
+  %button{ "ng-click"=>"submit(response.value)" } Continue
+  %button{ "ng-click"=>"cancel()" } Cancel

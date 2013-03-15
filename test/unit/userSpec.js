@@ -27,13 +27,11 @@ describe('User module', function() {
   });
 
   describe('for an invalid server response', function() {
-    var User, httpBackend, messageHandler;
+    var User, httpBackend;
 
-    beforeEach(inject(function($injector, $httpBackend, _messageHandler_) {
+    beforeEach(inject(function($injector, $httpBackend) {
       httpBackend = $httpBackend;
-      httpBackend.expectGET('/user').respond(404, 'Some error');
-      messageHandler = _messageHandler_;
-      spyOn(messageHandler, 'showError');
+      httpBackend.expectGET('/user').respond(404);
       User = $injector.get('User');
     }));
 
@@ -46,19 +44,13 @@ describe('User module', function() {
       expect(User).toEqual({});
     });
 
-    it('shows an error message', function() {
-      httpBackend.flush();
-      expect(messageHandler.showError).toHaveBeenCalled();
-      expect(messageHandler.showError.mostRecentCall.args[0].data).toEqual('Some error');
-    });
-
     it('reloads the user object after a timeout until a valid response is recieved', inject(function($timeout) {
       httpBackend.flush();
       httpBackend.expectGET('/user').respond(404, 'Some error');
       httpBackend.verifyNoOutstandingRequest();
       $timeout.flush();
       httpBackend.verifyNoOutstandingExpectation();
-      
+
       httpBackend.flush();
       httpBackend.expectGET('/user').respond({type: 'Teacher'});
       httpBackend.verifyNoOutstandingRequest();

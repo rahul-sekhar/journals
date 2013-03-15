@@ -3,6 +3,8 @@ json.type person.class.to_s
 json.active person.active?
 json.archived person.archived
 
+json.editable can?(:update, person)
+
 if person.is_a? Guardian
   json.parent_count person.students.length
 end

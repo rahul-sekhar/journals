@@ -9,13 +9,10 @@ angular.module('journals.groups', ['journals.collection', 'journals.model']).
       return collection(groupModel);
     }]).
 
-  controller('GroupsCtrl', ['$scope', 'Groups', '$timeout', function ($scope, Groups, $timeout) {
+  controller('GroupsCtrl', ['$scope', 'Groups', function ($scope, Groups) {
     $scope.groups = Groups.all();
 
     $scope.add = function () {
-      var group = Groups.add();
-      $timeout(function () {
-        $scope.$broadcast('editField', group, 'name');
-      }, 0);
+      Groups.add({_edit: 'name'});
     };
   }]);

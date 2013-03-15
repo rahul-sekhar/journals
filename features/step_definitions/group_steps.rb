@@ -18,12 +18,11 @@ Given /^all the students have a group "(.*?)"$/ do |p_group|
   @group.students = Student.all
 end
 
-
-# Given /^I belong to the groups "(.*?)"$/ do |p_groups|
-#   profile = @logged_in_user.profile
-#   profile.groups = Group.find_or_build_list(p_groups)
-#   profile.save!
-# end
+Given /^I belong to the groups "(.*?)"$/ do |p_groups|
+  profile = @logged_in_profile
+  profile.groups = Group.find_or_build_list(p_groups)
+  profile.save!
+end
 
 
 # Given /^that group has the students Roly, Lucky and Jumble$/ do

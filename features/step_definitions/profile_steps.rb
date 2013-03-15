@@ -6,6 +6,7 @@ end
 
 Given /^a guardian Rahul exists$/ do
   student = create_profile('student', 'Roly Sekhar')
+  student.guardians.create!(full_name: 'Shalini Sekhar', email: 'shalini@mail.com')
   @profile = student.guardians.create!(full_name: 'Rahul Sekhar', email: 'rahul@mail.com')
   set_profile_password(@profile, 'pass')
 end
@@ -17,6 +18,10 @@ end
 
 Given /^a guardian "(.*?)" exists for that student$/ do |p_name|
   @guardian = @profile.guardians.create!(full_name: p_name)
+end
+
+Given /^I have the guardian "(.*?)"$/ do |p_name|
+  @logged_in_profile.guardians.create!(full_name: p_name, email: mail_from_name(p_name))
 end
 
 Given /^the profile has been activated$/ do
@@ -105,18 +110,56 @@ Then /^I should not see the field "(.*?)"$/ do |p_field|
   end
 end
 
+def field_from_text(text)
+  if text == 'name'
+    return page.find('h3')
+  elsif text == 'guardian name'
+    return page.find('h4')
+  else
+    text = text[7..-2]
+    return page.find('.field-name', text: /^#{Regexp.escape(text)}$/i).first(:xpath, ".//..")
+  end
+end
+
 When /^I change the (field ".*"|name|guardian name) to "(.*?)"$/ do |p_field, p_value|
   within @viewing do
-    if p_field == 'name'
-      field = page.find('h3')
-    elsif p_field == 'guardian name'
-      field = page.find('h4')
-    else
-      p_field = p_field[7..-2]
-      field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
-    end
+    field = field_from_text(p_field)
     field.find('.value').click
     fill_input_inside field, p_value
+  end
+end
+
+Then /^I should be able to change the (field ".*"|name|guardian name)$/ do |p_field|
+  within @viewing do
+    field = field_from_text(p_field)
+    field.find('.value').click
+    page.should have_css('input, textarea', visible: true)
+    blur_input_inside field
+  end
+end
+
+Then /^I should not be able to change the (field ".*"|name|guardian name)$/ do |p_field|
+  within @viewing do
+    field = field_from_text(p_field)
+    field.find('.value').click
+    page.should have_no_css('input, textarea', visible: true)
+  end
+end
+
+Then /^I should be able to change the first field "(.*?)"$/ do |p_field|
+  within @viewing do
+    field = page.first('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
+    field.find('.value').click
+    page.should have_css('input, textarea', visible: true)
+    blur_input_inside field
+  end
+end
+
+Then /^I should not be able to change the first field "(.*?)"$/ do |p_field|
+  within @viewing do
+    field = page.first('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
+    field.find('.value').click
+    page.should have_no_css('input, textarea', visible: true)
   end
 end
 
@@ -175,7 +218,6 @@ end
 def create_profile(type, name, email=nil)
   email ||= mail_from_name(name)
   klass = type.capitalize.constantize
-
   obj = klass.create!(full_name: name, email: email)
   return obj
 end

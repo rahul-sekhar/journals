@@ -27,6 +27,12 @@ Given /^that student belongs to the mentors (.*)$/ do |p_teachers|
   @profile.save!
 end
 
+Given /^I belong to the mentors "(.*?)"$/ do |p_teachers|
+  profile = @logged_in_profile
+  profile.mentors = p_teachers.split(",").map{ |teacher| Teacher.find_by_first_name!(teacher.strip) }
+  profile.save!
+end
+
 Then /^I should see "(.*?)" in its mentees$/ do |p_content|
   @viewing.find('.mentees .existing').should have_content p_content
 end

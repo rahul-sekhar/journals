@@ -56,12 +56,8 @@ describe('Groups module', function() {
     });
 
     describe('add()', function() {
-      var listener;
-
       beforeEach(function() {
         Groups.add = jasmine.createSpy('Groups.add').andReturn('group');
-        listener = jasmine.createSpy();
-        scope.$on('editField', listener);
         scope.add();
       });
 
@@ -69,11 +65,8 @@ describe('Groups module', function() {
         expect(Groups.add).toHaveBeenCalled();
       });
 
-      it('broadcasts an editField event after a timeout', function() {
-        timeout.flush();
-        expect(listener).toHaveBeenCalled();
-        expect(listener.mostRecentCall.args[1]).toEqual('group');
-        expect(listener.mostRecentCall.args[2]).toEqual('name');
+      it('sets _edit to name for the new object', function() {
+        expect(Groups.add).toHaveBeenCalledWith({ _edit: 'name' });
       });
     });
   });

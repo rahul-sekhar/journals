@@ -18,28 +18,16 @@ module NavigationHelpers
       profile_path(@profile)
 
     when /the page for my profile/
-      profile_path(@logged_in_user.profile)
+      profile_path(@logged_in_profile)
+
+    when /the page for my student/
+      profile_path(@logged_in_profile.students.first)
 
     when /the page for the guardian/
       profile_path(@guardian)
 
-    when /the edit page for that profile/
-      edit_profile_path(@profile)
-
-    when /the edit page for my profile/
-      edit_profile_path(@logged_in_user.profile)
-
-    when /the edit page for the guardian/
-      edit_profile_path(@guardian)
-
     when /the page for that group/
       group_path(@group)
-
-    when /the create guardian page for that profile/
-      new_student_guardian_path(@profile)
-
-    when /the create guardian page for my profile/
-      new_student_guardian_path(@logged_in_user.profile)
 
     else
       begin

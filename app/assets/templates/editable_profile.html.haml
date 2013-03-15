@@ -1,0 +1,69 @@
+%header.profile-header
+  %h3{ "edit-in-place"=>true, "instance"=>"person", "field"=>"full_name", "edit-mode"=>"editing['full_name']" }
+
+  %p.type{ "ng-show"=>"person.type == 'Teacher'" }
+    {{person.type}}
+
+  %div{ "ng-switch"=>"isTeacher" }
+    %div{ "ng-switch-when"=>"true" }
+      .manage.menu{ "ng-show"=>"isTeacher" }
+        .icon.title
+        %ul
+          %li{ "ng-hide"=>"person.archived || !person.email" }
+            %a{ "href"=>"", "ng-click"=>"resetPassword(person)" } {{person.active && "Reset password" || "Activate"}}
+          %li
+            %a{ "href"=>"", "ng-click"=>"toggleArchive(person)" } {{person.archived && "Unarchive" || "Archive"}}
+          %li
+            %a{ "href"=>"", "ng-click"=>"delete(person)" } Delete
+
+  .clear-left
+
+%profile-fields.main-profile-fields{ "parent"=>"person", "editing"=>"editing" }
+
+.guardians{ "ng-show"=>"person.type == 'Student'" }
+  %a.add-guardian{ "href"=>"", "ng-click"=>"addGuardian(person)", "ng-show"=>"isTeacher" } Add guardian
+
+  .guardian{ "ng-repeat"=>"guardian in person.guardians", "ng-hide"=>"guardian.deleted", "ng-controller"=>"EditObjectCtrl" }
+    %ng-switch{ "on"=>"!!(isTeacher || guardian.editable)" }
+      %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_guardian.html')}'" }
+      %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_guardian.html')}'" }
+
+%footer.profile-footer
+  .groups{ "ng-show"=>"person.type == 'Student'" }
+    %h4 Groups
+    %ul.existing
+      %li{ "ng-repeat"=>"group in person.groups", "ng-hide"=>"group.deleted" }
+        %span {{group.name}}
+        %a.remove{ "href"=>"", "ng-click"=>"person.removeGroup(group)", "ng-show"=>"isTeacher" } Remove
+      %li{ "ng-hide"=>"person.groups.length" }
+        None
+
+    %div{ "ng-switch"=>"isTeacher" }
+      %div{ "ng-switch-when"=>"true" }
+        %filtered-list{ "list"=>"person.remainingGroups()", "show-property"=>"name", "on-select"=>"person.addGroup(value)" }
+
+  .mentors{ "ng-show"=>"person.type == 'Student'" }
+    %h4 {{person.mentors.length > 1 && 'Mentors' || 'Mentor'}}
+    %ul.existing
+      %li{ "ng-repeat"=>"mentor in person.mentors", "ng-hide"=>"mentor.deleted" }
+        %span {{mentor.full_name}}
+        %a.remove{ "href"=>"", "ng-click"=>"person.removeMentor(mentor)", "ng-show"=>"isTeacher" } Remove
+      %li{ "ng-hide"=>"person.mentors.length" }
+        None
+
+    %div{ "ng-switch"=>"isTeacher" }
+      %div{ "ng-switch-when"=>"true" }
+        %filtered-list{ "list"=>"person.remainingMentors()", "show-property"=>"full_name", "on-select"=>"person.addMentor(value)" }
+
+  .mentees{ "ng-show"=>"person.type == 'Teacher'" }
+    %h4 {{person.mentees.length > 1 && 'Mentees' || 'Mentee'}}
+    %ul.existing
+      %li{ "ng-repeat"=>"mentee in person.mentees", "ng-hide"=>"mentee.deleted" }
+        %span {{mentee.full_name}}
+        %a.remove{ "href"=>"", "ng-click"=>"person.removeMentee(mentee)", "ng-show"=>"isTeacher" } Remove
+      %li{ "ng-hide"=>"person.mentees.length" }
+        None
+
+    %div{ "ng-switch"=>"isTeacher" }
+      %div{ "ng-switch-when"=>"true" }
+        %filtered-list{ "list"=>"person.remainingMentees()", "show-property"=>"full_name", "on-select"=>"person.addMentee(value)" }

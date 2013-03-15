@@ -188,8 +188,9 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
         };
 
         // Create new instance
-        instance['new' + capitalizedName] = function () {
-          var newAssoc = targetCollection.add({ _parent: instance });
+        instance['new' + capitalizedName] = function (data) {
+          data = angular.extend({ _parent: instance }, data)
+          var newAssoc = targetCollection.add(data);
           instance[assocName].unshift(newAssoc);
           return newAssoc;
         };

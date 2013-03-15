@@ -117,12 +117,12 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
         });
     };
 
-    peopleInterface.addTeacher = function() {
-      return Teachers.add();
+    peopleInterface.addTeacher = function(data) {
+      return Teachers.add(data);
     };
 
-    peopleInterface.addStudent = function() {
-      return Students.add();
+    peopleInterface.addStudent = function(data) {
+      return Students.add(data);
     };
 
     return peopleInterface;

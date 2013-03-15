@@ -1,98 +1,101 @@
+@angular
 Feature: Profile permissions for a student
 
 As a student, I can view any profile and edit my own.
 
 Background:
-  Given I have logged in as a student "Rahul Sekhar"
+  Given I have logged in as the student Rahul
 
 
 Scenario: View a teacher profile
-  Given a teacher named "Shalini Sekhar" exists
-  And the students Roly, Lucky and Jumble exist
-  And that profile has the mentees "Roly"
+  Given a teacher "Shalini Sekhar" exists
+  And the students Lucky Sekhar, Jumble Dog exist
+  And that teacher has the mentees Lucky
+
   When I am on the page for that profile
-  Then I should not see "Edit profile"
+  And I look at the profile for "Shalini Sekhar"
 
-  And I should not see "Archive user"
-  And I should not see "Delete user"
-  And I should not see "Activate user"
+  Then I should not be able to change the field "Email"
+  And I should not be able to change the name
+  And I should not see the add-field menu in it
 
-  And I should not see "Remove" within the ".mentees" block
-  And I should not see the button "Add" within the ".mentees" block
+  And I should not see the manage menu in it
 
-  And I should get a forbidden message when I go to the edit page for that profile
-
+  And I should not see "Remove" in its mentees
+  And I should not see its add mentee list
 
 
 Scenario: View a student profile
-  Given a student named "Parvathy Manjunath" exists
-  And the teachers Angela, Shalini, Aditya and Sharad exist
-  And that student belongs to the mentors "Angela, Aditya"
+  Given a student Parvathy exists
+  And the teachers Angela Jain, Shalini Sekhar exist
+  And that student belongs to the mentors Angela
   And the groups "Some Group, Other Group" exist
   And that student belongs to the groups "Some Group"
+
   When I am on the page for that profile
-  Then I should not see "Edit profile"
+  And I look at the profile for "Parvathy Manjunath"
 
-  And I should not see "Archive user"
-  And I should not see "Delete user"
-  And I should not see "Activate user"
+  Then I should not be able to change the field "Email"
+  And I should not be able to change the name
+  And I should not see the add-field menu in it
 
-  And I should not see "Remove" within the ".mentors" block
-  And I should not see the button "Add" within the ".mentors" block
+  And I should not see the manage menu in it
 
-  And I should not see "Remove" within the ".groups" block
-  And I should not see the button "Add" within the ".groups" block
+  And I should not see "Remove" in its mentors
+  And I should not see its add mentor list
 
-  And I should not see "Add guardian"
+  And I should not see "Remove" in its groups
+  And I should not see its add group list
 
-  And I should get a forbidden message when I go to the edit page for that profile
-  And I should get a forbidden message when I go to the create guardian page for that profile
-
+  And I should not see "ADD GUARDIAN" in it
 
 
-Scenario: View my own profile
-  Given the teachers Angela, Shalini, Aditya and Sharad exist
-  And I belong to the mentors "Angela, Aditya"
+Scenario: Edit my own profile
+  Given the teachers Angela Jain, Shalini Sekhar exist
+  And I belong to the mentors "Angela"
   And I have the guardian "Archana Sekhar"
   And the groups "Some Group, Other Group" exist
   And I belong to the groups "Some Group"
+
   When I am on the page for my profile
-  Then I should see "Edit profile"
+  And I look at the profile for "Rahul Sekhar"
 
-  And I should not see "Archive user"
-  And I should not see "Delete user"
-  And I should not see "Activate user"
+  Then I should be able to change the first field "Email"
+  And I should be able to change the name
+  And I should see the add-field menu in it
 
-  And I should not see "Remove" within the ".mentors" block
-  And I should not see the button "Add" within the ".mentors" block
+  And I should not see the manage menu in it
 
-  And I should not see "Remove" within the ".groups" block
-  And I should not see the button "Add" within the ".groups" block
+  And I should not see "Remove" in its mentors
+  And I should not see its add mentor list
 
-  And I should not see "Add guardian"
+  And I should not see "Remove" in its groups
+  And I should not see its add group list
 
-  When I click "Edit profile"
-  Then I should be on the edit page for my profile
-  And I should get a forbidden message when I go to the create guardian page for my profile
+  And I should not see "ADD GUARDIAN" in it
+
+  When I look at the guardian "Archana Sekhar"
+  Then I should not be able to change the field "Email"
+  And I should not be able to change the guardian name
+  And I should not see the add-field menu in it
+  And I should not see the manage menu in it
 
 
 
 Scenario: View a guardian
-  Given a student named "Parvathy Manjunath" exists
-  And a guardian Manoj for that student exists
+  Given a student Parvathy exists
+  And a guardian Poonam exists for that student
+
   When I am on the page for that profile
-  Then I should not see "Edit profile" within the ".guardians" block
+  And I look at the profile for "Parvathy Manjunath"
+  And I look at the guardian "Poonam Jain"
 
-  And I should not see "Delete user" within the ".guardians" block
-  And I should not see "Activate user" within the ".guardians" block
-
-  And I should get a forbidden message when I go to the edit page for the guardian
+  Then I should not be able to change the field "Email"
+  And I should not be able to change the guardian name
+  And I should not see the add-field menu in it
+  And I should not see the manage menu in it
 
 
 Scenario: Create users
   When I am on the people page
-  Then I should not see "Add student"
-  And I should not see "Add teacher"
-
-  And I should get a forbidden message when I go to the new student page
-  And I should get a forbidden message when I go to the new teacher page
+  Then I should not see the add menu

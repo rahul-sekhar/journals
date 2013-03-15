@@ -4,7 +4,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   /*--------- People base controller ---------*/
 
-  factory('peopleBaseCtrl', ['$location', 'confirm', '$timeout', function ($location, confirm, $timeout) {
+  factory('peopleBaseCtrl', ['$location', 'confirm', function ($location, confirm) {
     return function ($scope) {
       $scope.doSearch = function (value) {
         $location.search('search', value).replace();
@@ -46,10 +46,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
       // Handle adding a guardian
       $scope.addGuardian = function (profile) {
-        var guardian = profile.newGuardian();
-        $timeout(function() {
-          $scope.$broadcast('editField', guardian, 'full_name');
-        }, 0);
+        profile.newGuardian({ _edit: 'full_name' });
       };
 
       // Handle removing guardians
@@ -75,8 +72,8 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   /*--------- Service to load a people collection -------- */
 
-  factory('peopleCollectionMixin', ['peopleInterface', '$location', 'Groups', '$timeout',
-    function (peopleInterface, $location, Groups, $timeout) {
+  factory('peopleCollectionMixin', ['peopleInterface', '$location', 'Groups',
+    function (peopleInterface, $location, Groups) {
       return function ($scope) {
         $scope.load = function () {
           peopleInterface.load($location.url()).
@@ -91,19 +88,13 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
         // Handle adding profiles
         $scope.addTeacher = function() {
-          var teacher = peopleInterface.addTeacher();
+          var teacher = peopleInterface.addTeacher({ _edit: 'full_name' });
           $scope.people.unshift(teacher);
-          $timeout(function () {
-            $scope.$broadcast('editField', teacher, 'full_name');
-          }, 0);
         };
 
         $scope.addStudent = function() {
-          var student = peopleInterface.addStudent();
+          var student = peopleInterface.addStudent({ _edit: 'full_name' });
           $scope.people.unshift(student);
-          $timeout(function () {
-            $scope.$broadcast('editField', student, 'full_name');
-          }, 0);
         };
       };
     }]).

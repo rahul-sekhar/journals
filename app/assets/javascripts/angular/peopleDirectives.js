@@ -7,12 +7,23 @@ angular.module('journals.people.directives', ['journals.assets', 'journals.curre
   directive('profileFields', ['assets', function (assets) {
     return {
       restrict: 'E',
-      transclude: true,
       scope: {
         editing: '=',
         person: '=parent'
       },
       templateUrl: assets.url('profile_fields_template.html'),
+      replace: true,
+      controller: 'profileFieldsCtrl'
+    };
+  }]).
+
+  directive('profileFieldsView', ['assets', function (assets) {
+    return {
+      restrict: 'E',
+      scope: {
+        person: '=parent'
+      },
+      templateUrl: assets.url('profile_fields_view_template.html'),
       replace: true,
       controller: 'profileFieldsCtrl'
     };
@@ -62,6 +73,7 @@ angular.module('journals.people.directives', ['journals.assets', 'journals.curre
       $scope.editing[field] = true;
     };
   }]).
+
 
   /* ---------------------- Date with age filter ---------------------*/
 

@@ -149,25 +149,16 @@ describe('People module', function () {
 
     // add a guardian
     describe('addGuardian(profile)', function () {
-      var profile, listener;
+      var profile;
 
       beforeEach(function () {
         profile = { newGuardian: jasmine.createSpy().andReturn('guardian') };
-        listener = jasmine.createSpy();
-        scope.$on('editField', listener);
         scope.addGuardian(profile);
       });
 
-      it('calls newGuardian for the profile', function () {
-        expect(profile.newGuardian).toHaveBeenCalled();
+      it('calls newGuardian for the profile, passing _edit', function () {
+        expect(profile.newGuardian).toHaveBeenCalledWith({ _edit: 'full_name' });
       });
-
-      it('broadcasts an editField event after a timeout', inject(function ($timeout) {
-        $timeout.flush();
-        expect(listener).toHaveBeenCalled();
-        expect(listener.mostRecentCall.args[1]).toEqual('guardian');
-        expect(listener.mostRecentCall.args[2]).toEqual('full_name');
-      }));
     });
 
 
@@ -306,21 +297,12 @@ describe('People module', function () {
       });
 
       it('adds a teacher through peopleInterface', function () {
-        expect(peopleInterface.addTeacher).toHaveBeenCalled();
+        expect(peopleInterface.addTeacher).toHaveBeenCalledWith({ _edit: 'full_name' });
       });
 
       it('adds the result to the people array', function () {
         expect(scope.people).toEqual([6, 1, 2, 3]);
       });
-
-      it('broadcasts an editField event after a timeout', inject(function ($timeout) {
-        var listener = jasmine.createSpy();
-        scope.$on('editField', listener);
-        $timeout.flush();
-        expect(listener).toHaveBeenCalled();
-        expect(listener.mostRecentCall.args[1]).toEqual(6);
-        expect(listener.mostRecentCall.args[2]).toEqual('full_name');
-      }));
     });
 
     describe('addStudent()', function () {
@@ -331,21 +313,12 @@ describe('People module', function () {
       });
 
       it('adds a teacher through peopleInterface', function () {
-        expect(peopleInterface.addStudent).toHaveBeenCalled();
+        expect(peopleInterface.addStudent).toHaveBeenCalledWith({ _edit: 'full_name' });
       });
 
       it('adds the result to the people array', function () {
         expect(scope.people).toEqual([7, 1, 2, 3]);
       });
-
-      it('broadcasts an editField event after a timeout', inject(function ($timeout) {
-        var listener = jasmine.createSpy();
-        scope.$on('editField', listener);
-        $timeout.flush();
-        expect(listener).toHaveBeenCalled();
-        expect(listener.mostRecentCall.args[1]).toEqual(7);
-        expect(listener.mostRecentCall.args[2]).toEqual('full_name');
-      }));
     });
   });
 

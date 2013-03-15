@@ -6,6 +6,8 @@ angular.module('journals.assets', []).
     var assets = {}, assetList = {};
 
     assetList['profile_fields_template.html'] = '<%= asset_path("profile_fields_template.html") %>';
+    assetList['profile_fields_view_template.html'] = '<%= asset_path("profile_fields_view_template.html") %>';
+
     assets.url = function (filename) {
       var url = assetList[filename];
 

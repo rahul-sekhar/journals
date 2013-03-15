@@ -98,8 +98,8 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
       $scope.editMode = true;
     };
 
-    $scope.$on('editField', function (e, target, field) {
-      if ((target === $scope.instance) && (field === $scope.field)) {
+    $scope.$watch('instance._edit', function(value) {
+      if (value && value === $scope.field) {
         $scope.startEdit();
       }
     });

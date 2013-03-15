@@ -47,17 +47,19 @@ When /^I select the option containing "(.*?)"$/ do |p_option|
 end
 
 # General internal functions
-def fill_input_inside(node, value)
-  node.find('input, textarea', visible: true).set(value)
+def blur_input_inside(node)
   script = "$('input:visible, textarea:visible').blur();"
   page.execute_script(script)
   node.should have_css('input, textarea', visible: false)
 end
 
+def fill_input_inside(node, value)
+  node.find('input, textarea', visible: true).set(value)
+  blur_input_inside node
+end
 
 
 
-# # Input field steps
 # When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
 #   fill_in p_field, with: p_value
 # end

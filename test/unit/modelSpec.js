@@ -543,11 +543,11 @@ describe('Model module', function () {
             collection.add = jasmine.createSpy().andReturn(5);
             model.assocs = [1,2];
             model.id = 7;
-            result = model.newAssoc();
+            result = model.newAssoc({data: 'val'});
           });
 
-          it('calls collection.add(), passing the parent', function () {
-            expect(collection.add).toHaveBeenCalledWith({ _parent: model });
+          it('calls collection.add(), passing the parent and any other data', function () {
+            expect(collection.add).toHaveBeenCalledWith({ _parent: model, data: 'val' });
           });
 
           it('adds the new association', function () {

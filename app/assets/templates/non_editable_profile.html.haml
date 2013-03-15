@@ -1,0 +1,41 @@
+%header.profile-header
+  %h3
+    %span.value {{person.full_name}}
+
+  %p.type{ "ng-show"=>"person.type == 'Teacher'" }
+    {{person.type}}
+
+  .clear-left
+
+%profile-fields-view.main-profile-fields{ "parent"=>"person" }
+
+.guardians{ "ng-show"=>"person.type == 'Student'" }
+  .guardian{ "ng-repeat"=>"guardian in person.guardians", "ng-hide"=>"guardian.deleted", "ng-controller"=>"EditObjectCtrl" }
+    %ng-switch{ "on"=>"!!(isTeacher || guardian.editable)" }
+      %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_guardian.html')}'" }
+      %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_guardian.html')}'" }
+
+%footer.profile-footer
+  .groups{ "ng-show"=>"person.type == 'Student'" }
+    %h4 Groups
+    %ul.existing
+      %li{ "ng-repeat"=>"group in person.groups" }
+        %span {{group.name}}
+      %li{ "ng-hide"=>"person.groups.length" }
+        None
+
+  .mentors{ "ng-show"=>"person.type == 'Student'" }
+    %h4 {{person.mentors.length > 1 && 'Mentors' || 'Mentor'}}
+    %ul.existing
+      %li{ "ng-repeat"=>"mentor in person.mentors" }
+        %span {{mentor.full_name}}
+      %li{ "ng-hide"=>"person.mentors.length" }
+        None
+
+  .mentees{ "ng-show"=>"person.type == 'Teacher'" }
+    %h4 {{person.mentees.length > 1 && 'Mentees' || 'Mentee'}}
+    %ul.existing
+      %li{ "ng-repeat"=>"mentee in person.mentees" }
+        %span {{mentee.full_name}}
+      %li{ "ng-hide"=>"person.mentees.length" }
+        None

@@ -406,11 +406,11 @@ describe('people models module', function () {
 
       beforeEach(function () {
         spyOn(Teachers, 'add').andReturn('teacher');
-        result = peopleInterface.addTeacher();
+        result = peopleInterface.addTeacher('some data');
       })
 
       it('calls the add function for the Teachers collection', function () {
-        expect(Teachers.add).toHaveBeenCalled();
+        expect(Teachers.add).toHaveBeenCalledWith('some data');
       });
 
       it('returns the result', function () {
@@ -423,11 +423,11 @@ describe('people models module', function () {
 
       beforeEach(function () {
         spyOn(Students, 'add').andReturn('student');
-        result = peopleInterface.addStudent();
+        result = peopleInterface.addStudent('some data');
       })
 
       it('calls the add function for the Students collection', function () {
-        expect(Students.add).toHaveBeenCalledWith();
+        expect(Students.add).toHaveBeenCalledWith('some data');
       });
 
       it('returns the result', function () {

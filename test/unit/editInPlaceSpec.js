@@ -174,28 +174,29 @@ describe('editInPlace module', function () {
       expect(scope.editorValue).toBeUndefined();
     });
 
-    it('initially has editMode undefined', function() {
+    it('initially has editMode undefined', function () {
       expect(scope.editMode).toBeUndefined();
     });
 
-    describe('on receiving an editField event', function () {
-      describe('with the correct field and object', function() {
+    describe('when the instances _edit attribute is set', function () {
+      describe('with the correct field', function() {
+        beforeEach(function () {
+          scope.instance._edit = 'attr';
+          scope.$apply();
+        });
+
         it('sets editMode to true', function() {
-          rootScope.$broadcast('editField', scope.instance, 'attr');
           expect(scope.editMode).toEqual(true);
         });
       });
 
-      describe('with the correct field but incorrect object', function() {
-        it('sets editMode to false', function() {
-          rootScope.$broadcast('editField', { attr: 'value'}, 'attr');
-          expect(scope.editMode).toBeUndefined();
+      describe('with a different field', function() {
+        beforeEach(function () {
+          scope.instance._edit = 'attr1';
+          scope.$apply();
         });
-      });
 
-      describe('with the incorrect field but correct object', function() {
-        it('sets editMode to false', function() {
-          rootScope.$broadcast('editField', scope.instance, 'attr1');
+        it('does not set editMode', function() {
           expect(scope.editMode).toBeUndefined();
         });
       });
