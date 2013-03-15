@@ -64,13 +64,17 @@ angular.module('journals',
 
       when('/guardians', {redirectTo: '/page-not-found'}).
 
-      // when('/mentees', peopleRouteParams({
-      //   filter: 'Your mentees'
-      // })).
+      when('/mentees', {
+        templateUrl: '<%= asset_path("people.html") %>', 
+        controller: 'MenteesCtrl', 
+        reloadOnSearch: false
+      }).
 
-      // when('/groups/:id', peopleRouteParams({
-      //   isGroup: true
-      // })).
+      when('/groups/:id', {
+        templateUrl: '<%= asset_path("people.html") %>', 
+        controller: 'GroupsPageCtrl', 
+        reloadOnSearch: false
+      }).
 
       when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
 

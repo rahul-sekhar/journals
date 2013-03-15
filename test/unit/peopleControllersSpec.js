@@ -38,9 +38,9 @@ describe('People controllers module', function() {
   /*------------------ Load people collection service -----------------*/
 
   describe('loadPeopleCollection', function() {
-    var scope, peopleInterface, location, deferred;
+    var scope, peopleInterface, location, deferred, Groups;
 
-    beforeEach(inject(function($rootScope, PeopleBaseCtrl, _peopleInterface_, $q, $location, loadPeopleCollection) {
+    beforeEach(inject(function($rootScope, PeopleBaseCtrl, _peopleInterface_, $q, $location, loadPeopleCollection, _Groups_) {
       deferred = $q.defer();
 
       peopleInterface = _peopleInterface_;
@@ -49,9 +49,17 @@ describe('People controllers module', function() {
       location = $location;
       location.url('/some/path');
 
+      Groups = _Groups_;
+      spyOn(Groups, 'all').andReturn('group array');
+
       scope = $rootScope.$new();
       loadPeopleCollection(scope);
     }));
+
+    it('loads groups', function() {
+      expect(Groups.all).toHaveBeenCalled();
+      expect(scope.groups).toEqual('group array');
+    });
 
     describe('scope.load()', function() {
       beforeEach(function() {
@@ -348,6 +356,127 @@ describe('People controllers module', function() {
 
     it('sets the filterName', function() {
       expect(scope.filterName).toEqual('Students');
+    });
+
+    it('includes loadPeopleCollection', function() {
+      expect(loadPeopleCollection).toHaveBeenCalledWith(scope);
+    });
+
+    it('includes the base controller', function() {
+      expect(PeopleBaseCtrl).toHaveBeenCalledWith(scope);
+    });
+  });
+
+  describe('MenteesCtrl', function() {
+    var scope, PeopleBaseCtrl, loadPeopleCollection;
+
+    beforeEach(inject(function($rootScope, $controller) {
+      scope = $rootScope.$new();
+      PeopleBaseCtrl = jasmine.createSpy();
+      loadPeopleCollection = jasmine.createSpy();
+
+      $controller('MenteesCtrl', {
+        $scope: scope, 
+        PeopleBaseCtrl: PeopleBaseCtrl, 
+        loadPeopleCollection: loadPeopleCollection 
+      });
+    }));
+
+    it('sets the page title', function() {
+      expect(scope.pageTitle).toEqual('Mentees');
+    });
+
+    it('sets canAddStudent', function() {
+      expect(scope.canAddStudent).toEqual(false);
+    });
+
+    it('sets canAddTeacher', function() {
+      expect(scope.canAddTeacher).toEqual(false);
+    });
+
+    it('sets the filterName', function() {
+      expect(scope.filterName).toEqual('Your mentees');
+    });
+
+    it('includes loadPeopleCollection', function() {
+      expect(loadPeopleCollection).toHaveBeenCalledWith(scope);
+    });
+
+    it('includes the base controller', function() {
+      expect(PeopleBaseCtrl).toHaveBeenCalledWith(scope);
+    });
+  });
+
+  /*--------------- GroupsPage controller --------------------*/
+
+  describe('GroupsPageCtrl', function() {
+    var scope, PeopleBaseCtrl, loadPeopleCollection, Groups, deferred;
+
+    beforeEach(inject(function($rootScope, $controller, _Groups_, $q) {
+      scope = $rootScope.$new();
+      PeopleBaseCtrl = jasmine.createSpy();
+      loadPeopleCollection = jasmine.createSpy();
+
+      deferred = $q.defer();
+      Groups = _Groups_;
+      spyOn(Groups, 'get').andReturn(deferred.promise)
+
+      $controller('GroupsPageCtrl', {
+        $scope: scope, 
+        PeopleBaseCtrl: PeopleBaseCtrl, 
+        loadPeopleCollection: loadPeopleCollection,
+        $routeParams: { id: 4 }
+      });
+    }));
+
+    it('sets the page title', function() {
+      expect(scope.pageTitle).toEqual('Group');
+    });
+
+    it('sets the filterName', function() {
+      expect(scope.filterName).toEqual('Group');
+    });
+
+    it('gets the group from the Groups collection', function() {
+      expect(Groups.get).toHaveBeenCalledWith(4);
+    });
+
+    describe('when the group is found', function() {
+      beforeEach(function() {
+        deferred.resolve({id: 4, name: 'Some group'});
+        scope.$apply();
+      });
+
+      it('sets the page title', function() {
+        expect(scope.pageTitle).toEqual('Group: Some group');
+      });
+
+      it('sets the filterName', function() {
+        expect(scope.filterName).toEqual('Some group');
+      });
+    });
+
+    describe('when the group is not found', function() {
+      beforeEach(function() {
+        deferred.reject();
+        scope.$apply();
+      });
+
+      it('sets the page title', function() {
+        expect(scope.pageTitle).toEqual('Group: Not found');
+      });
+
+      it('sets the filterName', function() {
+        expect(scope.filterName).toEqual('Unknown group');
+      });
+    });
+
+    it('sets canAddStudent', function() {
+      expect(scope.canAddStudent).toEqual(false);
+    });
+
+    it('sets canAddTeacher', function() {
+      expect(scope.canAddTeacher).toEqual(false);
     });
 
     it('includes loadPeopleCollection', function() {

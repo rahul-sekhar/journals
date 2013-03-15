@@ -22,8 +22,8 @@ angular.module('journals.people.controllers', ['journals.people']).
 
   /*--------- Service to load a people collection -------- */
 
-  factory('loadPeopleCollection', ['peopleInterface', '$location',
-    function(peopleInterface, $location) {
+  factory('loadPeopleCollection', ['peopleInterface', '$location', 'Groups',
+    function(peopleInterface, $location, Groups) {
 
     return function($scope) {
       $scope.load = function() {
@@ -34,6 +34,8 @@ angular.module('journals.people.controllers', ['journals.people']).
             $scope.currentPage = data.metadata.current_page;
           });
       };
+
+      $scope.groups = Groups.all();
     };
   }]).
 
@@ -125,6 +127,47 @@ angular.module('journals.people.controllers', ['journals.people']).
     $scope.canAddStudent = true;
     $scope.canAddTeacher = false;
     $scope.filterName = 'Students';
+
+    loadPeopleCollection($scope);
+    PeopleBaseCtrl($scope);
+  }]).
+
+
+  /*--------- Mentees page ---------*/
+
+  controller('MenteesCtrl', ['$scope', 'PeopleBaseCtrl', 'loadPeopleCollection',
+    function($scope, PeopleBaseCtrl, loadPeopleCollection) {
+
+    $scope.pageTitle = 'Mentees';
+    $scope.canAddStudent = false;
+    $scope.canAddTeacher = false;
+    $scope.filterName = 'Your mentees';
+
+    loadPeopleCollection($scope);
+    PeopleBaseCtrl($scope);
+  }]).
+
+
+   /*--------- Groups page ---------*/
+
+  controller('GroupsPageCtrl', ['$scope', 'PeopleBaseCtrl', 'loadPeopleCollection', 'Groups', '$routeParams',
+    function($scope, PeopleBaseCtrl, loadPeopleCollection, Groups, $routeParams) {
+
+    $scope.pageTitle = 'Group';
+    $scope.filterName = 'Group';
+
+    Groups.get($routeParams.id).
+      then(function(group) {
+        $scope.pageTitle = 'Group: ' + group.name;
+        $scope.filterName = group.name;
+      },
+      function() {
+        $scope.pageTitle = 'Group: Not found';
+        $scope.filterName = 'Unknown group';
+      });
+
+    $scope.canAddStudent = false;
+    $scope.canAddTeacher = false;
 
     loadPeopleCollection($scope);
     PeopleBaseCtrl($scope);

@@ -39,10 +39,6 @@ describe('people module', function() {
       );
     });
 
-    it('sets the editableFieldsExtension primary field to full_name', function() {
-      expect(editableFieldsExtension).toHaveBeenCalledWith('full_name');
-    });
-
     it('calls the collection with the model object', function() {
       expect(collection).toHaveBeenCalledWith('model', { url: '/students/all' });
     });
@@ -57,15 +53,19 @@ describe('people module', function() {
   /*------------------- Teachers collection -----------------------*/
 
   describe('Teachers', function() {
-    var collection, model, Teachers, editableFieldsExtension;
+    var collection, model, Teachers, editableFieldsExtension, association;
 
     beforeEach(module(function($provide) {
       model = jasmine.createSpy().andReturn('model');
       collection = jasmine.createSpy().andReturn('collection');
       editableFieldsExtension = jasmine.createSpy().andReturn('editableFieldsExtension');
+      association = jasmine.createSpy().andCallFake(function(arg1, name) {
+        return name + ' association';
+      });
       $provide.value('model', model);
       $provide.value('collection', collection);
       $provide.value('editableFieldsExtension', editableFieldsExtension);
+      $provide.value('association', association);
     }));
 
     beforeEach(inject(function(_Teachers_) {
@@ -81,11 +81,9 @@ describe('people module', function() {
     });
 
     it('sets the extensions', function() {
-      expect(model.mostRecentCall.args[2].extensions).toEqual(['editableFieldsExtension']);
-    });
-
-    it('sets the editableFieldsExtension primary field to full_name', function() {
-      expect(editableFieldsExtension).toHaveBeenCalledWith('full_name');
+      expect(model.mostRecentCall.args[2].extensions).toEqual(
+        ['mentee association', 'editableFieldsExtension']
+      );
     });
 
     it('calls the collection with the model object', function() {
@@ -126,10 +124,6 @@ describe('people module', function() {
 
     it('sets the extensions', function() {
       expect(model.mostRecentCall.args[2].extensions).toEqual(['editableFieldsExtension']);
-    });
-
-    it('sets the editableFieldsExtension primary field to full_name', function() {
-      expect(editableFieldsExtension).toHaveBeenCalledWith('full_name');
     });
 
     it('calls the collection with the model object', function() {
