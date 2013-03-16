@@ -1,7 +1,7 @@
 %header.guardian-header
   %h4{ "edit-in-place"=>true, "instance"=>"guardian", "field"=>"full_name", "edit-mode"=>"editing['full_name']" }
 
-  .manage{ "ng-show"=>"isTeacher && person.id", "click-menu"=>true }
+  .manage{ "ng-show"=>"isTeacher && guardian.id", "click-menu"=>true }
     .icon.title
     %ul.container
       %li{ "ng-hide"=>"guardian.archived || !guardian.email" }

@@ -256,8 +256,8 @@ describe('guardian extensions module', function () {
       expect(checkDuplicateGuardians.registerScope).toHaveBeenCalledWith(scope);
     });
 
-    it('sets shown to false', function () {
-      expect(scope.shown).toEqual(false);
+    it('sets guardianDialog.shown to false', function () {
+      expect(scope.guardianDialog.shown).toEqual(false);
     });
 
     it('sets duplicates to an empty array', function () {
@@ -287,7 +287,7 @@ describe('guardian extensions module', function () {
       });
 
       it('sets show to true', function() {
-        expect(scope.shown).toEqual(true);
+        expect(scope.guardianDialog.shown).toEqual(true);
       });
 
       it('sets the response value to 0', function() {
@@ -300,9 +300,9 @@ describe('guardian extensions module', function () {
         expect(error).not.toHaveBeenCalled();
       });
 
-      describe('if shown is set to false', function() {
+      describe('if guardianDialog.shown is set to false', function() {
         beforeEach(function() {
-          scope.shown = false;
+          scope.guardianDialog.shown = false;
           scope.$apply();
         });
 
@@ -316,7 +316,7 @@ describe('guardian extensions module', function () {
           var otherError = jasmine.createSpy();
           scope.show().then(null, otherError);
           scope.$apply();
-          scope.shown = false;
+          scope.guardianDialog.shown = false;
           scope.$apply();
           expect(error).not.toHaveBeenCalled();
           expect(otherError).toHaveBeenCalled();
@@ -355,10 +355,10 @@ describe('guardian extensions module', function () {
     });
 
     describe('scope.cancel', function() {
-      it('sets shown to false', function() {
-        scope.shown = true;
+      it('sets guardianDialog.shown to false', function() {
+        scope.guardianDialog.shown = true;
         scope.cancel();
-        expect(scope.shown).toEqual(false);
+        expect(scope.guardianDialog.shown).toEqual(false);
       });
     });
 

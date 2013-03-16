@@ -17,11 +17,13 @@ angular.module('journals.modal', []).
         elem.dialog({
           autoOpen: false,
           modal: true,
+          width: attrs.modalWidth || 300,
           show: 300,
           hide: 300,
           close: function () {
-            scope.showOn = false;
-            scope.$apply();
+            scope.$apply(function() {
+              scope.showOn = false;
+            });
           }
         });
         scope.$watch('showOn', function (val) {

@@ -1,7 +1,11 @@
 .ui-dialog-content {
   @include myriad;
 
-  input, textarea, select {
+  input, textarea, select, button {
     @include myriad;
+  }
+
+  p {
+    font-size: 14px;
   }
 }

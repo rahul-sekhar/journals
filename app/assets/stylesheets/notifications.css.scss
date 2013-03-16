@@ -26,12 +26,13 @@
     @include border-radius(10px);
     padding: 5px 10px;
     text-align: center;
+    line-height: 120%;
     background-color: $grey-brown;
     color: $light-cream;
     opacity: 1;
     cursor: default;
 
-    @include transition(background-color 1000ms ease);
+    @include transition(background-color 300ms ease);
 
     &.error {
       background-color: $dark-brown;

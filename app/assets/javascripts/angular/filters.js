@@ -44,7 +44,7 @@ angular.module('journals.filters', []).
   filter('filterDeleted', function () {
     return function (array) {
       if (!array) {
-        return [];
+        return null;
       }
       return array.filter(function (object) {
         return !object.deleted;

@@ -1,11 +1,12 @@
 article.profile {
   background-color: white;
+  @include transition(background-color 500ms ease);
   margin-bottom: 26px;
   position: relative;
   @include new-clearfix;
 
   &.archived {
-    background-color: lighten(#CDCECC, 15);
+    background-color: lighten(#CDCECC, 12);
   }
 
   .profile-header {

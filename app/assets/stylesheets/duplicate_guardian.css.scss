@@ -1,10 +1,12 @@
-#duplicate_guardian {
-  .content-block {
-    @include new-clearfix;
+#guardian-duplicates {
+  padding: 20px;
+
+  p {
+    font-size: 16px;
   }
-  
+
   ul {
-    margin-top: 30px;
+    margin-top: 20px;
     margin-left: 10px;
   }
 
@@ -36,7 +38,21 @@
     }
   }
 
-  .button {
+  button {
     float: right;
+    margin-left: 10px;
+    @include semibold;
+    font-size: 14px;
+    color: $grey-2;
+    background-color: #ddd;
+    border: none;
+    line-height: 29px;
+    padding: 0 20px;
+    @include border-radius(10px);
+    cursor: pointer;
+
+    &:hover {
+      background-color: #ccc;
+    }
   }
 }

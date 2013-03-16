@@ -5,6 +5,6 @@
       %li{ "ng-repeat"=>"group in groups", "ng-hide"=>"group.deleted", "ng-controller"=>"EditObjectCtrl" }
         %p{ "edit-in-place"=>true, "instance"=>"group", "field"=>"name", "edit-mode"=>"editing.name" }
         %a.delete{ "href"=>"", "ng-click"=>"group.delete()", "ng-show"=>"group.id" }
-    %p{ "ng-hide"=>"groups.length" }
+    %p{ "ng-hide"=>"(groups | filterDeleted).length" }
       There are no groups yet.
     %a.add{ "href"=>"", "ng-click"=>"add()" } Add group

@@ -22,7 +22,7 @@ a {
   @include transition(color $color-transition-time ease);
 }
 
-input.button {
+input.button, button {
   @include transition(background-color $color-transition-time ease, color $color-transition-time ease);
 }
 

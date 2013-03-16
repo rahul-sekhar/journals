@@ -43,7 +43,7 @@
     %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_profile.html')}'" }
     %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_profile.html')}'" }
 
-.content-block{ "ng-hide"=>"(people | filterDeleted).length" }
+.content-block{ "ng-show"=>"(people | filterDeleted).length == 0" }
   %p No matching people were found.
 
 %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }

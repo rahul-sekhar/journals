@@ -60,8 +60,8 @@ describe('general filters module', function() {
       expect(output).toEqual([{id: 1}, {id: 3, deleted: false}, {id: 5}])
     }));
 
-    it('returns an empty array for an undefined value', inject(function(filterDeletedFilter) {
-      expect(filterDeletedFilter(null)).toEqual([]);
+    it('returns null for an undefined value', inject(function(filterDeletedFilter) {
+      expect(filterDeletedFilter(null)).toEqual(null);
     }));
   })
 });

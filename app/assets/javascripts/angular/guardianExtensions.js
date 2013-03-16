@@ -99,7 +99,7 @@ angular.module('journals.people.guardianExtensions', ['journals.ajax', 'journals
 
   controller('DuplicateGuardiansCtrl', ['$scope', 'checkDuplicateGuardians', '$q',
     function($scope, checkDuplicateGuardians, $q) {
-      $scope.shown = false;
+      $scope.guardianDialog = { shown: false };
       $scope.duplicates = [];
       $scope.studentName = null;
       $scope.guardianName = null;
@@ -108,7 +108,7 @@ angular.module('journals.people.guardianExtensions', ['journals.ajax', 'journals
       var deferred;
 
       $scope.show = function() {
-        $scope.shown = true;
+        $scope.guardianDialog.shown = true;
         $scope.response.value = 0;
 
         deferred = $q.defer();
@@ -120,15 +120,15 @@ angular.module('journals.people.guardianExtensions', ['journals.ajax', 'journals
           deferred.resolve(parseInt(value, 10));
           deferred = null;
         }
-        $scope.shown = false;
+        $scope.guardianDialog.shown = false;
       };
 
 
       $scope.cancel = function() {
-        $scope.shown = false;
+        $scope.guardianDialog.shown = false;
       };
 
-      $scope.$watch('shown', function(value) {
+      $scope.$watch('guardianDialog.shown', function(value) {
         if (!value) {
           if (deferred) {
             deferred.reject();
