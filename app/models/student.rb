@@ -1,22 +1,27 @@
 class Student < ActiveRecord::Base
   include Profile
 
-  attr_accessible :full_name, :email, :mobile, :home_phone, 
+  attr_accessible :full_name, :email, :mobile, :home_phone,
     :office_phone, :address, :blood_group, :formatted_birthday,
     :additional_emails, :notes
 
   before_destroy :clear_guardians
 
   has_and_belongs_to_many :guardians, uniq: true, join_table: :students_guardians
+  has_and_belongs_to_many :ordered_guardians, class_name: Guardian, uniq: true, join_table: :students_guardians, order: "guardians.first_name, guardians.last_name"
   has_and_belongs_to_many :groups, uniq: true, join_table: :students_groups
+  has_and_belongs_to_many :ordered_groups, class_name: Group, uniq: true, join_table: :students_groups, order: "groups.name"
   has_and_belongs_to_many :mentors, class_name: Teacher, uniq: true, join_table: :student_mentors
+  has_and_belongs_to_many :ordered_mentors, class_name: Teacher, uniq: true, join_table: :student_mentors, order: "teachers.first_name, teachers.last_name"
   has_and_belongs_to_many :tagged_posts, class_name: Post, uniq: true
   has_many :student_observations, dependent: :destroy
+
+  has_many :ordered_mentees, class_name: NullAssociation, foreign_key: :foreign_id
 
   validates :blood_group, length: { maximum: 15 }
   validates :birthday, presence: { message: "is invalid" }, if: "formatted_birthday.present?"
 
-  default_scope includes(:user, { guardians: :user })
+  scope :load_associations, includes(:user, { ordered_guardians: [:user, :students ]}, :ordered_groups, :ordered_mentors)
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
 
@@ -46,7 +51,7 @@ class Student < ActiveRecord::Base
       self.birthday = nil
     end
   end
-  
+
   def toggle_archive
     self.archived = !archived
 
@@ -63,7 +68,7 @@ class Student < ActiveRecord::Base
     guardians_copy = guardians.all
     guardians.clear
     guardians_copy.each { |guardian| guardian.check_students }
-  end  
+  end
 
   private
 

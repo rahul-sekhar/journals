@@ -3,7 +3,7 @@ class GuardiansController < ApplicationController
   skip_authorize_resource only: :check_duplicates
 
   def show
-    @students = @guardian.students.alphabetical
+    @students = @guardian.ordered_students.load_associations
   end
 
   def create
@@ -21,7 +21,7 @@ class GuardiansController < ApplicationController
     @guardian.students << @student
 
     if @guardian.save
-      render "show"
+      render partial: "shared/person", locals: { person: @guardian }
     else
       render text: @guardian.errors.full_messages.first, status: :unprocessable_entity
     end
@@ -50,7 +50,7 @@ class GuardiansController < ApplicationController
 
   def update
     if @guardian.update_attributes(params[:guardian])
-      render "show"
+      render partial: "shared/person", locals: { person: @guardian }
     else
       render text: @guardian.errors.full_messages.first, status: :unprocessable_entity
     end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130216045913) do
+ActiveRecord::Schema.define(:version => 20130316033351) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -82,6 +82,10 @@ ActiveRecord::Schema.define(:version => 20130216045913) do
     t.datetime "updated_at"
     t.index ["level"], :name => "index_milestones_on_level", :order => {"level" => :asc}
     t.index ["strand_id"], :name => "index_milestones_on_strand_id", :order => {"strand_id" => :asc}
+  end
+
+  create_table "null_table", :force => true do |t|
+    t.integer "foreign_id"
   end
 
   create_table "students", :force => true do |t|

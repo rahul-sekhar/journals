@@ -5,8 +5,7 @@ class Guardian < ActiveRecord::Base
     :additional_emails, :notes
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
-
-  default_scope includes(:user)
+  has_and_belongs_to_many :ordered_students, class_name: Student, uniq: true, join_table: :students_guardians, order: "students.first_name, students.last_name"
 
   def archived
     if students.all? { |student| student.archived }
@@ -14,6 +13,10 @@ class Guardian < ActiveRecord::Base
     else
       return false
     end
+  end
+
+  def number_of_students
+    students.length
   end
 
   def name_with_type
@@ -27,7 +30,7 @@ class Guardian < ActiveRecord::Base
       # Join the array as a sentence
       student_names = student_names.to_sentence
     end
-    
+
     return "#{full_name} (guardian of #{student_names})"
   end
 

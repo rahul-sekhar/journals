@@ -60,7 +60,7 @@ class StudentsController < ApplicationController
 
   def add_group
     @group = Group.find_by_id(params[:group_id])
-    
+
     if @group
       @student.groups << @group unless @student.groups.exists? @group
       render text: "OK", status: :ok
@@ -71,7 +71,7 @@ class StudentsController < ApplicationController
 
   def remove_group
     @group = Group.find_by_id(params[:group_id])
-    
+
     if @group
       @student.groups.delete(@group) if @student.groups.exists? @group
       render text: "OK", status: :ok
@@ -82,7 +82,7 @@ class StudentsController < ApplicationController
 
   def add_mentor
     @teacher = Teacher.find_by_id(params[:teacher_id])
-    
+
     if @teacher
       @student.mentors << @teacher unless @student.mentors.exists? @teacher
       render text: "OK", status: :ok
@@ -93,7 +93,7 @@ class StudentsController < ApplicationController
 
   def remove_mentor
     @teacher = Teacher.find_by_id(params[:teacher_id])
-    
+
     if @teacher
       @student.mentors.delete(@teacher) if @student.mentors.exists? @teacher
       render text: 'OK', status: :ok

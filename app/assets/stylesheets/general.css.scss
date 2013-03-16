@@ -16,13 +16,14 @@ body {
 }
 
 // Link color transition
+$color-transition-time: 200ms;
 a {
   text-decoration: none;
-  @include transition(color 200ms ease);
+  @include transition(color $color-transition-time ease);
 }
 
 input.button {
-  @include transition(background-color 200ms ease, color 200ms ease);
+  @include transition(background-color $color-transition-time ease, color $color-transition-time ease);
 }
 
 // Style input placeholders

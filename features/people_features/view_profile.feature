@@ -85,7 +85,7 @@ Scenario: View a student profile containing multiple guardians
   Given a student "Parvathy Manjunath" exists
   And a guardian "Manoj Jain" exists for that student
   And a guardian Poonam exists for that student
-  
+
   When I am on the page for that profile
   And I look at the profile for "Parvathy Manjunath"
   Then I should see the guardian "Manoj Jain"

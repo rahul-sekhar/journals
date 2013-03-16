@@ -60,7 +60,7 @@ class TeachersController < ApplicationController
 
   def add_mentee
     @student = Student.find_by_id(params[:student_id])
-    
+
     if @student
       @teacher.mentees << @student unless @teacher.mentees.exists? @student
       render text: 'OK', status: :ok
@@ -71,7 +71,7 @@ class TeachersController < ApplicationController
 
   def remove_mentee
     @student = Student.find_by_id(params[:student_id])
-    
+
     if @student
       @teacher.mentees.delete(@student) if @teacher.mentees.exists? @student
       render text: 'OK', status: :ok

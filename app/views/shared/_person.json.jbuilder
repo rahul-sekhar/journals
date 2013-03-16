@@ -6,17 +6,20 @@ json.archived person.archived
 json.editable can?(:update, person)
 
 if person.is_a? Guardian
-  json.parent_count person.students.length
+  json.parent_count person.number_of_students
 end
 
 if person.is_a? Student
-  json.(person, :formatted_birthday, :blood_group, :group_ids, :mentor_ids)
+  json.(person, :formatted_birthday, :blood_group)
 
-  json.guardians person.guardians.alphabetical do |guardian|
+  json.group_ids person.ordered_groups.map{ |group| group.id }
+  json.mentor_ids person.ordered_mentors.map{ |mentor| mentor.id }
+
+  json.guardians person.ordered_guardians do |guardian|
     json.partial! "shared/person", person: guardian
   end
 end
 
 if person.is_a? Teacher
-  json.(person, :mentee_ids)
+  json.mentee_ids person.ordered_mentees.map{ |mentee| mentee.id }
 end
