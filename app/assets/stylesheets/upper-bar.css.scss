@@ -29,30 +29,24 @@
     padding-right: 20px;
     cursor: pointer;
     padding-left: 10px;
+    color: $cream;
 
     &:hover { background-position: right -578px; }
   }
 
-  .menu {
+  .menu, .click-menu {
     color: $cream;
     font-size: 16px;
     text-transform: lowercase;
     font-weight: bold;
     float: left;
-    position: relative;
 
     ul {
-      visibility: hidden;
-      opacity: 0;
-      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
-      position: absolute;
-      z-index: 20;
       background-color: $teal;
       padding: 5px 0;
       font-weight: normal;
       line-height: 25px;
       font-size: 12px;
-
 
       a {
         @include link-colors($cream);
@@ -69,17 +63,11 @@
     }
 
     &:hover {
-      ul{
-        visibility: visible;
-        opacity: 1;
-        @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
-      }
-
       .title { color: lighten($cream, 20); }
     }
   }
 
-  .add.menu ul{
+  .add.click-menu ul{
     width: 120px;
   }
 
@@ -97,17 +85,13 @@
     }
   }
 
-  .viewing.menu {
+  .viewing.click-menu {
     ul {
       font-size: 16px;
       font-weight: bold;
       width: 270px;
       float: left;
     }
-  }
-
-  select {
-    float: left;
   }
 
   .date-placeholder, .tag-placeholder {

@@ -44,7 +44,7 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
 
           if (val === 'date') {
             clearLink = angular.element('<a href="" class="clear-date" ng-click="clearDate()" ng-show="editMode"' +
-              'ng-mouseenter="clearHover = true" ng-mouseleave="clearHover = false">clear</a>');
+              'ng-mouseenter="clearHover = true" ng-mouseleave="clearHover = false"></a>');
             $compile(clearLink)(scope);
             clearLink.appendTo(elem.find('.container'));
 

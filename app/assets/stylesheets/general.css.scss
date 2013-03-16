@@ -69,7 +69,7 @@ input.button {
     }
   }
 
-  .user {
+  #user {
     float: right;
     padding-top: 10px;
 
@@ -81,41 +81,26 @@ input.button {
       margin-top: 20px;
     }
 
-    .menu-icon {
-      width: 60px;
-      height: 54px;
-      background: image-url('large-icons.png') no-repeat 0 -415px;
-      cursor: pointer;
-
-      &:hover { background-position: 0 -495px; }
-    }
-
     .menu {
       float: left;
       margin-left: 20px;
-      position: relative;
 
-      &:hover {
-        ul{
-          visibility: visible;
-          opacity: 1;
-          @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
-        }
-
-        .menu-icon { background-position: 0 -495px; }
+      .icon {
+        width: 60px;
+        height: 54px;
+        background: image-url('large-icons.png') no-repeat 0 -415px;
+        cursor: pointer;
       }
-    }
 
-    ul {
-      position: absolute;
-      top: 54px;
-      right: 0;
-      width: 150px;
-      background-color: $brown;
-      padding: 5px;
-      visibility: hidden;
-      opacity: 0;
-      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
+      &:hover .icon { background-position: 0 -495px; }
+
+      ul {
+        top: 54px;
+        right: 0;
+        width: 150px;
+        background-color: $brown;
+        padding: 5px;
+      }
     }
 
     li {
@@ -124,11 +109,7 @@ input.button {
       line-height: 28px;
       margin-left: 15px;
 
-      a {
-        display: block;
-        text-decoration: none;
-        @include link-colors($light-cream, darken($light-cream, 20));
-      }
+      a { @include link-colors($light-cream, darken($light-cream, 20)); }
     }
   }
 }

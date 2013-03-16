@@ -17,9 +17,9 @@
   %header#page-header
     .wrapper
       %h1= link_to Rails.configuration.settings['app_full_name'], root_path
-    
+
       - if logged_in?
-        .user= render "general/user_menu"
+        #user= render "general/user_menu"
 
   .wrapper
     - if logged_in?

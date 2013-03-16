@@ -4,12 +4,8 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   /*--------- People base controller ---------*/
 
-  factory('peopleBaseCtrl', ['$location', 'confirm', function ($location, confirm) {
+  factory('peopleBaseCtrl', ['confirm', function (confirm) {
     return function ($scope) {
-      $scope.doSearch = function (value) {
-        $location.search('search', value).replace();
-      };
-
       // Handle deleting profiles
       $scope.delete = function (profile) {
         var message = 'Are you sure you want to delete the profile for "' + profile.full_name + '"?' +
@@ -84,7 +80,20 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
             });
         };
 
+        $scope.search = $location.search().search;
+
+        $scope.doSearch = function (value) {
+          $location.search('search', value).
+            search('page', null).
+            replace();
+        };
+
         $scope.groups = Groups.all();
+        $scope.groupsDialog = { shown: false };
+
+        $scope.showGroupsDialog = function() {
+          $scope.groupsDialog.shown = true;
+        };
 
         // Handle adding profiles
         $scope.addTeacher = function() {
@@ -148,7 +157,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   controller('ArchivedPeopleCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
     function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
-      $scope.pageTitle = 'Archived';
+      $scope.pageTitle = 'Archive';
       $scope.canAddStudent = false;
       $scope.canAddTeacher = false;
       $scope.filterName = 'Archived students and teachers';

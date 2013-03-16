@@ -49,7 +49,7 @@ Scenario: View archived students and teachers on the people page
   When I am on the people page
   And I select "Archived students and teachers" from the viewing menu
   Then I should be on the archived people page
-  And the page heading should be "Archived"
+  And the page heading should be "Archive"
 
   Then I should not see a profile for "Aditya Pandya"
   And I should not see a profile for "Angela Jain"

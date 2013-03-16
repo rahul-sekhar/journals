@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('journals', ['journals.user', 'journals.people', 'journals.editInPlace',
-  'journals.filters', 'journals.pagination', 'journals.onType', 'journals.modal', 'journals.filteredList']).
+  'journals.filters', 'journals.pagination', 'journals.onType', 'journals.modal', 'journals.directives']).
 
   config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);

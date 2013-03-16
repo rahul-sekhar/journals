@@ -14,7 +14,7 @@
     %header#page-header
       .wrapper
         %h1= link_to Rails.configuration.settings['app_full_name'], root_path
-        .user= render "general/user_menu"
+        #user= render "general/user_menu"
 
     .wrapper
       %navigation#page-navigation= render "general/navigation"
@@ -22,5 +22,5 @@
       #main-content
         .ng-view
 
-    #notifications{ "ng-controller"=>"messageCtrl", "ng-show"=>"show" }
+    #notifications{ "ng-controller"=>"messageCtrl", "ng-class"=>"{shown: show}" }
       %p{ "ng-class"=>"message.type" } {{message.text}}

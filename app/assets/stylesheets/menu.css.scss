@@ -1,0 +1,55 @@
+.menu {
+  position: relative;
+
+  .title {
+    cursor: pointer;
+  }
+
+  &:hover ul {
+    visibility: visible;
+    opacity: 1;
+    z-index: 20;
+    @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
+  }
+
+  ul {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms, z-index 0 ease 500ms);
+    z-index: -999;
+  }
+
+  li a {
+    display: block;
+    text-decoration: none;
+  }
+}
+
+.click-menu {
+  position: relative;
+
+  .title {
+    cursor: pointer;
+  }
+
+  .container.shown {
+    z-index: 20;
+    visibility: visible;
+    opacity: 1;
+    @include transition(opacity 400ms ease, visibility 400ms ease);
+  }
+
+  .container {
+    position: absolute;
+    overflow: hidden;
+    z-index: -999;
+    visibility: hidden;
+    opacity: 0;
+    @include transition(opacity 300ms ease, visibility 300ms ease, z-index 0 ease 300ms);
+  }
+
+  li a {
+    display: block;
+  }
+}

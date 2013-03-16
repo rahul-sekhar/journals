@@ -24,15 +24,26 @@ angular.module('journals.pagination', []).
               if (i === scope.currentPage) {
                 elem.append('<span class="current"> ' + i + ' </span> ');
               } else {
-                url = $location.path() + '?' + $.param({page: i});
-                elem.append('<a href="' + url + '"> ' + i + ' </a>');
+                elem.append('<a href="" data-page="' + i + '"> ' + i + ' </a>');
               }
             }
           }
+          elem.on('click', 'a', function(e) {
+            scope.$apply(function() {
+              scope.changePage($(e.target).data('page'));
+            });
+          });
         };
 
         scope.$watch('totalPages', updateFn);
         scope.$watch('currentPage', updateFn);
-      }
+      },
+      controller: 'PaginationCtrl'
+    };
+  }]).
+
+  controller('PaginationCtrl', ['$scope', '$location', function ($scope, $location) {
+    $scope.changePage = function(page) {
+      $location.search('page', page);
     };
   }]);

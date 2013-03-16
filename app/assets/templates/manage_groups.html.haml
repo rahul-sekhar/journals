@@ -1,10 +1,10 @@
-%modal#groups{ "show-on"=>"manageGroups" }
+%modal#groups{ "show-on"=>"groupsDialog.shown" }
   %div{ "ng-controller"=>"GroupsCtrl" }
     %h3 Manage groups
     %ul{ "ng-show"=>"(groups | filterDeleted).length" }
       %li{ "ng-repeat"=>"group in groups", "ng-hide"=>"group.deleted", "ng-controller"=>"EditObjectCtrl" }
         %p{ "edit-in-place"=>true, "instance"=>"group", "field"=>"name", "edit-mode"=>"editing.name" }
-        %a.delete{ "href"=>"", "ng-click"=>"group.delete()", "ng-show"=>"group.id" } Delete
+        %a.delete{ "href"=>"", "ng-click"=>"group.delete()", "ng-show"=>"group.id" }
     %p{ "ng-hide"=>"groups.length" }
       There are no groups yet.
     %a.add{ "href"=>"", "ng-click"=>"add()" } Add group

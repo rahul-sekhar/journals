@@ -8,8 +8,8 @@ angular.module('journals.ajax', ['journals.messageHandler']).
         method: 'GET',
         data: null,
         params: null,
-        notification: 'Done.',
-        error: 'An error occured. Please contact us if this problem persists.'
+        notification: 'Done',
+        error: 'An error occured - please contact us if this problem persists'
       };
       options = angular.extend(defaults, options);
 

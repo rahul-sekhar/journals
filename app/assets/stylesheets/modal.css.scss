@@ -1,0 +1,7 @@
+.ui-dialog-content {
+  @include myriad;
+
+  input, textarea, select {
+    @include myriad;
+  }
+}

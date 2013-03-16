@@ -10,7 +10,7 @@ group :assets do
 end
 
 group :development do
-  gem 'rb-inotify', '~> 0.8.8'
+  gem 'rb-inotify', '~> 0.9'
   gem 'guard-livereload'
   gem 'thin'
   gem 'capistrano'

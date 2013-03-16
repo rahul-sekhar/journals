@@ -28,13 +28,6 @@ describe('People module', function () {
       expect(scope.load).toHaveBeenCalled();
     });
 
-    describe('doSearch()', function () {
-      it('updates the location param', function () {
-        scope.doSearch('some value');
-        expect(location.search().search).toEqual('some value');
-      });
-    });
-
     // Delete a profile
     describe('delete(profile)', function () {
       var profile;
@@ -219,7 +212,7 @@ describe('People module', function () {
     });
   });
 
-  /*------------------ Load people collection service -----------------*/
+  /*------------------ people collection mixin -----------------*/
 
   describe('peopleCollectionMixin', function () {
     var scope, peopleInterface, location, deferred, Groups;
@@ -240,9 +233,40 @@ describe('People module', function () {
       peopleCollectionMixin(scope);
     }));
 
+    it('sets the scope search to the location search value', inject(function($rootScope, peopleCollectionMixin) {
+      location.url('/some/path?search=blah');
+      scope = $rootScope.$new();
+      peopleCollectionMixin(scope);
+      expect(scope.search).toEqual('blah');
+    }));
+
+    describe('doSearch()', function () {
+      it('updates the location param', function () {
+        scope.doSearch('some value');
+        expect(location.search().search).toEqual('some value');
+      });
+
+      it('resets the page param', function () {
+        location.search('page', 2);
+        scope.doSearch('some value');
+        expect(location.search().page).toBeUndefined();
+      });
+    });
+
     it('loads groups', function () {
       expect(Groups.all).toHaveBeenCalled();
       expect(scope.groups).toEqual('group array');
+    });
+
+    it('sets groupsDialog.shown to false', function() {
+      expect(scope.groupsDialog.shown).toEqual(false);
+    });
+
+    describe('showGroupsDialog()', function() {
+      it('sets groupsDialog.shown to true', function() {
+        scope.showGroupsDialog();
+        expect(scope.groupsDialog.shown).toEqual(true);
+      });
     });
 
     describe('scope.load()', function () {
@@ -479,7 +503,7 @@ describe('People module', function () {
     }));
 
     it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('Archived');
+      expect(scope.pageTitle).toEqual('Archive');
     });
 
     it('sets canAddStudent', function () {

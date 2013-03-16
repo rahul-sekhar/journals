@@ -1,24 +1,26 @@
 %h2 {{pageTitle}}
 
+.notice
+
 %section#upper-bar
   .people-fields{ "ng-hide" => "profile" }
     %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch(search)", "autocomplete"=>"off"}
 
-    .add.menu{ "ng-show"=>"isTeacher" }
+    .add{ "ng-show"=>"isTeacher", "click-menu"=>true }
       %a.title{ href: "" } Add
-      %ul
+      %ul.container
         %li
           %a{ "href"=>"", "ng-show"=>"canAddTeacher", "ng-click"=>"addTeacher()" } Add teacher
         %li
           %a{ "href"=>"", "ng-show"=>"canAddStudent", "ng-click"=>"addStudent()" } Add student
         %li
-          %a{ "href"=>"", "ng-click"=>"manageGroups=true" } Manage groups
+          %a{ "href"=>"", "ng-click"=>"showGroupsDialog()" } Manage groups
 
     %p.label Viewing
-    .viewing.menu
+    .viewing{ "click-menu"=>true }
       %a.title{ href: "" } {{filterName}}
 
-      %ul
+      %ul.container
         %li{"ng-hide" => "filterName == 'Students and teachers'"}
           %a{href: "/people"} Students and teachers
         %li{"ng-hide" => "filterName == 'Students'"}
@@ -36,7 +38,7 @@
 
   .clear-left
 
-%article.profile{ "ng-repeat"=>"person in people", "ng-hide"=>"person.deleted", "ng-controller"=>"EditObjectCtrl" }
+%article.profile{ "ng-repeat"=>"person in people", "ng-hide"=>"person.deleted", "ng-controller"=>"EditObjectCtrl", "ng-class"=>"{archived: person.archived}" }
   %ng-switch{ "on"=>"!!(isTeacher || person.editable)" }
     %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_profile.html')}'" }
     %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_profile.html')}'" }

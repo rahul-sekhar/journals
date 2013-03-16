@@ -1,39 +1,65 @@
-#manage-groups {
-  .groups {
+#groups {
+  padding: 20px 30px;
+
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: $off-black;
+  }
+
+  ul {
     background-color: white;
-    padding: 20px;
-    padding-bottom: 50px;
-    @include semibold;
+    font-size: 16px;
 
-    a {
-      @include link-colors($off-black, lighten($off-black, 20));
-      max-width: 130px;
-      float: left;
-    }
-
-    .edit-link, .delete-link {
-      text-transform: lowercase;
-      font-size: 12px;
+    .delete {
+      display: block;
+      height: 20px;
+      width: 20px;
       float: right;
-      margin-left: 20px;
       font-weight: normal;
-      width: auto;
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      background: image-url('small-icons.png') no-repeat 0 -270px;
+
+      &:hover {
+        background-position: 0 -310px;
+      }
     }
 
     li {
-      width: 250px;
-      height: 25px;
-      margin: 12px 0;
-      margin-bottom: 25px;
+      padding: 4px 0;
+      padding-right: 25px;
+      border-bottom: 1px solid $light-red;
+      position: relative;
     }
 
-    li.clear-left {
-      height: 0;
+    .value {
+      display: block;
+      line-height: 20px;
+      width: 100%;
+      border: 1px solid transparent;
+
+      &:hover {
+        border: 1px solid grey;
+      }
+    }
+
+    .editor {
+      font-size: 16px;
+      line-height: 20px;
+      width: 100%;
+      border: 1px solid grey;
+      outline: none;
+      padding: 0;
       margin: 0;
     }
   }
 
-  .add-link {
+  .add {
+    float: right;
     @include link-colors($off-black, lighten($off-black, 20));
     font-size: 12px;
     text-transform: uppercase;
@@ -45,6 +71,6 @@
     line-height: 18px;
     padding-left: 30px;
 
-    &:hover { background-position: 0 -396px; } 
+    &:hover { background-position: 0 -396px; }
   }
 }
