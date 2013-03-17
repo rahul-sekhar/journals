@@ -2,7 +2,7 @@ class Student < ActiveRecord::Base
   include Profile
 
   attr_accessible :full_name, :email, :mobile, :home_phone,
-    :office_phone, :address, :blood_group, :formatted_birthday,
+    :office_phone, :address, :blood_group, :birthday,
     :additional_emails, :notes
 
   before_destroy :clear_guardians
@@ -19,7 +19,7 @@ class Student < ActiveRecord::Base
   has_many :ordered_mentees, class_name: NullAssociation, foreign_key: :foreign_id
 
   validates :blood_group, length: { maximum: 15 }
-  validates :birthday, presence: { message: "is invalid" }, if: "formatted_birthday.present?"
+  validates :birthday_raw, presence: { message: "is invalid" }, if: "birthday.present?"
 
   scope :load_associations, includes(:user, { ordered_guardians: [:user, :students ]}, :ordered_groups, :ordered_mentors)
   scope :current, where(archived: false)
@@ -35,20 +35,20 @@ class Student < ActiveRecord::Base
     return students
   end
 
-  def formatted_birthday
-    if @formatted_birthday.present?
-      @formatted_birthday
-    elsif birthday.present?
-      birthday.strftime( '%d-%m-%Y' )
+  def birthday
+    if @birthday.present?
+      @birthday
+    elsif birthday_raw.present?
+      birthday_raw.strftime( '%d-%m-%Y' )
     end
   end
 
-  def formatted_birthday=(val)
-    @formatted_birthday = val
+  def birthday=(val)
+    @birthday = val
     begin
-      self.birthday = Date.strptime( val, '%d-%m-%Y' )
+      self.birthday_raw = Date.strptime( val, '%d-%m-%Y' )
     rescue
-      self.birthday = nil
+      self.birthday_raw = nil
     end
   end
 

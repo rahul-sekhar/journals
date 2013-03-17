@@ -1,35 +1,12 @@
 en:
-  formtastic:
-    labels:
-      formatted_birthday: "Birthday"
-      blood_group: "Blood Group"
-    actions:
-      post:
-        create: "Create post"
-        update: "Save post"
-      comment:
-        create: "Comment"
-        update: "Save"
-      teacher:
-        create: "Create"
-        update: "Save"
-      student:
-        create: "Create"
-        update: "Save"
-      guardian:
-        create: "Create"
-        update: "Save"
-      group:
-        create: "Create"
-        update: "Save"
-
   activerecord:
     attributes:
       user:
         email: "Email"
       teacher:
-        last_name: "Name"
+        first_name: "Name"
       student:
-        last_name: "Name"
+        first_name: "Name"
+        birthday_raw: "Birthday"
       guardian:
-        last_name: "Name"
+        first_name: "Name"

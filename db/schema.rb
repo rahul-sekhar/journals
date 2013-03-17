@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130316033351) do
+ActiveRecord::Schema.define(:version => 20130317142457) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(:version => 20130316033351) do
     t.string   "last_name",             :limit => 80
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.date     "birthday"
+    t.date     "birthday_raw"
     t.string   "blood_group",           :limit => 15
     t.text     "address"
     t.string   "application_form_file"

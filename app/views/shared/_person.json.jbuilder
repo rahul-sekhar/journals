@@ -10,7 +10,7 @@ if person.is_a? Guardian
 end
 
 if person.is_a? Student
-  json.(person, :formatted_birthday, :blood_group)
+  json.(person, :birthday, :blood_group)
 
   json.group_ids person.ordered_groups.map{ |group| group.id }
   json.mentor_ids person.ordered_mentors.map{ |mentor| mentor.id }

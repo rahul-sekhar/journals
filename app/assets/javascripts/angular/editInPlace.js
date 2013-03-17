@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
+angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journals.directives'])
   .directive('editInPlace', ['$compile', '$timeout', function ($compile, $timeout) {
     return {
       restrict: 'A',
@@ -8,7 +8,8 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
         instance: '=',
         field: '@',
         type: '@',
-        editMode: '='
+        editMode: '=',
+        placeholder: '@'
       },
       template:
         '<span class="container">' +
@@ -24,14 +25,14 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
 
           // Change the input and filter depending on type
           if (val === undefined || val === null || val === 'text' || val === 'date') {
-            input = angular.element('<input class="editor" ng-show="editMode" focus-on="editMode" ng-model="editorValue" />');
+            input = angular.element('<input class="editor" placeholder="{{placeholder}}" ng-show="editMode" focus-on="editMode" ng-model="editorValue" />');
             scope.filter = null;
             if (val === 'date') {
               scope.filter = 'dateWithAge';
             }
 
           } else if (val === 'textarea') {
-            input = angular.element('<textarea class="editor" ng-show="editMode" focus-on="editMode" ng-model="editorValue"></textarea>');
+            input = angular.element('<textarea class="editor" placeholder="{{placeholder}}" ng-show="editMode" focus-on="editMode" ng-model="editorValue"></textarea>');
             scope.filter = 'multiline';
 
           } else {
@@ -122,18 +123,6 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters'])
     $scope.clearEdit = function () {
       $scope.instance.updateField($scope.field, null);
       $scope.editMode = false;
-    };
-  }]).
-
-  directive('focusOn', ['$timeout', function ($timeout) {
-    return function (scope, elem, attrs) {
-      scope.$watch(attrs.focusOn, function (value) {
-        if (value) {
-          $timeout(function () {
-            elem.focus();
-          }, 10);
-        }
-      });
     };
   }]).
 

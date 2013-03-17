@@ -13,7 +13,7 @@ angular.module('journals.directives', []).
       template:
         '<div class="filtered-list" ng-show="list.length">' +
           '<div class="list" ng-show="listShown">' +
-            '<input ng-model="filter" />' +
+            '<input ng-model="filter" focus-on="listShown" />' +
             '<ul>' +
               '<li ng-repeat="item in list | filter:filter">' +
                 '<a href="" ng-hide="item.deleted" internal-click="select(item)">{{item[showProperty]}}</a>' +
@@ -104,4 +104,33 @@ angular.module('journals.directives', []).
         $rootScope.$broadcast('hideMenus', $(e.target).closest('.click-menu'));
       });
     });
+  }]).
+
+  directive('focusOn', ['$timeout', function ($timeout) {
+    return function (scope, elem, attrs) {
+      scope.$watch(attrs.focusOn, function (value) {
+        if (value) {
+          $timeout(function () {
+            elem.focus();
+          }, 10);
+        }
+      });
+    };
+  }]).
+
+  directive('onType', ['$timeout', function ($timeout) {
+    return function (scope, elem, attrs) {
+      var typingTimer, doneTypingInterval, doneTypingFn;
+
+      doneTypingInterval = attrs.typingInterval || 300;
+
+      doneTypingFn = function () {
+        scope.$apply(attrs.onType);
+      };
+
+      elem.on('keyup change input', function () {
+        $timeout.cancel(typingTimer);
+        typingTimer = $timeout(doneTypingFn, doneTypingInterval);
+      });
+    };
   }]);

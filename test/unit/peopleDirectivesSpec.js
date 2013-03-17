@@ -23,7 +23,7 @@ describe('people directives module', function() {
         return obj.slug;
       });
       expect(field_names).toEqual([
-        "formatted_birthday",
+        "birthday",
         "blood_group",
         "mobile",
         "home_phone",
@@ -93,7 +93,7 @@ describe('people directives module', function() {
         person.address='something';
         person.email = 'a@b.c';
         person.mobile = '1234';
-        person.formatted_birthday = '11/12/1990';
+        person.birthday = '11/12/1990';
         person.office_phone = '2345';
         person.blood_group = 'A+';
         person.additional_emails = 'asdf';

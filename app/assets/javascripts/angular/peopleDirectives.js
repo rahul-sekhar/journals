@@ -44,7 +44,7 @@ angular.module('journals.people.directives', ['journals.assets', 'journals.curre
       ];
       if (type === 'Student') {
         fields.unshift(
-          {name: "Birthday", slug: "formatted_birthday", type: "date", filter: "dateWithAge"},
+          {name: "Birthday", slug: "birthday", type: "date", filter: "dateWithAge"},
           {name: "Blood Group", slug: "blood_group"}
         );
       }

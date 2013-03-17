@@ -17,14 +17,14 @@ Given /^a student Parvathy exists$/ do
     address: "Apartment,\nThe hill,\nDarjeeling - 10",
     home_phone: '5678',
     office_phone: '1432',
-    formatted_birthday: '25-12-1996',
+    birthday: '25-12-1996',
     blood_group: 'B+'
   )
 end
 
 Given /^a guardian Poonam exists for that student$/ do
   @guardian = @profile.guardians.create!(
-    full_name: "Poonam Jain", 
+    full_name: "Poonam Jain",
     email: "poonam@mail.com",
     mobile: "987654",
     address: "A house,\n\nSomewhere",

@@ -26,9 +26,6 @@ class PagesController < ApplicationController
     filter_and_display_people( mentees )
   end
 
-  def change_password
-  end
-
   def update_password
 
     if params['user']
@@ -39,19 +36,19 @@ class PagesController < ApplicationController
     if @current_pass.present? && @new_pass.present?
       current_user.current_password = @current_pass
       current_user.new_password = @new_pass
-        
+
       if current_user.save
         redirect_to posts_path, notice: "Password changed successfully"
       else
         redirect_to change_password_path, alert: current_user.errors.full_messages.first
       end
-    
+
     elsif @current_pass.blank?
       redirect_to change_password_path, alert: "Please enter your current password"
 
     elsif @new_pass.blank?
       redirect_to change_password_path, alert: "Please enter a new password"
-    
+
     end
   end
 end

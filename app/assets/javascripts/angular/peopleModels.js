@@ -18,7 +18,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
           archiveExtension()
         ],
         saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
-          'address', 'blood_group', 'formatted_birthday', 'additional_emails', 'notes'],
+          'address', 'blood_group', 'birthday', 'additional_emails', 'notes'],
         defaultData: { type: 'Student' }
       });
 
@@ -71,7 +71,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
     var peopleInterface = {};
 
     peopleInterface.load = function (url) {
-      return ajax({ url: url, method: 'GET' }).
+      return ajax({ url: url }).
         then(function (response) {
           var people, metadata;
 
@@ -94,7 +94,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
     };
 
     peopleInterface.loadProfile = function (url) {
-      return ajax({ url: url, method: 'GET' }).
+      return ajax({ url: url }).
         then(function (response) {
           var people, person;
           person = response.data;

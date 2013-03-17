@@ -8,17 +8,16 @@ Journals::Application.routes.draw do
   get "people" => "pages#people"
   get "people/archived" => "pages#archived", as: "archived_people"
   get "mentees" => "pages#mentees"
-  get "change_password" => "pages#change_password"
   put "change_password" => "pages#update_password"
 
   get "user" => "pages#user"
 
-  resources :posts do
-    resources :comments, only: [:create, :edit, :update, :destroy]
+  resources :posts, except: [:new, :edit] do
+    resources :comments, only: [:create, :update, :destroy]
   end
 
-  resources :students do
-    resources :guardians, only: [:new, :create, :destroy] do
+  resources :students, except: [:new, :edit] do
+    resources :guardians, only: [:create, :destroy] do
       collection do
         get :check_duplicates
       end
@@ -38,7 +37,7 @@ Journals::Application.routes.draw do
     end
   end
 
-  resources :teachers do
+  resources :teachers, except: [:new, :edit] do
     member do
       post :reset
       post :archive
@@ -51,13 +50,13 @@ Journals::Application.routes.draw do
     end
   end
 
-  resources :guardians, only: [:show, :edit, :update] do
+  resources :guardians, only: [:show, :update] do
     member do
       post :reset
     end
   end
 
-  resources :groups
+  resources :groups, except: [:new, :edit]
 
   match "*not_found", :to => "errors#not_found"
 end
