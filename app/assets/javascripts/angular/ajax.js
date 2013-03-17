@@ -4,12 +4,15 @@ angular.module('journals.ajax', ['journals.messageHandler']).
 
   factory('ajax', ['$http', 'messageHandler', '$q', function ($http, messageHandler, $q) {
     return function (options) {
-      var defaults = {
+      var defaults, urlParts;
+
+      defaults = {
         method: 'GET',
         data: null,
         params: null,
         notification: 'Done',
-        error: 'An error occured - please contact us if this problem persists'
+        error: 'An error occured - please contact us if this problem persists',
+        addExtension: true
       };
       options = angular.extend(defaults, options);
 
@@ -21,6 +24,12 @@ angular.module('journals.ajax', ['journals.messageHandler']).
           options.process = 'Saving...'
         }
       };
+
+      if (options.addExtension) {
+        urlParts = options.url.split('?');
+        urlParts[0] += '.json';
+        options.url = urlParts.join('?');
+      }
 
       messageHandler.showProcess(options.process);
       return $http({ url: options.url, method: options.method, data: options.data, params: options.params }).

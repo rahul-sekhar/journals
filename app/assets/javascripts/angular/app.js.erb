@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('journals', ['journals.user', 'journals.people', 'journals.editInPlace',
-  'journals.filters', 'journals.pagination', 'journals.onType', 'journals.modal', 'journals.directives']).
+angular.module('journals', ['journals.user', 'journals.people', 'journals.posts', 'journals.editInPlace',
+  'journals.filters', 'journals.pagination', 'journals.modal', 'journals.directives']).
 
   config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
@@ -30,6 +30,12 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.editIn
       when('/login', {redirectTo: '/'}).
 
       when('/', {redirectTo: '/people'}).
+
+      when('/posts/:id', {
+        templateUrl: '<%= asset_path("posts.html") %>',
+        controller: 'ViewPostCtrl',
+        reloadOnSearch: false
+      }).
 
       when('/people', {
         templateUrl: '<%= asset_path("people.html") %>',

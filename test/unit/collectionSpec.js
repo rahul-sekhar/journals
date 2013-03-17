@@ -27,7 +27,7 @@ describe('Collection module', function() {
 
         describe('on success', function() {
           beforeEach(function() {
-            httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
+            httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
             result = collection.all();
           });
 
@@ -68,7 +68,7 @@ describe('Collection module', function() {
 
         describe('on failure', function() {
           beforeEach(function() {
-            httpBackend.expectGET('/objects').respond(400);
+            httpBackend.expectGET('/objects.json').respond(400);
             result = collection.all();
           });
 
@@ -90,7 +90,7 @@ describe('Collection module', function() {
             it('contacts the server once the timeout is finished if called again', function() {
               timeout.flush();
               httpBackend.verifyNoOutstandingRequest();
-              httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}]);
+              httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}]);
               var newResult = collection.all();
               httpBackend.verifyNoOutstandingExpectation();
               httpBackend.flush();
@@ -113,7 +113,7 @@ describe('Collection module', function() {
           describe('on success', function() {
             describe('when the object is found', function() {
               beforeEach(function() {
-                httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
+                httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
                 promise = collection.get(2);
                 promise.then(success, error);
               });
@@ -136,7 +136,7 @@ describe('Collection module', function() {
 
             describe('when the object is not found', function() {
               beforeEach(function() {
-                httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
+                httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
                 promise = collection.get(3);
                 promise.then(success, error);
               });
@@ -151,7 +151,7 @@ describe('Collection module', function() {
 
           describe('on failure', function() {
             beforeEach(function() {
-              httpBackend.expectGET('/objects').respond(400);
+              httpBackend.expectGET('/objects.json').respond(400);
               promise = collection.get(2);
               promise.then(success, error);
             });
@@ -166,7 +166,7 @@ describe('Collection module', function() {
 
         describe('with both all and get called', function() {
           beforeEach(function() {
-            httpBackend.expectGET('/objects').respond([]);
+            httpBackend.expectGET('/objects.json').respond([]);
             collection.all();
             collection.get(2);
           });
@@ -178,7 +178,7 @@ describe('Collection module', function() {
 
         describe('with the collection loaded', function() {
           beforeEach(function() {
-            httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
+            httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
             collection.all();
             httpBackend.flush();
             promise = collection.get(2);
@@ -200,7 +200,7 @@ describe('Collection module', function() {
         var instances, result;
 
         beforeEach(function() {
-          httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
+          httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
           instances = collection.all();
           httpBackend.flush();
           result = collection.add({data: 'something'});
@@ -219,7 +219,7 @@ describe('Collection module', function() {
         var instances, result;
 
         beforeEach(function() {
-          httpBackend.expectGET('/objects').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
+          httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
           instances = collection.all();
           httpBackend.flush();
           model.create.reset();
@@ -285,7 +285,7 @@ describe('Collection module', function() {
 
       describe('all()', function() {
         it('sends a request to the custom path', function() {
-          httpBackend.expectGET('/custom/path').respond([]);
+          httpBackend.expectGET('/custom/path.json').respond([]);
           collection.all();
           httpBackend.verifyNoOutstandingExpectation();
         });

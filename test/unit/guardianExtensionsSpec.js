@@ -76,7 +76,7 @@ describe('guardian extensions module', function () {
           describe('if the promise is resolved with 0', function () {
             describe('on success', function () {
               beforeEach(function () {
-                httpBackend.expectPOST('/students/3/guardians', 'some data').respond(200, 'data');
+                httpBackend.expectPOST('/students/3/guardians.json', 'some data').respond(200, 'data');
                 instance._parent = { id: 3 };
                 instance.formatHttpData = function () { return 'some data' };
                 deferred.resolve(0);
@@ -96,7 +96,7 @@ describe('guardian extensions module', function () {
 
             describe('on failure', function () {
               beforeEach(function () {
-                httpBackend.expectPOST('/students/3/guardians', 'some data').respond(400);
+                httpBackend.expectPOST('/students/3/guardians.json', 'some data').respond(400);
                 instance._parent = { id: 3 };
                 instance.formatHttpData = function () { return 'some data' };
                 instance.delete = jasmine.createSpy();
@@ -115,7 +115,7 @@ describe('guardian extensions module', function () {
             var newInstance;
 
             beforeEach(function () {
-              httpBackend.expectPOST('/students/3/guardians', { guardian_id: 1 }).respond(200, 'data');
+              httpBackend.expectPOST('/students/3/guardians.json', { guardian_id: 1 }).respond(200, 'data');
 
               newInstance = { data: 'val' };
               spyOn(Guardians, 'update').andReturn(newInstance);
@@ -158,7 +158,7 @@ describe('guardian extensions module', function () {
 
       httpBackend = $httpBackend;
 
-      student = { id: 5, full_name: 'Student name', url: function () { return '/students/5' }};
+      student = { id: 5, name: 'Student name', url: function () { return '/students/5' }};
       guardian = { _parent: student, full_name: 'Guardian name' };
 
       success = jasmine.createSpy();
@@ -167,7 +167,7 @@ describe('guardian extensions module', function () {
 
     describe('with an error response', function () {
       beforeEach(function () {
-        httpBackend.expectGET('/students/5/guardians/check_duplicates?name=Guardian+name').respond(400);
+        httpBackend.expectGET('/students/5/guardians/check_duplicates.json?name=Guardian+name').respond(400);
         promise = checkDuplicateGuardians(guardian);
         promise.then(success, error);
       });
@@ -184,7 +184,7 @@ describe('guardian extensions module', function () {
 
     describe('with an empty response', function() {
       beforeEach(function () {
-        httpBackend.expectGET('/students/5/guardians/check_duplicates?name=Guardian+name').respond([]);
+        httpBackend.expectGET('/students/5/guardians/check_duplicates.json?name=Guardian+name').respond([]);
         promise = checkDuplicateGuardians(guardian);
         promise.then(success, error);
         httpBackend.flush();
@@ -201,7 +201,7 @@ describe('guardian extensions module', function () {
       beforeEach(inject(function ($q) {
         deferred = $q.defer();
 
-        httpBackend.expectGET('/students/5/guardians/check_duplicates?name=Guardian+name').
+        httpBackend.expectGET('/students/5/guardians/check_duplicates.json?name=Guardian+name').
           respond([{id: 5, students: 'sam'}, {id: 7, students: 'tim and tom'}]);
         promise = checkDuplicateGuardians(guardian);
         promise.then(success, error);

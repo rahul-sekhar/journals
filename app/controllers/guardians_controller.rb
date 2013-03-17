@@ -2,6 +2,11 @@ class GuardiansController < ApplicationController
   load_and_authorize_resource
   skip_authorize_resource only: :check_duplicates
 
+  def all
+    authorize! :read, Guardian
+    @guardian = Guardian.all
+  end
+
   def show
     @students = @guardian.ordered_students.load_associations
   end

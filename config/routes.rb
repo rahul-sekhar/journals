@@ -54,6 +54,10 @@ Journals::Application.routes.draw do
     member do
       post :reset
     end
+
+    collection do
+      get :all
+    end
   end
 
   resources :groups, except: [:new, :edit]

@@ -5,9 +5,8 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
 
   /*---- Students collection -----*/
 
-  factory('Students', ['model', 'collection', 'Guardians', 'association',
-    'resetPasswordExtension', 'archiveExtension',
-    function (model, collection, Guardians, association, resetPasswordExtension, archiveExtension) {
+  factory('Students', ['model', 'collection', 'association', 'resetPasswordExtension', 'archiveExtension',
+    function (model, collection, association, resetPasswordExtension, archiveExtension) {
 
       var studentModel = model('student', '/students', {
         extensions: [
@@ -62,7 +61,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
           defaultData: { type: 'Guardian' }
       });
 
-      return collection(guardianModel);
+      return collection(guardianModel, { url: '/guardians/all' });
     }]).
 
   /*---------- People interface ------------*/

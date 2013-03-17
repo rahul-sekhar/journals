@@ -37,11 +37,11 @@ Scenario: View a student with mentors, add and remove mentors
   And I should see "shalini" in the list
   And I should see "aditya" in the list
 
-  When I click "Aditya Pandya" in the list
+  When I click "Aditya" in the list
   Then I should not see "aditya" in the list
   And I should see "aditya" in its mentors
 
-  When I remove the mentor "angela jain" from it
+  When I remove the mentor "angela" from it
   Then I should not see "angela" in its mentors
   And I should see "sharad" in its mentors
   And I should see "aditya" in its mentors
@@ -95,7 +95,7 @@ Scenario: View a teacher with mentees, add and remove mentees
   Then I should not see "jumble" in the list
   And I should see "jumble" in its mentees
 
-  When I remove the mentee "lucky sekhar" from it
+  When I remove the mentee "lucky" from it
   Then I should not see "lucky" in its mentees
   And I should see "roly" in its mentees
   And I should see "jumble" in its mentees
@@ -133,7 +133,7 @@ Scenario: Changes in mentors show in associated mentees
 
   When I look at the profile for "Roly Sekhar"
   And I open the mentors menu in it
-  When I remove the mentor "shalini sekhar" from it
+  When I remove the mentor "shalini" from it
   And I look at the profile for "Shalini Sekhar"
   Then I should not see "roly" in its mentees
 
@@ -165,7 +165,7 @@ Scenario: Changes in mentees show in associated mentors
 
   When I look at the profile for "Shalini Sekhar"
   And I open the mentees menu in it
-  And I remove the mentee "lucky sekhar" from it
+  And I remove the mentee "lucky" from it
   And I look at the profile for "Lucky Sekhar"
   Then I should not see "shalini" in its mentors
   And I should see "none" in its mentors

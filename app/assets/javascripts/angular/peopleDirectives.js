@@ -2,7 +2,19 @@
 
 angular.module('journals.people.directives', ['journals.assets', 'journals.currentDate']).
 
-    /* -------------------- Profile fields directive ----------------------- */
+  /* ---------------------- Profile name directive ----------------------- */
+
+  directive('profileName', function () {
+    return {
+      scope: {
+        profile: '=profileName'
+      },
+      template: '<a ng-href="{{profile.url()}}" title="{{profile.name_with_info}}">{{profile.name}}</a>',
+      replace: true
+    };
+  }).
+
+  /* -------------------- Profile fields directive ----------------------- */
 
   directive('profileFields', ['assets', function (assets) {
     return {

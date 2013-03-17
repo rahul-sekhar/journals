@@ -1,4 +1,5 @@
-json.(person, :id, :full_name, :mobile, :home_phone, :office_phone, :email, :additional_emails, :address, :notes)
+json.(person, :id, :full_name, :name, :name_with_info)
+json.(person, :mobile, :home_phone, :office_phone, :email, :additional_emails, :address, :notes)
 json.type person.class.to_s
 json.active person.active?
 json.archived person.archived

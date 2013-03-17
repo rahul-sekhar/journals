@@ -77,7 +77,7 @@ angular.module('journals.people.guardianExtensions', ['journals.ajax', 'journals
         } else if (response.data.length > 0) {
           scope.duplicates = response.data;
           scope.guardianName = guardian.full_name;
-          scope.studentName = guardian._parent.full_name;
+          scope.studentName = guardian._parent.name;
           return scope.show();
 
         } else {

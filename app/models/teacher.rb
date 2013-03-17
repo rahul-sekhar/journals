@@ -15,7 +15,7 @@ class Teacher < ActiveRecord::Base
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
 
-  def name_with_type
+  def name_with_info
     "#{full_name} (teacher)"
   end
 

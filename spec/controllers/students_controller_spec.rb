@@ -6,7 +6,7 @@ describe StudentsController do
     ability = Object.new
     ability.extend(CanCan::Ability)
   end
-  before do 
+  before do
     controller.stub(:current_user).and_return(user)
     controller.stub(:current_ability).and_return(ability)
     ability.can :manage, Student
@@ -75,9 +75,7 @@ describe StudentsController do
 
 
   describe "GET all" do
-    let(:user){ create(:teacher_with_user).user }
-
-    it "raises an exception if the user cannot view teachers" do
+    it "raises an exception if the user cannot view students" do
       ability.cannot :read, Student
       expect{ get :all, format: :json }.to raise_exception(CanCan::AccessDenied)
     end
@@ -112,7 +110,7 @@ describe StudentsController do
       ability.cannot :read, student
       expect{ get :show, id: 5, format: :json }.to raise_exception(CanCan::AccessDenied)
     end
-    
+
     it "has a status of 200" do
       get :show, id: 5, format: :json
       response.status.should eq(200)
@@ -239,7 +237,7 @@ describe StudentsController do
         make_request
         student.reload.mobile.should_not == "1234"
       end
-      
+
       it "has a status of 422" do
         make_request
         response.status.should eq(422)

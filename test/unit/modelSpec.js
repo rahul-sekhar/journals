@@ -81,7 +81,7 @@ describe('Model module', function () {
 
           describe('on success', function () {
             beforeEach(function () {
-              httpBackend.expectPOST('/objects', { object: { name: 'New model' }}).respond({ id: 1, name: 'Something' });
+              httpBackend.expectPOST('/objects.json', { object: { name: 'New model' }}).respond({ id: 1, name: 'Something' });
               instance.name = 'New model'
               instance.save();
             });
@@ -99,7 +99,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectPOST('/objects').respond(400, 'Some error');
+              httpBackend.expectPOST('/objects.json').respond(400, 'Some error');
               instance.name = 'New model'
               instance.save();
             });
@@ -120,7 +120,7 @@ describe('Model module', function () {
 
           describe('on success', function () {
             beforeEach(function () {
-              httpBackend.expectPUT('/objects/5', { object: { name: 'Some name' }}).respond({ id: 5, name: 'Something' });
+              httpBackend.expectPUT('/objects/5.json', { object: { name: 'Some name' }}).respond({ id: 5, name: 'Something' });
               instance.save();
             });
 
@@ -136,7 +136,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectPUT('/objects/5').respond(400, 'Some error');
+              httpBackend.expectPUT('/objects/5.json').respond(400, 'Some error');
               spyOn(instance, 'delete');
               instance.save();
             });
@@ -205,7 +205,7 @@ describe('Model module', function () {
 
           describe('on success', function () {
             beforeEach(function () {
-              httpBackend.expectPUT('/objects/5', { object: { name: 'Changed name' } }).
+              httpBackend.expectPUT('/objects/5.json', { object: { name: 'Changed name' } }).
                 respond({ id: 5, name: 'Changed again', field: 'Changed too' });
               instance.updateField('name', 'Changed name');
             });
@@ -227,7 +227,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectPUT('/objects/5').respond(400);
+              httpBackend.expectPUT('/objects/5.json').respond(400);
               instance.updateField('name', 'Changed name');
             });
 
@@ -258,7 +258,7 @@ describe('Model module', function () {
 
           describe('on success', function () {
             beforeEach(function () {
-              httpBackend.expectDELETE('/objects/5').respond(200);
+              httpBackend.expectDELETE('/objects/5.json').respond(200);
               instance.delete();
             });
 
@@ -275,7 +275,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectDELETE('/objects/5').respond(400);
+              httpBackend.expectDELETE('/objects/5.json').respond(400);
               instance.delete();
             });
 
@@ -297,7 +297,7 @@ describe('Model module', function () {
       }));
 
       it('only sends the set fields to the server', function () {
-        httpBackend.expectPUT('/objects/3', {object: { field2: 'val2', field4: 'val4' }}).respond(200);
+        httpBackend.expectPUT('/objects/3.json', {object: { field2: 'val2', field4: 'val4' }}).respond(200);
         instance.save();
         httpBackend.verifyNoOutstandingExpectation();
       });
@@ -399,7 +399,7 @@ describe('Model module', function () {
           extension2.reset();
           extension2.setup.reset();
 
-          httpBackend.expectPUT('/objects/3', {
+          httpBackend.expectPUT('/objects/3.json', {
             object: { name: 'Something' }
           }).respond({id: 3, name: 'Something Else', last: 'server'});
 
@@ -562,7 +562,7 @@ describe('Model module', function () {
         describe('addAssoc(instance, local)', function () {
           describe('on success', function () {
             beforeEach(function () {
-              httpBackend.expectPOST('/objects/3/assocs/5').respond(200);
+              httpBackend.expectPOST('/objects/3/assocs/5.json').respond(200);
               model.assocs = [{id: 1, name: "One"}, {id: 2, name: "Two"}];
               model.addAssoc({id: 5, name: "Five"});
             });
@@ -580,7 +580,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectPOST('/objects/3/assocs/5').respond(400);
+              httpBackend.expectPOST('/objects/3/assocs/5.json').respond(400);
               model.assocs = [{id: 1, name: "One"}, {id: 2, name: "Two"}];
               model.addAssoc({id: 5, name: "Five"});
               httpBackend.flush();
@@ -612,7 +612,7 @@ describe('Model module', function () {
             var obj;
 
             beforeEach(function () {
-              httpBackend.expectDELETE('/objects/3/assocs/1').respond(200);
+              httpBackend.expectDELETE('/objects/3/assocs/1.json').respond(200);
               model.assocs = [{id: 1, name: "One"}, {id: 2, name: "Two"}];
               obj = model.assocs[0];
               model.removeAssoc(obj);
@@ -637,7 +637,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectDELETE('/objects/3/assocs/1').respond(400);
+              httpBackend.expectDELETE('/objects/3/assocs/1.json').respond(400);
               model.assocs = [{id: 1, name: "One"}, {id: 2, name: "Two"}];
               model.removeAssoc(model.assocs[0]);
               httpBackend.flush();
@@ -730,7 +730,7 @@ describe('Model module', function () {
         describe('without local set', function () {
           describe('on success', function () {
             beforeEach(function () {
-              httpBackend.expectPOST('/objects/3/assocs/2').respond(200);
+              httpBackend.expectPOST('/objects/3/assocs/2.json').respond(200);
               model.addAssoc(instance2);
             });
 
@@ -746,7 +746,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectPOST('/objects/3/assocs/2').respond(400);
+              httpBackend.expectPOST('/objects/3/assocs/2.json').respond(400);
               model.addAssoc(instance2);
               httpBackend.flush();
             });
@@ -776,7 +776,7 @@ describe('Model module', function () {
         describe('without local set', function () {
           describe('on success', function () {
             beforeEach(function () {
-              httpBackend.expectDELETE('/objects/3/assocs/2').respond(200);
+              httpBackend.expectDELETE('/objects/3/assocs/2.json').respond(200);
               model.removeAssoc(instance2);
             });
 
@@ -792,7 +792,7 @@ describe('Model module', function () {
 
           describe('on failure', function () {
             beforeEach(function () {
-              httpBackend.expectDELETE('/objects/3/assocs/2').respond(400);
+              httpBackend.expectDELETE('/objects/3/assocs/2.json').respond(400);
               model.removeAssoc(instance2);
               httpBackend.flush();
             });
@@ -814,6 +814,219 @@ describe('Model module', function () {
         });
       });
     });
+  });
+
+  /*---------------- Single association ---------------------*/
+
+  describe('singleAssociation', function () {
+    var extension, collection, model, deferred;
+
+    beforeEach(function () {
+      collection = {};
+
+      module(function ($provide) {
+        $provide.value('collection', collection);
+      });
+    });
+
+    describe('with defaults', function () {
+      beforeEach(inject(function (singleAssociation, $q) {
+        deferred = $q.defer();
+
+        // get resolves promises with a string for each instance
+        // it rejects the promise for an ID of 6
+        collection.get = jasmine.createSpy().andCallFake(function (id) {
+          return deferred.promise.
+            then(function () {
+              if (id == 6) {
+                return $q.reject();
+              }
+              return 'instance ' + id;
+            });
+        });
+
+        extension = singleAssociation('collection', 'assoc');
+      }));
+
+      describe('with no association id field present', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something' };
+          extension(model);
+        });
+
+        it('does not get any association models', function () {
+          expect(collection.get).not.toHaveBeenCalled();
+        });
+
+        it('does nothing to the model', function () {
+          expect(model).toEqual({ id: 3, name: 'Something' });
+        });
+      });
+
+      describe('with an association field', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something',  assoc_id: 3 };
+          extension(model);
+        });
+
+        it('gets a model', function () {
+          expect(collection.get.callCount).toEqual(1);
+          expect(collection.get.argsForCall[0][0]).toEqual(3);
+        });
+
+        it('does not add an association yet', function () {
+          expect(model.assoc).toBeUndefined;
+        });
+
+        it('sets the association field to the resolved instance', inject(function ($rootScope) {
+          deferred.resolve();
+          $rootScope.$apply();
+          expect(model.assoc).toEqual('instance 3');
+        }));
+      });
+
+      describe('with an invalid association field', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something',  assoc_id: 6 };
+          extension(model);
+        });
+
+        it('does not set the association field', inject(function ($rootScope) {
+          deferred.resolve();
+          $rootScope.$apply();
+          expect(model.assoc).toBeUndefined();
+        }));
+      });
+    });
+
+    describe('with polymorphic set', function () {
+      var otherCollection;
+
+      beforeEach(function () {
+        otherCollection = {};
+
+        module(function ($provide) {
+          $provide.value('otherCollection', otherCollection);
+        });
+      });
+
+      beforeEach(inject(function (singleAssociation, $q) {
+        deferred = $q.defer();
+
+        collection.get = jasmine.createSpy().andCallFake(function (id) {
+          return deferred.promise.then(function () { return 'instance ' + id; });
+        });
+
+        otherCollection.get = jasmine.createSpy().andCallFake(function (id) {
+          return deferred.promise.then(function () { return 'otherInstance ' + id; });
+        });
+
+        extension = singleAssociation('type_attr', 'assoc', { polymorphic: function(type) {
+          return type + 'ection';
+        } });
+      }));
+
+      describe('with no association id field present', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something' };
+          extension(model);
+        });
+
+        it('does nothing to the model', function () {
+          expect(model).toEqual({ id: 3, name: 'Something' });
+        });
+      });
+
+      describe('with an association field of a type collection', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something',  assoc_id: 3, type_attr: 'coll' };
+          extension(model);
+        });
+
+        it('gets a model from collection', function () {
+          expect(collection.get.callCount).toEqual(1);
+          expect(collection.get.argsForCall[0][0]).toEqual(3);
+        });
+
+        it('sets the association field to the resolved instance', inject(function ($rootScope) {
+          deferred.resolve();
+          $rootScope.$apply();
+          expect(model.assoc).toEqual('instance 3');
+        }));
+      });
+
+      describe('with an association field of a type otherCollection', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something',  assoc_id: 3, type_attr: 'otherColl' };
+          extension(model);
+        });
+
+        it('gets a model from otherCollection', function () {
+          expect(otherCollection.get.callCount).toEqual(1);
+          expect(otherCollection.get.argsForCall[0][0]).toEqual(3);
+        });
+
+        it('sets the association field to the resolved instance', inject(function ($rootScope) {
+          deferred.resolve();
+          $rootScope.$apply();
+          expect(model.assoc).toEqual('otherInstance 3');
+        }));
+      });
+
+      describe('with an invalid type', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something',  assoc_id: 3, type_attr: 'unknownColl' };
+        });
+
+        it('raises an error', function () {
+          expect(function() {
+            extension(model)
+          }).toThrow('Unknown provider: unknownCollectionProvider <- unknownCollection');
+        });
+      });
+    });
+
+    describe('with loaded set to true', function () {
+      beforeEach(inject(function (singleAssociation) {
+
+        collection.update = jasmine.createSpy().andCallFake(function (obj) {
+          return obj + ' instance';
+        });
+        extension = singleAssociation('collection', 'assoc', { loaded: true });
+      }));
+
+      describe('with no association field present', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something' };
+          extension(model);
+        });
+
+        it('does not update the association collection', function () {
+          expect(collection.update).not.toHaveBeenCalled();
+        });
+
+        it('leaves the model as it is', function () {
+          expect(model).toEqual({ id: 3, name: 'Something' });
+        });
+      });
+
+      describe('with an association field', function () {
+        beforeEach(function () {
+          model = { id: 3, name: 'Something',  assoc: 'something' };
+          extension(model);
+        });
+
+        it('updates the association collection with each association', function () {
+          expect(collection.update.callCount).toEqual(1);
+          expect(collection.update.argsForCall[0][0]).toEqual('something');
+        });
+
+        it('sets the association object to the returned instance', function () {
+          expect(model.assoc).toEqual('something instance');
+        });
+      });
+    });
+
   });
 });
 

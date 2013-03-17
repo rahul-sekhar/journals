@@ -19,7 +19,7 @@ class Guardian < ActiveRecord::Base
     students.length
   end
 
-  def name_with_type
+  def name_with_info
     if students.length == 1
       student_names = students.first.full_name
 

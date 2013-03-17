@@ -133,7 +133,55 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
   }]).
 
 
-  /*------------ model association extension -------------*/
+  /*------------ model association extensions -------------*/
+
+  factory('singleAssociation', ['ajax', '$injector', function (ajax, $injector) {
+    return function (targetString, name, options) {
+      var defaults = {
+        loaded: false,
+        polymorphic: false
+      };
+      options = angular.extend(defaults, options);
+
+      var assocName = name;
+      var idsName = name + '_id';
+      var capitalizedName = name.substring(0, 1).toUpperCase() + name.substring(1);
+
+      var singleAssociation = function (instance) {
+        var targetCollection, tmpTargetString;
+
+        // Load the association collection from an attribute if polymorphic is set
+        if (options.polymorphic) {
+          if (!instance[targetString]) {
+            return;
+          }
+          tmpTargetString = options.polymorphic(instance[targetString]);
+          targetCollection = $injector.get(tmpTargetString);
+        }
+        else {
+          targetCollection = $injector.get(targetString);
+        }
+
+        // For preloaded objects
+        if (options.loaded) {
+          if (instance[assocName]) {
+            instance[assocName] = targetCollection.update(instance[assocName]);
+          }
+        }
+
+        // For objects that need to be loaded
+        else {
+          if (instance[idsName]) {
+            targetCollection.get(instance[idsName]).then(function (match) {
+              instance[assocName] = match;
+            });
+          }
+        }
+      };
+
+      return singleAssociation;
+    };
+  }]).
 
   factory('association', ['arrayHelper', 'ajax', '$injector', function (arrayHelper, ajax, $injector) {
     return function (targetString, name, options) {

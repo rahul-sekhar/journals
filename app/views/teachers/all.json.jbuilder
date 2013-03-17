@@ -1,4 +1,3 @@
 json.array!(@teachers) do |teacher|
-  json.type 'Teacher'
-  json.(teacher, :id, :full_name)
+  json.partial! "shared/person_short", person: teacher
 end

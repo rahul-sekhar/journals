@@ -136,7 +136,7 @@ describe('people models module', function () {
       });
 
       it('calls the collection with the model object', function () {
-        expect(collection).toHaveBeenCalledWith('model');
+        expect(collection).toHaveBeenCalledWith('model', { url: '/guardians/all' });
       });
 
       it('returns the collection object', function () {
@@ -170,7 +170,7 @@ describe('people models module', function () {
     describe('load()', function () {
       describe('for an invalid type', function () {
         beforeEach(function () {
-          httpBackend.expectGET('/path').respond({
+          httpBackend.expectGET('/path.json').respond({
             items: [{id: 1, type: 'Something', name: "One"}, {id: 2, type: 'Teacher', name: "Two"}]
           });
           peopleInterface.load('/path');
@@ -183,7 +183,7 @@ describe('people models module', function () {
 
       describe('on success', function () {
         beforeEach(function () {
-          httpBackend.expectGET('/path').respond({
+          httpBackend.expectGET('/path.json').respond({
             data: 'value',
             other_data: 'other_value',
             items: [{id: 1, type: 'Student', name: "One"}, {id: 2, type: 'Teacher', name: "Two"}, {id: 3, type: 'Student'}]
@@ -240,7 +240,7 @@ describe('people models module', function () {
 
       describe('on failure', function () {
         beforeEach(function () {
-          httpBackend.expectGET('/path').respond(400);
+          httpBackend.expectGET('/path.json').respond(400);
           promise = peopleInterface.load('/path');
           promise.then(success, error);
         });
@@ -259,7 +259,7 @@ describe('people models module', function () {
     describe('loadProfile()', function () {
       describe('for an invalid type', function () {
         beforeEach(function () {
-          httpBackend.expectGET('/path').respond({ id: 1, type: 'Something', name: "One"});
+          httpBackend.expectGET('/path.json').respond({ id: 1, type: 'Something', name: "One"});
           peopleInterface.loadProfile('/path');
         });
 
@@ -271,7 +271,7 @@ describe('people models module', function () {
       describe('on success', function () {
         describe('for a student', function () {
           beforeEach(function () {
-            httpBackend.expectGET('/path').respond({id: 5, type: 'Student', full_name: 'Something', field: 'val'});
+            httpBackend.expectGET('/path.json').respond({id: 5, type: 'Student', full_name: 'Something', field: 'val'});
             promise = peopleInterface.loadProfile('/path');
             promise.then(success, error);
           });
@@ -318,7 +318,7 @@ describe('people models module', function () {
 
         describe('for a teacher', function () {
           beforeEach(function () {
-            httpBackend.expectGET('/path').respond({id: 5, type: 'Teacher', full_name: 'Something', field: 'val'});
+            httpBackend.expectGET('/path.json').respond({id: 5, type: 'Teacher', full_name: 'Something', field: 'val'});
             promise = peopleInterface.loadProfile('/path');
             promise.then(success, error);
             httpBackend.flush();
@@ -347,7 +347,7 @@ describe('people models module', function () {
 
         describe('for a guardian', function () {
           beforeEach(function () {
-            httpBackend.expectGET('/path').respond({
+            httpBackend.expectGET('/path.json').respond({
               id: 5,
               type: 'Guardian',
               full_name: 'Something',
@@ -388,7 +388,7 @@ describe('people models module', function () {
 
       describe('on failure', function () {
         beforeEach(function () {
-          httpBackend.expectGET('/path').respond(400);
+          httpBackend.expectGET('/path.json').respond(400);
           promise = peopleInterface.loadProfile('/path');
           promise.then(success, error);
         });
@@ -462,7 +462,7 @@ describe('people models module', function () {
       describe('resetPassword()', function () {
         describe('on success', function () {
           beforeEach(function () {
-            httpBackend.expectPOST('/objects/7/reset').respond(200);
+            httpBackend.expectPOST('/objects/7/reset.json').respond(200);
             instance.resetPassword();
           });
 
@@ -479,7 +479,7 @@ describe('people models module', function () {
 
         describe('on failure', function () {
           beforeEach(function () {
-            httpBackend.expectPOST('/objects/7/reset').respond(400);
+            httpBackend.expectPOST('/objects/7/reset.json').respond(400);
             instance.resetPassword();
           });
 
@@ -518,7 +518,7 @@ describe('people models module', function () {
       describe('toggleArchive()', function () {
         describe('on success', function () {
           beforeEach(function () {
-            httpBackend.expectPOST('/objects/7/archive').respond(200);
+            httpBackend.expectPOST('/objects/7/archive.json').respond(200);
             instance.toggleArchive();
           });
 
@@ -535,7 +535,7 @@ describe('people models module', function () {
 
         describe('on failure', function () {
           beforeEach(function () {
-            httpBackend.expectPOST('/objects/7/archive').respond(400);
+            httpBackend.expectPOST('/objects/7/archive.json').respond(400);
             instance.toggleArchive();
           });
 

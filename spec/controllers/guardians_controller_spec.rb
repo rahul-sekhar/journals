@@ -12,6 +12,27 @@ describe GuardiansController do
     ability.can :manage, Guardian
   end
 
+  describe "GET all" do
+    it "raises an exception if the user cannot view guardians" do
+      ability.cannot :read, Guardian
+      expect{ get :all, format: :json }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      get :all, format: :json
+      response.status.should == 200
+    end
+
+    it "assigns any guardians into a guardians collection" do
+      teacher = create(:teacher)
+      student = create(:student)
+      guardian1 = create(:guardian, students: [create(:student), student])
+      guardian2 = create(:guardian, students: [student])
+      get :all, format: :json
+      assigns(:guardians).should =~ [guardian1, guardian2]
+    end
+  end
+
   describe "GET show" do
     let(:guardian){ mock_model(Guardian) }
     let(:make_request){ get :show, id: 5, format: :json }

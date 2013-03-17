@@ -8,7 +8,7 @@ describe('User module', function() {
 
     beforeEach(inject(function($injector, $httpBackend) {
       httpBackend = $httpBackend;
-      httpBackend.expectGET('/user').respond({type: 'Student', other: 'something'});
+      httpBackend.expectGET('/user.json').respond({type: 'Student', other: 'something'});
       User = $injector.get('User');
     }));
 
@@ -31,7 +31,7 @@ describe('User module', function() {
 
     beforeEach(inject(function($injector, $httpBackend) {
       httpBackend = $httpBackend;
-      httpBackend.expectGET('/user').respond(404);
+      httpBackend.expectGET('/user.json').respond(404);
       User = $injector.get('User');
     }));
 
@@ -46,13 +46,13 @@ describe('User module', function() {
 
     it('reloads the user object after a timeout until a valid response is recieved', inject(function($timeout) {
       httpBackend.flush();
-      httpBackend.expectGET('/user').respond(404, 'Some error');
+      httpBackend.expectGET('/user.json').respond(404, 'Some error');
       httpBackend.verifyNoOutstandingRequest();
       $timeout.flush();
       httpBackend.verifyNoOutstandingExpectation();
 
       httpBackend.flush();
-      httpBackend.expectGET('/user').respond({type: 'Teacher'});
+      httpBackend.expectGET('/user.json').respond({type: 'Teacher'});
       httpBackend.verifyNoOutstandingRequest();
       $timeout.flush();
       httpBackend.verifyNoOutstandingExpectation();

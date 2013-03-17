@@ -51,10 +51,10 @@ Scenario: Add a guardian that already exists for a different student who is not 
   And I add the guardian "Poonam Jain"
 
   Then I should see "A guardian named Poonam Jain already exists"
-  And I should see an option containing "John Doe is a sibling of Parvathy"
-  And I should see an option containing "John Doe is not a sibling of Parvathy"
+  And I should see an option containing "John is a sibling of Parvathy"
+  And I should see an option containing "John is not a sibling of Parvathy"
 
-  When I select the option containing "John Doe is not a sibling of Parvathy"
+  When I select the option containing "John is not a sibling of Parvathy"
   And I click "Continue"
   Then I should see "Done"
   And I should see the guardian "Poonam Jain"
@@ -76,7 +76,7 @@ Scenario: Add a guardian that already exists for a different student who is a si
   When I am on the page for that profile
   And I look at the profile for "John Doe"
   And I add the guardian "Poonam Jain"
-  And I select the option containing "John Doe is a sibling of Parvathy"
+  And I select the option containing "John is a sibling of Parvathy"
   And I click "Continue"
   Then I should see "Done"
   And I should see the guardian "Poonam Jain"
@@ -101,10 +101,10 @@ Scenario: Add a guardian when multiple guardians with the same name exist with d
   And I add the guardian "Manoj Jain"
 
   Then I should see "A guardian named Manoj Jain already exists"
-  And I should see an option containing "John Doe is a sibling of Parvathy and Roly"
-  And I should see an option containing "John Doe is a sibling of Lucky"
-  And I should see an option containing "John Doe is not a sibling of Parvathy and Roly or Lucky"
-  When I select the option containing "John Doe is a sibling of Lucky"
+  And I should see an option containing "John is a sibling of Parvathy and Roly"
+  And I should see an option containing "John is a sibling of Lucky"
+  And I should see an option containing "John is not a sibling of Parvathy and Roly or Lucky"
+  When I select the option containing "John is a sibling of Lucky"
   And I click "Continue"
   Then I should see "Done"
   And I should see the guardian "Manoj Jain"
