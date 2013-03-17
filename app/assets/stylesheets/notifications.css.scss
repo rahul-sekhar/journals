@@ -32,14 +32,10 @@
     opacity: 1;
     cursor: default;
 
-    @include transition(background-color 300ms ease);
+    @include transition(background-color 200ms ease);
 
     &.error {
       background-color: $dark-brown;
-    }
-
-    &.notification {
-      background-color: $dark-green;
     }
   }
 }

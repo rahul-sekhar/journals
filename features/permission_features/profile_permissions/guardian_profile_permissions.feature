@@ -21,8 +21,8 @@ Scenario: View a teacher profile
 
   And I should not see the manage menu in it
 
-  And I should not see "Remove" in its mentees
-  And I should not see its add mentee list
+  When I open the mentees menu
+  Then I should not see its add mentee list
 
 
 Scenario: View a student profile
@@ -41,11 +41,11 @@ Scenario: View a student profile
 
   And I should not see the manage menu in it
 
-  And I should not see "Remove" in its mentors
-  And I should not see its add mentor list
+  When I open the mentors menu
+  Then I should not see its add mentor list
 
-  And I should not see "Remove" in its groups
-  And I should not see its add group list
+  When I open the groups menu
+  Then I should not see its add group list
 
   And I should not see "ADD GUARDIAN" in it
 
@@ -59,8 +59,11 @@ Scenario: Edit my own profile
   And I should see the add-field menu in it
 
   And I should not see the manage menu in it
-  And I should not see its add mentor list
-  And I should not see its add group list
+
+  When I open the mentors menu
+  Then I should not see its add mentor list
+  When I open the groups menu
+  Then I should not see its add group list
 
   And I should not see "ADD GUARDIAN" in it
 

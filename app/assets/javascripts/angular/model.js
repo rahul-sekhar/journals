@@ -199,7 +199,6 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
         instance['add' + capitalizedName] = function (target, local) {
           instance[assocName].push(target);
           if (local) return;
-
           ajax({ url: instance.url() + '/' + assocName + '/' + target.id, method: 'POST' }).
             then(function () {
               if (options.mirror) target['add' + mirrorName](instance, true);

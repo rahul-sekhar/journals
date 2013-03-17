@@ -120,6 +120,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
               $scope.people = data.people;
               $scope.pageTitle = 'Profile: ' + data.name;
             }, function () {
+              $scope.people = [];
               $scope.pageTitle = 'Profile: Not found';
             });
         };

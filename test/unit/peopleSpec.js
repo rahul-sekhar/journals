@@ -401,8 +401,8 @@ describe('People module', function () {
           scope.$apply();
         });
 
-        it('leaves people as it is', function () {
-          expect(scope.people).toBeUndefined();
+        it('sets people to an empty array', function () {
+          expect(scope.people).toEqual([]);
         });
 
         it('sets the page title', function () {

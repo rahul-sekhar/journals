@@ -16,13 +16,13 @@ angular.module('journals.directives', []).
             '<input ng-model="filter" />' +
             '<ul>' +
               '<li ng-repeat="item in list | filter:filter">' +
-                '<a href="" ng-click="select(item)">{{item[showProperty]}}</a>' +
+                '<a href="" ng-hide="item.deleted" internal-click="select(item)">{{item[showProperty]}}</a>' +
               '</li>' +
             '</ul>' +
           '</div>' +
-          '<a class="add" href="" ng-click="toggleList()">{{buttonText}}</a>' +
+          '<a class="add" href="" internal-click="toggleList()">{{buttonText}}</a>' +
         '</div>',
-      controller: function ($scope) {
+      controller: ['$scope', function ($scope) {
         $scope.toggleList = function () {
           $scope.listShown = !$scope.listShown;
         };
@@ -40,7 +40,18 @@ angular.module('journals.directives', []).
           $scope.filter = '';
           $scope.onSelect({value: item});
         };
-      }
+      }]
+    };
+  }).
+
+  directive('internalClick', function() {
+    return function(scope, elem, attrs) {
+      elem.bind('click', function(event) {
+        event.stopPropagation();
+        scope.$apply(function() {
+          scope.$eval(attrs.internalClick, {$event:event});
+        });
+      });
     };
   }).
 
@@ -64,11 +75,14 @@ angular.module('journals.directives', []).
         });
       });
 
-      container.on('click', 'a', function() {
-        scope.$apply(function () {
-          closeFn();
+      // Don't close the list on click if the attr 'no-auto-close' is present
+      if (attrs.noAutoClose === undefined) {
+        container.on('click', 'a', function(e) {
+          scope.$apply(function () {
+            closeFn();
+          });
         });
-      });
+      }
 
       closeFn = function() {
         container.removeClass('shown');

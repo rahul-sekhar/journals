@@ -30,14 +30,14 @@
 
 %footer.profile-footer
   %div{ "ng-show"=>"person.id" }
-    .groups{ "ng-show"=>"person.type == 'Student'", "click-menu"=>true }
-      %h4.title
-        Groups
-      %div.container
+
+    .groups{ "ng-show"=>"person.type == 'Student'", "click-menu"=>true, "no-auto-close"=>true }
+      %h4.title Groups
+      .container
         %ul.existing
           %li{ "ng-repeat"=>"group in person.groups", "ng-hide"=>"group.deleted" }
             %span {{group.name}}
-            %a.remove{ "href"=>"", "ng-click"=>"person.removeGroup(group)", "ng-show"=>"isTeacher" }
+            %a.remove{ "href"=>"", "internal-click"=>"person.removeGroup(group)", "ng-show"=>"isTeacher" }
           %li{ "ng-hide"=>"person.groups.length" }
             None
 
@@ -45,14 +45,13 @@
           %div{ "ng-switch-when"=>"true" }
             %filtered-list{ "list"=>"person.remainingGroups()", "show-property"=>"name", "on-select"=>"person.addGroup(value)" }
 
-    .mentors{ "ng-show"=>"person.type == 'Student'", "click-menu"=>true }
-      %h4.title
-        {{person.mentors.length > 1 && 'Mentors' || 'Mentor'}}
-      %div.container
+    .mentors{ "ng-show"=>"person.type == 'Student'", "click-menu"=>true, "no-auto-close"=>true }
+      %h4.title {{person.mentors.length > 1 && 'Mentors' || 'Mentor'}}
+      .container
         %ul.existing
           %li{ "ng-repeat"=>"mentor in person.mentors", "ng-hide"=>"mentor.deleted" }
             %span {{mentor.full_name}}
-            %a.remove{ "href"=>"", "ng-click"=>"person.removeMentor(mentor)", "ng-show"=>"isTeacher" }
+            %a.remove{ "href"=>"", "internal-click"=>"person.removeMentor(mentor)", "ng-show"=>"isTeacher" }
           %li{ "ng-hide"=>"person.mentors.length" }
             None
 
@@ -60,14 +59,13 @@
           %div{ "ng-switch-when"=>"true" }
             %filtered-list{ "list"=>"person.remainingMentors()", "show-property"=>"full_name", "on-select"=>"person.addMentor(value)" }
 
-    .mentees{ "ng-show"=>"person.type == 'Teacher'", "click-menu"=>true }
-      %h4.title
-        {{person.mentees.length > 1 && 'Mentees' || 'Mentee'}}
-      %div.container
+    .mentees{ "ng-show"=>"person.type == 'Teacher'", "click-menu"=>true, "no-auto-close"=>true }
+      %h4.title {{person.mentees.length > 1 && 'Mentees' || 'Mentee'}}
+      .container
         %ul.existing
           %li{ "ng-repeat"=>"mentee in person.mentees", "ng-hide"=>"mentee.deleted" }
             %span {{mentee.full_name}}
-            %a.remove{ "href"=>"", "ng-click"=>"person.removeMentee(mentee)", "ng-show"=>"isTeacher" }
+            %a.remove{ "href"=>"", "internal-click"=>"person.removeMentee(mentee)", "ng-show"=>"isTeacher" }
           %li{ "ng-hide"=>"person.mentees.length" }
             None
 

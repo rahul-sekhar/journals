@@ -21,8 +21,8 @@ Scenario: Manage a teacher profile
 
   And I should see the manage menu in it
 
-  And I should see "Remove" in its mentees
-  And I should see its add mentee list
+  When I open the mentees menu
+  Then I should see its add mentee list
 
 
 Scenario: Manage a student profile
@@ -41,11 +41,11 @@ Scenario: Manage a student profile
 
   And I should see the manage menu in it
 
-  And I should see "Remove" in its mentors
-  And I should see its add mentor list
+  When I open the mentors menu
+  Then I should see its add mentor list
 
-  And I should see "Remove" in its groups
-  And I should see its add group list
+  When I open the groups menu
+  Then I should see its add group list
 
   And I should see "ADD GUARDIAN" in it
 

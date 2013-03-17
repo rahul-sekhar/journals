@@ -39,7 +39,8 @@ end
 When /^I open (.*) list$/ do |p_list|
   step "get #{p_list} list"
   button = @list.find('.add')
-  button.click if button.text == 'Add'
+  button.text.should eq('add')
+  button.click
 end
 
 Then /^(.*) in the list$/ do |p_step|
