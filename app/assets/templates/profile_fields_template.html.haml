@@ -4,7 +4,7 @@
     %p{ "edit-in-place"=>true, "instance"=>"person", "type"=>"{{field.type}}",
       "field"=>"{{field.slug}}", "edit-mode"=>"editing[field.slug]" }
 
-  .add-field{ "ng-show"=>"hasRemainingFields() && person.id", "click-menu"=>true }
+  .add-field.click-menu{ "ng-show"=>"hasRemainingFields() && person.id" }
     %p.title Add field
     %ul.container
       %li{ "ng-repeat"=>"field in fields" }

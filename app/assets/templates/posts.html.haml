@@ -5,8 +5,7 @@
 %section#upper-bar
   .clear-left
 
-%article.post{ "ng-repeat"=>"post in posts" }
-  %div{ "ng-include"=>"'#{asset_path('post.html')}'" }
+%div{ "ng-repeat"=>"post in posts", "ng-include"=>"'#{asset_path('post.html')}'" }
 
 .content-block{ "ng-show"=>"posts.length == 0" }
   %p No matching posts were found.

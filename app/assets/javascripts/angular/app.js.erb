@@ -29,7 +29,25 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
 
       when('/login', {redirectTo: '/'}).
 
-      when('/', {redirectTo: '/people'}).
+      when('/', {redirectTo: '/posts'}).
+
+      when('/posts', {
+        templateUrl: '<%= asset_path("posts.html") %>',
+        controller: 'PostsCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/posts/new', {
+        templateUrl: '<%= asset_path("edit_post.html") %>',
+        controller: 'EditPostCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/posts/:id/edit', {
+        templateUrl: '<%= asset_path("edit_post.html") %>',
+        controller: 'EditPostCtrl',
+        reloadOnSearch: false
+      }).
 
       when('/posts/:id', {
         templateUrl: '<%= asset_path("posts.html") %>',

@@ -16,7 +16,7 @@
       %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_guardian.html')}'" }
 
   %footer.profile-footer
-    .groups{ "ng-show"=>"person.type == 'Student'", "click-menu"=>true }
+    .groups.click-menu{ "ng-show"=>"person.type == 'Student'" }
       %h4.title Groups
       .container
         %ul.existing
@@ -25,7 +25,7 @@
           %li{ "ng-hide"=>"person.groups.length" }
             None
 
-    .mentors{ "ng-show"=>"person.type == 'Student'", "click-menu"=>true }
+    .mentors.click-menu{ "ng-show"=>"person.type == 'Student'" }
       %h4.title {{person.mentors.length > 1 && 'Mentors' || 'Mentor'}}
       .container
         %ul.existing
@@ -34,7 +34,7 @@
           %li{ "ng-hide"=>"person.mentors.length" }
             None
 
-    .mentees{ "ng-show"=>"person.type == 'Teacher'", "click-menu"=>true }
+    .mentees.click-menu{ "ng-show"=>"person.type == 'Teacher'" }
       %h4.title {{person.mentees.length > 1 && 'Mentees' || 'Mentee'}}
       .container
         %ul.existing

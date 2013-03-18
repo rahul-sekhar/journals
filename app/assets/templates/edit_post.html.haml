@@ -1,0 +1,64 @@
+%h2 {{pageTitle}}
+
+.notice
+
+%section#upper-bar
+  .clear-left
+
+.post-fields
+  .main
+    %ol
+      %li.string.input
+        %input{ "ng-model"=>"post.title", "placeholder"=>"Title" }
+      %li.text.input
+        %textarea{ "ng-model"=>"post.content", "tinymce"=>true }
+      %li.string.input
+        %input{ "ng-model"=>"post.tag_names", "placeholder"=>"Tags"}
+
+  .people-tags
+    .students
+      %label Student tags
+      %ul.tag-list
+        %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'" }
+          {{student.short_name}}
+          %a.remove{ "href"=>"", "ng-click"=>"post.removeStudent(student, true)" }
+      %p{ "ng-hide"=>"post.students.length" } None
+
+      .click-menu
+        %a.title.add{ "href"=>"", "ng-show"=>"post.remainingStudents().length" }
+          Add student
+        .container
+          %filtered-list{ "list"=>"post.remainingStudents()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addStudent(value, true); hideMenus()" }
+
+    .teachers
+      %label Teacher tags
+      %ul.tag-list
+        %li{ "ng-repeat"=>"teacher in post.teachers | orderBy:'short_name'" }
+          {{teacher.short_name}}
+          %a.remove{ "href"=>"", "ng-click"=>"post.removeTeacher(teacher, true)" }
+      %p{ "ng-hide"=>"post.teachers.length" } None
+
+      .click-menu
+        %a.title.add{ "href"=>"", "ng-show"=>"post.remainingTeachers().length" }
+          Add teacher
+        .container
+          %filtered-list{ "list"=>"post.remainingTeachers()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addTeacher(value, true); hideMenus()" }
+
+  .permissions
+    %p
+      %strong Permissions:
+      Visible to&hellip;
+    .options
+      %ol
+        %li.input.boolean
+          %label
+            %input{ "type"=>"checkbox", "ng-model"=>"post.visible_to_guardians" }
+            Guardians
+        %li.input.boolean
+          %label
+            %input{ "type"=>"checkbox", "ng-model"=>"post.visible_to_students" }
+            Students
+
+  .actions
+    %button.save{ "ng-click"=>"save()" }
+      {{post.isNew() && 'Create post' || 'Save post'}}

@@ -275,7 +275,7 @@ article.profile {
       padding: 8px 4px;
 
       a {
-        @include link-colors($cream, lighten($cream, 20));
+        @include link-colors($cream, white);
       }
 
       ul {
@@ -320,22 +320,6 @@ article.profile {
       }
 
       .filtered-list {
-        input {
-          width: 120px;
-          margin-left: 5px;
-          padding: 2px 5px;
-          border: 0;
-          color: $grey-2;
-          margin-bottom: 7px;
-          font-size: 12px;
-        }
-
-        ul {
-          max-height: 120px;
-          overflow-x: hidden;
-          overflow-y: auto;
-        }
-
         li a {
           display: block;
           padding-bottom: 1px;

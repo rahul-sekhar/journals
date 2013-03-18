@@ -8,11 +8,12 @@ angular.module('journals.directives', []).
       scope: {
         list: '=',
         onSelect: '&',
-        showProperty: '@'
+        showProperty: '@',
+        alwaysShown: '@'
       },
       template:
         '<div class="filtered-list" ng-show="list.length">' +
-          '<div class="list" ng-show="listShown">' +
+          '<div class="list" ng-show="alwaysShown || listShown">' +
             '<input ng-model="filter" focus-on="listShown" />' +
             '<ul>' +
               '<li ng-repeat="item in list | filter:filter">' +
@@ -20,9 +21,11 @@ angular.module('journals.directives', []).
               '</li>' +
             '</ul>' +
           '</div>' +
-          '<a class="add" href="" internal-click="toggleList()">{{buttonText}}</a>' +
+          '<a class="add" ng-hide="alwaysShown" href="" internal-click="toggleList()" ng-class="{cancel: listShown}">{{buttonText}}</a>' +
         '</div>',
       controller: ['$scope', function ($scope) {
+        $scope.listShown = !!$scope.alwaysShown;
+
         $scope.toggleList = function () {
           $scope.listShown = !$scope.listShown;
         };
@@ -32,7 +35,7 @@ angular.module('journals.directives', []).
         });
 
         $scope.$watch('listShown', function (value) {
-          $scope.buttonText = value ? "Cancel" : "Add";
+          $scope.buttonText = value ? "Cancel" : ($scope.addText || "Add");
         });
 
         $scope.select = function (item) {
@@ -55,48 +58,54 @@ angular.module('journals.directives', []).
     };
   }).
 
-  directive('clickMenu', function () {
-    return function(scope, elem, attrs) {
-      var title, container, closeFn;
+  directive('clickMenu', ['$timeout', function ($timeout) {
+    return {
+      restrict: 'C',
+      link: function(scope, elem, attrs) {
+        var title, container, closeFn;
 
-      elem.addClass('click-menu');
+        title = elem.find('.title');
+        container = elem.find('.container');
 
-      title = elem.find('.title');
-      container = elem.find('.container');
-
-      title.click(function() {
-        scope.$apply(function () {
-          container.toggleClass('shown');
-          title.toggleClass('selected');
-
-          if (!container.hasClass('shown')) {
-            scope.$broadcast('menuClosed');
-          }
-        });
-      });
-
-      // Don't close the list on click if the attr 'no-auto-close' is present
-      if (attrs.noAutoClose === undefined) {
-        container.on('click', 'a', function(e) {
+        title.click(function() {
           scope.$apply(function () {
-            closeFn();
+            container.toggleClass('shown');
+            title.toggleClass('selected');
+
+            if (!container.hasClass('shown')) {
+              scope.$broadcast('menuClosed');
+            }
+            else {
+              $timeout(function() {
+                container.find(':input:first').focus();
+              }, 0);
+            }
           });
         });
-      }
 
-      closeFn = function() {
-        container.removeClass('shown');
-        title.removeClass('selected');
-        scope.$broadcast('menuClosed');
-      }
-
-      scope.$on('hideMenus', function(e, srcElem) {
-        if (container.hasClass('shown') && srcElem[0] !== elem[0]) {
-          closeFn();
+        // Don't close the list on click if the attr 'no-auto-close' is present
+        if (attrs.noAutoClose === undefined) {
+          container.on('click', 'a', function(e) {
+            scope.$apply(function () {
+              closeFn();
+            });
+          });
         }
-      });
+
+        closeFn = function() {
+          container.removeClass('shown');
+          title.removeClass('selected');
+          scope.$broadcast('menuClosed');
+        }
+
+        scope.$on('hideMenus', function(e, srcElem) {
+          if (container.hasClass('shown') && srcElem[0] !== elem[0]) {
+            closeFn();
+          }
+        });
+      }
     };
-  }).
+  }]).
 
   run(['$rootScope', function ($rootScope) {
     $(document).on('click', function (e) {
@@ -132,5 +141,40 @@ angular.module('journals.directives', []).
         $timeout.cancel(typingTimer);
         typingTimer = $timeout(doneTypingFn, doneTypingInterval);
       });
+    };
+  }]).
+
+  directive('tinymce', [function () {
+    return {
+      require: 'ngModel',
+      link: function(scope, elem, attrs, ngModel) {
+        elem.tinymce({
+          script_url : '/tiny_mce/tiny_mce.js',
+          width: 474,
+          theme : "advanced",
+          plugins : "autolink,lists,inlinepopups,paste",
+          content_css: "/assets/tinymce/main.css",
+          theme_advanced_buttons1 : "bold,italic,strikethrough,|,link,unlink,|,bullist,numlist,|,image",
+          theme_advanced_toolbar_location : "top",
+          theme_advanced_toolbar_align : "center",
+          theme_advanced_resizing : true,
+          theme_advanced_resize_horizontal : false,
+          theme_advanced_statusbar_location : "bottom",
+          theme_advanced_path: false,
+          relative_urls: false,
+          formats: {
+            strikethrough : { inline : 'span', 'classes' : 'strikethrough', exact : true }
+          },
+          onchange_callback: function(e) {
+            if (this.isDirty()) {
+              this.save();
+              ngModel.$setViewValue(elem.val());
+              scope.$apply();
+
+              return true;
+            }
+          }
+        });
+      }
     };
   }]);

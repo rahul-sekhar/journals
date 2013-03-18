@@ -23,7 +23,7 @@ angular.module('journals.people.guardianExtensions', ['journals.ajax', 'journals
 
                   if (duplicateId === 0) {
                     // Create a new guardian
-                    data = instance.formatHttpData()
+                    data = instance.formatHttpData( instance.getSaveData() );
                   } else {
                     // Use an existing guardian
                     data = { guardian_id: duplicateId }

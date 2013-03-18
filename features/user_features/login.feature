@@ -26,7 +26,7 @@ Scenario: Log in with a valid email and password
   Given a teacher Rahul exists
   When I am on the login page
   And I log in with "rahul@mail.com" and "pass"
-  Then I should be on the people page
+  Then I should be on the posts page
   And I should see "You are signed in as Rahul Sekhar"
 
 Scenario: Log in when accessing a page other than the home page

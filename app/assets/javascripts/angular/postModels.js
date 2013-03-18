@@ -27,7 +27,15 @@ angular.module('journals.posts.models', ['journals.model', 'journals.collection'
 
   factory('postExtension', [function () {
     return function () {
-      var postExtension = function () {};
+      var postExtension = function (instance) {
+        instance.observationContent = {};
+        instance.observationId = {};
+
+        angular.forEach(instance.student_observations, function (observation) {
+          instance.observationContent[observation.student_id] = observation.content;
+          instance.observationId[observation.student_id] = observation.id;
+        });
+      };
 
       postExtension.setup = function (instance) {
         instance.restrictions = function () {
@@ -46,6 +54,21 @@ angular.module('journals.posts.models', ['journals.model', 'journals.collection'
             return null;
           }
         }
+      };
+
+      postExtension.beforeSave = function (instance) {
+        instance.student_observations_attributes = [];
+        angular.forEach(instance.observationContent, function (value, key) {
+          var observation = {
+            student_id: key,
+            content: value
+          };
+          if (observationId[key]) {
+            observation.id = observationId[key];
+          }
+
+          instance.student_observations_attributes.push(observation);
+        });
       };
 
       return postExtension;

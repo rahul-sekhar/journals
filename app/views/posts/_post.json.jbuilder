@@ -1,5 +1,5 @@
 json.(post, :id, :title, :content, :author_id, :author_type, :student_ids, :teacher_ids)
-json.(post, :visible_to_students, :visible_to_guardians)
+json.(post, :visible_to_students, :visible_to_guardians, :tag_names)
 
 json.created_at post.formatted_created_at
 

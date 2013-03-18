@@ -1,6 +1,6 @@
 %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch(search)", "autocomplete"=>"off"}
 
-.add{ "ng-show"=>"isTeacher", "click-menu"=>true }
+.add.click-menu{ "ng-show"=>"isTeacher" }
   %a.title{ href: "" } Add
   %ul.container
     %li
@@ -11,7 +11,7 @@
       %a{ "href"=>"", "ng-click"=>"showGroupsDialog()" } Manage groups
 
 %p.label Viewing
-.viewing{ "click-menu"=>true }
+.viewing.click-menu
   %a.title{ href: "" } {{filterName}}
 
   %ul.container

@@ -1,9 +1,7 @@
-form.post {
-  fieldset.main {
+.post-fields {
+  .main {
     float: right;
     width: 474px;
-
-    label { display: none; }
 
     .text {
       background-color: #F6F6F6;
@@ -33,8 +31,8 @@ form.post {
     font-size: 16px;
     line-height: 150%;
   }
-  
-  fieldset.permissions {
+
+  .permissions {
     background-color: $light-cream;
     padding: 10px 20px 15px 20px;
     float: right;
@@ -80,13 +78,13 @@ form.post {
           position: relative;
           top: -1px;
           *overflow: hidden;
-          margin-right: 8px;
+          margin-right: 5px;
         }
       }
     }
   }
 
-  fieldset.tags {
+  .people-tags {
     width: 129px;
 
     label {
@@ -99,29 +97,30 @@ form.post {
       margin-bottom: 10px;
     }
 
-    li.input {
+    .teachers, .students {
       margin-bottom: 40px;
     }
 
-    select {
-      width: 100%;
-    }
-
-    .tag-list {
+    p, .tag-list li {
       font-size: 14px;
       @include semibold;
-      padding-left: 20px;
       color: $grey-3;
+      padding: 5px 0;
+      padding-right: 28px;
+      border-bottom: 1px solid $light-red;
+    }
+
+    p { margin-left: 20px; }
+
+    .tag-list {
+      padding-left: 20px;
 
       li {
-        padding: 5px 0;
-        border-bottom: 1px solid $light-red;
         position: relative;
-        padding-right: 28px;
         @include word-wrap;
       }
 
-      .remove-link {
+      .remove {
         display: block;
         height: 24px;
         width: 20px;
@@ -135,7 +134,23 @@ form.post {
       }
     }
 
-    .add-link {
+    .container {
+      width: 148px;
+      position: absolute;
+      z-index: 20;
+      top: 14px;
+      left: 0;
+    }
+
+    .filtered-list {
+      padding: 5px 2px 2px 2px;
+
+      li a {
+        padding: 2px 5px;
+      }
+    }
+
+    .add {
       display: block;
       font-size: 12px;
       text-transform: uppercase;
@@ -146,13 +161,14 @@ form.post {
       line-height: 18px;
       margin-top: 18px;
       background: image-url('small-icons.png') no-repeat -2px -356px;
-      &:hover {
+      &:hover, &.selected {
         background-position: -2px -396px;
+        @include link-colors(lighten($grey-3, 20), lighten($grey-3, 20));
       }
     }
   }
 
-  fieldset.student-observations {
+  .student-observations {
     float: right;
     width: 474px;
     margin-bottom: 15px;
@@ -215,20 +231,20 @@ form.post {
     }
   }
 
-  fieldset.actions {
+  .actions {
     clear: right;
     margin-top: 30px;
     width: 100%;
     float: right;
 
-    input, .delete-link {
+    button.save {
       border: 1px solid $light-grey-brown;
       background-color: $light-cream;
       line-height: 43px;
       padding: 0 20px;
       @include border-radius(10px);
       font-weight: normal;
-      color: $grey-2;
+      color: $green;
       font-size: 16px;
       cursor: pointer;
       float: right;
@@ -237,38 +253,8 @@ form.post {
 
       &:hover {
         background-color: lighten($light-cream, 10);
-        color: darken($grey-2, 10);
-      }
-
-      &.submit {
-        color: $green;
-
-        &:hover {
-          color: darken($green, 5);
-        }
+        color: darken($green, 5);
       }
     }
-  }
-}
-
-.no-js form.post fieldset.student-observations {
-  background-color: $light-cream;
-  height: 150px;
-  overflow-y: auto;
-
-  label {
-    font-size: 14px;
-    margin-left: 20px;
-    display: block;
-  }
-
-  p { margin-left: 20px; }
-
-  textarea {
-    height: 60px;
-    float: none;
-    width: 474px - (2 * 15px + 2 * 20px);
-    display: block;
-    margin: 5px auto 20px auto;
   }
 }

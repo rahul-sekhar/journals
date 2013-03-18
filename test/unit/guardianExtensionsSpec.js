@@ -76,15 +76,24 @@ describe('guardian extensions module', function () {
           describe('if the promise is resolved with 0', function () {
             describe('on success', function () {
               beforeEach(function () {
-                httpBackend.expectPOST('/students/3/guardians.json', 'some data').respond(200, 'data');
+                httpBackend.expectPOST('/students/3/guardians.json', 'some formatted data').respond(200, 'data');
                 instance._parent = { id: 3 };
-                instance.formatHttpData = function () { return 'some data' };
+                instance.getSaveData = jasmine.createSpy().andCallFake(function () { return 'some data' });
+                instance.formatHttpData = jasmine.createSpy().andCallFake(function () { return 'some formatted data' });
                 deferred.resolve(0);
                 rootScope.$apply();
               });
 
               it('sends a message to the server', function () {
                 httpBackend.verifyNoOutstandingExpectation();
+              });
+
+              it('gets the instance save data', function () {
+                expect(instance.getSaveData).toHaveBeenCalled();
+              });
+
+              it('formats the data to send to the server', function () {
+                expect(instance.formatHttpData).toHaveBeenCalledWith('some data');
               });
 
               it('loads recieved data into the instance', function () {
@@ -96,9 +105,10 @@ describe('guardian extensions module', function () {
 
             describe('on failure', function () {
               beforeEach(function () {
-                httpBackend.expectPOST('/students/3/guardians.json', 'some data').respond(400);
+                httpBackend.expectPOST('/students/3/guardians.json').respond(400);
                 instance._parent = { id: 3 };
-                instance.formatHttpData = function () { return 'some data' };
+                instance.getSaveData = jasmine.createSpy().andCallFake(function () { return 'some data' });
+                instance.formatHttpData = jasmine.createSpy().andCallFake(function () { return 'some formatted data' });
                 instance.delete = jasmine.createSpy();
                 deferred.resolve(0);
                 rootScope.$apply();

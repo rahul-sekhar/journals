@@ -166,7 +166,7 @@ describe Post do
 
     context "if posted by a student" do
       before { post.author = student }
-      
+
       it "automatically sets the self tag" do
         post.students = [other_student]
         post.teachers = []
@@ -250,11 +250,11 @@ describe Post do
     context "with a tagged student" do
       let(:student){ create(:student) }
       before{ post.students << student }
-      
+
       it "creates a student observation when no id is passed" do
         post.student_observations_attributes = {
           '0' => { 'student_id' => student.id, 'content' => "Some content" }
-        }
+        }attriattri
         post.save!
         obs = post.student_observations.first
         obs.content.should == "Some content"
@@ -277,7 +277,7 @@ describe Post do
         post.student_observations.should be_empty
       end
 
-      it "does creates an observation with only an image tag" do
+      it "creates an observation with only an image tag" do
         post.student_observations_attributes = {
           '0' => { 'student_id' => student.id, 'content' => "<img title=\"blahblah\" src=\"http://blahblah.com\">" }
         }
@@ -434,7 +434,7 @@ describe Post do
     it "returns all posts with no parameters" do
       Post.filter_by_params({}).should =~ [@post1, @post2, @post3, @post4]
     end
-    
+
     it "searches for a post if the search parameter is present" do
       Post.filter_by_params({search: "some"}).should =~ [@post1, @post3]
     end
