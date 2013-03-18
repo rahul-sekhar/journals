@@ -7,10 +7,9 @@
     .people-filters{ "ng-switch-when" => "true", "ng-include"=>"'#{asset_path('people_filters.html')}'" }
   .clear-left
 
-%article.profile{ "ng-repeat"=>"person in people", "ng-hide"=>"person.deleted", "ng-controller"=>"EditObjectCtrl", "ng-class"=>"{archived: person.archived}" }
-  %ng-switch{ "on"=>"!!(isTeacher || person.editable)" }
-    %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_profile.html')}'" }
-    %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_profile.html')}'" }
+%ng-switch{ "ng-repeat"=>"person in people", "on"=>"!!(isTeacher || person.editable)" }
+  %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_profile.html')}'" }
+  %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_profile.html')}'" }
 
 .content-block{ "ng-show"=>"(people | filterDeleted).length == 0" }
   %p No matching people were found.

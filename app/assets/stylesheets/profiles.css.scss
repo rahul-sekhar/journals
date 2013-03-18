@@ -15,6 +15,25 @@ article.profile {
     margin-bottom: 20px;
   }
 
+  // Edit-in-place settings
+  .value {
+    display: block;
+    border: 1px solid transparent;
+  }
+
+  &.editable .value {
+    cursor: text;
+    &:hover { border: 1px solid grey; }
+  }
+
+  .editor {
+    border: 1px solid grey;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    resize: none;
+  }
+
   h3 {
     color: $cream;
     float: left;
@@ -23,16 +42,7 @@ article.profile {
     max-width: 340px;
     @include semibold;
 
-    .value {
-      display: block;
-      border: 1px solid transparent;
-      padding-top: 2px;
-      cursor: text;
-
-      &:hover {
-        border: 1px solid grey;
-      }
-    }
+    .value { padding-top: 2px; }
 
     .editor {
       width: 340px;
@@ -42,10 +52,26 @@ article.profile {
       @include semibold;
       color: $cream;
       background-color: $grey-brown;
-      border: 1px solid grey;
-      margin: 0;
-      padding: 0;
-      outline: none;
+    }
+  }
+
+  .main-profile-fields {
+    width: 320px;
+    float: left;
+  }
+
+  &.teacher {
+    .main-profile-fields {
+      width: 100%;
+    }
+    .field {
+      p {
+        width: 450px;
+      }
+
+      .field-name {
+        width: 110px;
+      }
     }
   }
 
@@ -73,25 +99,13 @@ article.profile {
 
     .value {
       width: 100%;
-      display: block;
       line-height: 18px;
-      border: 1px solid transparent;
-      cursor: text;
-
-      &:hover {
-        border: 1px solid grey;
-      }
     }
 
     .editor {
       line-height: 18px;
-      border: 1px solid grey;
-      margin: 0;
-      padding: 0;
       font-size: 14px;
       width: 100%;
-      outline: none;
-      resize: none;
     }
 
     .clear-date {
@@ -146,12 +160,6 @@ article.profile {
   }
 
 
-
-  .main-profile-fields {
-    width: 320px;
-    float: left;
-  }
-
   .guardians {
     float: right;
     width: 315px;
@@ -168,14 +176,14 @@ article.profile {
       max-width: 160px;
 
       .value {
-        display: block;
         border: 1px solid transparent;
+        cursor: auto;
         padding-top: 1px;
-        cursor: text;
+      }
 
-        &:hover {
-          border: 1px solid grey;
-        }
+      &.editable .value {
+        cursor: text;
+        &:hover { border: 1px solid grey; }
       }
 
       .editor {
@@ -185,10 +193,6 @@ article.profile {
         height: 20px;
         @include semibold;
         color: $off-black;
-        border: 1px solid grey;
-        margin: 0;
-        padding: 0;
-        outline: none;
       }
     }
 

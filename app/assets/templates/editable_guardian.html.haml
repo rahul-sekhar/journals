@@ -1,15 +1,16 @@
-%header.guardian-header
-  %h4{ "edit-in-place"=>true, "instance"=>"guardian", "field"=>"name", "edit-mode"=>"editing['name']", "placeholder"=>"Enter name" }
+.guardian.editable{ "ng-hide"=>"guardian.deleted", "ng-controller"=>"EditObjectCtrl" }
+  %header.guardian-header
+    %h4{ "edit-in-place"=>true, "instance"=>"guardian", "field"=>"name", "edit-mode"=>"editing['name']", "placeholder"=>"Enter name" }
 
-  .manage{ "ng-show"=>"isTeacher && guardian.id", "click-menu"=>true }
-    .icon.title
-    %ul.container
-      %li{ "ng-hide"=>"guardian.archived || !guardian.email" }
-        %a{ "href"=>"", "ng-click"=>"resetPassword(guardian)" } {{guardian.active && "Reset password" || "Activate"}}
-      %li
-        %a{ "href"=>"", "ng-click"=>"removeGuardian(person, guardian)" }
-          {{(guardian.parent_count > 1) && "Remove" || "Delete"}}
+    .manage{ "ng-show"=>"isTeacher && guardian.id", "click-menu"=>true }
+      .icon.title
+      %ul.container
+        %li{ "ng-hide"=>"guardian.archived || !guardian.email" }
+          %a{ "href"=>"", "ng-click"=>"resetPassword(guardian)" } {{guardian.active && "Reset password" || "Activate"}}
+        %li
+          %a{ "href"=>"", "ng-click"=>"removeGuardian(person, guardian)" }
+            {{(guardian.parent_count > 1) && "Remove" || "Delete"}}
 
-  .clear-left
+    .clear-left
 
-%profile-fields.guardian-profile-fields{ "parent"=>"guardian", "editing"=>"editing" }
+  %profile-fields.guardian-profile-fields{ "parent"=>"guardian", "editing"=>"editing" }

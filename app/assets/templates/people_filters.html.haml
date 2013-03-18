@@ -28,4 +28,4 @@
 
     %li.divider{"ng-show"=>"groups.length"}
     %li{"ng-repeat"=>"group in groups", "ng-hide"=>"filterName == group.name"}
-      %a{"ng-href" => "/groups/{{group.id}}"} {{group.name}}
+      %a{ "ng-href" => "/groups/{{group.id}}", "href"=>"" } {{group.name}}

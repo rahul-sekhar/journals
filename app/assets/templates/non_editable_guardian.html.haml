@@ -1,7 +1,8 @@
-%header.guardian-header
-  %h4
-    %span.value {{guardian.name}}
+.guardian{ "ng-hide"=>"guardian.deleted" }
+  %header.guardian-header
+    %h4
+      %span.value {{guardian.name}}
 
-  .clear-left
+    .clear-left
 
-%profile-fields-view.guardian-profile-fields{ "parent"=>"guardian" }
+  %profile-fields-view.guardian-profile-fields{ "parent"=>"guardian" }

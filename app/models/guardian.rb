@@ -40,6 +40,6 @@ class Guardian < ActiveRecord::Base
   end
 
   def students_as_sentence
-    students.alphabetical.map{ |student| student.short_name }.to_sentence
+    students.map{ |student| student.short_name }.sort.to_sentence
   end
 end

@@ -1,4 +1,6 @@
 %header.post-header
+  %span.restrictions{ "title"=>"{{post.restrictions()}}", "ng-show"=>"post.restrictions()" }
+
   .tagged-people
     .students{ "ng-show"=>"post.students.length" }
       %h4 Students
@@ -29,7 +31,7 @@
 
   .options
     %p{ "ng-show"=>"post.editable" }
-      %a{ "ng-href"=>"{{post.url() + '/edit'}}" } Edit post
+      %a{ "ng-href"=>"{{post.url() + '/edit'}}", "href"=>"" } Edit post
 
 
 / %article.post

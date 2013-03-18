@@ -9,7 +9,7 @@ angular.module('journals.people.directives', ['journals.assets', 'journals.curre
       scope: {
         profile: '=profileName'
       },
-      template: '<a ng-href="{{profile.url()}}" title="{{profile.name_with_info}}">{{profile.short_name}}</a>',
+      template: '<a ng-href="{{profile.url()}}" href="" title="{{profile.name_with_info}}">{{profile.short_name}}</a>',
       replace: true
     };
   }).
