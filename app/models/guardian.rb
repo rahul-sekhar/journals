@@ -1,11 +1,10 @@
 class Guardian < ActiveRecord::Base
   include Profile
 
-  attr_accessible :full_name, :email, :mobile, :home_phone, :office_phone, :address,
+  attr_accessible :name, :email, :mobile, :home_phone, :office_phone, :address,
     :additional_emails, :notes
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
-  has_and_belongs_to_many :ordered_students, class_name: Student, uniq: true, join_table: :students_guardians, order: "students.first_name, students.last_name"
 
   def archived
     if students.all? { |student| student.archived }
@@ -21,17 +20,13 @@ class Guardian < ActiveRecord::Base
 
   def name_with_info
     if students.length == 1
-      student_names = students.first.full_name
+      student_names = students.first.name
 
     elsif students.length > 1
-      # Get an alphabetically sorted list of names
-      student_names = students.alphabetical.map{ |student| student.name }
-
-      # Join the array as a sentence
-      student_names = student_names.to_sentence
+      student_names = students_as_sentence
     end
 
-    return "#{full_name} (guardian of #{student_names})"
+    return "#{name} (guardian of #{student_names})"
   end
 
   def check_students
@@ -45,6 +40,6 @@ class Guardian < ActiveRecord::Base
   end
 
   def students_as_sentence
-    students.alphabetical.map{ |student| student.name }.to_sentence
+    students.alphabetical.map{ |student| student.short_name }.to_sentence
   end
 end

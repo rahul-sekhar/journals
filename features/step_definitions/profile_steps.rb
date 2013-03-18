@@ -6,8 +6,8 @@ end
 
 Given /^a guardian Rahul exists$/ do
   student = create_profile('student', 'Roly Sekhar')
-  student.guardians.create!(full_name: 'Shalini Sekhar', email: 'shalini@mail.com')
-  @profile = student.guardians.create!(full_name: 'Rahul Sekhar', email: 'rahul@mail.com')
+  student.guardians.create!(name: 'Shalini Sekhar', email: 'shalini@mail.com')
+  @profile = student.guardians.create!(name: 'Rahul Sekhar', email: 'rahul@mail.com')
   set_profile_password(@profile, 'pass')
 end
 
@@ -17,11 +17,11 @@ Given /^an?( archived)? (teacher|student) "(.*?)" exists$/ do |p_archived, p_typ
 end
 
 Given /^a guardian "(.*?)" exists for that student$/ do |p_name|
-  @guardian = @profile.guardians.create!(full_name: p_name)
+  @guardian = @profile.guardians.create!(name: p_name)
 end
 
 Given /^I have the guardian "(.*?)"$/ do |p_name|
-  @logged_in_profile.guardians.create!(full_name: p_name, email: mail_from_name(p_name))
+  @logged_in_profile.guardians.create!(name: p_name, email: mail_from_name(p_name))
 end
 
 Given /^the profile has been activated$/ do
@@ -121,12 +121,17 @@ def field_from_text(text)
   end
 end
 
+Then /^I should see a notification or error$/ do
+  page.should have_css('.notification, .error', visible: true)
+end
+
 When /^I change the (field ".*"|name|guardian name) to "(.*?)"$/ do |p_field, p_value|
   within @viewing do
     field = field_from_text(p_field)
     field.find('.value').click
     fill_input_inside field, p_value
   end
+  step 'I should see a notification or error'
 end
 
 Then /^I should be able to change the (field ".*"|name|guardian name)$/ do |p_field|
@@ -172,12 +177,11 @@ When /^I change the date field "(.*?)" to "(.*?)"$/ do |p_field, p_date|
     "}, 10);"
     page.execute_script(script)
   end
+  step 'I should see a notification or error'
 end
 
 When /^I clear the (field ".*"|name|guardian name)$/ do |p_field|
-  within @viewing do
-    step 'I change the ' + p_field + ' to ""'
-  end
+  step 'I change the ' + p_field + ' to ""'
 end
 
 When /^I clear the date field "(.*?)"$/ do |p_field|
@@ -186,6 +190,7 @@ When /^I clear the date field "(.*?)"$/ do |p_field|
     field.find('.value').click
     field.find('.clear-date').click
   end
+  step 'I should see a notification or error'
 end
 
 When /^I add the field "(.*?)" with "(.*?)"$/ do |p_field, p_value|
@@ -194,6 +199,7 @@ When /^I add the field "(.*?)" with "(.*?)"$/ do |p_field, p_value|
     field = page.find('.field-name', text: /^#{Regexp.escape(p_field)}$/i).first(:xpath, ".//..")
     fill_input_inside field, p_value
   end
+  step 'I should see a notification or error'
 end
 
 When /^I add the date field "(.*?)" with "(.*?)"$/ do |p_field, p_date|
@@ -205,6 +211,7 @@ When /^I add the date field "(.*?)" with "(.*?)"$/ do |p_field, p_date|
     "}, 10);"
     page.execute_script(script)
   end
+  step 'I should see a notification or error'
 end
 
 
@@ -218,7 +225,7 @@ end
 def create_profile(type, name, email=nil)
   email ||= mail_from_name(name)
   klass = type.capitalize.constantize
-  obj = klass.create!(full_name: name, email: email)
+  obj = klass.create!(name: name, email: email)
   return obj
 end
 

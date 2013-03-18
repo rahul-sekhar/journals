@@ -12,7 +12,7 @@ Journals::Application.routes.draw do
 
   get "user" => "pages#user"
 
-  resources :posts, except: [:new, :edit] do
+  resources :posts do
     resources :comments, only: [:create, :update, :destroy]
   end
 

@@ -35,7 +35,11 @@ angular.module('journals.ajax', ['journals.messageHandler']).
       return $http({ url: options.url, method: options.method, data: options.data, params: options.params }).
 
         then(function (response) {
-          messageHandler.showNotification(options.notification);
+          if (options.method.toLowerCase() !== 'get') {
+            messageHandler.showNotification(options.notification);
+          } else {
+            messageHandler.hide();
+          }
           return response;
         },
           function (response) {

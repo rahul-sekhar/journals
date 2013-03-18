@@ -92,7 +92,7 @@ Scenario: Set an invalid email for a student
   And I look at the profile for "Parvathy Manjunath"
   Then I should see the field "Email" with "parvathy.manjunath@mail.com"
 
-@current
+
 Scenario: Edit a student profile
   Given a student Parvathy exists
   And I am on the page for that profile
@@ -113,8 +113,6 @@ Scenario: Edit a student profile
 
   When I change the date field "Birthday" to "01-08-1980"
   Then I should see the field "Birthday" with "01-08-1980 (32 yrs)"
-
-  And I should see "Done"
 
   When I go to the page for that profile
   Then I should see a profile for "Parvathy"

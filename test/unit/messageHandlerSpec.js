@@ -33,6 +33,26 @@ describe('messageHandler module', function() {
       });
     });
 
+    describe('showError(text)', function() {
+      beforeEach(function() {
+        messageHandler.showError('Some text');
+      });
+
+      it('sets the scope message', function() {
+        expect(scope.message).toEqual({type: 'error', text: 'Some text'});
+      });
+    });
+
+    describe('hide()', function() {
+      beforeEach(function() {
+        messageHandler.hide();
+      });
+
+      it('sets the scope message to null', function() {
+        expect(scope.message).toBeNull();
+      });
+    });
+
     describe('notifyOnRouteChange(text', function() {
       beforeEach(function() {
         messageHandler.notifyOnRouteChange('Some text');
@@ -56,16 +76,6 @@ describe('messageHandler module', function() {
           rootScope.$broadcast('$routeChangeSuccess');
           expect(scope.message).toEqual({});
         });
-      });
-    });
-
-    describe('showError(error, text)', function() {
-      beforeEach(function() {
-        messageHandler.showError('Some text');
-      });
-
-      it('sets the scope message', function() {
-        expect(scope.message).toEqual({type: 'error', text: 'Some text'});
       });
     });
   });

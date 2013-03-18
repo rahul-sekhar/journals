@@ -43,6 +43,10 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
           return path + '/' + instance.id;
         };
 
+        instance.isNew = function() {
+          return !instance.id;
+        };
+
         // Load data into the model
         instance.load = function (data) {
           angular.forEach(data, function (value, key) {
@@ -59,18 +63,18 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
 
         // Save instance
         instance.save = function () {
-          if (instance.id) {
-            ajax({ url: instance.url(), method: 'PUT', data: instance.formatHttpData() }).
-              then(function (response) {
-                instance.load(response.data);
-              });
-          }
-          else {
+          if (instance.isNew()) {
             ajax({ url: path, method: 'POST', data: instance.formatHttpData() }).
               then(function (response) {
                 instance.load(response.data);
               }, function () {
                 instance.delete();
+              });
+          }
+          else {
+            ajax({ url: instance.url(), method: 'PUT', data: instance.formatHttpData() }).
+              then(function (response) {
+                instance.load(response.data);
               });
           }
         };
@@ -81,7 +85,15 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
           var oldVal = instance[field];
           instance[field] = value;
 
-          if (instance.id) {
+          if (instance.isNew()) {
+            if (!value) {
+              instance.delete();
+            }
+            else {
+              instance.save();
+            }
+          }
+          else {
             if (oldVal == value) return;
 
             var data = {};
@@ -94,14 +106,6 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
                 instance[field] = oldVal;
               });
           }
-          else {
-            if (!value) {
-              instance.delete();
-            }
-            else {
-              instance.save();
-            }
-          }
         }
 
 
@@ -109,7 +113,7 @@ angular.module('journals.model', ['journals.ajax', 'journals.helpers']).
         instance.delete = function () {
           instance.deleted = true;
 
-          if (instance.id) {
+          if (!instance.isNew()) {
             ajax({ url: instance.url(), method: 'DELETE' }).
               then(null, function (response) {
                 delete instance.deleted;

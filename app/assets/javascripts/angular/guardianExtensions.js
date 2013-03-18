@@ -66,7 +66,7 @@ angular.module('journals.people.guardianExtensions', ['journals.ajax', 'journals
     checkDuplicateGuardians = function (guardian) {
       return ajax({
         url: guardian._parent.url() + '/guardians/check_duplicates',
-        params: { name: guardian.full_name }
+        params: { name: guardian.name }
 
       }).then(function(response) {
 
@@ -76,8 +76,8 @@ angular.module('journals.people.guardianExtensions', ['journals.ajax', 'journals
 
         } else if (response.data.length > 0) {
           scope.duplicates = response.data;
-          scope.guardianName = guardian.full_name;
-          scope.studentName = guardian._parent.name;
+          scope.guardianName = guardian.name;
+          scope.studentName = guardian._parent.short_name;
           return scope.show();
 
         } else {

@@ -13,7 +13,7 @@ describe People do
   end
 
   it "returns full names" do
-    People.all.map{ |person| person.full_name }.should =~ ["Some Student", "Teacher", "Archived Student"]
+    People.all.map{ |person| person.name }.should =~ ["Some Student", "Teacher", "Archived Student"]
   end
 
   it "returns the archived status" do

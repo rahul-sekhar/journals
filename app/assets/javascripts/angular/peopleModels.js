@@ -16,7 +16,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
           resetPasswordExtension(),
           archiveExtension()
         ],
-        saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
+        saveFields: ['name', 'email', 'mobile', 'home_phone', 'office_phone',
           'address', 'blood_group', 'birthday', 'additional_emails', 'notes'],
         defaultData: { type: 'Student' }
       });
@@ -37,7 +37,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
           resetPasswordExtension(),
           archiveExtension()
         ],
-        saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
+        saveFields: ['name', 'email', 'mobile', 'home_phone', 'office_phone',
           'address', 'additional_emails', 'notes'],
           defaultData: { type: 'Teacher' }
       });
@@ -56,7 +56,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
           resetPasswordExtension(),
           guardianExtension()
         ],
-        saveFields: ['full_name', 'email', 'mobile', 'home_phone', 'office_phone',
+        saveFields: ['name', 'email', 'mobile', 'home_phone', 'office_phone',
           'address', 'additional_emails', 'notes'],
           defaultData: { type: 'Guardian' }
       });
@@ -112,7 +112,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
             throw new Error('Invalid type for person');
           }
 
-          return { name: person.full_name, people: people };
+          return { name: person.name, people: people };
         });
     };
 
@@ -162,9 +162,9 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
 
           instance.archived = !instance.archived;
           if (instance.archived) {
-            message = instance.full_name + ' has been archived and can no longer login.';
+            message = instance.name + ' has been archived and can no longer login.';
           } else {
-            message = instance.full_name + ' is no longer archived, but must be activated to be able to login.';
+            message = instance.name + ' is no longer archived, but must be activated to be able to login.';
           }
 
           ajax({

@@ -271,7 +271,7 @@ describe('people models module', function () {
       describe('on success', function () {
         describe('for a student', function () {
           beforeEach(function () {
-            httpBackend.expectGET('/path.json').respond({id: 5, type: 'Student', full_name: 'Something', field: 'val'});
+            httpBackend.expectGET('/path.json').respond({id: 5, type: 'Student', name: 'Something', field: 'val'});
             promise = peopleInterface.loadProfile('/path');
             promise.then(success, error);
           });
@@ -295,7 +295,7 @@ describe('people models module', function () {
             });
 
             it('updates Students with the student', function () {
-              expect(Students.update).toHaveBeenCalledWith({id: 5, type: 'Student', full_name: 'Something', field: 'val'});
+              expect(Students.update).toHaveBeenCalledWith({id: 5, type: 'Student', name: 'Something', field: 'val'});
             });
 
             describe('the resolved data', function () {
@@ -318,14 +318,14 @@ describe('people models module', function () {
 
         describe('for a teacher', function () {
           beforeEach(function () {
-            httpBackend.expectGET('/path.json').respond({id: 5, type: 'Teacher', full_name: 'Something', field: 'val'});
+            httpBackend.expectGET('/path.json').respond({id: 5, type: 'Teacher', name: 'Something', field: 'val'});
             promise = peopleInterface.loadProfile('/path');
             promise.then(success, error);
             httpBackend.flush();
           });
 
           it('updates Teachers with the teacher', function () {
-            expect(Teachers.update).toHaveBeenCalledWith({id: 5, type: 'Teacher', full_name: 'Something', field: 'val'});
+            expect(Teachers.update).toHaveBeenCalledWith({id: 5, type: 'Teacher', name: 'Something', field: 'val'});
           });
 
           describe('the resolved data', function () {
@@ -350,11 +350,11 @@ describe('people models module', function () {
             httpBackend.expectGET('/path.json').respond({
               id: 5,
               type: 'Guardian',
-              full_name: 'Something',
+              name: 'Something',
               field: 'val',
               students: [
-                {id: 3, full_name: 'Three', type: 'Student'},
-                {id: 1, full_name: 'One', type: 'Student'}
+                {id: 3, name: 'Three', type: 'Student'},
+                {id: 1, name: 'One', type: 'Student'}
               ]
             });
             promise = peopleInterface.loadProfile('/path');
@@ -364,8 +364,8 @@ describe('people models module', function () {
 
           it('updates Students with each student', function () {
             expect(Students.update.callCount).toEqual(2);
-            expect(Students.update.argsForCall[0][0]).toEqual({id: 3, full_name: 'Three', type: 'Student'});
-            expect(Students.update.argsForCall[1][0]).toEqual({id: 1, full_name: 'One', type: 'Student'});
+            expect(Students.update.argsForCall[0][0]).toEqual({id: 3, name: 'Three', type: 'Student'});
+            expect(Students.update.argsForCall[1][0]).toEqual({id: 1, name: 'One', type: 'Student'});
           });
 
           describe('the resolved data', function () {

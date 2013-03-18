@@ -56,6 +56,28 @@ describe('Model module', function () {
 
     describe('instance functions:', function () {
 
+      describe('isNew()', function() {
+        describe('for a new instance', function () {
+          beforeEach(function () {
+            instance = model.create();
+          });
+
+          it('returns true', function() {
+            expect(instance.isNew()).toEqual(true);
+          });
+        });
+
+        describe('for an existing instance', function () {
+          beforeEach(function () {
+            instance = model.create({id: 5, name: 'Some name'});
+          });
+
+          it('returns false', function() {
+            expect(instance.isNew()).toEqual(false);
+          });
+        });
+      });
+
       describe('load()', function () {
         beforeEach(function () {
           instance = model.create({id: 5, name: 'Something', field: 'Some value'})

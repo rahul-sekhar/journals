@@ -13,7 +13,7 @@ class Post < ActiveRecord::Base
 
   accepts_nested_attributes_for :student_observations
 
-  validates :title, 
+  validates :title,
     presence: true,
     length: { maximum: 255 }
   validates :author, presence: true
@@ -23,12 +23,12 @@ class Post < ActiveRecord::Base
   # Posts that are either authored by the guardian or that have one of the guardian's students tagged and have guardian permissions allowed
   def self.readable_by_guardian(guardian)
     student_ids = guardian.students.map{ |student| student.id }
-    
+
     where{
-      ( 
-        ( author_id == guardian.id ) & ( author_type == "Guardian" ) 
+      (
+        ( author_id == guardian.id ) & ( author_type == "Guardian" )
       ) |
-      ( 
+      (
         ( visible_to_guardians == true ) &
         ( id.in ( Post.select{id}.joins{ students }.where{ students.id.in( student_ids )}) )
       )
@@ -132,14 +132,12 @@ class Post < ActiveRecord::Base
   end
 
   def restriction_message
-    if visible_to_students && visible_to_guardians
-      return "Visible to everyone"
-    else
+    if !visible_to_students || !visible_to_guardians
       restrictions = []
       restrictions << "guardians" if !visible_to_guardians
       restrictions << "students" if !visible_to_students
 
-      return "Not visible to #{restrictions.join(" or ")}"
+      return "Not visible to #{restrictions.join(' or ')}"
     end
   end
 

@@ -75,7 +75,7 @@ describe GuardiansController do
     let(:student){ create(:student) }
 
     context "with valid data" do
-      let(:make_request){ post :create, student_id: student.id, guardian: { full_name: "Rahul Sekhar" }, format: :json }
+      let(:make_request){ post :create, student_id: student.id, guardian: { name: "Rahul Sekhar" }, format: :json }
 
       it "raises an exception if the user cannot create a guardian" do
         ability.cannot :create, Guardian
@@ -134,7 +134,7 @@ describe GuardiansController do
     end
 
     context "with no name" do
-      let(:make_request){ post :create, student_id: student.id, guardian: { full_name: " " }, format: :json }
+      let(:make_request){ post :create, student_id: student.id, guardian: { name: " " }, format: :json }
 
       it "does not create a guardian" do
         expect{ make_request }.to change{ Guardian.count }.by(0)
@@ -169,7 +169,7 @@ describe GuardiansController do
     context "when the student already contains a guardian with the same name" do
       let(:make_request){ get :check_duplicates, student_id: student.id, name: "Rahul Sekhar", format: :json }
 
-      before{ create(:guardian, students: [student], full_name: "Rahul Sekhar") }
+      before{ create(:guardian, students: [student], name: "Rahul Sekhar") }
 
       it "has a status of 422" do
         make_request
@@ -207,7 +207,7 @@ describe GuardiansController do
     let(:guardian){ create(:guardian) }
 
     context "with valid data" do
-      let(:make_request){ put :update, id: guardian.id, guardian: { full_name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
+      let(:make_request){ put :update, id: guardian.id, guardian: { name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
 
       it "raises an exception if the user cannot update a guardian" do
         ability.cannot :update, guardian
@@ -221,7 +221,7 @@ describe GuardiansController do
 
       it "edits the guardian name" do
         make_request
-        assigns(:guardian).reload.full_name.should == "Rahul Sekhar"
+        assigns(:guardian).reload.name.should == "Rahul Sekhar"
       end
 
       it "edits the guardian email" do
@@ -236,11 +236,11 @@ describe GuardiansController do
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: guardian.id, guardian: { email: '1234', full_name: 'Rahul Sekhar' }, format: :json }
+      let(:make_request){ put :update, id: guardian.id, guardian: { email: '1234', name: 'Rahul Sekhar' }, format: :json }
 
       it "does not edit the guardian" do
         make_request
-        guardian.reload.full_name.should_not == "Rahul Sekhar"
+        guardian.reload.name.should_not == "Rahul Sekhar"
       end
 
       it "has a status of 422" do

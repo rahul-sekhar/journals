@@ -150,7 +150,7 @@ describe('People module', function () {
       });
 
       it('calls newGuardian for the profile, passing _edit', function () {
-        expect(profile.newGuardian).toHaveBeenCalledWith({ _edit: 'full_name' });
+        expect(profile.newGuardian).toHaveBeenCalledWith({ _edit: 'name' });
       });
     });
 
@@ -321,7 +321,7 @@ describe('People module', function () {
       });
 
       it('adds a teacher through peopleInterface', function () {
-        expect(peopleInterface.addTeacher).toHaveBeenCalledWith({ _edit: 'full_name' });
+        expect(peopleInterface.addTeacher).toHaveBeenCalledWith({ _edit: 'name' });
       });
 
       it('adds the result to the people array', function () {
@@ -337,7 +337,7 @@ describe('People module', function () {
       });
 
       it('adds a teacher through peopleInterface', function () {
-        expect(peopleInterface.addStudent).toHaveBeenCalledWith({ _edit: 'full_name' });
+        expect(peopleInterface.addStudent).toHaveBeenCalledWith({ _edit: 'name' });
       });
 
       it('adds the result to the people array', function () {

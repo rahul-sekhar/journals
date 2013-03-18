@@ -8,7 +8,7 @@ class GuardiansController < ApplicationController
   end
 
   def show
-    @students = @guardian.ordered_students.load_associations
+    @students = @guardian.students.alphabetical.load_associations
   end
 
   def create
@@ -43,11 +43,11 @@ class GuardiansController < ApplicationController
       return
     end
 
-    guardian = Guardian.new(full_name: name)
+    guardian = Guardian.new(name: name)
 
     # Check for existing guardians with the same name for that student
     if @student.guardians.name_is(guardian.first_name, guardian.last_name)
-      render text: "#{@student.full_name} already has a guardian named #{name}", status: :unprocessable_entity
+      render text: "#{@student.name} already has a guardian named #{name}", status: :unprocessable_entity
       return
     end
     @duplicate_guardians = Guardian.names_are(guardian.first_name, guardian.last_name)

@@ -13,6 +13,7 @@ describe('ajax module', function () {
       spyOn(messageHandler, 'showProcess');
       spyOn(messageHandler, 'showNotification');
       spyOn(messageHandler, 'showError');
+      spyOn(messageHandler, 'hide');
 
       success = jasmine.createSpy();
       error = jasmine.createSpy();
@@ -61,6 +62,20 @@ describe('ajax module', function () {
           expect(error).not.toHaveBeenCalled();
           expect(success.mostRecentCall.args[0].data).toEqual('Some text');
         });
+      });
+    });
+
+    describe('on success with a GET request', function() {
+      beforeEach(function () {
+        httpBackend.expectGET('/path.json').respond(200, 'Some text');
+        promise = ajax({ url: '/path' });
+        httpBackend.flush();
+      });
+
+      it('hides the message', function () {
+        expect(messageHandler.showNotification).not.toHaveBeenCalled();
+        expect(messageHandler.showError).not.toHaveBeenCalled();
+        expect(messageHandler.hide).toHaveBeenCalled();
       });
     });
 

@@ -158,8 +158,8 @@ describe('guardian extensions module', function () {
 
       httpBackend = $httpBackend;
 
-      student = { id: 5, name: 'Student name', url: function () { return '/students/5' }};
-      guardian = { _parent: student, full_name: 'Guardian name' };
+      student = { id: 5, short_name: 'Student name', url: function () { return '/students/5' }};
+      guardian = { _parent: student, name: 'Guardian name' };
 
       success = jasmine.createSpy();
       error = jasmine.createSpy();

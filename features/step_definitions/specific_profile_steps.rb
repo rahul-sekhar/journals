@@ -24,7 +24,7 @@ end
 
 Given /^a guardian Poonam exists for that student$/ do
   @guardian = @profile.guardians.create!(
-    full_name: "Poonam Jain",
+    name: "Poonam Jain",
     email: "poonam@mail.com",
     mobile: "987654",
     address: "A house,\n\nSomewhere",
@@ -35,26 +35,26 @@ end
 
 Given /^a guardian Manoj with multiple students exists$/ do
   step 'a student "Parvathy Manjunath" exists'
-  @profile = @profile.guardians.create!(full_name: "Manoj Jain")
-  @student = FactoryGirl.create(:student, full_name: "Roly Jain", email: "roly@mail.com")
+  @profile = @profile.guardians.create!(name: "Manoj Jain")
+  @student = FactoryGirl.create(:student, name: "Roly Jain", email: "roly@mail.com")
   @profile.students << @student
 end
 
 Given /^a teacher for each alphabet exists$/ do
   ('A'..'Z').each do |letter|
-    Teacher.create!(full_name: letter)
+    Teacher.create!(name: letter)
   end
 end
 
 Given /^a student for each alphabet exists$/ do
   ('A'..'Z').each do |letter|
-    Student.create!(full_name: letter)
+    Student.create!(name: letter)
   end
 end
 
 Given /^an archived student for each alphabet exists$/ do
   ('A'..'Z').each do |letter|
-    student = Student.create!(full_name: letter)
+    student = Student.create!(name: letter)
     student.toggle_archive
   end
 end

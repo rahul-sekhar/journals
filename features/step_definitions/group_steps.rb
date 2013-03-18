@@ -26,9 +26,9 @@ end
 
 
 # Given /^that group has the students Roly, Lucky and Jumble$/ do
-#   @group.students << FactoryGirl.create(:student, full_name: "Roly Sekhar")
-#   @group.students << FactoryGirl.create(:student, full_name: "Lucky Sekhar")
-#   @group.students << FactoryGirl.create(:student, full_name: "Jumble Sekhar")
+#   @group.students << FactoryGirl.create(:student, name: "Roly Sekhar")
+#   @group.students << FactoryGirl.create(:student, name: "Lucky Sekhar")
+#   @group.students << FactoryGirl.create(:student, name: "Jumble Sekhar")
 # end
 
 When /^I delete the group "(.*?)"$/ do |p_group|

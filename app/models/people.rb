@@ -7,7 +7,7 @@ class People < ActiveRecord::Base
   scope :current, where(archived: false)
   scope :archived, where(archived: true)
 
-  scope :load_associations, includes(profile: [:user, :ordered_groups, :ordered_mentors, :ordered_mentees, { ordered_guardians: [:user, :students] }])
+  scope :load_associations, includes(profile: [:user, :groups, :mentors, :mentees, { guardians: [:user, :students] }])
 
   def self.search( query )
     query = "%#{SqlHelper::escapeWildcards(query)}%"

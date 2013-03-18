@@ -202,7 +202,7 @@ describe StudentsController do
     let(:student){ create(:student) }
 
     context "with valid data" do
-      let(:make_request){ put :update, id: student.id, student: { full_name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
+      let(:make_request){ put :update, id: student.id, student: { name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
 
       it "raises an exception if the user cannot update a student" do
         ability.cannot :update, student
@@ -216,7 +216,7 @@ describe StudentsController do
 
       it "edits the student name" do
         make_request
-        assigns(:student).reload.full_name.should == "Rahul Sekhar"
+        assigns(:student).reload.name.should == "Rahul Sekhar"
       end
 
       it "edits the student email" do
@@ -231,7 +231,7 @@ describe StudentsController do
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: student.id, student: { full_name: "", mobile: '1234' }, format: :json }
+      let(:make_request){ put :update, id: student.id, student: { name: "", mobile: '1234' }, format: :json }
 
       it "does not edit the student" do
         make_request

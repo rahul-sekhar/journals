@@ -1,7 +1,7 @@
 
 
 # Given /^the guardian "(.*?)" has a student "(.*?)"$/ do |p_name, p_student_name|
-#   guardian = Guardian.where(full_name: p_student_name).first
+#   guardian = Guardian.where(name: p_student_name).first
 
 #   guardian.students << create_profile("student", p_student_name)
 # end
@@ -9,7 +9,7 @@
 # Given /^I have logged in as a guardian "(.*?)" to the student "(.*?)"$/ do |p_name, p_student_name|
 #   @student = create_profile("student", p_student_name)
 #   email = mail_from_name(p_name)
-#   @profile = @student.guardians.create!(full_name: p_name, email: email)
+#   @profile = @student.guardians.create!(name: p_name, email: email)
 #   set_profile_password(@profile, "pass")
 #   step 'I am on the login page'
 #   step "I fill in \"Email\" with \"#{email}\""

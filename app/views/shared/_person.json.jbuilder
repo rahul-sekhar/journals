@@ -1,4 +1,4 @@
-json.(person, :id, :full_name, :name, :name_with_info)
+json.(person, :id, :name, :short_name, :name_with_info)
 json.(person, :mobile, :home_phone, :office_phone, :email, :additional_emails, :address, :notes)
 json.type person.class.to_s
 json.active person.active?
@@ -11,16 +11,13 @@ if person.is_a? Guardian
 end
 
 if person.is_a? Student
-  json.(person, :birthday, :blood_group)
+  json.(person, :birthday, :blood_group, :group_ids, :mentor_ids)
 
-  json.group_ids person.ordered_groups.map{ |group| group.id }
-  json.mentor_ids person.ordered_mentors.map{ |mentor| mentor.id }
-
-  json.guardians person.ordered_guardians do |guardian|
+  json.guardians person.guardians do |guardian|
     json.partial! "shared/person", person: guardian
   end
 end
 
 if person.is_a? Teacher
-  json.mentee_ids person.ordered_mentees.map{ |mentee| mentee.id }
+  json.(person, :mentee_ids)
 end

@@ -2,7 +2,7 @@ require 'factory_girl'
 
 FactoryGirl.define do
   factory :teacher do
-    sequence(:full_name){ |n| "Teacher#{n}" }
+    sequence(:name){ |n| "Teacher#{n}" }
 
     factory :teacher_with_user do
       sequence(:email){ |n| "teacher#{n}@mail.com" }
@@ -10,7 +10,7 @@ FactoryGirl.define do
   end
 
   factory :student do
-    sequence(:full_name){ |n| "Student#{n}" }
+    sequence(:name){ |n| "Student#{n}" }
 
     factory :student_with_user do
       sequence(:email){ |n| "student#{n}@mail.com" }
@@ -18,7 +18,7 @@ FactoryGirl.define do
   end
 
   factory :guardian do
-    sequence(:full_name){ |n| "Guardian#{n}" }
+    sequence(:name){ |n| "Guardian#{n}" }
     students { [create(:student)] }
 
     factory :guardian_with_user do

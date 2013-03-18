@@ -6,7 +6,7 @@ describe TeachersController do
     ability = Object.new
     ability.extend(CanCan::Ability)
   end
-  before do 
+  before do
     controller.stub(:current_user).and_return(user)
     controller.stub(:current_ability).and_return(ability)
     ability.can :manage, Teacher
@@ -114,7 +114,7 @@ describe TeachersController do
       ability.cannot :read, teacher
       expect{ get :show, id: 5, format: :json }.to raise_exception(CanCan::AccessDenied)
     end
-    
+
     it "has a status of 200" do
       get :show, id: 5, format: :json
       response.status.should eq(200)
@@ -205,7 +205,7 @@ describe TeachersController do
     let(:teacher){ create(:teacher) }
 
     context "with valid data" do
-      let(:make_request){ put :update, id: teacher.id, teacher: { full_name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
+      let(:make_request){ put :update, id: teacher.id, teacher: { name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
 
       it "raises an exception if the user cannot update a teacher" do
         ability.cannot :update, teacher
@@ -219,7 +219,7 @@ describe TeachersController do
 
       it "edits the teacher name" do
         make_request
-        assigns(:teacher).reload.full_name.should == "Rahul Sekhar"
+        assigns(:teacher).reload.name.should == "Rahul Sekhar"
       end
 
       it "edits the teacher email" do
@@ -234,13 +234,13 @@ describe TeachersController do
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: teacher.id, teacher: { full_name: "", email: "rahul@mail.com" }, format: :json }
+      let(:make_request){ put :update, id: teacher.id, teacher: { name: "", email: "rahul@mail.com" }, format: :json }
 
       it "does not edit the teacher" do
         make_request
         teacher.reload.email.should_not == "rahul@mail.com"
       end
-      
+
       it "has a status of 422" do
         make_request
         response.status.should eq(422)

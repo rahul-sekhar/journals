@@ -22,8 +22,8 @@ module ApplicationHelper
   end
 
   def profile_name(profile, long=false)
-    display_name = long ? profile.full_name : profile.name
+    display_name = long ? profile.name : profile.short_name
 
-    link_to display_name, url_for(profile), title: profile.name_with_type 
+    link_to display_name, url_for(profile), title: profile.name_with_type
   end
 end

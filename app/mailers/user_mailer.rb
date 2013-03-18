@@ -5,7 +5,7 @@ class UserMailer < ActionMailer::Base
     @profile = profile
     @password = password
     mail(
-      to: "\"#{@profile.full_name}\" <#{@profile.email}>", 
+      to: "\"#{@profile.name}\" <#{@profile.email}>",
       subject: "Activate your account"
     )
   end
@@ -14,7 +14,7 @@ class UserMailer < ActionMailer::Base
     @profile = profile
     @password = password
     mail(
-      to: "\"#{@profile.full_name}\" <#{@profile.email}>", 
+      to: "\"#{@profile.name}\" <#{@profile.email}>",
       subject: "Your password has been reset"
     )
   end

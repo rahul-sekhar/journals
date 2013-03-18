@@ -80,10 +80,10 @@
 
 #   Tag.find_by_name("Test posts").should be_present
 #   Tag.find_by_name("Minimal").should be_present
-  
+
 #   @post.content.should == "<p>Some <em>HTML</em> content</p>"
 #   @post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
-#   @post.author.full_name.should == "Rahul Sekhar"
+#   @post.author.name.should == "Rahul Sekhar"
 # end
 
 # Then /^a post with student and teacher tags should exist$/ do

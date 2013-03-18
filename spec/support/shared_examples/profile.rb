@@ -16,7 +16,7 @@ shared_examples_for "a profile" do
     end
 
     it "can be set on creation of the profile" do
-      prof = profile_class.create!(full_name: "Name", email: "blah@blah.com")
+      prof = profile_class.create!(name: "Name", email: "blah@blah.com")
       prof.user.email.should == "blah@blah.com"
     end
 
@@ -145,25 +145,25 @@ shared_examples_for "a profile" do
     end
   end
 
-  describe "#full_name=" do
+  describe "#name=" do
     describe "for a single word" do
       it "sets the first name when capitalized" do
         profile.first_name = "Something"
-        profile.full_name = "One"
+        profile.name = "One"
         profile.first_name.should == "One"
         profile.last_name.should be_nil
       end
 
       it "sets the first name when uncapitalized" do
         profile.first_name = "Something"
-        profile.full_name = "one"
+        profile.name = "one"
         profile.first_name.should == "one"
         profile.last_name.should be_nil
       end
 
       it "trims the name" do
         profile.first_name = "Something"
-        profile.full_name = "   One     "
+        profile.name = "   One     "
         profile.first_name.should == "One"
         profile.last_name.should be_nil
       end
@@ -171,39 +171,39 @@ shared_examples_for "a profile" do
 
     describe "for two words" do
       it "sets the first name and last name when both words are capitalized" do
-        profile.full_name = "One Two"
+        profile.name = "One Two"
         profile.first_name.should == "One"
         profile.last_name.should == "Two"
       end
 
       it "sets the first name and last name when the first word is capitalized" do
-        profile.full_name = "one Two"
+        profile.name = "one Two"
         profile.first_name.should == "one"
         profile.last_name.should == "Two"
       end
 
       it "sets the first name and last name when the second word is capitalized" do
-        profile.full_name = "One two"
+        profile.name = "One two"
         profile.first_name.should == "One"
         profile.last_name.should == "two"
       end
 
       it "sets the first name and last name when both words are uncapitalized" do
-        profile.full_name = "one two"
+        profile.name = "one two"
         profile.first_name.should == "one"
         profile.last_name.should == "two"
       end
 
       it "trims the name" do
-        profile.full_name = "  Something    Else  "
+        profile.name = "  Something    Else  "
         profile.first_name.should == "Something"
         profile.last_name.should == "Else"
 
-        profile.full_name = "  Something    else  "
+        profile.name = "  Something    else  "
         profile.first_name.should == "Something"
         profile.last_name.should == "else"
 
-        profile.full_name = "  something    Else  "
+        profile.name = "  something    Else  "
         profile.first_name.should == "something"
         profile.last_name.should == "Else"
       end
@@ -211,33 +211,33 @@ shared_examples_for "a profile" do
 
     describe "for three words" do
       it "adds the middle name to the first name when it is capitalized" do
-        profile.full_name = "One Two Three"
+        profile.name = "One Two Three"
         profile.first_name.should == "One Two"
         profile.last_name.should == "Three"
       end
 
       it "adds the middle name to the last name when uncapitalized" do
-        profile.full_name = "One two Three"
+        profile.name = "One two Three"
         profile.first_name.should == "One"
         profile.last_name.should == "two Three"
       end
 
       it "adds the middle name to the last name when all uncapitalized" do
-        profile.full_name = "one two three"
+        profile.name = "one two three"
         profile.first_name.should == "one"
         profile.last_name.should == "two three"
       end
 
       it "trims the name" do
-        profile.full_name = "  One   Two    Three  "
+        profile.name = "  One   Two    Three  "
         profile.first_name.should == "One Two"
         profile.last_name.should == "Three"
 
-        profile.full_name = "   One   two   Three   "
+        profile.name = "   One   two   Three   "
         profile.first_name.should == "One"
         profile.last_name.should == "two Three"
 
-        profile.full_name = "   one  two   three   "
+        profile.name = "   one  two   three   "
         profile.first_name.should == "one"
         profile.last_name.should == "two three"
       end
@@ -245,60 +245,60 @@ shared_examples_for "a profile" do
 
     describe "for more than three words" do
       it "sets the first name to the first word if all are uncapitalized" do
-        profile.full_name = "one two three four five"
+        profile.name = "one two three four five"
         profile.first_name.should == "one"
         profile.last_name.should == "two three four five"
       end
 
       it "sets the last name to the last word if all are capitalized" do
-        profile.full_name = "One Two Three Four Five"
+        profile.name = "One Two Three Four Five"
         profile.first_name.should == "One Two Three Four"
         profile.last_name.should == "Five"
       end
 
       it "sets the last name to the last word along with any previous uncapitalized words" do
-        profile.full_name = "One Two three four Five"
+        profile.name = "One Two three four Five"
         profile.first_name.should == "One Two"
         profile.last_name.should == "three four Five"
       end
 
       it "puts uncapitalized words that are not adjacent to the last word in the first name" do
-        profile.full_name = "One two Three four Five"
+        profile.name = "One two Three four Five"
         profile.first_name.should == "One two Three"
         profile.last_name.should == "four Five"
       end
 
       it "trims the name" do
-        profile.full_name = "   one two  three  four   five "
+        profile.name = "   one two  three  four   five "
         profile.first_name.should == "one"
         profile.last_name.should == "two three four five"
 
-        profile.full_name = "One   Two  Three  Four      Five"
+        profile.name = "One   Two  Three  Four      Five"
         profile.first_name.should == "One Two Three Four"
         profile.last_name.should == "Five"
 
-        profile.full_name = "One   Two    three four Five"
+        profile.name = "One   Two    three four Five"
         profile.first_name.should == "One Two"
         profile.last_name.should == "three four Five"
 
-        profile.full_name = "   One two Three four    Five   "
+        profile.name = "   One two Three four    Five   "
         profile.first_name.should == "One two Three"
         profile.last_name.should == "four Five"
       end
     end
   end
 
-  describe "#full_name" do
+  describe "#name" do
     it "joins the first and last names" do
       profile.first_name = "Rahul"
       profile.last_name = "Sekhar"
-      profile.full_name.should == "Rahul Sekhar"
+      profile.name.should == "Rahul Sekhar"
     end
 
     it "returns the last name if the last name doesn't exist" do
       profile.last_name = nil
       profile.first_name = "Sekhar"
-      profile.full_name.should == "Sekhar"
+      profile.name.should == "Sekhar"
     end
   end
 
@@ -453,17 +453,17 @@ shared_examples_for "a profile" do
 
   describe "##alphabetical" do
     it "orders alphabetically by the first name followed by the last name" do
-      profile1 = create(profile_type, full_name: "Some Fellow")
-      profile2 = create(profile_type, full_name: "Another Fellow")
-      profile3 = create(profile_type, full_name: "Some Chap")
+      profile1 = create(profile_type, name: "Some Fellow")
+      profile2 = create(profile_type, name: "Another Fellow")
+      profile3 = create(profile_type, name: "Some Chap")
       profile_class.alphabetical.should == [profile2, profile3, profile1]
-    end    
+    end
   end
 
   describe "##name_is" do
     before do
-      @profile1 = profile_class.create(full_name: "First Last")
-      @profile2 = profile_class.create(full_name: "First")
+      @profile1 = profile_class.create(name: "First Last")
+      @profile2 = profile_class.create(name: "First")
     end
 
     it "returns a profile with passed names" do
@@ -490,9 +490,9 @@ shared_examples_for "a profile" do
 
   describe "##names_are" do
     before do
-      @profile1 = profile_class.create(full_name: "First Last")
-      @profile2 = profile_class.create(full_name: "First last")
-      @profile3 = profile_class.create(full_name: "First")
+      @profile1 = profile_class.create(name: "First Last")
+      @profile2 = profile_class.create(name: "First last")
+      @profile3 = profile_class.create(name: "First")
     end
 
     it "returns profiles with passed names" do
@@ -515,9 +515,9 @@ shared_examples_for "a profile" do
 
   describe "##search" do
     before do
-      @profile1 = create(profile_type, full_name: "Some Profile")
-      @profile2 = create(profile_type, full_name: "Other Profile")
-      @profile3 = create(profile_type, full_name: "Person")
+      @profile1 = create(profile_type, name: "Some Profile")
+      @profile2 = create(profile_type, name: "Other Profile")
+      @profile3 = create(profile_type, name: "Person")
     end
 
     it "searches the first name" do

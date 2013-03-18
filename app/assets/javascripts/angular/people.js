@@ -8,7 +8,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
     return function ($scope) {
       // Handle deleting profiles
       $scope.delete = function (profile) {
-        var message = 'Are you sure you want to delete the profile for "' + profile.full_name + '"?' +
+        var message = 'Are you sure you want to delete the profile for "' + profile.name + '"?' +
           'Anything that has been created by that person will be lost. ' +
           'You can archive the profile if you don\'t want to lose data.';
 
@@ -22,7 +22,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
         var action, message;
 
         action = profile.active ? 'reset the password for' : 'activate';
-        message = 'Are you sure you want to ' + action + ' "' + profile.full_name +
+        message = 'Are you sure you want to ' + action + ' "' + profile.name +
           '? A randomly generated password will be emailed to ' + profile.email + '.';
 
         if (confirm(message)) {
@@ -32,7 +32,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
       // Handle toggling archive
       $scope.toggleArchive = function (profile) {
-        var message = 'Are you sure you want to archive "' + profile.full_name +
+        var message = 'Are you sure you want to archive "' + profile.name +
             '"? Their data will remain but the user will not be able to log in.';
 
         if (profile.archived || confirm(message)) {
@@ -42,12 +42,12 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
       // Handle adding a guardian
       $scope.addGuardian = function (profile) {
-        profile.newGuardian({ _edit: 'full_name' });
+        profile.newGuardian({ _edit: 'name' });
       };
 
       // Handle removing guardians
       $scope.removeGuardian = function (profile, guardian) {
-        var message = 'Are you sure you want to delete the guardian "' + guardian.full_name + '"?' +
+        var message = 'Are you sure you want to delete the guardian "' + guardian.name + '"?' +
           'Anything that has been created by that guardian will be lost.';
 
         // Skip confirm if the guardian has more than 1 student
@@ -97,12 +97,12 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
         // Handle adding profiles
         $scope.addTeacher = function() {
-          var teacher = peopleInterface.addTeacher({ _edit: 'full_name' });
+          var teacher = peopleInterface.addTeacher({ _edit: 'name' });
           $scope.people.unshift(teacher);
         };
 
         $scope.addStudent = function() {
-          var student = peopleInterface.addStudent({ _edit: 'full_name' });
+          var student = peopleInterface.addStudent({ _edit: 'name' });
           $scope.people.unshift(student);
         };
       };
