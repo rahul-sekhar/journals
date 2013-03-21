@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('journals', ['journals.user', 'journals.people', 'journals.posts', 'journals.editInPlace',
-  'journals.filters', 'journals.pagination', 'journals.modal', 'journals.directives']).
+  'journals.filters', 'journals.pagination', 'journals.modal', 'journals.directives', 'journals.changePassword']).
 
   config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
@@ -15,6 +15,7 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
     $rootScope.$watch('user.type', function (value) {
       $rootScope.isTeacher = (value === 'Teacher');
     });
+    $rootScope.dialogs = {};
   }]).
 
   config(['$routeProvider', function ($routeProvider) {

@@ -18,6 +18,10 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
       controller: 'editInPlaceCtrl',
       link: function (scope, elem, attrs) {
 
+        if (attrs.noClickEdit !== undefined) {
+          scope.noClickEdit = true;
+        }
+
         // Compile the inputs on the fly because we don't expect 'type' to change once it is set
         // If changes are expected, add a compile step to sort out possible performance issues
         scope.$watch('type', function (val) {
@@ -96,12 +100,14 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
 
   .controller('editInPlaceCtrl', ['$scope', function ($scope) {
     $scope.startEdit = function () {
-      $scope.editMode = true;
+      if (!$scope.noClickEdit) {
+        $scope.editMode = true;
+      }
     };
 
     $scope.$watch('instance._edit', function(value) {
       if (value && value === $scope.field) {
-        $scope.startEdit();
+        $scope.editMode = true;
       }
     });
 

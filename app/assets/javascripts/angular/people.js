@@ -17,6 +17,34 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
         }
       };
 
+      // Remove associations
+      $scope.removeGroup = function (profile, group) {
+        var message = 'Are you sure you want to remove ' + profile.name +
+          'from the group ' + group.name + '?';
+
+        if (confirm(message)) {
+          profile.removeGroup(group);
+        }
+      };
+
+      $scope.removeMentor = function (profile, mentor) {
+        var message = 'Are you sure you want to remove the mentor ' + mentor.name +
+          ' for ' + profile.name + '?';
+
+        if (confirm(message)) {
+          profile.removeMentor(mentor);
+        }
+      };
+
+      $scope.removeMentee = function (profile, mentee) {
+        var message = 'Are you sure you want to remove the mentee ' + mentee.name +
+          ' for ' + profile.name + '?';
+
+        if (confirm(message)) {
+          profile.removeMentee(mentee);
+        }
+      };
+
       // Handle resetting passwords/activating profiles
       $scope.resetPassword = function (profile) {
         var action, message;
@@ -89,10 +117,9 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
         };
 
         $scope.groups = Groups.all();
-        $scope.groupsDialog = { shown: false };
 
         $scope.showGroupsDialog = function() {
-          $scope.groupsDialog.shown = true;
+          $scope.dialogs.manageGroups = true;
         };
 
         // Handle adding profiles

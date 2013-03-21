@@ -15,14 +15,15 @@ describe TeachersController do
 
   describe "GET index" do
     let(:user){ create(:student_with_user).user }
+    let(:make_request) { get :index, format: :json }
 
     it "raises an exception if the user cannot view teachers" do
       ability.cannot :read, Teacher
-      expect{ get :index, format: :json }.to raise_exception(CanCan::AccessDenied)
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
     it "has a status of 200" do
-      get :index, format: :json
+      make_request
       response.status.should == 200
     end
 
@@ -30,14 +31,14 @@ describe TeachersController do
       student1 = create(:student)
       teacher1 = create(:teacher)
       teacher2 = create(:teacher)
-      get :index, format: :json
+      make_request
       assigns(:people).should =~ [teacher1, teacher2]
     end
 
     it "does not assign archived teachers" do
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
-      get :index, format: :json
+      make_request
       assigns(:people).should == [teacher1]
     end
 
@@ -45,7 +46,7 @@ describe TeachersController do
       teacher1 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
       teacher2 = create(:teacher, first_name: "Ze", last_name: "Teacher")
       teacher3 = create(:teacher, first_name: "A", last_name: "Teacher")
-      get :index, format: :json
+      make_request
       assigns(:people).should == [teacher3, teacher1, teacher2]
     end
 
@@ -78,14 +79,15 @@ describe TeachersController do
 
   describe "GET all" do
     let(:user){ create(:student_with_user).user }
+    let(:make_request) { get :all, format: :json }
 
     it "raises an exception if the user cannot view teachers" do
       ability.cannot :read, Teacher
-      expect{ get :all, format: :json }.to raise_exception(CanCan::AccessDenied)
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
     it "has a status of 200" do
-      get :all, format: :json
+      make_request
       response.status.should == 200
     end
 
@@ -93,14 +95,14 @@ describe TeachersController do
       student1 = create(:student)
       teacher1 = create(:teacher)
       teacher2 = create(:teacher)
-      get :all, format: :json
+      make_request
       assigns(:teachers).should =~ [teacher1, teacher2]
     end
 
     it "does not assign archived teachers" do
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
-      get :all, format: :json
+      make_request
       assigns(:teachers).should == [teacher1]
     end
   end
@@ -108,25 +110,26 @@ describe TeachersController do
 
   describe "GET show" do
     let(:teacher){ mock_model(Teacher) }
+    let(:make_request){ get :show, id: 5, format: :json }
     before { Teacher.stub(:find).and_return(teacher) }
 
     it "raises an exception if the user cannot view the teacher" do
       ability.cannot :read, teacher
-      expect{ get :show, id: 5, format: :json }.to raise_exception(CanCan::AccessDenied)
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
     it "has a status of 200" do
-      get :show, id: 5, format: :json
+      make_request
       response.status.should eq(200)
     end
 
     it "finds the teacher given by the passed ID" do
       Teacher.should_receive(:find).with("5")
-      get :show, id: 5, format: :json
+      make_request
     end
 
     it "assigns the found teacher" do
-      get :show, id: 5, format: :json
+      make_request
       assigns(:teacher).should == teacher
     end
   end
@@ -134,7 +137,7 @@ describe TeachersController do
 
   describe "POST create" do
     context "with valid data" do
-      let(:make_request){ post :create, teacher: { first_name: "Rahul", last_name: "Sekhar" } }
+      let(:make_request){ post :create, teacher: { name: "Rahul Sekhar" }, format: :json }
 
       it "raises an exception if the user cannot create a teacher" do
         ability.cannot :create, Teacher
@@ -151,51 +154,22 @@ describe TeachersController do
         assigns(:teacher).last_name.should == "Sekhar"
       end
 
-      it "redirects to the teacher page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to teacher_path(assigns(:teacher))
-      end
-    end
-
-    context "with only a first name" do
-      let(:make_request){ post :create, teacher: { first_name: "Rahul", last_name: " " } }
-
-      it "creates a teacher" do
-        expect{ make_request }.to change{ Teacher.count }.by(1)
-      end
-
-      it "sets the last name and not the first name" do
-        make_request
-        assigns(:teacher).first_name.should be_nil
-        assigns(:teacher).last_name.should == "Rahul"
-      end
-
-      it "redirects to the teacher page" do
-        make_request
-        response.should redirect_to teacher_path(assigns(:teacher))
+        response.status.should eq(200)
       end
     end
 
     context "with no first name or last name" do
-      let(:make_request){ post :create, teacher: { first_name: " " } }
+      let(:make_request){ post :create, teacher: { name: " " }, format: :json }
 
       it "does not create a teacher" do
         expect{ make_request }.to change{ Teacher.count }.by(0)
       end
 
-      it "sets a flash alert" do
+      it "has a status of 422" do
         make_request
-        flash[:alert].should be_present
-      end
-
-      it "redirects to the new teacher page" do
-        make_request
-        response.should redirect_to new_teacher_path
-      end
-
-      it "stores already filled data in a flash object" do
-        make_request
-        flash[:teacher_data].should == { 'first_name' => ' ' }
+        response.status.should eq(422)
       end
     end
   end
@@ -375,20 +349,7 @@ describe TeachersController do
   describe "POST add_mentee" do
     let(:teacher){ create(:teacher) }
     let(:student){ create(:student, id: 5) }
-    let(:make_request){ post :add_mentee, id: teacher.id, format: :json  }
     before{ student }
-
-    it "raises an exception if the user cannot add a mentee to a teacher" do
-      ability.cannot :add_mentee, teacher
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    context "without a student_id" do
-      it "has a status of 422" do
-        make_request
-        response.status.should eq(422)
-      end
-    end
 
     context "with an invalid student_id" do
       let(:make_request){ post :add_mentee, id: teacher.id, student_id: 4, format: :json }
@@ -401,6 +362,11 @@ describe TeachersController do
 
     context "with a valid student_id" do
       let(:make_request){ post :add_mentee, id: teacher.id, student_id: 5, format: :json }
+
+      it "raises an exception if the user cannot add a mentee to a teacher" do
+        ability.cannot :add_mentee, teacher
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       context "when the teacher contains that student" do
         before{ teacher.mentees = [student] }
@@ -429,20 +395,7 @@ describe TeachersController do
   describe "POST remove_mentee" do
     let(:teacher){ create(:teacher) }
     let(:student){ create(:student, id: 5) }
-    let(:make_request){ post :remove_mentee, id: teacher.id, format: :json }
     before{ student }
-
-    it "raises an exception if the user cannot remove a student to a teacher" do
-      ability.cannot :remove_mentee, teacher
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    context "without a student_id" do
-      it "has a status of 422" do
-        make_request
-        response.status.should eq(422)
-      end
-    end
 
     context "with an invalid student_id" do
       let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 4, format: :json }
@@ -455,6 +408,11 @@ describe TeachersController do
 
     context "with a valid student_id" do
       let(:make_request){ post :remove_mentee, id: teacher.id, student_id: 5, format: :json }
+
+      it "raises an exception if the user cannot remove a student to a teacher" do
+        ability.cannot :remove_mentee, teacher
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       context "when the teacher contains that student" do
         before{ teacher.mentees = [student] }

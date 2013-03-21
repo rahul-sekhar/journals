@@ -38,16 +38,16 @@ class PagesController < ApplicationController
       current_user.new_password = @new_pass
 
       if current_user.save
-        redirect_to posts_path, notice: "Password changed successfully"
+        render text: 'OK', status: :ok
       else
-        redirect_to change_password_path, alert: current_user.errors.full_messages.first
+        render text: current_user.errors.full_messages.first, status: :unprocessable_entity
       end
 
     elsif @current_pass.blank?
-      redirect_to change_password_path, alert: "Please enter your current password"
+      render text: "Please enter your current password", status: :unprocessable_entity
 
     elsif @new_pass.blank?
-      redirect_to change_password_path, alert: "Please enter a new password"
+      render text: "Please enter a new password", status: :unprocessable_entity
 
     end
   end

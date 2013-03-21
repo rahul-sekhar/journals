@@ -7,7 +7,8 @@ angular.module('journals.model', ['journals.ajax', 'journals.model.associations'
     return function (name, path, options) {
       var defaults = {
         extensions: [],
-        saveFields: ['name']
+        saveFields: ['name'],
+        hasParent: false
       }
       options = angular.extend(defaults, options);
       var model = {};
@@ -51,7 +52,26 @@ angular.module('journals.model', ['journals.ajax', 'journals.model.associations'
         };
 
         instance.url = function () {
-          return path + '/' + instance.id;
+          var url = path;
+
+          if (instance.id) {
+            url += '/' + instance.id
+          }
+
+          if (options.hasParent) {
+            if (!instance._parent) {
+              throw new Error('_parent model not present');
+            }
+            else {
+              if (instance._parent.isNew()) {
+                throw new Error('_parent model not saved');
+              }
+              else {
+                url = instance._parent.url() + url;
+              }
+            }
+          }
+          return url;
         };
 
         instance.isNew = function() {
@@ -74,27 +94,24 @@ angular.module('journals.model', ['journals.ajax', 'journals.model.associations'
 
         // Save instance
         instance.save = function () {
-          var data = instance.getSaveData();
-
+          var data, method;
+          data = instance.getSaveData();
           if (instance.isNew()) {
-            return ajax({ url: path, method: 'POST', data: instance.formatHttpData(data) }).
-              then(function (response) {
-                instance.load(response.data);
-                return instance;
-              }, function (response) {
+            method = 'POST';
+          } else {
+            method = 'PUT';
+          }
+
+          return ajax({ url: instance.url(), method: method, data: instance.formatHttpData(data) }).
+            then(function (response) {
+              instance.load(response.data);
+              return instance;
+            }, function (response) {
+              if (instance.isNew()) {
                 instance.delete();
-                return $q.reject(response);
-              });
-          }
-          else {
-            return ajax({ url: instance.url(), method: 'PUT', data: instance.formatHttpData(data) }).
-              then(function (response) {
-                instance.load(response.data);
-                return instance;
-              }, function(response) {
-                return $q.reject(response);
-              });
-          }
+              }
+              return $q.reject(response);
+            });
         };
 
 

@@ -3,8 +3,6 @@ class PostsController < ApplicationController
   skip_load_resource only: [:new, :create]
 
   def index
-    @students = Student.current.alphabetical.filter_group(params[:group])
-    params.delete(:student) unless contains_id?(@students, params[:student])
     @posts = @posts.load_associations
     @posts = @posts.filter_by_params(params).order{ created_at.desc }
     @posts = paginate(@posts)

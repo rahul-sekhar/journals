@@ -168,23 +168,24 @@
     }
   }
 
+  .student-observations-offset {
+    margin-bottom: 90px;
+    float: right;
+    width: 474px;
+  }
+
   .student-observations {
     float: right;
     width: 474px;
     margin-bottom: 15px;
     position: relative;
-
-    &.empty {
-      display: none;
-    }
+    margin-top: -90px;
 
     p {
       font-size: 16px;
       @include semibold;
       margin: 10px 0;
     }
-
-    label { display: none; }
 
     textarea {
       height: 160px;

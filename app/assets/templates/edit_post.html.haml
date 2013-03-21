@@ -15,6 +15,8 @@
       %li.string.input
         %input{ "ng-model"=>"post.tag_names", "placeholder"=>"Tags"}
 
+  .student-observations-offset{ "ng-show"=>"post.students.length" }
+
   .people-tags
     .students
       %label Student tags
@@ -43,6 +45,16 @@
           Add teacher
         .container
           %filtered-list{ "list"=>"post.remainingTeachers()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addTeacher(value, true); hideMenus()" }
+
+  .student-observations{ "ng-controller"=>"StudentObservationsCtrl", "ng-show"=>"post.students.length" }
+    %p Individual student observations
+
+    %ul#observation-buttons
+      %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'", "ng-class"=>"{selected: (student == selectedStudent)}" }
+        %a{ "href"=>"", "ng-click"=>"selectStudent(student)" }
+          {{student.short_name}}
+
+    %textarea#observation-editor{ "ng-model"=>"post.observationContent[selectedStudent.id]", "tinymce"=>true, "observation-editor"=>true }
 
   .permissions
     %p

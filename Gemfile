@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.12'
+gem 'rails', '3.2.13'
 
 group :assets do
   gem 'sass-rails'
@@ -18,7 +18,7 @@ group :development do
 end
 
 group :test, :development do
-  gem 'rspec-rails', '~> 2.12.2'
+  gem 'rspec-rails'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
   gem 'spork-rails'

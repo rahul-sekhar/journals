@@ -148,6 +148,7 @@ angular.module('journals.directives', []).
     return {
       require: 'ngModel',
       link: function(scope, elem, attrs, ngModel) {
+        var saveFn;
         elem.tinymce({
           script_url : '/tiny_mce/tiny_mce.js',
           width: 474,
@@ -167,14 +168,46 @@ angular.module('journals.directives', []).
           },
           onchange_callback: function(e) {
             if (this.isDirty()) {
-              this.save();
-              ngModel.$setViewValue(elem.val());
-              scope.$apply();
-
+              saveFn();
               return true;
             }
+          },
+          oninit: function() {
+            elem.trigger('editorInit');
           }
         });
+
+        saveFn = function() {
+          elem.tinymce().save();
+          ngModel.$setViewValue(elem.val());
+        };
+
+        scope.$on('saveText', function () {
+          saveFn();
+        });
       }
+    };
+  }]).
+
+  directive('observationEditor', [function () {
+    return function(scope, elem, attrs) {
+      var checkHeightFn, obsIframe, buttonList;
+
+      // get elements on editor initialization
+      elem.on('editorInit', function () {
+        obsIframe = elem.parent().find('#' + elem.attr('id') + '_ifr');
+        buttonList = elem.parent().find('#observation-buttons');
+        checkHeightFn();
+      });
+
+      // Change the height to equal the button list height
+      checkHeightFn = function () {
+        if (obsIframe && ( buttonList.outerHeight() + 10) > obsIframe.outerHeight()) {
+          obsIframe[0].style.height = buttonList.outerHeight() + 10 + 'px';
+        }
+      }
+
+      // check height on a check height event
+      scope.$on('checkHeight', checkHeightFn);
     };
   }]);

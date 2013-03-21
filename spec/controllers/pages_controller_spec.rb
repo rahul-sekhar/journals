@@ -2,20 +2,20 @@ require 'spec_helper'
 
 describe PagesController do
   let(:user){ mock_model(User) }
-  
+
   before do
     controller.stub(:current_user).and_return(user)
   end
 
   describe "GET home" do
     it "redirects to the login path if not logged in" do
-      controller.stub(:current_user) 
+      controller.stub(:current_user)
       get :home
       response.should redirect_to login_path
     end
 
     it "redirects to the posts page if logged in" do
-      get :home
+      get :home, format: :json
       response.should redirect_to posts_path
     end
   end
@@ -180,17 +180,17 @@ describe PagesController do
       before{ user.stub(:profile).and_return(teacher) }
 
       it "has a status of 200" do
-        get :mentees
+        get :mentees, format: :json
         response.status.should == 200
       end
 
-      it "assigns any mentees into a profiles collection" do
+      it "assigns any mentees into a people collection" do
         student1 = create(:student)
         student2 = create(:student)
         student3 = create(:student)
         teacher.mentees = [student1, student3]
-        get :mentees
-        assigns(:profiles).should =~ [student1, student3]
+        get :mentees, format: :json
+        assigns(:people).should =~ [student1, student3]
       end
 
       it "assigns mentees alphabetically" do
@@ -198,8 +198,8 @@ describe PagesController do
         student2 = create(:student, first_name: "Other", last_name: "Student")
         student3 = create(:student, first_name: "A", last_name: "Student")
         teacher.mentees = [student1, student2, student3]
-        get :mentees
-        assigns(:profiles).should == [student3, student2, student1]
+        get :mentees, format: :json
+        assigns(:people).should == [student3, student2, student1]
       end
 
       it "searches if a search parameter is passed" do
@@ -207,23 +207,9 @@ describe PagesController do
         student2 = create(:student, first_name: "Other", last_name: "Student")
         student3 = create(:student, first_name: "A", last_name: "Student")
         teacher.mentees = [student1, student2, student3]
-        get :mentees, search: "oth"
-        assigns(:profiles).should == [student2]
+        get :mentees, search: "oth", format: :json
+        assigns(:people).should == [student2]
       end
-
-      it "sets an empty_message" do
-        get :mentees
-        assigns(:empty_message).should be_present
-      end
-    end
-  end
-
-
-
-  describe "GET change_password" do
-    it "has a 200 status" do
-      get :change_password
-      response.status.should eq(200)
     end
   end
 
@@ -238,43 +224,38 @@ describe PagesController do
         User.authenticate("test@mail.com", "pass").should == user
       end
 
-      it "sets an alert" do
+      it "has a status of 422" do
         make_request
-        flash[:alert].should be_present
-      end
-
-      it "redirects to the change password page" do
-        make_request
-        response.should redirect_to change_password_path
+        response.status.should eq(422)
       end
     end
 
     context "with no current password or new password" do
-      let(:make_request){ put :update_password }
+      let(:make_request){ put :update_password, format: :json }
 
       it_behaves_like "invalid params"
     end
 
     context "with no current password" do
-      let(:make_request){ put :update_password, user: { new_password: "newpass" } }
+      let(:make_request){ put :update_password, user: { new_password: "newpass" }, format: :json }
 
       it_behaves_like "invalid params"
     end
 
     context "with no new password" do
-      let(:make_request){ put :update_password, user: { current_password: "pass" } }
+      let(:make_request){ put :update_password, user: { current_password: "pass" }, format: :json }
 
       it_behaves_like "invalid params"
     end
 
     context "with an invalid current password" do
-      let(:make_request){ put :update_password, user: { current_password: "ass", new_password: "newpass" } }
+      let(:make_request){ put :update_password, user: { current_password: "ass", new_password: "newpass" }, format: :json }
 
       it_behaves_like "invalid params"
     end
 
     context "with a valid current password" do
-      let(:make_request){ put :update_password, user: { current_password: "pass", new_password: "newpass" } }
+      let(:make_request){ put :update_password, user: { current_password: "pass", new_password: "newpass" }, format: :json }
 
       it "changes the password" do
         make_request
@@ -282,14 +263,9 @@ describe PagesController do
         User.authenticate("test@mail.com", "newpass").should == user
       end
 
-      it "sets an notice" do
+      it "has a status of 200" do
         make_request
-        flash[:notice].should be_present
-      end
-
-      it "redirects to the posts page" do
-        make_request
-        response.should redirect_to posts_path
+        response.status.should eq(200)
       end
     end
   end

@@ -7,17 +7,17 @@ describe Teacher do
 
   it_behaves_like "a profile"
 
-  describe "#name_with_type" do
-    it "returns the full name along with the profile type" do
+  describe "#name_with_info" do
+    it "returns the full name along with the profile info" do
       profile.first_name = "Rahul"
       profile.last_name = "Sekhar"
-      profile.name_with_type.should == "Rahul Sekhar (teacher)"
+      profile.name_with_info.should == "Rahul Sekhar (teacher)"
     end
   end
 
   describe "#toggle_archive" do
     context "if archived" do
-      before do 
+      before do
         profile.archived = true
         profile.save!
       end
@@ -29,7 +29,7 @@ describe Teacher do
     end
 
     context "if not archived" do
-      before do 
+      before do
         profile.email = "test@mail.com"
         profile.save!
       end
@@ -63,7 +63,7 @@ describe Teacher do
   end
 
   describe "permissions:" do
-    before do 
+    before do
       profile.email = "test@mail.com"
       profile.save!
     end
@@ -92,7 +92,7 @@ describe Teacher do
       it "can manage posts created by a guardian" do
         post = create(:post, author: create(:guardian) )
         ability.should be_able_to :manage, post
-      end  
+      end
     end
 
     describe "comments:" do

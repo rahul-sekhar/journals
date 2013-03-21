@@ -22,5 +22,7 @@
       #main-content
         .ng-view
 
+    %div{ "ng-include"=>"'#{asset_path('change_password.html')}'" }
+
     #notifications{ "ng-controller"=>"messageCtrl", "ng-class"=>"{shown: show}" }
       %p{ "ng-class"=>"message.type" } {{message.text}}

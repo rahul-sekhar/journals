@@ -302,46 +302,6 @@ shared_examples_for "a profile" do
     end
   end
 
-  describe "#name" do
-    subject{ profile.name }
-    before do
-      profile.first_name = "Rahul"
-      profile.last_name = "Sekhar"
-      profile.save!
-    end
-
-    context "with no duplicates" do
-      context "if there is no last_name" do
-        before do
-          profile.last_name = " "
-          profile.save!
-        end
-
-        it { should == "Rahul" }
-      end
-
-      it { should == "Rahul" }
-    end
-
-    context "with a duplicate first name" do
-      before{ create(:student, first_name: "Rahul", last_name: "Raj") }
-
-      it { should == "Rahul S." }
-
-      context "with a duplicate first name and initial" do
-        before{ create(:student, first_name: "Rahul", last_name: "Sharma") }
-
-        it { should == "Rahul Sekhar" }
-      end
-
-      context "with a duplicate full name" do
-        before{ create(:student, first_name: "Rahul", last_name: "Sekhar") }
-
-        it { should == "Rahul Sekhar" }
-      end
-    end
-  end
-
   it "cannot have a mobile longer than 40 characters" do
     profile.mobile = "a" * 40
     profile.should be_valid

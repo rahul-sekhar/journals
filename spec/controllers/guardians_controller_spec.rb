@@ -34,15 +34,10 @@ describe GuardiansController do
   end
 
   describe "GET show" do
-    let(:guardian){ mock_model(Guardian) }
-    let(:make_request){ get :show, id: 5, format: :json }
-    let(:student1){ mock_model(Student) }
-    let(:student2){ mock_model(Student) }
-
-    before do
-      Guardian.stub(:find).and_return(guardian)
-      guardian.stub_chain("students.alphabetical").and_return([student1, student2])
-    end
+    let(:student1){ create(:student) }
+    let(:student2){ create(:student) }
+    let(:guardian){ create(:guardian, students: [student1, student2]) }
+    let(:make_request){ get :show, id: guardian.id, format: :json }
 
     it "raises an exception if the user cannot view the guardian" do
       ability.cannot :read, guardian
@@ -54,9 +49,9 @@ describe GuardiansController do
       response.status.should eq(200)
     end
 
-    it "finds the guardian given by the passed ID" do
-      Guardian.should_receive(:find).with("5")
+    it "finds the guardian" do
       make_request
+      assigns(:guardian).should eq(guardian)
     end
 
     it "assigns the found guardian" do
@@ -229,9 +224,9 @@ describe GuardiansController do
         assigns(:guardian).reload.email.should == "rahul@mail.com"
       end
 
-      it "renders the show page" do
+      it "has a status of 200" do
         make_request
-        response.should render_template "show"
+        response.status.should eq(200)
       end
     end
 

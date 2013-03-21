@@ -38,7 +38,7 @@
           %ul.existing
             %li{ "ng-repeat"=>"group in person.groups | orderBy: 'name'", "ng-hide"=>"group.deleted" }
               %span {{group.name}}
-              %a.remove{ "href"=>"", "internal-click"=>"person.removeGroup(group)", "ng-show"=>"isTeacher" }
+              %a.remove{ "href"=>"", "internal-click"=>"removeGroup(person, group)", "ng-show"=>"isTeacher" }
             %li{ "ng-hide"=>"person.groups.length" }
               None
 
@@ -52,7 +52,7 @@
           %ul.existing
             %li{ "ng-repeat"=>"mentor in person.mentors | orderBy: 'short_name'", "ng-hide"=>"mentor.deleted" }
               %span {{mentor.short_name}}
-              %a.remove{ "href"=>"", "internal-click"=>"person.removeMentor(mentor)", "ng-show"=>"isTeacher" }
+              %a.remove{ "href"=>"", "internal-click"=>"removeMentor(person, mentor)", "ng-show"=>"isTeacher" }
             %li{ "ng-hide"=>"person.mentors.length" }
               None
 
@@ -66,7 +66,7 @@
           %ul.existing
             %li{ "ng-repeat"=>"mentee in person.mentees | orderBy: 'short_name'", "ng-hide"=>"mentee.deleted" }
               %span {{mentee.short_name}}
-              %a.remove{ "href"=>"", "internal-click"=>"person.removeMentee(mentee)", "ng-show"=>"isTeacher" }
+              %a.remove{ "href"=>"", "internal-click"=>"removeMentee(person, mentee)", "ng-show"=>"isTeacher" }
             %li{ "ng-hide"=>"person.mentees.length" }
               None
 

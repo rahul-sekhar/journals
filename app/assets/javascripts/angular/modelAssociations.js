@@ -64,7 +64,8 @@ angular.module('journals.model.associations', ['journals.ajax', 'journals.helper
     return function (targetString, name, options) {
       var defaults = {
         loaded: false,
-        mirror: false
+        mirror: false,
+        addToEnd: false
       };
       options = angular.extend(defaults, options);
 
@@ -81,7 +82,11 @@ angular.module('journals.model.associations', ['journals.ajax', 'journals.helper
         // For preloaded objects
         if (options.loaded) {
           if (instance[assocName]) {
-            instance[assocName] = instance[assocName].map(targetCollection.update);
+            instance[assocName] = instance[assocName].map(function (assocObj) {
+              assocObj = targetCollection.update(assocObj);
+              assocObj._parent = instance;
+              return assocObj;
+            });
           }
         }
 
@@ -92,6 +97,7 @@ angular.module('journals.model.associations', ['journals.ajax', 'journals.helper
           if (instance[idsName]) {
             angular.forEach(instance[idsName], function (id) {
               targetCollection.get(id).then(function (match) {
+                match._parent = instance;
                 assocs.push(match);
               });
             });
@@ -119,7 +125,13 @@ angular.module('journals.model.associations', ['journals.ajax', 'journals.helper
         instance['new' + capitalizedName] = function (data) {
           data = angular.extend({ _parent: instance }, data)
           var newAssoc = targetCollection.add(data);
-          instance[assocName].unshift(newAssoc);
+
+          if (options.addToEnd) {
+            instance[assocName].push(newAssoc);
+          } else {
+            instance[assocName].unshift(newAssoc);
+          }
+
           return newAssoc;
         };
 

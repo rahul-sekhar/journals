@@ -28,7 +28,7 @@ describe SessionsController do
     end
 
     describe "when logged in" do
-      before do 
+      before do
         user = mock_model(User)
         controller.stub(:current_user).and_return(user)
         User.stub(:find).and_return(user)
@@ -95,7 +95,7 @@ describe SessionsController do
     end
 
     context "with a valid user" do
-      before do 
+      before do
         user = mock_model(User)
         user.stub(:id).and_return(4)
         User.stub(:authenticate).and_return(user)
@@ -127,7 +127,7 @@ describe SessionsController do
   end
 
   describe "GET destroy" do
-    before do 
+    before do
       user = mock_model(User)
       controller.stub(:current_user).and_return(user)
       User.stub(:find).and_return(user)

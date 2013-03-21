@@ -7,7 +7,7 @@ describe CommentsController do
     ability = Object.new
     ability.extend(CanCan::Ability)
   end
-  before do 
+  before do
     controller.stub(:current_user).and_return(user)
     controller.stub(:current_ability).and_return(ability)
     ability.can :manage, Post
@@ -16,7 +16,7 @@ describe CommentsController do
 
   describe "POST create" do
     context "with valid data" do
-      let(:make_request){ post :create, { post_id: post_obj.id, comment: { content: "Lorem Ipsum" } } }
+      let(:make_request){ post :create, post_id: post_obj.id, comment: { content: "Lorem Ipsum" }, format: :json }
 
       it "raises an exception if the user cannot read the post" do
         ability.cannot :read, post_obj
@@ -47,57 +47,23 @@ describe CommentsController do
         assigns(:comment).content.should == "Lorem Ipsum"
       end
 
-      it "redirects to the post page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to post_path(post_obj)
-      end
-
-      it "does not set a flash alert" do
-        flash[:alert].should be_nil
+        response.status.should eq(200)
       end
     end
 
     context "with invalid data" do
-      let(:make_request){ post :create, post_id: post_obj.id }
+      let(:make_request){ post :create, post_id: post_obj.id, format: :json }
 
       it "does not create a comment" do
         expect{ make_request }.to change{ Comment.count }.by(0)
       end
-      
-      it "redirects to the post page" do
+
+      it "has a status of 422" do
         make_request
-        response.should redirect_to post_path(post_obj)
+        response.status.should eq(422)
       end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
-      end
-    end
-  end
-
-  describe "GET edit" do
-    let(:comment){ create(:comment, post: post_obj) }
-    let(:make_request){ get :edit, post_id: post_obj.id, id: comment.id }
-
-    it "raises an exception if the user cannot read the post" do
-      ability.cannot :read, post_obj
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "raises an exception if the user cannot edit that comment" do
-      ability.cannot :update, comment
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns the comment to be edited" do
-      make_request
-      assigns(:comment).should eq(comment)
     end
   end
 
@@ -105,8 +71,8 @@ describe CommentsController do
     let(:comment){ create(:comment, post: post_obj) }
 
     context "with valid data" do
-      let(:make_request) do 
-        put :update, id: comment.id, post_id: post_obj.id, comment: { content: "Lorem Ipsum" }
+      let(:make_request) do
+        put :update, id: comment.id, post_id: post_obj.id, comment: { content: "Lorem Ipsum" }, format: :json
       end
 
       it "raises an exception if the user cannot read the post" do
@@ -129,40 +95,31 @@ describe CommentsController do
         comment.reload.content.should == "Lorem Ipsum"
       end
 
-      it "redirects to the post page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to post_path(post_obj)
-      end
-
-      it "does not set a flash alert" do
-        flash[:alert].should be_nil
+        response.status.should eq(200)
       end
     end
 
     context "with invalid data" do
-      let(:make_request) do 
-        put :update, id: comment.id, post_id: post_obj.id, comment: { content: " " }
+      let(:make_request) do
+        put :update, id: comment.id, post_id: post_obj.id, comment: { content: " " }, format: :json
       end
 
       it "does not edit the comment" do
         comment.reload.content.should_not == "Lorem Ipsum"
       end
-      
-      it "redirects to the post page" do
-        make_request
-        response.should redirect_to post_path(post_obj)
-      end
 
-      it "sets a flash message" do
+      it "has a status of 422" do
         make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
     end
   end
 
   describe "DELETE destroy" do
     let(:comment){ create(:comment, post: post_obj) }
-    let(:make_request){ delete :destroy, id: comment.id, post_id: post_obj.id }
+    let(:make_request){ delete :destroy, id: comment.id, post_id: post_obj.id, format: :json }
 
     it "raises an exception if the user cannot read the post" do
       ability.cannot :read, post_obj
@@ -184,14 +141,9 @@ describe CommentsController do
       assigns(:comment).should be_destroyed
     end
 
-    it "redirects to the post page" do
+    it "has a status of 200" do
       make_request
-      response.should redirect_to post_path(post_obj)
-    end
-
-    it "sets a flash message" do
-      make_request
-      flash[:notice].should be_present
+      response.status.should eq(200)
     end
   end
 end

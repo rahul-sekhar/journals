@@ -3,7 +3,7 @@ require 'spec_helper'
 describe People do
   before do
     @student = create(:student, first_name: "Some", last_name: "Student")
-    @teacher = create(:teacher, last_name: "Teacher")
+    @teacher = create(:teacher, name: "Teacher")
     @guardian = create(:guardian, first_name: "Mr", last_name: "Guardian", students: [@student])
     @archived_student = create(:student, first_name: "Archived", last_name: "Student", archived: true)
   end
@@ -13,7 +13,7 @@ describe People do
   end
 
   it "returns full names" do
-    People.all.map{ |person| person.name }.should =~ ["Some Student", "Teacher", "Archived Student"]
+    People.all.map{ |person| person.full_name }.should =~ ["Some Student", "Teacher", "Archived Student"]
   end
 
   it "returns the archived status" do

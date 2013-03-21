@@ -6,7 +6,7 @@ describe GroupsController do
     ability = Object.new
     ability.extend(CanCan::Ability)
   end
-  before do 
+  before do
     controller.stub(:current_user).and_return(user)
     controller.stub(:current_ability).and_return(ability)
     ability.can :manage, Group
@@ -27,7 +27,7 @@ describe GroupsController do
       ability.cannot :read, group
       expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
-    
+
     it "has a status of 200" do
       make_request
       response.status.should eq(200)
@@ -35,12 +35,12 @@ describe GroupsController do
 
     it "assigns the found groups students alphabetically" do
       make_request
-      assigns(:profiles).should == [@student3, @student1]
+      assigns(:people).should =~ [@student3, @student1]
     end
 
     it "searches for a particular name with the search parameter present" do
-      get :show, id: group.id, search: "Jan"
-      assigns(:profiles).should == [@student3]
+      get :show, id: group.id, search: "Jan", format: :json
+      assigns(:people).should == [@student3]
     end
   end
 
@@ -99,7 +99,7 @@ describe GroupsController do
       it "does not create a group" do
         expect{ make_request }.to change{ Group.count }.by(0)
       end
-      
+
       it "has a status of 422" do
         make_request
         response.status.should eq(422)
@@ -142,7 +142,7 @@ describe GroupsController do
         make_request
         group.reload.name.should be_present
       end
-      
+
       it "responds with a status of 422" do
         make_request
         response.status.should eq(422)

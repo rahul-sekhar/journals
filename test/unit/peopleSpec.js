@@ -6,10 +6,9 @@ describe('People module', function () {
   /*------------------- People base controller -----------------------*/
 
   describe('peopleBaseCtrl', function () {
-    var scope, location, confirm;
+    var scope, confirm;
 
-    beforeEach(inject(function ($rootScope, peopleBaseCtrl, $location, _confirm_) {
-      location = $location;
+    beforeEach(inject(function ($rootScope, peopleBaseCtrl, _confirm_) {
       confirm = _confirm_;
 
       scope = $rootScope.$new();
@@ -54,6 +53,96 @@ describe('People module', function () {
 
         it('does not send a delete message to the profile', function () {
           expect(profile.delete).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    // removeGroup
+    describe('removeGroup(profile, group)', function () {
+      var profile;
+
+      beforeEach(function () {
+        profile = { removeGroup: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.removeGroup(profile, 'obj')
+        });
+
+        it('sends a message to the profile', function () {
+          expect(profile.removeGroup).toHaveBeenCalledWith('obj');
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.removeGroup(profile, 'obj')
+        });
+
+        it('does not send a delete message to the profile', function () {
+          expect(profile.removeGroup).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    // removeMentor
+    describe('removeMentor(profile, mentor)', function () {
+      var profile;
+
+      beforeEach(function () {
+        profile = { removeMentor: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.removeMentor(profile, 'obj')
+        });
+
+        it('sends a message to the profile', function () {
+          expect(profile.removeMentor).toHaveBeenCalledWith('obj');
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.removeMentor(profile, 'obj')
+        });
+
+        it('does not send a delete message to the profile', function () {
+          expect(profile.removeMentor).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    // removeMentee
+    describe('removeMentee(profile, mentee)', function () {
+      var profile;
+
+      beforeEach(function () {
+        profile = { removeMentee: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.removeMentee(profile, 'obj')
+        });
+
+        it('sends a message to the profile', function () {
+          expect(profile.removeMentee).toHaveBeenCalledWith('obj');
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.removeMentee(profile, 'obj')
+        });
+
+        it('does not send a delete message to the profile', function () {
+          expect(profile.removeMentee).not.toHaveBeenCalled();
         });
       });
     });
@@ -258,14 +347,11 @@ describe('People module', function () {
       expect(scope.groups).toEqual('group array');
     });
 
-    it('sets groupsDialog.shown to false', function() {
-      expect(scope.groupsDialog.shown).toEqual(false);
-    });
-
     describe('showGroupsDialog()', function() {
-      it('sets groupsDialog.shown to true', function() {
+      it('sets dialogs.manageGroups to true', function() {
+        scope.dialogs = {}
         scope.showGroupsDialog();
-        expect(scope.groupsDialog.shown).toEqual(true);
+        expect(scope.dialogs.manageGroups).toEqual(true);
       });
     });
 

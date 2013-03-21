@@ -16,13 +16,45 @@ angular.module('journals.posts.models', ['journals.model', 'journals.collection'
           }),
           association('Students', 'student'),
           association('Teachers', 'teacher'),
+          association('Comments', 'comment', {loaded: true, addToEnd: true}),
+          association('StudentObservations', 'student_observation', {loaded: true}),
           postExtension()
         ],
         saveFields: ['title', 'content', 'tag_names', 'teacher_ids', 'student_ids',
-          'visible_to_guardians', 'visible_to_students', 'student_observations_attributes'],
+          'visible_to_guardians', 'visible_to_students', 'student_observations_attributes']
       });
 
       return collection(postModel);
+    }]).
+
+  factory('Comments', ['model', 'collection', 'singleAssociation',
+    function (model, collection, singleAssociation) {
+
+      var commentModel = model('comment', '/comments', {
+        extensions: [
+          singleAssociation('author_type', 'author', {
+            polymorphic: function(type) {
+              return type + 's';
+            }
+          })
+        ],
+        hasParent: true,
+        saveFields: ['content']
+      });
+
+      return collection(commentModel);
+    }]).
+
+  factory('StudentObservations', ['model', 'collection', 'singleAssociation',
+    function (model, collection, singleAssociation) {
+
+      var studentObservationModel = model('student_observation', null, {
+        extensions: [
+          singleAssociation('Students', 'student'),
+        ]
+      });
+
+      return collection(studentObservationModel);
     }]).
 
   factory('postExtension', [function () {
@@ -60,11 +92,11 @@ angular.module('journals.posts.models', ['journals.model', 'journals.collection'
         instance.student_observations_attributes = [];
         angular.forEach(instance.observationContent, function (value, key) {
           var observation = {
-            student_id: key,
+            student_id: parseInt(key, 10),
             content: value
           };
-          if (observationId[key]) {
-            observation.id = observationId[key];
+          if (instance.observationId[key]) {
+            observation.id = instance.observationId[key];
           }
 
           instance.student_observations_attributes.push(observation);

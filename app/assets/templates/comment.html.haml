@@ -1,0 +1,11 @@
+%article.comment{ "ng-hide"=>"comment.deleted" }
+  .comment-wrapper
+    .comment-content
+      %p{ "ng-bind-html"=>"comment.content | escapeHtml | multiline" }
+
+    %footer.comment-footer
+      %p
+        Posted by
+        %span{ "long-profile-name"=>"comment.author" }
+        on
+        %span.date {{comment.created_at}}

@@ -14,6 +14,16 @@ angular.module('journals.people.directives', ['journals.assets', 'journals.curre
     };
   }).
 
+  directive('longProfileName', function () {
+    return {
+      scope: {
+        profile: '=longProfileName'
+      },
+      template: '<a ng-href="{{profile.url()}}" href="" title="{{profile.name_with_info}}">{{profile.name}}</a>',
+      replace: true
+    };
+  }).
+
   /* -------------------- Profile fields directive ----------------------- */
 
   directive('profileFields', ['assets', function (assets) {

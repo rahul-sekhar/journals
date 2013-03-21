@@ -549,6 +549,77 @@ describe('Model module', function () {
         });
       });
     });
+
+    describe('with hasParent set', function () {
+      beforeEach(inject(function (_model_) {
+        model = _model_('object', '/objects', { hasParent: true })
+      }));
+
+      describe('without _parent', function () {
+        beforeEach(function () {
+          instance = model.create();
+        });
+
+        it('raises an error on save()', function() {
+          expect(instance.save).toThrow('_parent model not present');
+        });
+
+        it('raises an error on delete()', function() {
+          expect(instance.save).toThrow('_parent model not present');
+        });
+      });
+
+      describe('with a new _parent', function () {
+        beforeEach(function () {
+          instance = model.create({
+            id: 5,
+            _parent: {
+              isNew: function () { return true },
+              url: function () { return '/parent/path' }
+            }
+          });
+        });
+
+        it('raises an error on save()', function () {
+          expect(instance.save).toThrow('_parent model not saved');
+        });
+
+        it('raises an error on delete()', function () {
+          expect(instance.save).toThrow('_parent model not saved');
+        });
+      });
+
+      describe('with an existing _parent', function () {
+        beforeEach(function () {
+          instance = model.create({
+            id: 5,
+            _parent: {
+              isNew: function () { return false },
+              url: function () { return '/parent/path' }
+            }
+          });
+        });
+
+        it('sends a PUT request to the correct path for save', function () {
+          httpBackend.expectPUT('/parent/path/objects/5.json').respond(200);
+          instance.save();
+          httpBackend.verifyNoOutstandingExpectation();
+        });
+
+        it('sends a PUT request to the correct path for save, for a new instance', function () {
+          delete instance.id;
+          httpBackend.expectPOST('/parent/path/objects.json').respond(200);
+          instance.save();
+          httpBackend.verifyNoOutstandingExpectation();
+        });
+
+        it('sends a DELETE request to the correct path for delete', function () {
+          httpBackend.expectDELETE('/parent/path/objects/5.json').respond(200);
+          instance.delete();
+          httpBackend.verifyNoOutstandingExpectation();
+        });
+      });
+    });
   });
 });
 

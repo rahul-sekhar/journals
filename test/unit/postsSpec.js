@@ -3,22 +3,112 @@
 describe('posts module', function () {
   beforeEach(module('journals.posts'));
 
+  /*------------------ Posts base controller ------------------*/
+  describe('postsBaseCtrl', function () {
+    var scope, confirm;
+
+    beforeEach(inject(function ($rootScope, postsBaseCtrl, _confirm_) {
+      confirm = _confirm_;
+
+      scope = $rootScope.$new();
+      scope.load = jasmine.createSpy();
+
+      postsBaseCtrl(scope);
+    }));
+
+    // Delete a post
+    describe('delete(post)', function () {
+      var post;
+
+      beforeEach(function () {
+        post = { delete: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.delete(post)
+        });
+
+        it('sends a delete message to the post', function () {
+          expect(post.delete).toHaveBeenCalled();
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.delete(post)
+        });
+
+        it('does not send a delete message to the post', function () {
+          expect(post.delete).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    // Delete a comment
+    describe('deleteComment(comment)', function () {
+      var comment;
+
+      beforeEach(function () {
+        comment = { delete: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.deleteComment(comment)
+        });
+
+        it('sends a delete message to the comment', function () {
+          expect(comment.delete).toHaveBeenCalled();
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.deleteComment(comment)
+        });
+
+        it('does not send a delete message to the comment', function () {
+          expect(comment.delete).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
   /*------------------- Posts controller ------------------*/
 
   describe('PostsCtrl', function () {
-    var scope, httpBackend, controller, Posts, location;
+    var scope, httpBackend, controller, Posts, location, postsBaseCtrl;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, $location) {
       httpBackend = $httpBackend;
+
       scope = $rootScope.$new();
       controller = $controller;
+
+      postsBaseCtrl = jasmine.createSpy();
       Posts = _Posts_;
       location = $location
+
       location.url('/path/to/posts')
-      spyOn(Posts, 'update').andCallFake(function(data) {
+      spyOn(Posts, 'update').andCallFake(function (data) {
         return 'post instance ' + data.id;
       });
     }));
+
+    describe('when the search param is pre-set', function () {
+      beforeEach(function () {
+        location.url('/some/path?search=blahblah');
+        httpBackend.expectGET('/some/path.json?search=blahblah').respond(200);
+        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl });
+      });
+
+      it('sets the scope seach val', function () {
+        expect(scope.search).toEqual('blahblah');
+      })
+    });
 
     describe('on success', function () {
       beforeEach(function () {
@@ -27,7 +117,11 @@ describe('posts module', function () {
           total_pages: 4,
           items: [{ id: 1, title: 'Some post' }, {id: 2}, {id: 7}]
         });
-        controller('PostsCtrl', { $scope: scope });
+        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl });
+      });
+
+      it('includes the base controller', function () {
+        expect(postsBaseCtrl).toHaveBeenCalledWith(scope);
       });
 
       it('sends a request', function () {
@@ -40,6 +134,27 @@ describe('posts module', function () {
 
       it('has pageTitle set', function () {
         expect(scope.pageTitle).toEqual('Viewing posts')
+      });
+
+      it('does not set single_post', function () {
+        expect(scope.single_post).toBeUndefined();
+      });
+
+      it('sets the scope search value to undefined', function () {
+        expect(scope.search).toBeUndefined();
+      });
+
+      describe('doSearch()', function () {
+        it('updates the location param', function () {
+          scope.doSearch('some value');
+          expect(location.search().search).toEqual('some value');
+        });
+
+        it('resets the page param', function () {
+          location.search('page', 2);
+          scope.doSearch('some value');
+          expect(location.search().page).toBeUndefined();
+        });
       });
 
       describe('on response', function () {
@@ -94,12 +209,16 @@ describe('posts module', function () {
   /*------------------- Single post controller ------------------*/
 
   describe('ViewPostCtrl', function () {
-    var scope, httpBackend, controller, Posts;
+    var scope, httpBackend, controller, Posts, postsBaseCtrl;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_) {
       httpBackend = $httpBackend;
+
       scope = $rootScope.$new();
       controller = $controller;
+
+      postsBaseCtrl = jasmine.createSpy();
+
       Posts = _Posts_;
       spyOn(Posts, 'update').andCallFake(function(data) {
         return 'post instance ' + data.id;
@@ -109,7 +228,11 @@ describe('posts module', function () {
     describe('on success', function () {
       beforeEach(function () {
         httpBackend.expectGET('/posts/5.json').respond({ id: 1, title: 'Some post' });
-        controller('ViewPostCtrl', { $scope: scope, $routeParams: { id: 5 } });
+        controller('ViewPostCtrl', { $scope: scope, $routeParams: { id: 5 }, postsBaseCtrl: postsBaseCtrl });
+      });
+
+      it('includes the base controller', function () {
+        expect(postsBaseCtrl).toHaveBeenCalledWith(scope);
       });
 
       it('sends a request', function () {
@@ -121,7 +244,11 @@ describe('posts module', function () {
       });
 
       it('has pageTitle set', function () {
-        expect(scope.pageTitle).toEqual('Viewing a post')
+        expect(scope.pageTitle).toEqual('Viewing a post');
+      });
+
+      it('sets single_post', function () {
+        expect(scope.single_post).toEqual(true);
       });
 
       describe('on response', function () {
@@ -160,6 +287,72 @@ describe('posts module', function () {
     });
   });
 
+
+
+
+
+  /*------------------------ Controller for each post ---------------------*/
+
+  describe('PostCtrl', function () {
+    var scope;
+
+    beforeEach(inject(function ($rootScope, $controller) {
+      scope = $rootScope.$new();
+      $controller('PostCtrl', { $scope: scope });
+    }));
+
+    it('sets newComment to null', function () {
+      expect(scope.newComment).toEqual(null);
+    });
+
+    describe('addComment(content)', function () {
+      var newComment, deferred;
+
+      beforeEach(inject(function ($rootScope, $controller, $q) {
+        deferred = $q.defer();
+        newComment = { save: jasmine.createSpy().andReturn(deferred.promise) };
+        scope.post = { newComment: jasmine.createSpy().andReturn(newComment) };
+        scope.newComment = 'Some val';
+      }));
+
+      describe('with no content', function () {
+        beforeEach(function () {
+          scope.addComment('');
+        });
+
+        it('does nothing', function () {
+          expect(scope.post.newComment).not.toHaveBeenCalled();
+          expect(scope.newComment).toEqual('Some val');
+        });
+      });
+
+      describe('with content', function () {
+        beforeEach(function () {
+          scope.addComment('Some content');
+        });
+
+        it('calls post.newComment with passed content', function () {
+          expect(scope.post.newComment).toHaveBeenCalledWith({content: 'Some content'});
+        });
+
+        it('saves the returned comment', function () {
+          expect(newComment.save).toHaveBeenCalled();
+        })
+
+        it('sets the scope newComment content to null if the promise is resolved', function () {
+          deferred.resolve();
+          scope.$apply();
+          expect(scope.newComment).toBeNull();
+        });
+
+        it('leaves the scope newComment content alone if the promise is rejected', function () {
+          deferred.reject();
+          scope.$apply();
+          expect(scope.newComment).toEqual('Some val');
+        });
+      });
+    });
+  });
 
   /*------------------------ Edit post controller ------------------------*/
 
@@ -252,7 +445,7 @@ describe('posts module', function () {
     });
 
     describe('save()', function () {
-      var post, deferred, location;
+      var post, deferred, location, childScope, listener;
 
       beforeEach(inject(function ($q, $location) {
         post = { url: function () { return '/some/path'; } };
@@ -262,10 +455,18 @@ describe('posts module', function () {
         location = $location;
         spyOn(location, 'url');
 
+        childScope = scope.$new();
+        listener = jasmine.createSpy();
+        childScope.$on('saveText', listener);
+
         spyOn(Posts, 'add').andReturn(post);
         controller('EditPostCtrl', { $scope: scope });
         scope.save();
       }));
+
+      it('broadcasts a saveText event', function () {
+        expect(listener).toHaveBeenCalled();
+      });
 
       it('calls the post instance save function', function () {
         expect(post.save).toHaveBeenCalled();
@@ -299,9 +500,9 @@ describe('posts module', function () {
 
       beforeEach(function () {
         childScope = scope.$new();
-        controller('EditPostCtrl', { $scope: scope });
         listener = jasmine.createSpy();
         childScope.$on('hideMenus', listener);
+        controller('EditPostCtrl', { $scope: scope });
         scope.hideMenus();
       });
 
@@ -311,6 +512,95 @@ describe('posts module', function () {
 
       it('passes an empty array with the event', function () {
         expect(listener.mostRecentCall.args[1]).toEqual([]);
+      });
+    });
+  });
+
+
+  /*-------------------- Student observations controller ------------------*/
+
+  describe('StudentObservationsCtrl', function () {
+    var scope, childScope, listener, rootScope;
+
+    beforeEach(inject(function ($rootScope, $controller) {
+      rootScope = $rootScope;
+      scope = $rootScope.$new();
+      $controller('StudentObservationsCtrl', { $scope: scope });
+
+      childScope = scope.$new();
+      listener = jasmine.createSpy();
+      childScope.$on('saveText', listener);
+    }));
+
+    describe('selectStudent', function () {
+      beforeEach(function () {
+        scope.selectStudent('some_student');
+      });
+
+      it('broadcasts a saveText event', function () {
+        expect(listener).toHaveBeenCalled();
+      });
+
+      it('sets selectedStudent', function () {
+        expect(scope.selectedStudent).toEqual('some_student');
+      });
+    });
+
+    describe('on changing the post students', function () {
+      var post, students;
+
+      beforeEach(function () {
+        students = [{short_name: 'a'}, {short_name: 'b'}, {short_name: 'c'}]
+        post = rootScope.post = {};
+      });
+
+      it ('sends a check height event after a timeout', inject(function ($timeout) {
+        listener = jasmine.createSpy();
+        childScope.$on('checkHeight', listener);
+
+        post.students = [];
+        rootScope.$apply();
+
+        $timeout.flush();
+        expect(listener).toHaveBeenCalled();
+      }));
+
+      describe('with selectedStudent not set', function () {
+        it('sets selectedStudent if students are added', function () {
+          post.students = [students[1], students[0]];
+          rootScope.$apply();
+          expect(scope.selectedStudent).toEqual(students[0]);
+        });
+
+        it('does nothing if to selectedStudent if no students are added', function () {
+          post.students = [];
+          rootScope.$apply();
+          expect(scope.selectedStudent).toBeUndefined();
+        });
+      });
+
+      describe('with selectedStudent set', function () {
+        beforeEach(function () {
+          scope.selectedStudent = students[1];
+        });
+
+        it('does not set selected student if the selected student is present in the list', function () {
+          post.students = [students[1], students[0]];
+          rootScope.$apply();
+          expect(scope.selectedStudent).toEqual(students[1]);
+        });
+
+        it('removes selectedStudent if no students are added', function () {
+          post.students = [];
+          rootScope.$apply();
+          expect(scope.selectedStudent).toBeUndefined();
+        });
+
+        it('changes selectedStudent if the student is not present', function () {
+          post.students = [students[2]];
+          rootScope.$apply();
+          expect(scope.selectedStudent).toEqual(students[2]);
+        });
       });
     });
   });

@@ -14,50 +14,50 @@ describe Student do
     profile.should be_invalid
   end
 
-  describe "#formatted_birthday" do
+  describe "#birthday" do
     it "returns nil if the birthday is empty" do
-      profile.formatted_birthday.should be_nil
-    end
-
-    it "returns the formatted birthday if present" do
-      profile.birthday = Date.new(1955, 7, 12)
-      profile.formatted_birthday.should == '12-07-1955'
-    end
-  end
-
-  describe "#formatted_birthday=" do
-    it "sets the birthday given a string" do
-      profile.formatted_birthday = "12-10-1980"
-      profile.birthday.should == Date.new(1980, 10, 12)
-    end
-
-    it "sets the birthday to nil if invalid" do
-      profile.formatted_birthday = "asdf"
       profile.birthday.should be_nil
     end
 
+    it "returns the formatted birthday if present" do
+      profile.birthday_raw = Date.new(1955, 7, 12)
+      profile.birthday.should == '12-07-1955'
+    end
+  end
+
+  describe "#birthday=" do
+    it "sets the birthday given a string" do
+      profile.birthday = "12-10-1980"
+      profile.birthday_raw.should == Date.new(1980, 10, 12)
+    end
+
+    it "sets the birthday to nil if invalid" do
+      profile.birthday = "asdf"
+      profile.birthday_raw.should be_nil
+    end
+
     it "invalidates the student if invalid" do
-      profile.formatted_birthday = "asdf"
+      profile.birthday = "asdf"
       profile.should be_invalid
     end
 
     it "sets the birthday to nil if blank" do
-      profile.formatted_birthday = ""
-      profile.birthday.should be_nil
+      profile.birthday = ""
+      profile.birthday_raw.should be_nil
     end
 
     it "does not invalidate the student if blank" do
-      profile.formatted_birthday = " "
+      profile.birthday = " "
       profile.should be_valid
     end
 
     it "sets the birthday to nil if nil" do
-      profile.formatted_birthday = nil
-      profile.birthday.should be_nil
+      profile.birthday = nil
+      profile.birthday_raw.should be_nil
     end
 
     it "does not invalidate the student if nil" do
-      profile.formatted_birthday = nil
+      profile.birthday = nil
       profile.should be_valid
     end
   end
@@ -90,11 +90,11 @@ describe Student do
     end
   end
 
-  describe "#name_with_type" do
+  describe "#name_with_info" do
     it "returns the full name along with the profile type" do
       profile.first_name = "Rahul"
       profile.last_name = "Sekhar"
-      profile.name_with_type.should == "Rahul Sekhar (student)"
+      profile.name_with_info.should == "Rahul Sekhar (student)"
     end
   end
 
@@ -102,9 +102,9 @@ describe Student do
     let(:guardian1){ create(:guardian_with_user, students: [profile]) }
     let(:guardian2){ create(:guardian_with_user, students: [profile, create(:student)]) }
     let(:guardian3){ create(:guardian_with_user, students: [profile, create(:student, archived: true)]) }
-    
+
     context "if not archived" do
-      before do 
+      before do
         profile.email = "test@mail.com"
         profile.save!
       end
@@ -197,10 +197,10 @@ describe Student do
       Student.filter_group(@group3.id).should be_empty
     end
   end
-  
+
 
   describe "permissions:" do
-    before do 
+    before do
       profile.email = "test@mail.com"
       profile.save!
     end
@@ -241,9 +241,9 @@ describe Student do
 
       context "when tagged in the post" do
         let(:post){ create(:post, students: [profile]) }
-        
+
         context "when it has view permissions" do
-          before do 
+          before do
             post.visible_to_students = true
             post.save
           end
@@ -259,7 +259,7 @@ describe Student do
         end
 
         context "when it does not have view permissions" do
-          before do 
+          before do
             post.visible_to_students = false
             post.save
           end

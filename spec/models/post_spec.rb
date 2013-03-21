@@ -254,7 +254,7 @@ describe Post do
       it "creates a student observation when no id is passed" do
         post.student_observations_attributes = {
           '0' => { 'student_id' => student.id, 'content' => "Some content" }
-        }attriattri
+        }
         post.save!
         obs = post.student_observations.first
         obs.content.should == "Some content"
@@ -391,7 +391,7 @@ describe Post do
         post.visible_to_students = true
       end
 
-      it { should == "Visible to everyone" }
+      it { should be_nil }
     end
 
     context "when restricted to students" do

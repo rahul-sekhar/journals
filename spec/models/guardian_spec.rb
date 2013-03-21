@@ -7,7 +7,7 @@ describe Guardian do
 
   it_behaves_like "a profile"
 
-  describe "#name_with_type" do
+  describe "#name_with_info" do
     context "with one student" do
       it "returns the full name along with the profile type and the associated student" do
         profile.first_name = "Rahul"
@@ -17,8 +17,8 @@ describe Guardian do
         student.first_name = "Roly"
         student.last_name = "Dog"
 
-        profile.name_with_type.should == "Rahul Sekhar (guardian of Roly Dog)"
-      end  
+        profile.name_with_info.should == "Rahul Sekhar (guardian of Roly Dog)"
+      end
     end
 
     context "with multiple students" do
@@ -35,18 +35,18 @@ describe Guardian do
         profile.students << create(:student, first_name: "John", last_name: "Doe")
         profile.students << create(:student, first_name: "Lucky", last_name: "Dog")
 
-        profile.name_with_type.should == "Rahul Sekhar (guardian of John, Lucky, and Roly)"
-      end  
+        profile.name_with_info.should == "Rahul Sekhar (guardian of John, Lucky, and Roly)"
+      end
     end
   end
 
   describe "#students_as_sentence" do
     subject{ profile.students_as_sentence }
-    before do 
+    before do
       profile.students = [create(:student, first_name: "Roly", last_name: "Sekhar")]
       profile.save!
     end
-    
+
     context "with one student" do
       it { should == "Roly" }
     end
@@ -58,7 +58,7 @@ describe Guardian do
     end
 
     context "with three students" do
-      before do 
+      before do
         profile.students << [create(:student, first_name: "Lucky", last_name: "Sekhar")]
         profile.students << [create(:student, first_name: "Jumble", last_name: "Sekhar")]
       end
@@ -132,9 +132,9 @@ describe Guardian do
 
       context "when either of its students are tagged in the post" do
         let(:post){ create(:post, students: [student1]) }
-        
+
         context "when it has view permissions" do
-          before do 
+          before do
             post.visible_to_guardians = true
             post.save
           end
@@ -150,7 +150,7 @@ describe Guardian do
         end
 
         context "when it does not have view permissions" do
-          before do 
+          before do
             post.visible_to_students = false
             post.save
           end

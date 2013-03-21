@@ -27,7 +27,7 @@ describe('Model associations module', function () {
               if (id == 6) {
                 return $q.reject();
               }
-              return 'instance ' + id;
+              return { name: 'instance ' + id };
             });
         });
 
@@ -66,11 +66,16 @@ describe('Model associations module', function () {
           expect(model.assocs).toEqual([]);
         });
 
-        it('sets the association field to the returned instances for resolved promises', inject(function ($rootScope) {
-          deferred.resolve();
-          $rootScope.$apply();
-          expect(model.assocs).toEqual(['instance 3', 'instance 8']);
-        }));
+        describe('on promise resolution', function () {
+          beforeEach(inject(function ($rootScope) {
+            deferred.resolve();
+            $rootScope.$apply();
+          }));
+
+          it('adds each returned association, setting their _parent field', function () {
+            expect(model.assocs).toEqual([{name: 'instance 3', _parent: model}, {name: 'instance 8', _parent: model }]);
+          });
+        });
       });
 
       describe('on setup', function () {
@@ -269,7 +274,7 @@ describe('Model associations module', function () {
       beforeEach(inject(function (association) {
 
         collection.update = jasmine.createSpy().andCallFake(function (obj) {
-          return obj + ' instance';
+          return { name: obj + ' instance' };
         });
         extension = association('collection', 'assoc', { loaded: true });
       }));
@@ -301,8 +306,8 @@ describe('Model associations module', function () {
           expect(collection.update.argsForCall[1][0]).toEqual('two');
         });
 
-        it('sets the association objects to the returned instances', function () {
-          expect(model.assocs).toEqual(['one instance', 'two instance']);
+        it('sets the association objects to the returned instances, adding a _parent field', function () {
+          expect(model.assocs).toEqual([{name: 'one instance', _parent: model}, {name: 'two instance', _parent: model}]);
         });
       });
     });

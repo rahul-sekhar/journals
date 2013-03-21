@@ -130,7 +130,7 @@ describe StudentsController do
 
   describe "POST create" do
     context "with valid data" do
-      let(:make_request){ post :create, student: { first_name: "Rahul", last_name: "Sekhar" } }
+      let(:make_request){ post :create, student: { name: "Rahul Sekhar" }, format: :json }
 
       it "raises an exception if the user cannot create a student" do
         ability.cannot :create, Student
@@ -147,51 +147,22 @@ describe StudentsController do
         assigns(:student).last_name.should == "Sekhar"
       end
 
-      it "redirects to the student page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to student_path(assigns(:student))
+        response.status.should eq(200)
       end
     end
 
-    context "with only a first name" do
-      let(:make_request){ post :create, student: { first_name: "Rahul", last_name: " " } }
-
-      it "creates a student" do
-        expect{ make_request }.to change{ Student.count }.by(1)
-      end
-
-      it "sets the last name and not the first name" do
-        make_request
-        assigns(:student).first_name.should be_nil
-        assigns(:student).last_name.should == "Rahul"
-      end
-
-      it "redirects to the student page" do
-        make_request
-        response.should redirect_to student_path(assigns(:student))
-      end
-    end
-
-    context "with no first name or last name" do
-      let(:make_request){ post :create, student: { first_name: " " } }
+    context "with invalid data" do
+      let(:make_request){ post :create, student: { name: " " }, format: :json }
 
       it "does not create a student" do
-        expect{ make_request }.to change{ Teacher.count }.by(0)
+        expect{ make_request }.to change{ Student.count }.by(0)
       end
 
-      it "sets a flash alert" do
+      it "has a status of 422" do
         make_request
-        flash[:alert].should be_present
-      end
-
-      it "redirects to the new student page" do
-        make_request
-        response.should redirect_to new_student_path
-      end
-
-      it "stores already filled data in a flash object" do
-        make_request
-        flash[:student_data].should == { 'first_name' => ' ' }
+        response.status.should eq(422)
       end
     end
   end
@@ -376,20 +347,7 @@ describe StudentsController do
   describe "POST add_group" do
     let(:student){ create(:student) }
     let(:group){ create(:group, id: 5) }
-    let(:make_request){ post :add_group, id: student.id, format: :json }
     before{ group }
-
-    it "raises an exception if the user cannot add a group to a student" do
-      ability.cannot :add_group, student
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    context "without a group_id" do
-      it "has a status of 422" do
-        make_request
-        response.status.should eq(422)
-      end
-    end
 
     context "with an invalid group_id" do
       let(:make_request){ post :add_group, id: student.id, group_id: 4, format: :json }
@@ -402,6 +360,11 @@ describe StudentsController do
 
     context "with a valid group_id" do
       let(:make_request){ post :add_group, id: student.id, group_id: 5, format: :json }
+
+      it "raises an exception if the user cannot add a group to a student" do
+        ability.cannot :add_group, student
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       context "when the student contains that group" do
         before{ student.groups = [group] }
@@ -431,20 +394,7 @@ describe StudentsController do
   describe "POST remove_group" do
     let(:student){ create(:student) }
     let(:group){ create(:group, id: 5) }
-    let(:make_request){ post :remove_group, id: student.id, format: :json }
     before{ group }
-
-    it "raises an exception if the user cannot remove a group to a student" do
-      ability.cannot :remove_group, student
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    context "without a group_id" do
-      it "has a status of 422" do
-        make_request
-        response.status.should eq(422)
-      end
-    end
 
     context "with an invalid group_id" do
       let(:make_request){ post :remove_group, id: student.id, group_id: 4, format: :json }
@@ -457,6 +407,11 @@ describe StudentsController do
 
     context "with a valid group_id" do
       let(:make_request){ post :remove_group, id: student.id, group_id: 5, format: :json }
+
+      it "raises an exception if the user cannot remove a group to a student" do
+        ability.cannot :remove_group, student
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       context "when the student contains that group" do
         before{ student.groups = [group] }
@@ -485,20 +440,7 @@ describe StudentsController do
   describe "POST add_mentor" do
     let(:student){ create(:student) }
     let(:teacher){ create(:teacher, id: 5) }
-    let(:make_request){ post :add_mentor, id: student.id, format: :json }
     before{ teacher }
-
-    it "raises an exception if the user cannot add a teacher to a student" do
-      ability.cannot :add_mentor, student
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    context "without a teacher_id" do
-      it "has a status of 422" do
-        make_request
-        response.status.should eq(422)
-      end
-    end
 
     context "with an invalid teacher_id" do
       let(:make_request){ post :add_mentor, id: student.id, teacher_id: 4, format: :json }
@@ -511,6 +453,11 @@ describe StudentsController do
 
     context "with a valid teacher_id" do
       let(:make_request){ post :add_mentor, id: student.id, teacher_id: 5, format: :json }
+
+      it "raises an exception if the user cannot add a teacher to a student" do
+        ability.cannot :add_mentor, student
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       context "when the student contains that teacher" do
         before{ student.mentors = [teacher] }
@@ -539,20 +486,7 @@ describe StudentsController do
   describe "POST remove_mentor" do
     let(:student){ create(:student) }
     let(:teacher){ create(:teacher, id: 5) }
-    let(:make_request){ post :remove_mentor, id: student.id, format: :json }
     before{ teacher }
-
-    it "raises an exception if the user cannot remove a teacher to a student" do
-      ability.cannot :remove_mentor, student
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    context "without a teacher_id" do
-      it "has a status of 422" do
-        make_request
-        response.status.should eq(422)
-      end
-    end
 
     context "with an invalid teacher_id" do
       let(:make_request){ post :remove_mentor, id: student.id, teacher_id: 4, format: :json }
@@ -565,6 +499,11 @@ describe StudentsController do
 
     context "with a valid teacher_id" do
       let(:make_request){ post :remove_mentor, id: student.id, teacher_id: 5, format: :json }
+
+      it "raises an exception if the user cannot remove a teacher to a student" do
+        ability.cannot :remove_mentor, student
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
 
       context "when the student contains that teacher" do
         before{ student.mentors = [teacher] }

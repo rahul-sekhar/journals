@@ -1,4 +1,4 @@
-%article.post
+%article.post{ "ng-hide"=>"post.deleted", "ng-controller"=>"PostCtrl" }
   %header.post-header
     %span.restrictions{ "title"=>"{{post.restrictions()}}", "ng-show"=>"post.restrictions()" }
 
@@ -17,12 +17,23 @@
 
   %h3 {{post.title}}
 
-  .post-content{ "ng-bind-html"=>"post.content" }
+  .post-content
+    .content{ "ng-bind-html"=>"post.content" }
 
     .student-observations{ "ng-show"=>"post.student_observations.length" }
       %section{ "ng-repeat"=>"observation in post.student_observations" }
         %h4 {{observation.student.name}}
         .observation-content{ "ng-bind-html"=>"observation.content" }
+
+  .comments
+    %h4 Comments
+    %ng-switch{ "ng-repeat"=>"comment in post.comments", "on"=>"!!comment.editable" }
+      %div{  "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_comment.html')}'" }
+      %div{  "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('comment.html')}'" }
+
+    .new-comment
+      %textarea{ "ng-model"=>"newComment", "placeholder"=>"Enter comment" }
+      %a.add.button{ "href"=>"", "ng-click"=>"addComment(newComment)" } Comment
 
   %footer.post-footer
     .info
@@ -38,24 +49,5 @@
     .options
       %p{ "ng-show"=>"post.editable" }
         %a{ "ng-href"=>"{{post.url() + '/edit'}}", "href"=>"" } Edit post
-
-
-  /   .post-content
-  /     != post.content
-
-  /     - if post.student_observations.present?
-  /       .student-observations
-  /         - post.student_observations.each do |obs|
-  /           %section
-  /             %h4= obs.student.name
-  /             .observation-content
-  /               != obs.content
-
-  /   - if post.comments.present?
-  /     .comments
-  /       %h4 Comments
-  /       - post.comments.each do |comment|
-  /         = render "comments/comment", comment: comment
-
-  /   .comment-fields
-  /     = render "comments/fields", comment: post.comments.build
+      %p{ "ng-show"=>"post.editable" }
+        %a{ "href"=>"", "ng-click"=>"delete(post)" } Delete post
