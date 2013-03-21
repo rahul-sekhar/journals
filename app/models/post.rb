@@ -20,7 +20,7 @@ class Post < ActiveRecord::Base
 
   strip_attributes
 
-  scope :load_associations, includes(:students, :teachers, :tags)
+  scope :load_associations, includes(:students, :teachers, :tags, :comments, :student_observations)
 
   # Posts that are either authored by the guardian or that have one of the guardian's students tagged and have guardian permissions allowed
   def self.readable_by_guardian(guardian)
