@@ -45,7 +45,7 @@
 
     .new-comment
       %textarea{ "ng-model"=>"newComment", "placeholder"=>"Enter comment" }
-      %a.add.button{ "href"=>"", "ng-click"=>"post.addComment(newComment)" } Comment
+      %a.add.button{ "href"=>"", "ng-click"=>"addComment(newComment)" } Comment
 
   %footer.post-footer
     .help-pointer.step-3{ "ng-class"=>"{shown: post.step == 3}" }

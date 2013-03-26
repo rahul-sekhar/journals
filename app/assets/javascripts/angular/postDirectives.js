@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('journals.posts.directives', ['journals.posts', 'journals.assets']).
+angular.module('journals.posts.directives', ['journals.posts', 'journals.assets', 'journals.confirm']).
 
   factory('postLinkFn', ['$timeout', function ($timeout) {
     return function () {
@@ -39,7 +39,7 @@ angular.module('journals.posts.directives', ['journals.posts', 'journals.assets'
     };
   }]).
 
-  controller('PostCtrl', ['$scope', function ($scope) {
+  controller('PostCtrl', ['$scope', 'confirm', function ($scope, confirm) {
     $scope.expanded = false;
 
     $scope.compact = function () {

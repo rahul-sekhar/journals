@@ -3,20 +3,8 @@
 angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts.models', 'journals.confirm',
   'journals.help', 'journals.posts.directives']).
 
-  factory('postsBaseCtrl', ['confirm', function (confirm) {
-    return function($scope) {
-      $scope.delete = function (post) {
-        var message = 'Are you sure you want to delete the post "' + post.title + '"?'
-
-        if (confirm(message)) {
-          post.delete();
-        }
-      };
-    };
-  }]).
-
-  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'postsBaseCtrl', 'createHelpPost',
-    function ($scope, ajax, Posts, $location, postsBaseCtrl, createHelpPost) {
+  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'createHelpPost',
+    function ($scope, ajax, Posts, $location, createHelpPost) {
       var loadFn;
 
       $scope.pageTitle = 'Viewing posts';
@@ -59,11 +47,9 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
           $scope.helpPost.setStep(null);
         }
       });
-
-      postsBaseCtrl($scope);
     }]).
 
-  controller('ViewPostCtrl', ['$scope', '$routeParams', 'ajax', 'Posts', 'postsBaseCtrl',
+  controller('ViewPostCtrl', ['$scope', '$routeParams', 'ajax', 'Posts',
     function ($scope, $routeParams, ajax, Posts, postsBaseCtrl) {
 
       $scope.pageTitle = 'Viewing a post';
@@ -77,12 +63,10 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
           $scope.posts = [];
           $scope.pageTitle = 'Post not found';
         });
-
-      postsBaseCtrl($scope);
     }]).
 
-  controller('EditPostCtrl', ['$scope', '$routeParams', 'Posts', 'ajax', '$location',
-    function ($scope, $routeParams, Posts, ajax, $location) {
+  controller('EditPostCtrl', ['$scope', '$routeParams', 'Posts', 'ajax', '$location', 'confirm',
+    function ($scope, $routeParams, Posts, ajax, $location, confirm) {
       if ($routeParams.id) {
         $scope.pageTitle = 'Edit post';
         ajax({ url: '/posts/' + $routeParams.id }).
@@ -106,6 +90,14 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
 
       $scope.hideMenus = function () {
         $scope.$broadcast('hideMenus', []);
+      };
+
+      $scope.delete = function (post) {
+        var message = 'Are you sure you want to delete the post "' + post.title + '"?';
+
+        if (confirm(message)) {
+          post.delete();
+        }
       };
     }]).
 

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('journals.help', ['journals.posts', 'journals.user']).
+angular.module('journals.help', ['journals.posts', 'journals.user', 'journals.currentDate']).
 
   factory('helpSections', function () {
     return {
@@ -122,7 +122,7 @@ angular.module('journals.help', ['journals.posts', 'journals.user']).
 
   /*--------------- Help objects -------------*/
 
-  factory('createHelpPost', ['User', function (User) {
+  factory('createHelpPost', ['User', 'currentDate', '$q', function (User, currentDate, $q) {
     return function () {
       var post = {
         step: 1,
@@ -151,9 +151,9 @@ angular.module('journals.help', ['journals.posts', 'journals.user']).
         { name: 'Dora Elmer', short_name: 'Dora', name_with_info: 'Dora Elmer (teacher)', url: function () { return ''; } }
       ]
 
-      post.addComment = function (content) {
+      post.newComment = function (data) {
         var comment = {};
-        comment.content = content;
+        comment.content = data.content;
         comment.author = User;
         comment.delete = function () {
           comment.deleted = true;
@@ -165,10 +165,16 @@ angular.module('journals.help', ['journals.posts', 'journals.user']).
           comment[field] = value;
         };
         // Use current date here:
-        comment.created_at = '25th March, 2013';
+        comment.created_at = currentDate.getLong();
         comment.editable = true;
 
         post.comments.push(comment);
+
+        comment.save = function () {
+          return $q.when();
+        };
+
+        return comment;
       };
 
       post.author = post.teachers[0];

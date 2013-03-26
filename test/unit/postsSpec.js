@@ -3,84 +3,10 @@
 describe('posts module', function () {
   beforeEach(module('journals.posts'));
 
-  /*------------------ Posts base controller ------------------*/
-  describe('postsBaseCtrl', function () {
-    var scope, confirm;
-
-    beforeEach(inject(function ($rootScope, postsBaseCtrl, _confirm_) {
-      confirm = _confirm_;
-
-      scope = $rootScope.$new();
-      scope.load = jasmine.createSpy();
-
-      postsBaseCtrl(scope);
-    }));
-
-    // Delete a post
-    describe('delete(post)', function () {
-      var post;
-
-      beforeEach(function () {
-        post = { delete: jasmine.createSpy() };
-      });
-
-      describe('on confirm', function () {
-        beforeEach(function () {
-          scope.delete(post)
-        });
-
-        it('sends a delete message to the post', function () {
-          expect(post.delete).toHaveBeenCalled();
-        });
-      });
-
-      describe('on cancel', function () {
-        beforeEach(function () {
-          confirm.set(false);
-          scope.delete(post)
-        });
-
-        it('does not send a delete message to the post', function () {
-          expect(post.delete).not.toHaveBeenCalled();
-        });
-      });
-    });
-
-    // Delete a comment
-    describe('deleteComment(comment)', function () {
-      var comment;
-
-      beforeEach(function () {
-        comment = { delete: jasmine.createSpy() };
-      });
-
-      describe('on confirm', function () {
-        beforeEach(function () {
-          scope.deleteComment(comment)
-        });
-
-        it('sends a delete message to the comment', function () {
-          expect(comment.delete).toHaveBeenCalled();
-        });
-      });
-
-      describe('on cancel', function () {
-        beforeEach(function () {
-          confirm.set(false);
-          scope.deleteComment(comment)
-        });
-
-        it('does not send a delete message to the comment', function () {
-          expect(comment.delete).not.toHaveBeenCalled();
-        });
-      });
-    });
-  });
-
   /*------------------- Posts controller ------------------*/
 
   describe('PostsCtrl', function () {
-    var scope, httpBackend, controller, Posts, location, postsBaseCtrl, createHelpPost, helpPost;
+    var scope, httpBackend, controller, Posts, location, createHelpPost, helpPost;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, $location) {
       httpBackend = $httpBackend;
@@ -88,7 +14,6 @@ describe('posts module', function () {
       scope = $rootScope.$new();
       controller = $controller;
 
-      postsBaseCtrl = jasmine.createSpy();
       Posts = _Posts_;
       location = $location;
 
@@ -105,7 +30,7 @@ describe('posts module', function () {
       beforeEach(function () {
         location.url('/some/path?search=blahblah');
         httpBackend.expectGET('/some/path.json?search=blahblah').respond(200);
-        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl, createHelpPost: createHelpPost });
+        controller('PostsCtrl', { $scope: scope, createHelpPost: createHelpPost });
       });
 
       it('sets the scope seach val', function () {
@@ -120,11 +45,7 @@ describe('posts module', function () {
           total_pages: 4,
           items: [{ id: 1, title: 'Some post' }, {id: 2}, {id: 7}]
         });
-        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl, createHelpPost: createHelpPost });
-      });
-
-      it('includes the base controller', function () {
-        expect(postsBaseCtrl).toHaveBeenCalledWith(scope);
+        controller('PostsCtrl', { $scope: scope, createHelpPost: createHelpPost });
       });
 
       it('sends a request', function () {
@@ -226,15 +147,13 @@ describe('posts module', function () {
   /*------------------- Single post controller ------------------*/
 
   describe('ViewPostCtrl', function () {
-    var scope, httpBackend, controller, Posts, postsBaseCtrl;
+    var scope, httpBackend, controller, Posts;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_) {
       httpBackend = $httpBackend;
 
       scope = $rootScope.$new();
       controller = $controller;
-
-      postsBaseCtrl = jasmine.createSpy();
 
       Posts = _Posts_;
       spyOn(Posts, 'update').andCallFake(function(data) {
@@ -245,11 +164,7 @@ describe('posts module', function () {
     describe('on success', function () {
       beforeEach(function () {
         httpBackend.expectGET('/posts/5.json').respond({ id: 1, title: 'Some post' });
-        controller('ViewPostCtrl', { $scope: scope, $routeParams: { id: 5 }, postsBaseCtrl: postsBaseCtrl });
-      });
-
-      it('includes the base controller', function () {
-        expect(postsBaseCtrl).toHaveBeenCalledWith(scope);
+        controller('ViewPostCtrl', { $scope: scope, $routeParams: { id: 5 } });
       });
 
       it('sends a request', function () {
@@ -305,83 +220,18 @@ describe('posts module', function () {
   });
 
 
-
-
-
-  /*------------------------ Controller for each post ---------------------*/
-
-  describe('PostCtrl', function () {
-    var scope;
-
-    beforeEach(inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      $controller('PostCtrl', { $scope: scope });
-    }));
-
-    it('sets newComment to null', function () {
-      expect(scope.newComment).toEqual(null);
-    });
-
-    describe('addComment(content)', function () {
-      var newComment, deferred;
-
-      beforeEach(inject(function ($rootScope, $controller, $q) {
-        deferred = $q.defer();
-        newComment = { save: jasmine.createSpy().andReturn(deferred.promise) };
-        scope.post = { newComment: jasmine.createSpy().andReturn(newComment) };
-        scope.newComment = 'Some val';
-      }));
-
-      describe('with no content', function () {
-        beforeEach(function () {
-          scope.addComment('');
-        });
-
-        it('does nothing', function () {
-          expect(scope.post.newComment).not.toHaveBeenCalled();
-          expect(scope.newComment).toEqual('Some val');
-        });
-      });
-
-      describe('with content', function () {
-        beforeEach(function () {
-          scope.addComment('Some content');
-        });
-
-        it('calls post.newComment with passed content', function () {
-          expect(scope.post.newComment).toHaveBeenCalledWith({content: 'Some content'});
-        });
-
-        it('saves the returned comment', function () {
-          expect(newComment.save).toHaveBeenCalled();
-        })
-
-        it('sets the scope newComment content to null if the promise is resolved', function () {
-          deferred.resolve();
-          scope.$apply();
-          expect(scope.newComment).toBeNull();
-        });
-
-        it('leaves the scope newComment content alone if the promise is rejected', function () {
-          deferred.reject();
-          scope.$apply();
-          expect(scope.newComment).toEqual('Some val');
-        });
-      });
-    });
-  });
-
   /*------------------------ Edit post controller ------------------------*/
 
 
   describe('EditPostCtrl', function () {
-    var scope, httpBackend, controller, Posts;
+    var scope, httpBackend, controller, Posts, confirm;
 
-    beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_) {
+    beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, _confirm_) {
       httpBackend = $httpBackend;
       scope = $rootScope.$new();
       controller = $controller;
       Posts = _Posts_;
+      confirm = _confirm_;
     }));
 
     describe('with no route id', function () {
@@ -508,6 +358,37 @@ describe('posts module', function () {
 
         it('does not change the url', function () {
           expect(location.url).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    // Delete a post
+    describe('delete(post)', function () {
+      var post;
+
+      beforeEach(function () {
+        post = { delete: jasmine.createSpy() };
+        controller('EditPostCtrl', { $scope: scope });
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.delete(post);
+        });
+
+        it('sends a delete message to the post', function () {
+          expect(post.delete).toHaveBeenCalled();
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.delete(post)
+        });
+
+        it('does not send a delete message to the post', function () {
+          expect(post.delete).not.toHaveBeenCalled();
         });
       });
     });

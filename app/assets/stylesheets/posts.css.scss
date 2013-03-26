@@ -199,14 +199,12 @@ article.post {
   max-height: 0;
   visibility: hidden;
   opacity: 0;
-  z-index: -999;
-  @include transition(opacity 800ms ease, visibility 800ms ease, z-index 0 ease 800ms, max-height 800ms ease-out);
+  @include transition(opacity 800ms ease, visibility 800ms ease, max-height 800ms ease-out);
 
   &.shown {
     opacity: 1;
     visibility: visible;
     max-height: 2999px;
-    z-index: 100;
     margin: -20px;
     padding: 20px;
     @include transition(opacity 800ms ease, visibility 800ms ease, max-height 800ms ease-in);
