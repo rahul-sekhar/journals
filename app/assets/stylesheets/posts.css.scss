@@ -4,6 +4,49 @@ article.post {
   margin-bottom: 25px;
   @include new-clearfix;
 
+  .post-content {
+    overflow: hidden;
+    @include transition(max-height 1500ms ease);
+    position: relative;
+    padding-bottom: 25px;
+    max-height: 300px;
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 25px;
+      width: 100%;
+
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255,255,255, 1)), to(rgba(255,255,255, 0)));
+      background: -webkit-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
+      background: -moz-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
+      background: -ms-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
+      background: -o-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
+    }
+  }
+
+  .comments {
+    @include transition(max-height 1500ms ease, opacity 600ms ease);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  &.expanded {
+    .post-content {
+      max-height: none;
+    }
+
+    .comments {
+      @include transition(max-height 1500ms ease, opacity 1500ms ease);
+      opacity: 1;
+      max-height: none;
+    }
+  }
+
   h3 {
     font-weight: 600;
     font-size: 24px;
@@ -70,7 +113,7 @@ article.post {
     @include chaparral;
     @include post-styles;
 
-    margin-bottom: 45px;
+    margin-bottom: 20px;
   }
 
   .student-observations {
@@ -99,7 +142,7 @@ article.post {
       padding: 6px 8px;
       margin: 0;
       border: 1px solid $cream;
-      resize: vertical;
+      resize: none;
       @include chaparral;
       font-size: 16px;
       line-height: 150%;
@@ -121,7 +164,8 @@ article.post {
     p {
       font-size: 12px;
       color: $grey-2;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
+      line-height: 120%;
 
       a {
         text-decoration: none;
@@ -130,7 +174,8 @@ article.post {
     }
 
     .info {
-      width: 190px;
+      width: 175px;
+      margin-right: 15px;
       float:left;
     }
 
@@ -146,5 +191,95 @@ article.post {
         }
       }
     }
+  }
+}
+
+.help-container {
+  overflow: hidden;
+  max-height: 0;
+  visibility: hidden;
+  opacity: 0;
+  z-index: -999;
+  @include transition(opacity 800ms ease, visibility 800ms ease, z-index 0 ease 800ms, max-height 800ms ease-out);
+
+  &.shown {
+    opacity: 1;
+    visibility: visible;
+    max-height: 4999px;
+    z-index: 100;
+    margin: -20px;
+    padding: 20px;
+    @include transition(opacity 800ms ease, visibility 800ms ease, max-height 800ms ease-in);
+  }
+}
+
+// Help for a post
+article.post.help {
+  position: relative;
+
+  #viewPost-help-step-1 {
+    top: 40px;
+    left: 12px;
+  }
+
+  .help-pointer {
+    border: 4px solid $grey-3;
+  }
+
+  .help-pointer.step-1 {
+    height:100%;
+    padding: 10px 0;
+    width: 16px;
+    top: -14px;
+    left: -14px;
+    border-right: none;
+  }
+
+  .students {
+    position: relative;
+  }
+
+  .help-pointer.step-2-1, .help-pointer.step-2-2 {
+    border-right: none;
+    height: 14px;
+    width: 24px;
+    left: 71px;
+  }
+
+  .help-pointer.step-2-1 {
+    border-bottom: none;
+    top: -2px;
+  }
+
+  .help-pointer.step-2-2 {
+    border-top: none;
+    bottom: -44px;
+  }
+
+  #viewPost-help-step-2{
+    @include help-step;
+
+    top: -29px;
+    left: 71px + 24px + 4px;
+  }
+
+  .post-footer {
+    position: relative;
+  }
+
+  .help-pointer.step-3 {
+    width: 100%;
+    padding: 0 4px;
+    border-bottom: none;
+    height: 15px;
+    left: -8px;
+    top: -130px;
+  }
+
+  #viewPost-help-step-3{
+    @include help-step;
+
+    top: -280px;
+    left: 58px;
   }
 }

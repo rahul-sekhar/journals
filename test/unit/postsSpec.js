@@ -80,7 +80,7 @@ describe('posts module', function () {
   /*------------------- Posts controller ------------------*/
 
   describe('PostsCtrl', function () {
-    var scope, httpBackend, controller, Posts, location, postsBaseCtrl;
+    var scope, httpBackend, controller, Posts, location, postsBaseCtrl, createHelpPost, helpPost;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, $location) {
       httpBackend = $httpBackend;
@@ -90,19 +90,22 @@ describe('posts module', function () {
 
       postsBaseCtrl = jasmine.createSpy();
       Posts = _Posts_;
-      location = $location
+      location = $location;
 
       location.url('/path/to/posts')
       spyOn(Posts, 'update').andCallFake(function (data) {
         return 'post instance ' + data.id;
       });
+
+      helpPost = { setStep: jasmine.createSpy() }
+      createHelpPost = jasmine.createSpy().andReturn(helpPost);
     }));
 
     describe('when the search param is pre-set', function () {
       beforeEach(function () {
         location.url('/some/path?search=blahblah');
         httpBackend.expectGET('/some/path.json?search=blahblah').respond(200);
-        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl });
+        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl, createHelpPost: createHelpPost });
       });
 
       it('sets the scope seach val', function () {
@@ -117,7 +120,7 @@ describe('posts module', function () {
           total_pages: 4,
           items: [{ id: 1, title: 'Some post' }, {id: 2}, {id: 7}]
         });
-        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl });
+        controller('PostsCtrl', { $scope: scope, postsBaseCtrl: postsBaseCtrl, createHelpPost: createHelpPost });
       });
 
       it('includes the base controller', function () {
@@ -142,6 +145,20 @@ describe('posts module', function () {
 
       it('sets the scope search value to undefined', function () {
         expect(scope.search).toBeUndefined();
+      });
+
+      describe('helpPost', function () {
+        it('creates a help post instance', function () {
+          expect(createHelpPost).toHaveBeenCalled();
+          expect(scope.helpPost).toBe(helpPost);
+        });
+
+        it('sets the helpPost step to 1 when help is shown', function () {
+          expect(helpPost.setStep).not.toHaveBeenCalled();
+          scope.help.shown = true;
+          scope.$apply();
+          expect(helpPost.setStep).toHaveBeenCalledWith(1);
+        });
       });
 
       describe('doSearch()', function () {
@@ -186,7 +203,7 @@ describe('posts module', function () {
     describe('on failure', function () {
       beforeEach(function () {
         httpBackend.expectGET('/path/to/posts.json').respond(400);
-        controller('PostsCtrl', { $scope: scope });
+        controller('PostsCtrl', { $scope: scope, createHelpPost: createHelpPost });
         httpBackend.flush();
       });
 

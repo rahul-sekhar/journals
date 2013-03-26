@@ -22,6 +22,10 @@ class Post < ActiveRecord::Base
 
   scope :load_associations, includes(:students, :teachers, :tags, :comments, :student_observations)
 
+  def self.author_is(profile)
+    where { (post.author_id == profile.id) && (post.author_type == profile.class.to_s) }
+  end
+
   # Posts that are either authored by the guardian or that have one of the guardian's students tagged and have guardian permissions allowed
   def self.readable_by_guardian(guardian)
     student_ids = guardian.students.map{ |student| student.id }

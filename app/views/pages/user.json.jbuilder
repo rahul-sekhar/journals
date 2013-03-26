@@ -1,1 +1,1 @@
-json.type @profile.class.to_s
+json.partial! "shared/person", person: @profile

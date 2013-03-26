@@ -24,10 +24,9 @@
   .guardians{ "ng-show"=>"person.type == 'Student'" }
     %a.add-guardian{ "href"=>"", "ng-click"=>"addGuardian(person)", "ng-show"=>"isTeacher" } Add guardian
 
-    .guardian{ "ng-repeat"=>"guardian in person.guardians | orderBy:['-isNew()', 'name']", "ng-hide"=>"guardian.deleted", "ng-controller"=>"EditObjectCtrl" }
-      %ng-switch{ "on"=>"!!(isTeacher || guardian.editable)" }
-        %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_guardian.html')}'" }
-        %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_guardian.html')}'" }
+    %ng-switch{ "on"=>"!!(isTeacher || guardian.editable)", "ng-repeat"=>"guardian in person.guardians | orderBy:['-isNew()', 'name']" }
+      %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_guardian.html')}'" }
+      %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_guardian.html')}'" }
 
   %footer.profile-footer
     %div{ "ng-show"=>"person.id" }

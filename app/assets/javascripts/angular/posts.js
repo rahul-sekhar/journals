@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts.models', 'journals.confirm']).
+angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts.models', 'journals.confirm',
+  'journals.help', 'journals.posts.directives']).
 
   factory('postsBaseCtrl', ['confirm', function (confirm) {
     return function($scope) {
@@ -11,19 +12,11 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
           post.delete();
         }
       };
-
-      $scope.deleteComment = function (comment) {
-        var message = 'Are you sure you want to delete this comment?'
-
-        if (confirm(message)) {
-          comment.delete();
-        }
-      };
     };
   }]).
 
-  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'postsBaseCtrl',
-    function ($scope, ajax, Posts, $location, postsBaseCtrl) {
+  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'postsBaseCtrl', 'createHelpPost',
+    function ($scope, ajax, Posts, $location, postsBaseCtrl, createHelpPost) {
       var loadFn;
 
       $scope.pageTitle = 'Viewing posts';
@@ -56,6 +49,16 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
 
       // Initial load
       loadFn();
+
+      // Load help post
+      $scope.helpPost = createHelpPost();
+      $scope.$watch('help.shown', function (value) {
+        if (value) {
+          $scope.helpPost.setStep(1);
+        } else {
+          $scope.helpPost.setStep(null);
+        }
+      });
 
       postsBaseCtrl($scope);
     }]).
@@ -124,21 +127,4 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
         $scope.$broadcast('saveText');
         $scope.selectedStudent = student;
       };
-    }]).
-
-  controller('PostCtrl', ['$scope', function ($scope) {
-    $scope.newComment = null;
-
-    $scope.addComment = function (content) {
-      var comment;
-
-      if (!content) {
-        return;
-      }
-      comment = $scope.post.newComment({content: content});
-      comment.save().
-        then(function () {
-          $scope.newComment = null;
-        });
-    };
-  }]);
+    }]);

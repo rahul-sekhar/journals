@@ -1,4 +1,10 @@
-%article.post{ "ng-hide"=>"post.deleted", "ng-class"=>"{ expanded: expanded }" }
+%article.post.help{ "ng-hide"=>"post.deleted", "ng-class"=>"{ expanded: expanded }" }
+
+  .help-pointer.step-1{ "ng-class"=>"{shown: post.step == 1}" }
+  %help-step{ "step"=>"1", "section"=>"viewPost", "object"=>"post", "before"=>"compact()" }
+    %h4 Read the latest posts
+    %p Browse through the posts and click anywhere in the white box to read the whole post.
+
   %header.post-header
     %span.restrictions{ "title"=>"{{post.restrictions()}}", "ng-show"=>"post.restrictions()" }
 
@@ -8,6 +14,12 @@
         %ul
           %li{ "ng-repeat"=>"student in post.students" }
             %span{ "profile-name"=>"student" }
+
+        .help-pointer.step-2-1{ "ng-class"=>"{shown: post.step == 2}" }
+        .help-pointer.step-2-2{ "ng-class"=>"{shown: post.step == 2}" }
+        %help-step{ "step"=>"2", "section"=>"viewPost", "object"=>"post", "before"=>"expand()" }
+          %h4 Student and Teacher tags
+          %p Each post is tagged with the students it concerns and the teachers involved.
 
       .teachers{ "ng-show"=>"post.teachers.length" }
         %h4 Teachers
@@ -33,9 +45,14 @@
 
     .new-comment
       %textarea{ "ng-model"=>"newComment", "placeholder"=>"Enter comment" }
-      %a.add.button{ "href"=>"", "ng-click"=>"addComment(newComment)" } Comment
+      %a.add.button{ "href"=>"", "ng-click"=>"post.addComment(newComment)" } Comment
 
   %footer.post-footer
+    .help-pointer.step-3{ "ng-class"=>"{shown: post.step == 3}" }
+    %help-step{ "step"=>"3", "section"=>"viewPost", "object"=>"post", "before"=>"expand()" }
+      %h4 Add to the discussion
+      %p Leave a comment.
+
     .info
       %p.date {{post.created_at}}
 
@@ -52,4 +69,4 @@
       %p{ "ng-hide"=>"expanded" }
         %a{ "href"=>"", "ng-click"=>"expand()" } Read more
       %p{ "ng-show"=>"post.editable" }
-        %a{ "href"=>"", "ng-href"=>"{{post.url() + '/edit'}}" } Edit post
+        %a{ "href"=>"", "ng-click"=>"post.edit()" } Edit post

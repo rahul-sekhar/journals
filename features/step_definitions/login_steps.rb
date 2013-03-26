@@ -1,5 +1,5 @@
 When /^I log in with "(.*?)" and "(.*?)"$/ do |p_email, p_pass|
-  fill_in 'Email', with: p_email
+  page.fill_in 'Email', with: p_email
   fill_in 'Password', with: p_pass
   click_on 'Log in'
 end

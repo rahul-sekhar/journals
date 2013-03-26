@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.12'
 
 group :assets do
   gem 'sass-rails'
@@ -27,7 +27,7 @@ end
 group :test do
   gem 'factory_girl_rails'
   gem 'capybara'
-  gem 'poltergeist', :git => 'git://github.com/jonleighton/poltergeist.git'
+  gem 'poltergeist'
   gem 'launchy'
   gem 'email_spec'
   gem 'simplecov', require: false

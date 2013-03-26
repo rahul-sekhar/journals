@@ -7,7 +7,10 @@
     .people-filters{ "ng-switch-when" => "true", "ng-include"=>"'#{asset_path('post_filters.html')}'" }
   .clear-left
 
-%div{ "ng-repeat"=>"post in posts", "ng-include"=>"'#{asset_path('post.html')}'" }
+.help-container{ "ng-class"=>"{shown: help.shown == true}" }
+  %help-post{ "post"=>"helpPost" }
+
+%post{ "ng-repeat"=>"post in posts", "post"=>"post" }
 
 .content-block{ "ng-show"=>"(posts | filterDeleted).length == 0" }
   %p No matching posts were found.

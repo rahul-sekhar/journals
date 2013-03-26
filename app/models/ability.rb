@@ -8,7 +8,7 @@ class Ability
 
       # Can manage everything
       can :manage, :all
-    
+
     elsif user.is_student?
       student = user.profile
 
@@ -31,7 +31,8 @@ class Ability
       end
 
       # Can manage posts that they authored
-      can :manage, Post, author_id: guardian.id, author_type: "Guardian"
+      can :update, Post, author_id: guardian.id, author_type: "Guardian"
+      can :destroy, Post, author_id: guardian.id, author_type: "Guardian"
 
       # Can edit its students pages
       can :update, Student do |student|

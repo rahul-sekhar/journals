@@ -55,6 +55,7 @@ Scenario: Edit a group
 
 Scenario: Add a group
   Given the groups "group 1, group 2" exist
+  When I am on the people page
   And I open the manage groups dialog
 
   When I add the group "New group"

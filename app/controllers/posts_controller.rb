@@ -3,8 +3,9 @@ class PostsController < ApplicationController
   skip_load_resource only: [:new, :create]
 
   def index
+    @posts = @posts.filter_by_params(params)
+    @posts = @posts.order('posts.created_at DESC')
     @posts = @posts.load_associations
-    @posts = @posts.filter_by_params(params).order{ created_at.desc }
     @posts = paginate(@posts)
   end
 

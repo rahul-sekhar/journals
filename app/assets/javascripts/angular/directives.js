@@ -16,7 +16,7 @@ angular.module('journals.directives', []).
           '<div class="list" ng-show="alwaysShown || listShown">' +
             '<input ng-model="filter" focus-on="listShown" />' +
             '<ul>' +
-              '<li ng-repeat="item in list | filter:filter">' +
+              '<li ng-repeat="item in list | filter: filterObj">' +
                 '<a href="" ng-hide="item.deleted" internal-click="select(item)">{{item[showProperty]}}</a>' +
               '</li>' +
             '</ul>' +
@@ -24,6 +24,11 @@ angular.module('journals.directives', []).
           '<a class="add" ng-hide="alwaysShown" href="" internal-click="toggleList()" ng-class="{cancel: listShown}">{{buttonText}}</a>' +
         '</div>',
       controller: ['$scope', function ($scope) {
+        $scope.filterObj = {};
+        $scope.$watch('filter', function (value) {
+          $scope.filterObj[$scope.showProperty] = value;
+        });
+
         $scope.listShown = !!$scope.alwaysShown;
 
         $scope.toggleList = function () {
@@ -209,5 +214,21 @@ angular.module('journals.directives', []).
 
       // check height on a check height event
       scope.$on('checkHeight', checkHeightFn);
+    };
+  }]).
+
+  directive('watchHeight', ['$parse', '$timeout', function ($parse, $timeout) {
+    return function(scope, elem, attrs) {
+      var expanded = $parse(attrs.expanded);
+
+      scope.$watch(function () {
+        return (expanded(scope) && elem.prop('scrollHeight'));
+      }, function (newVal) {
+        if (newVal) {
+          elem.css('max-height', newVal);
+        } else {
+          elem.css('max-height', '')
+        }
+      });
     };
   }]);
