@@ -6,7 +6,6 @@ class PagesController < ApplicationController
   end
 
   def user
-    sleep(2)
     @profile = current_profile
   end
 
