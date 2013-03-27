@@ -1,20 +1,27 @@
+@angular
 Feature: Create a post as a teacher
 
 As a teacher I should be able to create a post so that I can add content to the site
 
 Background:
   Given some base students and teachers exist
-  And I have logged in as a teacher "Rahul Sekhar"
+  And I have logged in as the teacher Rahul
   And I am on the new post page
 
+@current
 Scenario: Create a minimal post with a title, content and tags
   When I fill in "Title" with "Test Post"
-  And I fill in "Content" with "<p>Some <em>HTML</em> content</p>"
+  And I fill in the "Content" editor with "<p>Some <em>HTML</em> content</p>"
   And I fill in "Tags" with "Test posts, Minimal"
   And I click "Create post"
-  Then a minimal test post should exist
-  And I should be on the posts page
-  And I should see "Test Post"
+  Then I should see the post "Test Post"
+  When I look at the post "Test Post"
+  Then I should see "Some HTML content" in it
+  And I should see "Test posts" in it
+  And I should see "Minimal" in it
+  And its restriction should be "Not visible to students or guardians"
+  And I should see "Rahul Sekhar" in its teachers
+
 
 Scenario: Create a post without a title
   When I fill in "Content" with "Content without a title"
@@ -23,6 +30,7 @@ Scenario: Create a post without a title
   And I should see "Title can't be blank"
   And "Content" should be filled in with "Content without a title"
 
+
 Scenario: Add student and teacher tags to a post
   When I fill in "Title" with "Tagged Post"
   And I select "Ansh" from "Student tags"
@@ -30,6 +38,7 @@ Scenario: Add student and teacher tags to a post
   And I select "Angela" from "Teacher tags"
   And I click "Create post"
   Then a post with student and teacher tags should exist
+
 
 Scenario: Set post permissions
   Then the checkbox "Guardians" should be unchecked

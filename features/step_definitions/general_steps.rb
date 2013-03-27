@@ -32,6 +32,17 @@ Then /^I should not see "(.*?)"$/ do |p_content|
   page.should have_no_content p_content
 end
 
+# Input steps
+When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
+  fill_in p_field, with: p_value
+end
+
+When(/^I fill in the "(.*?)" editor with "(.*?)"$/) do |p_field, p_text|
+  field = page.find_field(p_field)
+  puts '"#' + field[:id]  + '"'
+  page.execute_script('$("#' + field[:id]  + '").tinymce().setContent("' + p_text + '")')
+end
+
 # Link and button steps
 When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
@@ -59,11 +70,6 @@ def fill_input_inside(node, value)
 end
 
 
-
-# When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
-#   fill_in p_field, with: p_value
-# end
-
 # Then /^"(.*?)" should be filled in with "(.*?)"$/ do |p_field, p_value|
 #   find_field(p_field).value.should == p_value
 # end
@@ -84,10 +90,6 @@ end
 
 # When /^I click the element "(.*?)"$/ do |p_element|
 #   page.first(p_element).click
-# end
-
-# When /^I click the button "(.*?)"$/ do |p_button|
-#   page.find_button(p_button).click
 # end
 
 # Then /^I should see the button "(.*?)"$/ do |p_button|

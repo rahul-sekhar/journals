@@ -5,15 +5,18 @@
 %section#upper-bar
   .clear-left
 
-.post-fields
+.post-fields{ "ng-show"=>"post" }
   .main
     %ol
       %li.string.input
-        %input{ "ng-model"=>"post.title", "placeholder"=>"Title" }
+        %label{ "for"=>"post-title" } Title
+        %input#post-title{ "ng-model"=>"post.title", "placeholder"=>"Title" }
       %li.text.input
-        %textarea{ "ng-model"=>"post.content", "tinymce"=>true }
+        %label{ "for"=>"post-content" } Content
+        %textarea#post-content{ "ng-model"=>"post.content", "tinymce"=>true }
       %li.string.input
-        %input{ "ng-model"=>"post.tag_names", "placeholder"=>"Tags"}
+        %label{ "for"=>"post-tags" } Tags
+        %input#post-tags{ "ng-model"=>"post.tag_names", "placeholder"=>"Tags"}
 
   .student-observations-offset{ "ng-show"=>"post.students.length" }
 
@@ -74,3 +77,5 @@
   .actions
     %button.save{ "ng-click"=>"save()" }
       {{post.isNew() && 'Create post' || 'Save post'}}
+    %button.delete{ "ng-click"=>"delete()", "ng-hide"=>"post.isNew()" }
+      Delete

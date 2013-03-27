@@ -31,6 +31,7 @@ class Ability
       end
 
       # Can manage posts that they authored
+      can :create, Post, author_id: guardian.id, author_type: "Guardian"
       can :update, Post, author_id: guardian.id, author_type: "Guardian"
       can :destroy, Post, author_id: guardian.id, author_type: "Guardian"
 

@@ -33,6 +33,14 @@ end
 #   @post.save!
 # end
 
+Given /^some base students and teachers exist$/ do
+  shalini
+  angela
+  aditya
+  ansh
+  sahana
+end
+
 def shalini
   create_profile('teacher', 'Shalini Sekhar')
 end

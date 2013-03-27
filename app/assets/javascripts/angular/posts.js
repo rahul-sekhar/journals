@@ -65,8 +65,8 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
         });
     }]).
 
-  controller('EditPostCtrl', ['$scope', '$routeParams', 'Posts', 'ajax', '$location', 'confirm',
-    function ($scope, $routeParams, Posts, ajax, $location, confirm) {
+  controller('EditPostCtrl', ['$scope', '$routeParams', 'Posts', 'ajax', '$location', 'confirm', 'User',
+    function ($scope, $routeParams, Posts, ajax, $location, confirm, User) {
       if ($routeParams.id) {
         $scope.pageTitle = 'Edit post';
         ajax({ url: '/posts/' + $routeParams.id }).
@@ -74,11 +74,18 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
             $scope.post = Posts.update(response.data);
           }, function () {
             $scope.pageTitle = 'Post not found';
+            $scope.post = null;
           });
       }
       else {
         $scope.pageTitle = 'Create a post';
-        $scope.post = Posts.add();
+        if (User.type === 'Teacher') {
+          $scope.post = Posts.add({ teacher_ids: [User.id] });
+        } else if (User.type === 'Student') {
+          $scope.post = Posts.add({ student_ids: [User.id] });
+        } else if (User.type === 'Guardian') {
+          $scope.post = Posts.add({ student_ids: User.student_ids });
+        }
       }
 
       $scope.save = function () {
@@ -92,11 +99,15 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
         $scope.$broadcast('hideMenus', []);
       };
 
-      $scope.delete = function (post) {
-        var message = 'Are you sure you want to delete the post "' + post.title + '"?';
+      $scope.delete = function () {
+        var message = 'Are you sure you want to delete the post "' + $scope.post.title + '"?';
 
         if (confirm(message)) {
-          post.delete();
+          $scope.post.delete().
+            then(function () {
+              $scope.pageTitle = 'Post deleted';
+              $scope.post = null;
+            });
         }
       };
     }]).

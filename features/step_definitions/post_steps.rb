@@ -1,8 +1,27 @@
-Then /^(.*) in the post (\S*)$/ do |p_step, p_section|
-  within ".post .#{p_section}" do
-    step p_step
+Then /^I should see the post "(.*?)"$/ do |p_name|
+  page.should have_css(".post h3", text: /#{Regexp.escape(p_name)}/, visible: true)
+end
+
+Then /^I should not see the post "(.*?)"$/ do |p_name|
+  page.should have_no_css(".post h3", text: /#{Regexp.escape(p_name)}/, visible: true)
+end
+
+When /^I look at the post "(.*?)"$/ do |p_name|
+  @viewing = page.find(".post h3", text: /#{Regexp.escape(p_name)}/, visible: true).
+    first(:xpath, ".//..")
+end
+
+Then(/^I should see "(.*?)" in its (\S*)$/) do |p_content, p_section|
+  within @viewing.find(".#{p_section}") do
+    page.should have_content p_content
   end
 end
+
+Then(/^its restriction should be "(.*?)"$/) do |p_text|
+  restrictions = @viewing.find('.restrictions', visible: true)
+  restrictions[:title].should eq(p_text)
+end
+
 
 # Then /^that post should be destroyed$/ do
 #   Post.should_not exist(@post)

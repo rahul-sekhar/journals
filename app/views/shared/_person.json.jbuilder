@@ -8,6 +8,7 @@ json.editable can?(:update, person)
 
 if person.is_a? Guardian
   json.parent_count person.number_of_students
+  json.(person, :student_ids)
 end
 
 if person.is_a? Student

@@ -224,7 +224,12 @@ describe('posts module', function () {
 
 
   describe('EditPostCtrl', function () {
-    var scope, httpBackend, controller, Posts, confirm;
+    var scope, httpBackend, controller, Posts, confirm, User;
+
+    beforeEach(module(function ($provide) {
+      User = { type: 'Teacher', id: 76 };
+      $provide.value('User', User);
+    }));
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, _confirm_) {
       httpBackend = $httpBackend;
@@ -235,22 +240,25 @@ describe('posts module', function () {
     }));
 
     describe('with no route id', function () {
-      beforeEach(function () {
-        spyOn(Posts, 'add').andReturn('new post');
-        controller('EditPostCtrl', { $scope: scope });
+      describe('with a teacher logged in', function () {
+        beforeEach(function () {
+          spyOn(Posts, 'add').andReturn('new post');
+          controller('EditPostCtrl', { $scope: scope });
+        });
+
+        it('sets pageTitle', function () {
+          expect(scope.pageTitle).toEqual('Create a post');
+        })
+
+        it('adds a new post, adding a self tag', function () {
+          expect(Posts.add).toHaveBeenCalledWith({ teacher_ids: [76] });
+        });
+
+        it('sets post to the new post', function () {
+          expect(scope.post).toEqual('new post');
+        });
       });
 
-      it('sets pageTitle', function () {
-        expect(scope.pageTitle).toEqual('Create a post');
-      })
-
-      it('adds a new post', function () {
-        expect(Posts.add).toHaveBeenCalled();
-      });
-
-      it('sets post to the new post', function () {
-        expect(scope.post).toEqual('new post');
-      });
     });
 
     describe('with a route id', function () {
@@ -297,12 +305,12 @@ describe('posts module', function () {
       describe('on failure', function () {
         beforeEach(function () {
           httpBackend.expectGET('/posts/5.json').respond(404);
-          controller('ViewPostCtrl', { $scope: scope, $routeParams: { id: 5 } });
+          controller('EditPostCtrl', { $scope: scope, $routeParams: { id: 5 } });
           httpBackend.flush();
         });
 
-        it('sets posts to an empty array', function () {
-          expect(scope.post).toBeUndefined();
+        it('sets posts to null', function () {
+          expect(scope.post).toBeNull();
         });
 
         it('changes pageTitle', function () {
@@ -363,28 +371,44 @@ describe('posts module', function () {
     });
 
     // Delete a post
-    describe('delete(post)', function () {
-      var post;
+    describe('delete()', function () {
+      var post, deferred;
 
-      beforeEach(function () {
-        post = { delete: jasmine.createSpy() };
+      beforeEach(inject(function ($q) {
+        deferred = $q.defer();
+        post = { delete: jasmine.createSpy().andReturn(deferred.promise) };
+        spyOn(Posts, 'add').andReturn(post);
         controller('EditPostCtrl', { $scope: scope });
-      });
+      }));
 
       describe('on confirm', function () {
         beforeEach(function () {
-          scope.delete(post);
+          scope.delete();
         });
 
         it('sends a delete message to the post', function () {
           expect(post.delete).toHaveBeenCalled();
+        });
+
+        it('does nothing to the post if the promise is rejected', function () {
+          deferred.reject();
+          scope.$apply();
+          expect(scope.post).toBe(post);
+          expect(scope.pageTitle).toEqual('Create a post');
+        });
+
+        it('removes the post and changes the pageTitle if the promise is resolved', function () {
+          deferred.resolve();
+          scope.$apply();
+          expect(scope.post).toBeNull();
+          expect(scope.pageTitle).toEqual('Post deleted');
         });
       });
 
       describe('on cancel', function () {
         beforeEach(function () {
           confirm.set(false);
-          scope.delete(post)
+          scope.delete()
         });
 
         it('does not send a delete message to the post', function () {
@@ -400,6 +424,7 @@ describe('posts module', function () {
         childScope = scope.$new();
         listener = jasmine.createSpy();
         childScope.$on('hideMenus', listener);
+        spyOn(Posts, 'add').andReturn('post');
         controller('EditPostCtrl', { $scope: scope });
         scope.hideMenus();
       });
