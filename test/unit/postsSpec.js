@@ -231,7 +231,8 @@ describe('posts module', function () {
       $provide.value('User', User);
     }));
 
-    beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, _confirm_) {
+    beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, _confirm_, $q) {
+      User.promise = $q.when();
       httpBackend = $httpBackend;
       scope = $rootScope.$new();
       controller = $controller;
@@ -240,10 +241,14 @@ describe('posts module', function () {
     }));
 
     describe('with no route id', function () {
+      beforeEach(function () {
+        spyOn(Posts, 'add').andReturn('new post');
+      });
+
       describe('with a teacher logged in', function () {
         beforeEach(function () {
-          spyOn(Posts, 'add').andReturn('new post');
           controller('EditPostCtrl', { $scope: scope });
+          scope.$apply();
         });
 
         it('sets pageTitle', function () {
@@ -259,6 +264,64 @@ describe('posts module', function () {
         });
       });
 
+      describe('with a student logged in', function () {
+        beforeEach(function () {
+          User.type = 'Student';
+          User.id = 3;
+
+          controller('EditPostCtrl', { $scope: scope });
+          scope.$apply();
+        });
+
+        it('adds a new post, adding a self tag', function () {
+          expect(Posts.add).toHaveBeenCalledWith({ student_ids: [3] });
+        });
+      });
+
+      describe('with a guardian logged in', function () {
+        beforeEach(function () {
+          User.type = 'Guardian';
+          User.student_ids = [3, 4, 7];
+
+          controller('EditPostCtrl', { $scope: scope });
+          scope.$apply();
+        });
+
+        it('adds a new post, adding student tags', function () {
+          expect(Posts.add).toHaveBeenCalledWith({ student_ids: [3, 4, 7] });
+        });
+      });
+
+      describe('with a User that is loaded late', function () {
+        var deferred;
+
+        beforeEach(inject(function ($q) {
+          deferred = $q.defer();
+          User.promise = deferred.promise;
+
+          controller('EditPostCtrl', { $scope: scope });
+          scope.$apply();
+        }));
+
+        it('does not immediately add a post', function () {
+          expect(scope.post).toBeUndefined();
+          expect(Posts.add).not.toHaveBeenCalled();
+        });
+
+        it('does not add a post if the promise is rejected', function () {
+          deferred.reject();
+          scope.$apply();
+          expect(scope.post).toBeUndefined();
+          expect(Posts.add).not.toHaveBeenCalled();
+        });
+
+        it('adds a new post, adding student tags, if the promise is resolved', function () {
+          deferred.resolve();
+          scope.$apply();
+          expect(Posts.add).toHaveBeenCalledWith({ teacher_ids: [76] });
+          expect(scope.post).toEqual('new post');
+        });
+      });
     });
 
     describe('with a route id', function () {
@@ -336,6 +399,7 @@ describe('posts module', function () {
 
         spyOn(Posts, 'add').andReturn(post);
         controller('EditPostCtrl', { $scope: scope });
+        scope.$apply();
         scope.save();
       }));
 
@@ -379,6 +443,7 @@ describe('posts module', function () {
         post = { delete: jasmine.createSpy().andReturn(deferred.promise) };
         spyOn(Posts, 'add').andReturn(post);
         controller('EditPostCtrl', { $scope: scope });
+        scope.$apply();
       }));
 
       describe('on confirm', function () {

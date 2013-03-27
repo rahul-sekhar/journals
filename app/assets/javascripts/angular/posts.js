@@ -79,13 +79,16 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
       }
       else {
         $scope.pageTitle = 'Create a post';
-        if (User.type === 'Teacher') {
-          $scope.post = Posts.add({ teacher_ids: [User.id] });
-        } else if (User.type === 'Student') {
-          $scope.post = Posts.add({ student_ids: [User.id] });
-        } else if (User.type === 'Guardian') {
-          $scope.post = Posts.add({ student_ids: User.student_ids });
-        }
+        User.promise.
+          then(function () {
+            if (User.type === 'Teacher') {
+              $scope.post = Posts.add({ teacher_ids: [User.id] });
+            } else if (User.type === 'Student') {
+              $scope.post = Posts.add({ student_ids: [User.id] });
+            } else if (User.type === 'Guardian') {
+              $scope.post = Posts.add({ student_ids: User.student_ids });
+            }
+          });
       }
 
       $scope.save = function () {
