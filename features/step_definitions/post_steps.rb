@@ -40,6 +40,10 @@ When(/^I untag the (student|teacher) "(.*?)" in the post$/) do |p_type, p_name|
   end
 end
 
+When(/^I look at the (student|teacher) tags section$/) do |p_type|
+  @viewing = page.find(".people-tags .#{p_type}s")
+end
+
 
 
 # Then /^that post should be destroyed$/ do

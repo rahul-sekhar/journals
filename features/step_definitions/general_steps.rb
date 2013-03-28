@@ -48,8 +48,23 @@ Then /^"(.*?)" should be filled in with "(.*?)"$/ do |p_field, p_value|
   find_field(p_field).value.should == p_value
 end
 
+Then(/^the "(.*?)" editor should be filled in with "(.*?)"$/) do |p_field, p_text|
+  field = page.find_field(p_field)
+  text = page.evaluate_script('$("#' + field[:id]  + '").tinymce().getContent()')
+  text.should eq(p_text)
+end
+
+
 When /^I check the checkbox "(.*?)"$/ do |p_checkbox|
   page.check(p_checkbox)
+end
+
+Then /^the checkbox "(.*?)" should be checked$/ do |p_checkbox|
+  find_field(p_checkbox).should be_checked
+end
+
+Then /^the checkbox "(.*?)" should be unchecked$/ do |p_checkbox|
+  find_field(p_checkbox).should_not be_checked
 end
 
 
@@ -127,13 +142,7 @@ end
 
 
 # # Checkbox steps
-# Then /^the checkbox "(.*?)" should be checked$/ do |p_checkbox|
-#   find_field(p_checkbox).should be_checked
-# end
 
-# Then /^the checkbox "(.*?)" should be unchecked$/ do |p_checkbox|
-#   find_field(p_checkbox).should_not be_checked
-# end
 
 
 # # Exception testing steps
