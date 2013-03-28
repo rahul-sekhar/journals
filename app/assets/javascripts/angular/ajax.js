@@ -5,7 +5,6 @@ angular.module('journals.ajax', ['journals.messageHandler']).
   factory('ajax', ['$http', 'messageHandler', '$q', function ($http, messageHandler, $q) {
     return function (options) {
       var defaults, urlParts;
-
       defaults = {
         method: 'GET',
         data: null,

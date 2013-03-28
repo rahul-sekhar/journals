@@ -5,6 +5,7 @@ Then /^(.*?) in it$/ do |p_step|
   end
 end
 
+
 # Page testing steps
 Given /^I am on (.*?)$/ do |p_page|
   visit path_to(p_page)
@@ -32,6 +33,7 @@ Then /^I should not see "(.*?)"$/ do |p_content|
   page.should have_no_content p_content
 end
 
+
 # Input steps
 When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
   fill_in p_field, with: p_value
@@ -39,9 +41,17 @@ end
 
 When(/^I fill in the "(.*?)" editor with "(.*?)"$/) do |p_field, p_text|
   field = page.find_field(p_field)
-  puts '"#' + field[:id]  + '"'
   page.execute_script('$("#' + field[:id]  + '").tinymce().setContent("' + p_text + '")')
 end
+
+Then /^"(.*?)" should be filled in with "(.*?)"$/ do |p_field, p_value|
+  find_field(p_field).value.should == p_value
+end
+
+When /^I check the checkbox "(.*?)"$/ do |p_checkbox|
+  page.check(p_checkbox)
+end
+
 
 # Link and button steps
 When /^I click "(.*?)"$/ do |p_link|
@@ -57,6 +67,7 @@ When /^I select the option containing "(.*?)"$/ do |p_option|
   page.choose p_option
 end
 
+
 # General internal functions
 def blur_input_inside(node)
   script = "$('input:visible, textarea:visible').blur();"
@@ -70,9 +81,7 @@ def fill_input_inside(node, value)
 end
 
 
-# Then /^"(.*?)" should be filled in with "(.*?)"$/ do |p_field, p_value|
-#   find_field(p_field).value.should == p_value
-# end
+
 
 # Then /^"(.*?)" should be filled in with the lines: (.*?)$/ do |p_field, p_lines|
 #   p_lines = p_lines[1..-2].split('", "').join("\n")
@@ -124,10 +133,6 @@ end
 
 # Then /^the checkbox "(.*?)" should be unchecked$/ do |p_checkbox|
 #   find_field(p_checkbox).should_not be_checked
-# end
-
-# When /^I check the checkbox "(.*?)"$/ do |p_checkbox|
-#   page.check(p_checkbox)
 # end
 
 

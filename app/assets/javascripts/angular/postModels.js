@@ -90,7 +90,12 @@ angular.module('journals.posts.models', ['journals.model', 'journals.collection'
 
       postExtension.beforeSave = function (instance) {
         instance.student_observations_attributes = [];
+
         angular.forEach(instance.observationContent, function (value, key) {
+          if (!key) {
+            return;
+          }
+
           var observation = {
             student_id: parseInt(key, 10),
             content: value

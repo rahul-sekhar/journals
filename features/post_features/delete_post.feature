@@ -1,10 +1,16 @@
+@angular
 Feature: Delete a post
 
 Scenario: Delete a post
   Given a post about an ice cream factory visit exists
-  And I have logged in as a teacher "Rahul Sekhar"
+  And I have logged in as the teacher Rahul
+
+  When I go to the posts page
+  Then I should see the post "Ice cream factory visit"
+
   And I am on the edit page for that post
   When I click "Delete post"
-  Then that post should be destroyed
-  And I should be on the posts page
-  And I should see "The post has been deleted"
+  Then I should see "Post deleted"
+
+  When I go to the posts page
+  Then I should not see the post "Ice cream factory visit"

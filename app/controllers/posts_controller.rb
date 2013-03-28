@@ -13,6 +13,9 @@ class PostsController < ApplicationController
   end
 
   def create
+    # Fix for rails bug with an empty association attributes array
+    params[:post][:student_observations_attributes] ||= [];
+
     @post = current_profile.posts.build(params[:post])
 
     if @post.save
@@ -23,6 +26,9 @@ class PostsController < ApplicationController
   end
 
   def update
+    # Fix for rails bug with an empty association attributes array
+    params[:post][:student_observations_attributes] ||= [];
+
     if @post.update_attributes(params[:post])
       render 'show'
     else

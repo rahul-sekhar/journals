@@ -216,6 +216,8 @@
       float: right;
       clear: right;
 
+      @include transition(background-color 300ms ease);
+
       &:hover { background-color: #777771; }
     }
 

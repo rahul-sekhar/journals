@@ -58,7 +58,6 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
       ajax({ url: '/posts/' + $routeParams.id }).
         then(function (response) {
           $scope.posts = [Posts.update(response.data)];
-          console.log($scope.posts[0]);
         }, function () {
           $scope.posts = [];
           $scope.pageTitle = 'Post not found';
@@ -117,17 +116,18 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
 
   controller('StudentObservationsCtrl', ['$scope', 'orderByFilter', '$timeout',
     function ($scope, orderByFilter, $timeout) {
-      $scope.$watch('post.students', function (value) {
+      $scope.$watch('post.students.length', function () {
         // Send a checkHeight event on the next digest cycle so that the button list HTML changes
         // before the editor height is checked
         $timeout(function () {
           $scope.$broadcast('checkHeight');
         }, 0);
 
-        if (value && value.indexOf($scope.selectedStudent) === -1) {
-          $scope.selectedStudent = orderByFilter(value, 'short_name')[0];
+        var students = $scope.post && $scope.post.students;
+        if (students && students.indexOf($scope.selectedStudent) === -1) {
+          $scope.selectedStudent = orderByFilter(students, 'short_name')[0];
         }
-      }, true);
+      });
 
       $scope.selectStudent = function (student) {
         $scope.$broadcast('saveText');

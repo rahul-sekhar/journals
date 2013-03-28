@@ -11,9 +11,9 @@ When /^I look at the post "(.*?)"$/ do |p_name|
     first(:xpath, ".//..")
 end
 
-Then(/^I should see "(.*?)" in its (\S*)$/) do |p_content, p_section|
+Then(/^(.*) in the posts (\S*)$/) do |p_step, p_section|
   within @viewing.find(".#{p_section}") do
-    page.should have_content p_content
+    step p_step
   end
 end
 
@@ -21,6 +21,25 @@ Then(/^its restriction should be "(.*?)"$/) do |p_text|
   restrictions = @viewing.find('.restrictions', visible: true)
   restrictions[:title].should eq(p_text)
 end
+
+Then(/^it should have no restrictions$/) do
+  @viewing.should have_no_css('.restrictions', visible: true)
+end
+
+When(/^I tag the (student|teacher) "(.*?)" in the post$/) do |p_type, p_name|
+  within ".people-tags .#{p_type}s" do
+    click_on "Add #{p_type}" if page.has_no_css?('.container', text: /.+/, visible: true)
+    page.should have_css('.container', text: /.+/, visible: true)
+    page.find('.container').click_on p_name
+  end
+end
+
+When(/^I untag the (student|teacher) "(.*?)" in the post$/) do |p_type, p_name|
+  within ".people-tags .#{p_type}s" do
+    page.find('.tag-list li', text: p_name).find('.remove').click
+  end
+end
+
 
 
 # Then /^that post should be destroyed$/ do

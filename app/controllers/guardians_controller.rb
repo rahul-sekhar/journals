@@ -1,10 +1,10 @@
 class GuardiansController < ApplicationController
   load_and_authorize_resource
-  skip_authorize_resource only: :check_duplicates
+  skip_authorize_resource only: [:check_duplicates, :all]
 
   def all
     authorize! :read, Guardian
-    @guardian = Guardian.all
+    @guardians = Guardian.all
   end
 
   def show

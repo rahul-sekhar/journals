@@ -150,12 +150,13 @@ angular.module('journals.directives', []).
   }]).
 
   directive('tinymce', [function () {
+    tinyMCE.baseURL = '/tinymce/';
+
     return {
       require: 'ngModel',
       link: function(scope, elem, attrs, ngModel) {
         var saveFn;
         elem.tinymce({
-          script_url : '/tiny_mce/tiny_mce.js',
           width: 474,
           theme : "advanced",
           plugins : "autolink,lists,inlinepopups,paste",

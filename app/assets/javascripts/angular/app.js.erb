@@ -14,6 +14,8 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
     $rootScope.user = User;
     $rootScope.$watch('user.type', function (value) {
       $rootScope.isTeacher = (value === 'Teacher');
+      $rootScope.isGuardian = (value === 'Guardian');
+      $rootScope.isStudent = (value === 'Student');
     });
     $rootScope.dialogs = {};
   }]).
