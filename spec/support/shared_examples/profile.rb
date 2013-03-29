@@ -456,7 +456,7 @@ shared_examples_for "a profile" do
     end
 
     it "returns profiles with passed names" do
-      profile_class.names_are("first", "last").should == [@profile1, @profile2]
+      profile_class.names_are("first", "last").should =~ [@profile1, @profile2]
     end
 
     it "returns an empty array if no match was found" do
@@ -485,7 +485,7 @@ shared_examples_for "a profile" do
     end
 
     it "searches the last name" do
-      profile_class.search("Person").should =~ [@profile3]
+      profile_class.search("Person").should == [@profile3]
     end
 
     it "searches case insensitively" do
