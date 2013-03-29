@@ -8,7 +8,7 @@ class TeachersController < ApplicationController
 
   def all
     authorize! :read, Teacher
-    @teachers = Teacher.current
+    @teachers = Teacher.all
   end
 
   def show

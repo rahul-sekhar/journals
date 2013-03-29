@@ -4,7 +4,7 @@ class GuardiansController < ApplicationController
 
   def all
     authorize! :read, Guardian
-    @guardians = Guardian.all
+    @guardians = Guardian.includes(:students).all
   end
 
   def show

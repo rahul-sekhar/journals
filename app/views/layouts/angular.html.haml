@@ -11,18 +11,29 @@
     = csrf_meta_tags
 
   %body
-    %header#page-header
+    #page-wrapper
+      %header#page-header
+        .wrapper
+          %h1= link_to Rails.configuration.settings['app_full_name'], root_path
+          #user= render "general/user_menu"
+
       .wrapper
-        %h1= link_to Rails.configuration.settings['app_full_name'], root_path
-        #user= render "general/user_menu"
+        %navigation#page-navigation= render "general/navigation"
 
-    .wrapper
-      %navigation#page-navigation= render "general/navigation"
+        #main-content
+          .ng-view
 
-      #main-content
-        .ng-view
+      %div{ "ng-include"=>"'#{asset_path('change_password.html')}'" }
 
-    %div{ "ng-include"=>"'#{asset_path('change_password.html')}'" }
+      #notifications{ "ng-controller"=>"messageCtrl", "ng-class"=>"{shown: show}" }
+        %p{ "ng-class"=>"message.type" } {{message.text}}
 
-    #notifications{ "ng-controller"=>"messageCtrl", "ng-class"=>"{shown: show}" }
-      %p{ "ng-class"=>"message.type" } {{message.text}}
+      %footer#credit
+        .arrow
+        %a{ "href"=>"http://kairi.in", "target"=>"_blank" }
+          %p
+            Design:
+            %span.person Shalini Sekhar
+            %br
+            Development:
+            %span.person Rahul Sekhar
