@@ -5,6 +5,18 @@ angular.module('journals.posts.directives', ['journals.posts', 'journals.assets'
   factory('postLinkFn', ['$timeout', function ($timeout) {
     return function () {
       return function (scope, elem, attrs) {
+        scope.scrollToComments = function () {
+          var postContent, commentPos;
+
+          postContent = elem.find('.post-content');
+          commentPos = postContent.offset().top + postContent.prop('scrollHeight');
+
+          scope.expanded = true;
+          $('html, body').animate({
+             scrollTop: commentPos
+         }, 1000);
+        };
+
         // Expand on clicking a post
         elem.on('click', function (e) {
           if (!$(e.target).is('a, textarea')) {
@@ -39,37 +51,38 @@ angular.module('journals.posts.directives', ['journals.posts', 'journals.assets'
     };
   }]).
 
-  controller('PostCtrl', ['$scope', 'confirm', function ($scope, confirm) {
-    $scope.expanded = false;
-
-    $scope.compact = function () {
+  controller('PostCtrl', ['$scope', 'confirm', '$location', '$anchorScroll',
+    function ($scope, confirm, $location, $anchorScroll) {
       $scope.expanded = false;
-    };
 
-    $scope.expand = function () {
-      $scope.expanded = true;
-    };
+      $scope.compact = function () {
+        $scope.expanded = false;
+      };
 
-    $scope.newCommentContent = null;
+      $scope.expand = function () {
+        $scope.expanded = true;
+      };
 
-    $scope.addComment = function (content) {
-      var comment;
+      $scope.newCommentContent = null;
 
-      if (!content) {
-        return;
-      }
-      comment = $scope.post.newComment({content: content});
-      comment.save().
-        then(function () {
-          $scope.newComment = null;
-        });
-    };
+      $scope.addComment = function (content) {
+        var comment;
 
-    $scope.deleteComment = function (comment) {
-      var message = 'Are you sure you want to delete this comment?'
+        if (!content) {
+          return;
+        }
+        comment = $scope.post.newComment({content: content});
+        comment.save().
+          then(function () {
+            $scope.newComment = null;
+          });
+      };
 
-      if (confirm(message)) {
-        comment.delete();
-      }
-    };
-  }]);
+      $scope.deleteComment = function (comment) {
+        var message = 'Are you sure you want to delete this comment?'
+
+        if (confirm(message)) {
+          comment.delete();
+        }
+      };
+    }]);

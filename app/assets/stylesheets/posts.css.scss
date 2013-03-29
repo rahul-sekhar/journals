@@ -173,6 +173,13 @@ article.post {
       }
     }
 
+    .comments-link {
+      float: right;
+      font-size: 12px;
+      @include link-colors($dark-teal, lighten($dark-teal, 15));
+      font-weight: bold;
+    }
+
     .info {
       width: 175px;
       margin-right: 15px;
