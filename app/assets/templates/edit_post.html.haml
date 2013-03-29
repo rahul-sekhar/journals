@@ -49,7 +49,7 @@
         .container
           %filtered-list{ "list"=>"post.remainingTeachers()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addTeacher(value, true); hideMenus()" }
 
-  %ng-switch{ "on"=>"isTeacher" }
+  %ng-switch{ "on"=>"(post.author.type == 'Teacher') || (post.isNew() && isTeacher)" }
     .student-observations{ "ng-switch-when"=>"true", "ng-controller"=>"StudentObservationsCtrl", "ng-show"=>"post.students.length" }
       %p Individual student observations
 
@@ -58,6 +58,7 @@
           %a{ "href"=>"", "ng-click"=>"selectStudent(student)" }
             {{student.short_name}}
 
+      %label{ "for"=>"observation-editor" } Student Observation
       %textarea#observation-editor{ "ng-model"=>"post.observationContent[selectedStudent.id]", "tinymce"=>true, "observation-editor"=>true }
 
   %ng-switch{ "on"=>"isTeacher || isGuardian" }

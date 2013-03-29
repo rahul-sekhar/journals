@@ -45,6 +45,16 @@ When(/^I look at the (student|teacher) tags section$/) do |p_type|
 end
 
 
+# Student observations
+Then(/^I should see "(.*?)" in the student observation buttons$/) do |p_content|
+  page.find('#observation-buttons').should have_content p_content
+end
+
+When(/^I fill in the observation for "(.*?)" with "(.*?)"$/) do |p_name, p_text|
+  page.find('#observation-buttons').click_on p_name
+  step 'I fill in the "Student Observation" editor with "' + p_text +'"'
+end
+
 
 # Then /^that post should be destroyed$/ do
 #   Post.should_not exist(@post)
@@ -84,62 +94,3 @@ end
 
 
 
-# # Testing of the existence of specific posts
-# Then /^a minimal test post should exist$/ do
-#   @post = Post.where(title: "Test Post").first
-#   @post.should be_present
-
-#   Tag.find_by_name("Test posts").should be_present
-#   Tag.find_by_name("Minimal").should be_present
-
-#   @post.content.should == "<p>Some <em>HTML</em> content</p>"
-#   @post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
-#   @post.author.name.should == "Rahul Sekhar"
-# end
-
-# Then /^a post with student and teacher tags should exist$/ do
-#   @post = Post.where(title: "Tagged Post").first
-#   @post.should be_present
-
-#   @post.students.should =~ [ansh, sahana]
-#   @post.teachers.should =~ [Teacher.where(first_name:"Rahul").first, angela]
-# end
-
-# Then /^a post with permissions should exist$/ do
-#   @post = Post.where(title: "Permissions Post").first
-#   @post.should be_present
-
-#   @post.visible_to_guardians.should == true
-#   @post.visible_to_students.should == false
-# end
-
-# Then /^a student post with student and teacher tags should exist$/ do
-#   @post = Post.where(title: "Tagged Student Post").first
-#   @post.should be_present
-
-#   @post.students.should =~ [ansh, Student.where(first_name: "Rahul").first]
-#   @post.teachers.should =~ [angela]
-# end
-
-# Then /^a guardian post with student and teacher tags should exist$/ do
-#   @post = Post.where(title: "Tagged Guardian Post").first
-#   @post.should be_present
-
-#   @post.students.should =~ [ansh, Student.where(first_name: "Roly").first]
-#   @post.teachers.should =~ [angela]
-# end
-
-# Then /^a guardian post with permissions should exist$/ do
-#   @post = Post.where(title: "Guardian Permissions Post").first
-#   @post.should be_present
-
-#   @post.visible_to_guardians.should == true
-#   @post.visible_to_students.should == true
-# end
-
-# Then /^a guardian post with lucky should exist$/ do
-#   @post = Post.where(title: "Guardian Post with Lucky").first
-#   @post.should be_present
-
-#   @post.students.should == [Student.where(first_name: "Lucky").first]
-# end

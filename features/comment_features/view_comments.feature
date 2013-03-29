@@ -11,8 +11,8 @@ Scenario: View a post with no comments
   And a ".comments" block should not be present
 
 Scenario: View a post with comments
-  Given that post has a comment "First comment", dated "25/10/2012", posted by the student "Ansh"
-  And that post has a comment "Another comment", dated "28/11/2012", posted by the teacher "Aditya"
+  Given that post has a comment "First comment" dated "25/10/2012" by the student "Ansh"
+  And that post has a comment "Another comment" dated "28/11/2012" by the teacher "Aditya"
   And I am on the posts page
   Then I should see "Ice cream factory visit"
   And I should see "Comments"

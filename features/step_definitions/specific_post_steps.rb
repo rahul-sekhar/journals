@@ -18,20 +18,20 @@ Given /^a post about an ice cream factory visit with extended information exists
   )
 end
 
-# Given /^a (student|guardian) post about an ice cream factory visit with extended information exists$/ do |p_type|
-#   step 'a post about an ice cream factory visit with extended information exists'
+Given /^a (student|guardian) post about an ice cream factory visit with extended information exists$/ do |p_type|
+  step 'a post about an ice cream factory visit with extended information exists'
 
-#   @post.author = FactoryGirl.create(p_type)
-#   @post.initialize_tags
-#   @post.save!
-# end
+  @post.author = FactoryGirl.create(p_type)
+  @post.initialize_tags
+  @post.save!
+end
 
-# Given /^a post about an ice cream factory visit with student observations exists$/ do
-#   step 'a post about an ice cream factory visit with extended information exists'
+Given /^a post about an ice cream factory visit with student observations exists$/ do
+  step 'a post about an ice cream factory visit with extended information exists'
 
-#   @post.student_observations.create!(student_id: sahana.id, content: "Some observations about Sahana")
-#   @post.save!
-# end
+  @post.student_observations.create!(student_id: sahana.id, content: "Some observations about Sahana")
+  @post.save!
+end
 
 Given /^some base students and teachers exist$/ do
   shalini
@@ -42,21 +42,21 @@ Given /^some base students and teachers exist$/ do
 end
 
 def shalini
-  create_profile('teacher', 'Shalini Sekhar')
+  @shalini ||= create_profile('teacher', 'Shalini Sekhar')
 end
 
 def angela
-  create_profile('teacher', 'Angela Jain')
+  @angela ||= create_profile('teacher', 'Angela Jain')
 end
 
 def aditya
-  create_profile('teacher', 'Aditya Pandya')
+  @aditya ||= create_profile('teacher', 'Aditya Pandya')
 end
 
 def ansh
-  create_profile('student', 'Ansh Prasad')
+  @ansh ||= create_profile('student', 'Ansh Prasad')
 end
 
 def sahana
-  create_profile('student', 'Sahana Joshi')
+  @sahana ||= create_profile('student', 'Sahana Joshi')
 end
