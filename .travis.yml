@@ -6,6 +6,7 @@ script:
   - RAILS_ENV=test bundle exec rake db:migrate --trace
   - bundle exec rake db:test:prepare
   - bundle exec rake
+  - bundle exec rake cucumber
 
 before_script:
   - cp config/sensitive.travis.yml config/sensitive.yml
