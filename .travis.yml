@@ -9,4 +9,5 @@ script:
 
 before_script:
   - cp config/sensitive.travis.yml config/sensitive.yml
+  - cp db/migrate/20121130000000_prepare_tables.rb.travis db/migrate/20121130000000_prepare_tables.rb
   - psql -c 'create database journals_test' -U postgres
