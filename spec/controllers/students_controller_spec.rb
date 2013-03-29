@@ -93,11 +93,11 @@ describe StudentsController do
       assigns(:students).should =~ [student1, student2]
     end
 
-    it "does not assign archived students" do
+    it "assigns archived students" do
       student1 = create(:student)
       student2 = create(:student, archived: true)
       get :all, format: :json
-      assigns(:students).should == [student1]
+      assigns(:students).should =~ [student1, student2]
     end
   end
 

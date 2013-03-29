@@ -35,11 +35,11 @@ describe TeachersController do
       assigns(:people).should =~ [teacher1, teacher2]
     end
 
-    it "does not assign archived teachers" do
+    it "assigns archived teachers" do
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
       make_request
-      assigns(:people).should == [teacher1]
+      assigns(:people).should =~ [teacher1, teacher2]
     end
 
     it "sorts the teachers alphabetically" do

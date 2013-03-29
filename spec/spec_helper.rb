@@ -35,6 +35,10 @@ Spork.prefork do
     config.include RSpec::CapybaraExtensions, type: :view
   end
 
+  Journals::Application.configure do
+    config.handle_exceptions = false
+  end
+
   # Pre-loading for performance:
   require 'rspec/mocks'
   require 'rspec/expectations'
@@ -50,9 +54,9 @@ Spork.each_run do
 
   # Randomise RSpec seed
   RSpec.configuration.seed = srand && srand % 0xFFFF
-  
+
   FactoryGirl.reload
-  
+
   # Load support files
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 end

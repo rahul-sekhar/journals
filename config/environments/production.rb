@@ -79,4 +79,6 @@ Journals::Application.configure do
     :authentication       => 'plain',
     :enable_starttls_auto => true
   }
+
+  config.handle_exceptions = true
 end
