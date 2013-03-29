@@ -5,4 +5,3 @@
 //= require ./lib/angular/angular-sanitize
 //= require_tree ./angular
 //= require ./tinymce/jquery.tinymce.js
-//= require ./tinymce/tiny_mce.js
