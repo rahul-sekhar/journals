@@ -14,13 +14,13 @@ group :development do
   gem 'thin'
   gem 'capistrano'
   gem 'rvm-capistrano'
-  gem 'spork-rails'
 end
 
 group :test, :development do
   gem 'rspec-rails'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
+  gem 'spork-rails'
 end
 
 group :test do
