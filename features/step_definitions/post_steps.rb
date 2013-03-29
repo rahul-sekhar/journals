@@ -44,6 +44,38 @@ When(/^I look at the (student|teacher) tags section$/) do |p_type|
   @viewing = page.find(".people-tags .#{p_type}s")
 end
 
+Given /^a post titled "(.*?)" created by me exists$/ do |p_title|
+  @post = FactoryGirl.build(:post, title: p_title, author: @logged_in_user.profile)
+  @post.initialize_tags
+  @post.save!
+end
+
+Given /^a post titled "(.*?)" created by a (student|teacher|guardian) exists$/ do |p_title, p_type|
+  profile = FactoryGirl.create(p_type)
+  @post = FactoryGirl.build(:post, title: p_title, author: profile)
+  @post.initialize_tags
+  @post.save!
+end
+
+Given /^that post has the students? "(.*?)" tagged$/ do |p_student_names|
+  p_student_names.split(",").each do |student_name|
+    first_name, last_name = split_name(student_name)
+    student = Student.where(first_name: first_name, last_name: last_name).first
+
+    @post.students << student
+  end
+end
+
+Given /^that post is (visible|not visible) to guardians$/ do |p_visible|
+  @post.visible_to_guardians = (p_visible == "visible")
+  @post.save
+end
+
+Given /^that post is (visible|not visible) to students$/ do |p_visible|
+  @post.visible_to_students = (p_visible == "visible")
+  @post.save
+end
+
 
 # Student observations
 Then(/^I should see "(.*?)" in the student observation buttons$/) do |p_content|
@@ -54,43 +86,3 @@ When(/^I fill in the observation for "(.*?)" with "(.*?)"$/) do |p_name, p_text|
   page.find('#observation-buttons').click_on p_name
   step 'I fill in the "Student Observation" editor with "' + p_text +'"'
 end
-
-
-# Then /^that post should be destroyed$/ do
-#   Post.should_not exist(@post)
-# end
-
-# Given /^a post titled "(.*?)" created by me exists$/ do |p_title|
-#   @post = FactoryGirl.build(:post, title: p_title, author: @logged_in_user.profile)
-#   @post.initialize_tags
-#   @post.save!
-# end
-
-# Given /^a post titled "(.*?)" created by a (student|teacher|guardian) exists$/ do |p_title, p_type|
-#   profile = FactoryGirl.create(p_type)
-#   @post = FactoryGirl.build(:post, title: p_title, author: profile)
-#   @post.initialize_tags
-#   @post.save!
-# end
-
-# Given /^that post has the students? "(.*?)" tagged$/ do |p_student_names|
-#   p_student_names.split(",").each do |student_name|
-#     first_name, last_name = split_name(student_name)
-#     student = Student.where(first_name: first_name, last_name: last_name).first
-
-#     @post.students << student
-#   end
-# end
-
-# Given /^that post is (visible|not visible) to guardians$/ do |p_visible|
-#   @post.visible_to_guardians = (p_visible == "visible")
-#   @post.save
-# end
-
-# Given /^that post is (visible|not visible) to students$/ do |p_visible|
-#   @post.visible_to_students = (p_visible == "visible")
-#   @post.save
-# end
-
-
-

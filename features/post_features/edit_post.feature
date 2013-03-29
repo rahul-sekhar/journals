@@ -5,13 +5,14 @@ Background:
   Given a post about an ice cream factory visit with extended information exists
   And I have logged in as the teacher Rahul
 
+@current
 Scenario: Edit post
   Given I am on the page for that post
   And I look at the post "Ice cream factory visit"
   When I click "Edit post" in it
 
   Then I should be on the edit page for that post
-  And I should not see "Loading"
+  And I should see "Save post"
   And "Title" should be filled in with "Ice cream factory visit"
   And the "Content" editor should be filled in with "<p>The whole school went to the Daily Dairy factory for a visit. It was a very small factory and a quick quick quick visit...</p>"
   And "Tags" should be filled in with "icecream, visits"

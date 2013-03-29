@@ -14,6 +14,14 @@ Given /^that post has a comment "(.*?)" by the (student|teacher|guardian)$/ do |
   @comment.save!
 end
 
+When /^I fill in the comment editor with "(.*)"$/ do |p_text|
+  fill_input_inside(@viewing.find('.comment'), p_text)
+end
+
+Then /^the comment editor should be filled with "(.*)"$/ do |p_text|
+  @viewing.find('.comment .editor', visible: true).value.should eq(p_text)
+end
+
 # Given /^that post has a comment "(.*?)", posted by me$/ do |p_content|
 #   @comment = @post.comments.build(content: p_content)
 #   @comment.author = @logged_in_user.profile

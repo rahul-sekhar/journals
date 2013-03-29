@@ -73,6 +73,10 @@ When /^I click "(.*?)"$/ do |p_link|
   click_on p_link
 end
 
+When /^I click the (\S*) link$/ do |p_link|
+  page.find("a.#{p_link}").click
+end
+
 # Option steps
 Then /^I should see an option containing "(.*?)"$/ do |p_option|
   page.should have_field p_option, type: 'radio'
