@@ -1,3 +1,4 @@
+@current
 Feature: Post permissions for a student
 
 As a student, I can view and edit my own posts and view posts that I am tagged in.

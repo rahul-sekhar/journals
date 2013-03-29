@@ -35,10 +35,6 @@ Spork.prefork do
     config.include RSpec::CapybaraExtensions, type: :view
   end
 
-  Journals::Application.configure do
-    config.handle_exceptions = false
-  end
-
   # Pre-loading for performance:
   require 'rspec/mocks'
   require 'rspec/expectations'

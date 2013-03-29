@@ -5,4 +5,4 @@ journals-demo:
   db_username: postgres
   db_pass:
   email_pass: ...
-  secret_token: some-token
+  secret_token: VJEhgt1CT34k1fyrOg554yi362Woo1NoO56Gc614

@@ -1,7 +1,9 @@
 require 'rubygems'
 require 'spork'
- 
+
 Spork.prefork do
+  ENV['CUCUMBER'] ||= 'true'
+
   require 'cucumber/rails'
 
   require 'email_spec'
@@ -12,14 +14,9 @@ Spork.prefork do
   Capybara.default_selector = :css
   Capybara.default_driver = :poltergeist
 
-  # Before do
-  #   require 'headless'
-  #   headless = Headless.new
-  #   headless.start
-  # end
   Delayed::Worker.delay_jobs = false
 end
- 
+
 Spork.each_run do
   ActionController::Base.allow_rescue = false
   DatabaseCleaner.strategy = :truncation
