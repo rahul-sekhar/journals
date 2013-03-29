@@ -45,7 +45,7 @@ When(/^I look at the (student|teacher) tags section$/) do |p_type|
 end
 
 Given /^a post titled "(.*?)" created by me exists$/ do |p_title|
-  @post = FactoryGirl.build(:post, title: p_title, author: @logged_in_user.profile)
+  @post = FactoryGirl.build(:post, title: p_title, author: @profile)
   @post.initialize_tags
   @post.save!
 end
@@ -59,8 +59,7 @@ end
 
 Given /^that post has the students? "(.*?)" tagged$/ do |p_student_names|
   p_student_names.split(",").each do |student_name|
-    first_name, last_name = split_name(student_name)
-    student = Student.where(first_name: first_name, last_name: last_name).first
+    student = Student.where(first_name: student_name).first
 
     @post.students << student
   end

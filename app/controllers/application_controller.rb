@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
   before_filter :require_login, :intercept_html
   check_authorization
 
+  # Error handling
+  rescue_from Exception, with: lambda { |exception| render_error 500, exception }
+  rescue_from ActionController::RoutingError, ActionController::UnknownController, ::AbstractController::ActionNotFound, ActiveRecord::RecordNotFound, CanCan::AccessDenied, with: lambda { |exception| render_error 404, exception }
+
   def intercept_html
     render inline: "", layout: "angular" if request.format.html?
   end
@@ -72,5 +76,22 @@ class ApplicationController < ActionController::Base
       store_target_path
       redirect_to login_path
     end
+  end
+
+  def render_error(status, exception)
+    logger.fatal "ERROR #{status}:\n#{exception.to_yaml}"
+
+    if status == 404
+      respond_to do |format|
+        format.html { render template: "errors/not_found", layout: 'layouts/error', status: status }
+        format.json{ render text: "Page not found", status: :not_found }
+      end
+    else
+      respond_to do |format|
+        format.html { render template: "errors/internal error", layout: 'layouts/error', status: status }
+        format.json{ render text: "Internal error", status: :internal_server_error }
+      end
+    end
+
   end
 end

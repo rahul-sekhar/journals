@@ -8,4 +8,11 @@ class ErrorsController < ApplicationController
       format.html{ render layout: "error" }
     end
   end
+
+  def internal_error
+    respond_to do |format|
+      format.json{ render text: "Internal error", status: :internal_server_error }
+      format.html{ render layout: "error" }
+    end
+  end
 end

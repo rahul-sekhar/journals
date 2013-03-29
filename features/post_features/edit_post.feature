@@ -5,7 +5,7 @@ Background:
   Given a post about an ice cream factory visit with extended information exists
   And I have logged in as the teacher Rahul
 
-@current
+
 Scenario: Edit post
   Given I am on the page for that post
   And I look at the post "Ice cream factory visit"

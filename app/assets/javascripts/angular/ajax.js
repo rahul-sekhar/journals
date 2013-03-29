@@ -10,7 +10,7 @@ angular.module('journals.ajax', ['journals.messageHandler']).
         data: null,
         params: null,
         notification: 'Done',
-        error: 'An error occured - please contact us if this problem persists',
+        error: 'An error occurred - please contact a school administrator if the problem persists',
         addExtension: true
       };
       options = angular.extend(defaults, options);

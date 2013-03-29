@@ -149,7 +149,7 @@ end
 
 
 
-# # Exception testing steps
+# Exception testing steps
 # Then /^I should get a forbidden message when (.*)$/ do |p_step|
 #   expect{ step p_step }.to raise_exception(CanCan::AccessDenied)
 # end

@@ -1,4 +1,4 @@
-
+@angular
 Feature: Post permissions for a teacher
 
 As a teacher, I can view and edit any post
