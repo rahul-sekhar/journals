@@ -1,4 +1,3 @@
-@angular
 Feature: Add comments to a post
 
 Background:

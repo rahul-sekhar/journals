@@ -1,4 +1,3 @@
-@angular
 Feature: Profile permissions for a guardian
 
 As a guardian, I can view any profile and edit my own as well as my students and co-guardians.

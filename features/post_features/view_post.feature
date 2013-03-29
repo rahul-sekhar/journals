@@ -1,4 +1,3 @@
-@angular
 Feature: View a post
 
 As a user I should be able to view a post and see all its relevant data

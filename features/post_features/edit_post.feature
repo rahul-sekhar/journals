@@ -1,4 +1,3 @@
-@angular
 Feature: Edit a post
 
 Background:

@@ -1,4 +1,3 @@
-@angular
 Feature: Change password
 
 As a user I should be able to change my password

@@ -1,4 +1,3 @@
-@angular
 Feature: View groups through the people filters
 
 Background:

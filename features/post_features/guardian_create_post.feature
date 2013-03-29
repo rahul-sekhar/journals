@@ -1,4 +1,3 @@
-@angular
 Feature: Create a post as a guardian
 
 Guardians should be able to create posts and set only student permissions on the post. They should have all their students tagged initially, and must save the post with at least one tagged.

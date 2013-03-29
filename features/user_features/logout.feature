@@ -1,4 +1,3 @@
-@angular
 Feature: Logout from the site
 
 As a user I want to be able to log out once I have logged in so that other people cannot access the website with my username

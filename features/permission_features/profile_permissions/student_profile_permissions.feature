@@ -1,4 +1,3 @@
-@angular
 Feature: Profile permissions for a student
 
 As a student, I can view any profile and edit my own.

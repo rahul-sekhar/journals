@@ -12,7 +12,7 @@ Given /^a guardian Rahul exists$/ do
 end
 
 Given /^I have a student "(.*?)"$/ do |p_name|
-  @profile.students.create!(name: p_name)
+  @logged_in_profile.students.create!(name: p_name)
 end
 
 Given /^an?( archived)? (teacher|student) "(.*?)" exists$/ do |p_archived, p_type, p_name|

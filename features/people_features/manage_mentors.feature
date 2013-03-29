@@ -1,4 +1,3 @@
-@angular
 Feature: Manage mentors and mentees
 
 Teachers can view and manage mentors and mentees

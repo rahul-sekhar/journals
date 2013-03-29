@@ -1,4 +1,3 @@
-@angular
 Feature: Edit a profile
 I should be able to edit a student, guardian or teacher's profile
 

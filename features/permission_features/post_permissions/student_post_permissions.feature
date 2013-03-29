@@ -1,4 +1,3 @@
-@angular
 Feature: Post permissions for a student
 
 As a student, I can view and edit my own posts and view posts that I am tagged in.
@@ -44,3 +43,26 @@ Scenario: A post created by someone else that I am tagged in, that is invisible 
   Then I should see "Post not found"
   When I go to the edit page for that post
   Then I should see "Post not found"
+
+
+Scenario: View posts page
+  Given a student "Jumble Dog" exists
+  And a post titled "My post" created by me exists
+  And a post titled "Untagged post" created by a teacher exists
+  And that post is visible to students
+  And a post titled "Other tagged post" created by a teacher exists
+  And that post has the student "Jumble" tagged
+  And that post is visible to students
+  And a post titled "Tagged post" created by a teacher exists
+  And that post has the student "Rahul" tagged
+  And that post is visible to students
+  And a post titled "Tagged invisible post" created by a teacher exists
+  And that post has the student "Rahul" tagged
+  And that post is not visible to students
+
+  When I am on the posts page
+  Then I should see the post "My post"
+  And I should see the post "Tagged post"
+  And I should not see the post "Untagged post"
+  And I should not see the post "Other tagged post"
+  And I should not see the post "Tagged invisible post"

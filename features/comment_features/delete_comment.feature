@@ -1,4 +1,3 @@
-@angular
 Feature: Delete a comment
 
 Scenario: Delete a comment

@@ -45,7 +45,7 @@ When(/^I look at the (student|teacher) tags section$/) do |p_type|
 end
 
 Given /^a post titled "(.*?)" created by me exists$/ do |p_title|
-  @post = FactoryGirl.build(:post, title: p_title, author: @profile)
+  @post = FactoryGirl.build(:post, title: p_title, author: @logged_in_profile)
   @post.initialize_tags
   @post.save!
 end

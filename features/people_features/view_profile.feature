@@ -1,4 +1,3 @@
-@angular
 Feature: View a profile
 
 I should be able to view a student, guardian or teacher's profile and see all stored information about them. I should be able to reach the profile by clicking on their name anywhere else on the site (for example if they authored a post)

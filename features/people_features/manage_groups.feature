@@ -1,4 +1,3 @@
-@angular
 Feature: Manage groups and their students
 
 Teachers can view and manage the groups for all students.

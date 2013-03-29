@@ -77,6 +77,14 @@ When /^I click the (\S*) link$/ do |p_link|
   page.find("a.#{p_link}").click
 end
 
+Then /^I should see a (\S*) link$/ do |p_link|
+  page.should have_css("a.#{p_link}", visible: true)
+end
+
+Then /^I should not see a (\S*) link$/ do |p_link|
+  page.should have_no_css("a.#{p_link}", visible: true)
+end
+
 # Option steps
 Then /^I should see an option containing "(.*?)"$/ do |p_option|
   page.should have_field p_option, type: 'radio'

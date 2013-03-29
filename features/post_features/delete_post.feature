@@ -1,4 +1,3 @@
-@angular
 Feature: Delete a post
 
 Scenario: Delete a post

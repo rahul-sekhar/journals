@@ -1,4 +1,3 @@
-@angular
 Feature: View comments for a post with them
 
 Background:

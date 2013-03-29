@@ -1,4 +1,3 @@
-@angular
 Feature: Create a post as a student
 
 Students should be allowed to create posts but not set permissions, and cannot remove their own tag from the post

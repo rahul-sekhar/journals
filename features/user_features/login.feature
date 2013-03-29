@@ -1,4 +1,3 @@
-@angular
 Feature: Login to the site
 
 As a user I want to access the site by logging in and I want to be redirected to the page I intended to visit after I have logged in

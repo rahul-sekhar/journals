@@ -1,4 +1,3 @@
-@angular
 Feature: View students and teachers and filter them
 
 View various categories of people and filter them by their names.

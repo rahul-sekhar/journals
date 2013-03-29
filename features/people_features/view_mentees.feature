@@ -1,4 +1,3 @@
-@angular
 Feature: View mentees
 
 A teacher can view their own mentees by going to the mentees page. Students and Guardians should not be able to access this page
