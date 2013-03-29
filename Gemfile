@@ -4,7 +4,6 @@ gem 'rails', '3.2.13'
 
 group :assets do
   gem 'sass-rails'
-  gem 'coffee-rails'
   gem 'uglifier'
   gem 'compass-rails'
 end
@@ -15,13 +14,13 @@ group :development do
   gem 'thin'
   gem 'capistrano'
   gem 'rvm-capistrano'
+  gem 'spork-rails'
 end
 
 group :test, :development do
   gem 'rspec-rails'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
-  gem 'spork-rails'
 end
 
 group :test do

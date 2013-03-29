@@ -4,10 +4,10 @@ rvm:
 bundler_args: --without development
 
 script:
-  - RAILS_ENV=test bundle exec rake db:migrate --trace
+  - RAILS_ENV=test bundle exec rake db:migrate --trace --quiet
   - bundle exec rake db:test:prepare
   - bundle exec rake
-  - bundle exec rake cucumber
+  - CUCUMBER_FORMAT=progress bundle exec rake cucumber
 
 before_script:
   - cp config/sensitive.travis.yml config/sensitive.yml

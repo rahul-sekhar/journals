@@ -39,7 +39,7 @@ describe TeachersController do
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
       make_request
-      assigns(:teachers).should == [teacher1]
+      assigns(:people).should == [teacher1]
     end
 
     it "sorts the teachers alphabetically" do
@@ -103,7 +103,7 @@ describe TeachersController do
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
       make_request
-      assigns(:people).should =~ [teacher1, teacher2]
+      assigns(:teachers).should =~ [teacher1, teacher2]
     end
   end
 
