@@ -2,6 +2,11 @@ language: ruby
 rvm:
   - 1.9.3
 
+script:
+  - RAILS_ENV=test bundle exec rake db:migrate --trace
+  - bundle exec rake db:test:prepare
+  - bundle exec rake
+
 before_script:
   - cp config/sensitive.travis.yml config/sensitive.yml
   - psql -c 'create database journals_test' -U postgres
