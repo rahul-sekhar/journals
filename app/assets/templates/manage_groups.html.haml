@@ -2,9 +2,9 @@
   %div{ "ng-controller"=>"GroupsCtrl" }
     %h3 Manage groups
     %ul{ "ng-show"=>"(groups | filterDeleted).length" }
-      %li{ "ng-repeat"=>"group in groups", "ng-hide"=>"group.deleted", "ng-controller"=>"EditObjectCtrl" }
+      %li{ "ng-repeat"=>"group in groups | orderBy:['-isNew()', 'name']", "ng-hide"=>"group.deleted", "ng-controller"=>"EditObjectCtrl" }
         %p{ "edit-in-place"=>true, "instance"=>"group", "field"=>"name", "edit-mode"=>"editing.name" }
-        %a.delete{ "href"=>"", "ng-click"=>"group.delete()", "ng-show"=>"group.id" }
+        %a.delete{ "href"=>"", "ng-click"=>"delete(group)", "ng-show"=>"group.id" }
     %p{ "ng-hide"=>"(groups | filterDeleted).length" }
       There are no groups yet.
     %a.add{ "href"=>"", "ng-click"=>"add()" } Add group

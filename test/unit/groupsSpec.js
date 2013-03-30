@@ -38,10 +38,11 @@ describe('Groups module', function() {
 
   /*---------- Groups controller --------------------*/
   describe('GroupsCtrl', function() {
-    var scope, ctrl, Groups, timeout;
+    var scope, ctrl, Groups, timeout, confirm;
 
-    beforeEach(inject(function($rootScope, $controller, $injector, $timeout) {
+    beforeEach(inject(function($rootScope, $controller, $injector, $timeout, _confirm_) {
       timeout = $timeout;
+      confirm = _confirm_;
 
       Groups = { all: jasmine.createSpy('Groups.all').
         andReturn([{id: 1, name: 'One'}, {id: 3, name: 'Three'}]) };
@@ -67,6 +68,35 @@ describe('Groups module', function() {
 
       it('sets _edit to name for the new object', function() {
         expect(Groups.add).toHaveBeenCalledWith({ _edit: 'name' });
+      });
+    });
+
+    describe('delete(group)', function () {
+      var group;
+
+      beforeEach(function() {
+        group = { delete: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.delete(group)
+        });
+
+        it('sends a delete message to the group', function () {
+          expect(group.delete).toHaveBeenCalled();
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.delete(group)
+        });
+
+        it('does not send a delete message to the group', function () {
+          expect(group.delete).not.toHaveBeenCalled();
+        });
       });
     });
   });

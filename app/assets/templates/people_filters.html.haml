@@ -27,5 +27,5 @@
       %a{href: "/people/archived"} Archived students and teachers
 
     %li.divider{"ng-show"=>"groups.length"}
-    %li{"ng-repeat"=>"group in groups", "ng-hide"=>"filterName == group.name"}
+    %li{"ng-repeat"=>"group in groups | filterDeleted | orderBy:['name']", "ng-hide"=>"filterName == group.name"}
       %a{ "ng-href" => "/groups/{{group.id}}", "href"=>"" } {{group.name}}
