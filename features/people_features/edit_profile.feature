@@ -151,8 +151,8 @@ Scenario: Add fields for a student
   When I add the date field "Birthday" with "11-07-2001"
   Then I should see the field "Birthday" with "11-07-2001 (11 yrs)"
 
-  When I clear the field "Blood group"
-  Then the add-field menu should have the option "Blood group"
+  When I clear the field "Blood Group"
+  Then the add-field menu should have the option "Blood Group"
 
   When I am on the page for that profile
   And I look at the profile for "Parvathy Manjunath"
