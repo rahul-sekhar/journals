@@ -18,12 +18,12 @@
   %h3 {{post.title}}
 
   .post-content{ "watch-height"=>true, "expanded"=>"expanded" }
-    .content{ "ng-bind-html"=>"post.content" }
+    .content{ "ng-bind-html-unsafe"=>"post.content" }
 
     .student-observations{ "ng-show"=>"post.student_observations.length" }
       %section{ "ng-repeat"=>"observation in post.student_observations" }
         %h4 {{observation.student.name}}
-        .observation-content{ "ng-bind-html"=>"observation.content" }
+        .observation-content{ "ng-bind-html-unsafe"=>"observation.content" }
 
   .comments{ "watch-height"=>true, "expanded"=>"expanded" }
     %h4 Comments

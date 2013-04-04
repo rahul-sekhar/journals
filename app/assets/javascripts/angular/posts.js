@@ -112,6 +112,13 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
             });
         }
       };
+
+      $scope.$on('imageUploaded', function (event, imageData) {
+        if (!$scope.post.image_ids) {
+          $scope.post.image_ids = [];
+        }
+        $scope.post.image_ids.push(imageData.id);
+      });
     }]).
 
   controller('StudentObservationsCtrl', ['$scope', 'orderByFilter', '$timeout',

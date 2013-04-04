@@ -1,3 +1,4 @@
+@current
 Feature: Add profiles
 
 Students, teachers and guardians are added by entering their first and last name.
@@ -22,8 +23,35 @@ Scenario: Add a student
   And I add the student "Johnny"
   Then I should see a profile for "Johnny"
 
-  When I go to the students page
+  When I go to the people page
   Then I should see a profile for "Johnny"
+
+
+Scenario: Add a teacher with a filter selected
+  When I am on the people page
+  And I search for "something"
+  Then I should not see a profile for "Rahul Sekhar"
+  And I should not see "Loading"
+
+  When I add the teacher "Blah Blah"
+  Then I should see "Done"
+  And I should see a profile for "Blah Blah"
+  And I should see a profile for "Rahul Sekhar"
+  And the viewing menu should have "Students and teachers" selected
+  And "search" should be filled in with ""
+
+Scenario: Add a student with a filter selected
+  When I am on the people page
+  And I select "Your mentees" from the viewing menu
+  Then I should not see a profile for "Rahul Sekhar"
+  And I should not see "Loading"
+
+  When I add the student "Gayatri"
+  Then I should see "Done"
+  And I should see a profile for "Gayatri"
+  And I should see a profile for "Rahul Sekhar"
+  And the viewing menu should have "Students and teachers" selected
+  And "search" should be filled in with ""
 
 
 Scenario: Add a guardian
@@ -35,7 +63,7 @@ Scenario: Add a guardian
   Then I should see the guardian "William Tell"
   And I should see "Done"
 
-  When I go to the students page
+  When I go to the people page
   And I look at the profile for "Parvathy Manjunath"
   Then I should see the guardian "William Tell"
 

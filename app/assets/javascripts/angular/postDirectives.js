@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('journals.posts.directives', ['journals.posts', 'journals.assets', 'journals.confirm']).
+angular.module('journals.posts.directives', ['journals.posts', 'journals.assets', 'journals.confirm', 'journals.tinymce']).
 
   factory('postLinkFn', ['$timeout', function ($timeout) {
     return function () {
@@ -85,4 +85,27 @@ angular.module('journals.posts.directives', ['journals.posts', 'journals.assets'
           comment.delete();
         }
       };
-    }]);
+    }]).
+
+  directive('observationEditor', [function () {
+    return function(scope, elem, attrs) {
+      var checkHeightFn, obsIframe, buttonList;
+
+      // get elements on editor initialization
+      elem.on('editorInit', function () {
+        obsIframe = elem.parent().find('#' + elem.attr('id') + '_ifr');
+        buttonList = elem.parent().find('#observation-buttons');
+        checkHeightFn();
+      });
+
+      // Change the height to equal the button list height
+      checkHeightFn = function () {
+        if (obsIframe && ( buttonList.outerHeight() + 10) > obsIframe.outerHeight()) {
+          obsIframe[0].style.height = buttonList.outerHeight() + 10 + 'px';
+        }
+      }
+
+      // check height on a check height event
+      scope.$on('checkHeight', checkHeightFn);
+    };
+  }]);

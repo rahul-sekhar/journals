@@ -64,43 +64,13 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
         reloadOnSearch: false
       }).
 
-      when('/people/archived', {
-        templateUrl: '<%= asset_path("people.html") %>',
-        controller: 'ArchivedPeopleCtrl',
-        reloadOnSearch: false
-      }).
-
-      when('/teachers', {
-        templateUrl: '<%= asset_path("people.html") %>',
-        controller: 'TeachersCtrl',
-        reloadOnSearch: false
-      }).
-
       when('/teachers/:id', profileParams).
-
-      when('/students', {
-        templateUrl: '<%= asset_path("people.html") %>',
-        controller: 'StudentsCtrl',
-        reloadOnSearch: false
-      }).
 
       when('/students/:id', profileParams).
 
       when('/guardians/:id', profileParams).
 
       when('/guardians', {redirectTo: '/page-not-found'}).
-
-      when('/mentees', {
-        templateUrl: '<%= asset_path("people.html") %>',
-        controller: 'MenteesCtrl',
-        reloadOnSearch: false
-      }).
-
-      when('/groups/:id', {
-        templateUrl: '<%= asset_path("people.html") %>',
-        controller: 'GroupsPageCtrl',
-        reloadOnSearch: false
-      }).
 
       when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
 

@@ -6,8 +6,6 @@ Journals::Application.routes.draw do
   get "logout" => "sessions#destroy"
 
   get "people" => "pages#people"
-  get "people/archived" => "pages#archived", as: "archived_people"
-  get "mentees" => "pages#mentees"
   put "change_password" => "pages#update_password"
 
   get "user" => "pages#user"
@@ -15,6 +13,8 @@ Journals::Application.routes.draw do
   resources :posts do
     resources :comments, only: [:create, :update, :destroy]
   end
+
+  resources :images, only: [:create]
 
   resources :students, except: [:new, :edit] do
     resources :guardians, only: [:create, :destroy] do
@@ -31,10 +31,6 @@ Journals::Application.routes.draw do
       post "mentors/:teacher_id", action: "add_mentor"
       delete "mentors/:teacher_id", action: "remove_mentor"
     end
-
-    collection do
-      get :all
-    end
   end
 
   resources :teachers, except: [:new, :edit] do
@@ -44,23 +40,15 @@ Journals::Application.routes.draw do
       post "mentees/:student_id", action: "add_mentee"
       delete "mentees/:student_id", action: "remove_mentee"
     end
-
-    collection do
-      get :all
-    end
   end
 
-  resources :guardians, only: [:show, :update] do
+  resources :guardians, only: [:index, :show, :update] do
     member do
       post :reset
     end
-
-    collection do
-      get :all
-    end
   end
 
-  resources :groups, except: [:new, :edit]
+  resources :groups, except: [:new, :edit, :show]
 
   match "*not_found", :to => "errors#not_found"
 end

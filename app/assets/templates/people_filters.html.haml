@@ -1,12 +1,12 @@
-%input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch(search)", "autocomplete"=>"off"}
+%input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"filters.search", "on-type"=>"doSearch(filters.search)", "autocomplete"=>"off"}
 
 .add.click-menu{ "ng-show"=>"isTeacher" }
   %a.title{ href: "" } Add
   %ul.container
     %li
-      %a{ "href"=>"", "ng-show"=>"canAddTeacher", "ng-click"=>"addTeacher()" } Add teacher
+      %a{ "href"=>"", "ng-click"=>"addTeacher()" } Add teacher
     %li
-      %a{ "href"=>"", "ng-show"=>"canAddStudent", "ng-click"=>"addStudent()" } Add student
+      %a{ "href"=>"", "ng-click"=>"addStudent()" } Add student
     %li
       %a{ "href"=>"", "ng-click"=>"showGroupsDialog()" } Manage groups
 
@@ -15,17 +15,17 @@
   %a.title{ href: "" } {{filterName}}
 
   %ul.container
-    %li{"ng-hide" => "filterName == 'Students and teachers'"}
-      %a{href: "/people"} Students and teachers
-    %li{"ng-hide" => "filterName == 'Students'"}
-      %a{href: "/students"} Students
-    %li{"ng-hide" => "filterName == 'Teachers'"}
-      %a{href: "/teachers"} Teachers
-    %li{"ng-hide" => "(filterName == 'Your mentees') || (!isTeacher)"}
-      %a{href: "/mentees"} Your mentees
-    %li{"ng-hide" => "filterName == 'Archived students and teachers'"}
-      %a{href: "/people/archived"} Archived students and teachers
+    %li{"ng-hide" => "!filters.filter"}
+      %a{ "href"=>"", "ng-click"=>"applyFilter(null)" } Students and teachers
+    %li{"ng-hide" => "filters.filter == 'students'" }
+      %a{ "href"=>"", "ng-click"=>"applyFilter('students')" } Students
+    %li{"ng-hide" => "filters.filter == 'teachers'" }
+      %a{ "href"=>"", "ng-click"=>"applyFilter('teachers')" } Teachers
+    %li{ "ng-hide" => "(filters.filter == 'mentees') || (!isTeacher)" }
+      %a{ "href"=>"", "ng-click"=>"applyFilter('mentees')" } Your mentees
+    %li{"ng-hide" => "filters.filter == 'archived'"}
+      %a{ "href"=>"", "ng-click"=>"applyFilter('archived')" } Archived students and teachers
 
     %li.divider{"ng-show"=>"groups.length"}
-    %li{"ng-repeat"=>"group in groups | filterDeleted | orderBy:['name']", "ng-hide"=>"filterName == group.name"}
-      %a{ "ng-href" => "/groups/{{group.id}}", "href"=>"" } {{group.name}}
+    %li{"ng-repeat"=>"group in groups | filterDeleted | orderBy:['name']", "ng-hide"=>"filters.filter == 'group-' + group.id"}
+      %a{ "href"=>"", "ng-click"=>"applyFilter('group-' + group.id)" } {{group.name}}

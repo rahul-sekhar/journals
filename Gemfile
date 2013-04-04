@@ -47,3 +47,5 @@ gem 'schema_plus'
 gem 'aws-s3'
 gem 'whenever', require: false
 gem 'sanitize'
+gem 'rmagick'
+gem 'carrierwave'

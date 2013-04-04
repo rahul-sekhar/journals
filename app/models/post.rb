@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students, :student_observations_attributes
+  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students, :student_observations_attributes, :image_ids
 
   before_save :check_permissions
   before_validation :check_student_observations, :check_self_tag, :sanitize_content
@@ -10,6 +10,7 @@ class Post < ActiveRecord::Base
   has_and_belongs_to_many :students, uniq: true
   has_many :comments, dependent: :destroy, order: :created_at
   has_many :student_observations, inverse_of: :post, dependent: :destroy
+  has_many :images, dependent: :destroy
 
   accepts_nested_attributes_for :student_observations
 

@@ -12,39 +12,6 @@ describe GroupsController do
     ability.can :manage, Group
   end
 
-  describe "GET show" do
-    let(:group){ create(:group) }
-    let(:make_request) { get :show, id: group.id, format: :json }
-
-    before do
-      @student1 = create(:student, last_name: "Jim")
-      @student2 = create(:student, last_name: "John")
-      @student3 = create(:student, last_name: "Janet")
-      group.students = [@student1, @student3]
-    end
-
-    it "raises an exception if the user cannot read the group" do
-      ability.cannot :read, group
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
-
-    it "assigns the found groups students alphabetically" do
-      make_request
-      assigns(:people).should =~ [@student3, @student1]
-    end
-
-    it "searches for a particular name with the search parameter present" do
-      get :show, id: group.id, search: "Jan", format: :json
-      assigns(:people).should == [@student3]
-    end
-  end
-
-
   describe "GET index" do
     it "has a status of 200" do
       get :index, format: :json

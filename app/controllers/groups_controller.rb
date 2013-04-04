@@ -5,10 +5,6 @@ class GroupsController < ApplicationController
     @groups = @groups.alphabetical
   end
 
-  def show
-    filter_and_display_people(@group.students)
-  end
-
   def create
     if @group.save
       render "show_short"

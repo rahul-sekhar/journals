@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('journals.people', ['journals.people.models', 'journals.people.directives', 'journals.confirm']).
+angular.module('journals.people', ['journals.people.models', 'journals.people.directives', 'journals.confirm',
+  'journals.searchFilters']).
 
   /*--------- People base controller ---------*/
 
@@ -83,183 +84,125 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
           profile.removeGuardian(guardian);
         }
       };
-
-      // Handle parameter changes
-      $scope.$on("$routeUpdate", function () {
-        $scope.load();
-      });
-
-      // Initial load
-      $scope.load();
     };
   }]).
-
-  /*--------- Service to load a people collection -------- */
-
-  factory('peopleCollectionMixin', ['peopleInterface', '$location', 'Groups',
-    function (peopleInterface, $location, Groups) {
-      return function ($scope) {
-        $scope.load = function () {
-          peopleInterface.load($location.url()).
-            then(function (data) {
-              $scope.people = data.people;
-              $scope.totalPages = data.metadata.total_pages;
-              $scope.currentPage = data.metadata.current_page;
-            });
-        };
-
-        $scope.search = $location.search().search;
-
-        $scope.doSearch = function (value) {
-          $location.search('search', value).
-            search('page', null).
-            replace();
-        };
-
-        $scope.groups = Groups.all();
-
-        $scope.showGroupsDialog = function() {
-          $scope.dialogs.manageGroups = true;
-        };
-
-        // Handle adding profiles
-        $scope.addTeacher = function() {
-          var teacher = peopleInterface.addTeacher({ _edit: 'name' });
-          $scope.people.unshift(teacher);
-        };
-
-        $scope.addStudent = function() {
-          var student = peopleInterface.addStudent({ _edit: 'name' });
-          $scope.people.unshift(student);
-        };
-      };
-    }]).
-
-
-  /*--------- Service to load a profile -------- */
-
-  factory('loadProfile', ['peopleInterface', '$location',
-    function (peopleInterface, $location) {
-      return function ($scope) {
-        $scope.load = function () {
-          peopleInterface.loadProfile($location.url()).
-            then(function (data) {
-              $scope.people = data.people;
-              $scope.pageTitle = 'Profile: ' + data.name;
-            }, function () {
-              $scope.people = [];
-              $scope.pageTitle = 'Profile: Not found';
-            });
-        };
-      };
-    }]).
 
 
   /*-------- Profile controller -----------*/
 
-  controller('ProfileCtrl', ['$scope', 'peopleBaseCtrl', 'loadProfile',
-    function ($scope, peopleBaseCtrl, loadProfile) {
+  controller('ProfileCtrl', ['$scope', 'peopleBaseCtrl', 'peopleInterface', '$location',
+    function ($scope, peopleBaseCtrl, peopleInterface, $location) {
       $scope.pageTitle = 'Profile';
       $scope.profile = true;
 
-      loadProfile($scope);
+      peopleInterface.loadProfile($location.url()).
+        then(function (data) {
+          $scope.people = data.people;
+          $scope.pageTitle = 'Profile: ' + data.name;
+        }, function () {
+          $scope.people = [];
+          $scope.pageTitle = 'Profile: Not found';
+        });
+
       peopleBaseCtrl($scope);
     }]).
 
 
   /*--------- People page ---------*/
 
-  controller('PeopleCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
-    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
+  controller('PeopleCtrl', ['$scope', 'peopleBaseCtrl', '$location', 'Groups', 'peopleInterface', 'searchFilters',
+    function ($scope, peopleBaseCtrl, $location, Groups, peopleInterface, searchFilters) {
+      var loadFn, searchFiltersObj;
+
       $scope.pageTitle = 'People';
-      $scope.canAddStudent = true;
-      $scope.canAddTeacher = true;
-      $scope.filterName = 'Students and teachers';
+      $scope.filters = {};
 
-      peopleCollectionMixin($scope);
-      peopleBaseCtrl($scope);
-    }]).
+      loadFn = function () {
+        peopleInterface.load($location.url()).
+          then(function (data) {
+            $scope.people = data.people;
+            $scope.totalPages = data.metadata.total_pages;
+            $scope.currentPage = data.metadata.current_page;
 
+            $scope.$broadcast('peopleLoaded');
+          });
 
-  /*--------- Archived people page ---------*/
+        angular.extend($scope.filters, searchFiltersObj.getCurrentValues());
+      };
 
-  controller('ArchivedPeopleCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
-    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
-      $scope.pageTitle = 'Archive';
-      $scope.canAddStudent = false;
-      $scope.canAddTeacher = false;
-      $scope.filterName = 'Archived students and teachers';
+      searchFiltersObj = searchFilters('search', 'filter');
 
-      peopleCollectionMixin($scope);
-      peopleBaseCtrl($scope);
-    }]).
+      $scope.doSearch = function (value) {
+        searchFiltersObj.filter('search', value);
+      };
 
+      $scope.applyFilter = function (value) {
+        $scope.filters.filter = value;
+        searchFiltersObj.filter('filter', value);
+      };
 
-  /*--------- Teachers page ---------*/
+      $scope.$watch('filters.filter', function (filterVal) {
+        if (filterVal === 'archived') {
+          $scope.filterName = 'Archived students and teachers';
+        } else if (filterVal === 'students') {
+          $scope.filterName = 'Students';
+        } else if (filterVal === 'teachers') {
+          $scope.filterName = 'Teachers';
+        } else if (filterVal === 'mentees') {
+          $scope.filterName = 'Your mentees';
+        } else if (String(filterVal).substr(0, 6) === 'group-') {
+          var id = parseInt(filterVal.substr(6), 10);
+          Groups.get(id).
+            then(function (group) {
+              $scope.filterName = group.name;
+            });
+          $scope.filterName = '';
+        }
+        else {
+          $scope.filterName = 'Students and teachers';
+        }
+      });
 
-  controller('TeachersCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
-    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
-      $scope.pageTitle = 'Teachers';
-      $scope.canAddStudent = false;
-      $scope.canAddTeacher = true;
-      $scope.filterName = 'Teachers';
+      $scope.groups = Groups.all();
 
-      peopleCollectionMixin($scope);
-      peopleBaseCtrl($scope);
-    }]).
+      $scope.showGroupsDialog = function() {
+        $scope.dialogs.manageGroups = true;
+      };
 
+      function clearFiltersAndDo(afterFn) {
+        if (Object.keys($location.search()).length === 0) {
+          afterFn();
+        } else {
+          var unbind = $scope.$on('peopleLoaded', function () {
+            unbind();
+            afterFn();
+          });
+          $location.search({}).replace();
+        }
+      }
 
-  /*--------- Students page ---------*/
-
-  controller('StudentsCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
-    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
-      $scope.pageTitle = 'Students';
-      $scope.canAddStudent = true;
-      $scope.canAddTeacher = false;
-      $scope.filterName = 'Students';
-
-      peopleCollectionMixin($scope);
-      peopleBaseCtrl($scope);
-    }]).
-
-
-  /*--------- Mentees page ---------*/
-
-  controller('MenteesCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin',
-    function ($scope, peopleBaseCtrl, peopleCollectionMixin) {
-      $scope.pageTitle = 'Mentees';
-      $scope.canAddStudent = false;
-      $scope.canAddTeacher = false;
-      $scope.filterName = 'Your mentees';
-
-      peopleCollectionMixin($scope);
-      peopleBaseCtrl($scope);
-    }]).
-
-
-   /*--------- Groups page ---------*/
-
-  controller('GroupsPageCtrl', ['$scope', 'peopleBaseCtrl', 'peopleCollectionMixin', 'Groups', '$routeParams',
-    function ($scope, peopleBaseCtrl, peopleCollectionMixin, Groups, $routeParams) {
-      var id;
-
-      $scope.pageTitle = 'Group';
-      $scope.filterName = 'Group';
-
-      id = parseInt($routeParams.id, 10);
-
-      Groups.get(id).
-        then(function (group) {
-          $scope.pageTitle = 'Group: ' + group.name;
-          $scope.filterName = group.name;
-        }, function () {
-          $scope.pageTitle = 'Group: Not found';
-          $scope.filterName = 'Unknown group';
+      // Handle adding profiles
+      $scope.addTeacher = function() {
+        clearFiltersAndDo(function () {
+          var teacher = peopleInterface.addTeacher({ _edit: 'name' });
+          $scope.people.unshift(teacher);
         });
+      };
 
-      $scope.canAddStudent = false;
-      $scope.canAddTeacher = false;
+      $scope.addStudent = function() {
+        clearFiltersAndDo(function () {
+          var student = peopleInterface.addStudent({ _edit: 'name' });
+          $scope.people.unshift(student);
+        });
+      };
 
-      peopleCollectionMixin($scope);
       peopleBaseCtrl($scope);
+
+      // Handle parameter changes
+      $scope.$on("$routeUpdate", function () {
+        loadFn();
+      });
+
+      // Initial load
+      loadFn();
     }]);

@@ -21,7 +21,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
         defaultData: { type: 'Student' }
       });
 
-      return collection(studentModel, { url: '/students/all' });
+      return collection(studentModel);
     }]).
 
 
@@ -42,7 +42,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
           defaultData: { type: 'Teacher' }
       });
 
-      return collection(teacherModel, { url: '/teachers/all' });
+      return collection(teacherModel);
     }]).
 
 
@@ -61,7 +61,7 @@ angular.module('journals.people.models', ['journals.model', 'journals.collection
           defaultData: { type: 'Guardian' }
       });
 
-      return collection(guardianModel, { url: '/guardians/all' });
+      return collection(guardianModel);
     }]).
 
   /*---------- People interface ------------*/

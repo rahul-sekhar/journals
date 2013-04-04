@@ -12,74 +12,9 @@ describe TeachersController do
     ability.can :manage, Teacher
   end
 
-
   describe "GET index" do
     let(:user){ create(:student_with_user).user }
     let(:make_request) { get :index, format: :json }
-
-    it "raises an exception if the user cannot view teachers" do
-      ability.cannot :read, Teacher
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
-    end
-
-    it "has a status of 200" do
-      make_request
-      response.status.should == 200
-    end
-
-    it "assigns any teachers into a profiles collection" do
-      student1 = create(:student)
-      teacher1 = create(:teacher)
-      teacher2 = create(:teacher)
-      make_request
-      assigns(:people).should =~ [teacher1, teacher2]
-    end
-
-    it "does not assign archived teachers" do
-      teacher1 = create(:teacher)
-      teacher2 = create(:teacher, archived: true)
-      make_request
-      assigns(:people).should == [teacher1]
-    end
-
-    it "sorts the teachers alphabetically" do
-      teacher1 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
-      teacher2 = create(:teacher, first_name: "Ze", last_name: "Teacher")
-      teacher3 = create(:teacher, first_name: "A", last_name: "Teacher")
-      make_request
-      assigns(:people).should == [teacher3, teacher1, teacher2]
-    end
-
-    it "searches for teachers when the search parameter is passed" do
-      teacher1 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
-      teacher2 = create(:teacher, first_name: "Ze", last_name: "Teacher")
-      teacher3 = create(:teacher, first_name: "A", last_name: "Teacher")
-      get :index, search: "ra", format: :json
-      assigns(:people).should == [teacher1]
-    end
-
-    describe "pagination" do
-      def create_items(num)
-        create_list(:teacher, num)
-      end
-
-      def make_request(page=nil)
-        if page
-          get :index, page: page, format: :json
-        else
-          get :index, format: :json
-        end
-      end
-
-      let(:item_list_name){ :people }
-
-      it_behaves_like "a paginated page"
-    end
-  end
-
-  describe "GET all" do
-    let(:user){ create(:student_with_user).user }
-    let(:make_request) { get :all, format: :json }
 
     it "raises an exception if the user cannot view teachers" do
       ability.cannot :read, Teacher

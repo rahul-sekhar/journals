@@ -118,6 +118,12 @@ describe('posts module', function () {
         it('sets totalPages', function () {
           expect(scope.totalPages).toEqual(4);
         });
+
+        it('reloads the posts when $routeUpdate is fired', function () {
+          httpBackend.expectGET('/path/to/posts.json').respond(200);
+          scope.$broadcast('$routeUpdate');
+          httpBackend.verifyNoOutstandingExpectation();
+        });
       });
     });
 
@@ -500,6 +506,29 @@ describe('posts module', function () {
 
       it('passes an empty array with the event', function () {
         expect(listener.mostRecentCall.args[1]).toEqual([]);
+      });
+    });
+
+    describe('on image upload', function () {
+      var post;
+
+      beforeEach(function () {
+        post = { };
+
+        spyOn(Posts, 'add').andReturn(post);
+        controller('EditPostCtrl', { $scope: scope });
+        scope.$apply();
+      });
+
+      it('adds an image_id when no image_ids are set', function () {
+        scope.$broadcast('imageUploaded', { id: 5 });
+        expect(post.image_ids).toEqual([5]);
+      });
+
+      it('adds an image_id when image_ids are set', function () {
+        post.image_ids = [1, 6];
+        scope.$broadcast('imageUploaded', { id: 5 });
+        expect(post.image_ids).toEqual([1, 6, 5]);
       });
     });
   });

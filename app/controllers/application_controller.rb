@@ -31,16 +31,6 @@ class ApplicationController < ActionController::Base
     current_user
   end
 
-  def filter_and_display_people(collection, map_profiles = false)
-    @people = collection.alphabetical.load_associations
-    @people = @people.search(params[:search]) if params[:search]
-
-    @people = paginate(@people)
-    @people = @people.map{ |person| person.profile } if map_profiles
-
-    render "pages/people"
-  end
-
   def paginate(collection, per_page=per_page_default)
     @page = params[:page].to_i
     @page = 1 if @page < 1

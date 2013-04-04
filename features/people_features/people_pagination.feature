@@ -9,9 +9,9 @@ Background:
   And all the students are my mentees
   And all the students have a group "Bats"
   And an archived student for each alphabet exists
+  And I am on the people page
 
 Scenario: View pages of people
-  When I am on the people page
   Then I should see a profile for "A"
   And I should see a profile for "E"
   And I should not see a profile for "F"
@@ -31,7 +31,7 @@ Scenario: View pages of people
   And the selected page should be 6
 
 Scenario: View pages of archived people
-  When I am on the archived people page
+  When I select "Archived students and teachers" from the viewing menu
   Then I should see a profile for "A"
   And I should see a profile for "J"
   And I should not see a profile for "K"
@@ -44,7 +44,7 @@ Scenario: View pages of archived people
   And the selected page should be 3
 
 Scenario: View pages of teachers
-  When I am on the teachers page
+  When I select "Teachers" from the viewing menu
   Then I should see a profile for "A"
   And I should see a profile for "J"
   And I should not see a profile for "K"
@@ -57,7 +57,7 @@ Scenario: View pages of teachers
   And the selected page should be 3
 
 Scenario: View pages of students
-  When I am on the students page
+  When I select "Students" from the viewing menu
   Then I should see a profile for "A"
   And I should see a profile for "J"
   And I should not see a profile for "K"
@@ -70,7 +70,7 @@ Scenario: View pages of students
   And the selected page should be 3
 
 Scenario: View pages of mentees
-  When I am on the mentees page
+  When I select "Your mentees" from the viewing menu
   Then I should see a profile for "A"
   And I should see a profile for "J"
   And I should not see a profile for "K"
@@ -83,8 +83,7 @@ Scenario: View pages of mentees
   And the selected page should be 3
 
 Scenario: View pages of a group
-  When I am on the people page
-  And I select "Bats" from the viewing menu
+  When I select "Bats" from the viewing menu
   Then I should see a profile for "A"
   And I should see a profile for "J"
   And I should not see a profile for "K"

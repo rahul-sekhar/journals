@@ -26,6 +26,7 @@ angular.module('journals.modal', []).
             });
           }
         });
+
         scope.$watch('showOn', function (val) {
           if (val) {
             elem.dialog('open');

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130317180029) do
+ActiveRecord::Schema.define(:version => 20130403110758) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(:version => 20130317180029) do
 
   create_table "images", :force => true do |t|
     t.string   "file_name"
-    t.integer  "post_id",    :null => false
+    t.integer  "post_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["post_id"], :name => "index_images_on_post_id", :order => {"post_id" => :asc}

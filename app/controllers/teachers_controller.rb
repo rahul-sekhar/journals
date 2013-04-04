@@ -1,14 +1,7 @@
 class TeachersController < ApplicationController
   load_and_authorize_resource
-  skip_authorize_resource only: :all
 
   def index
-    filter_and_display_people( @teachers.current )
-  end
-
-  def all
-    authorize! :read, Teacher
-    @teachers = Teacher.all
   end
 
   def show

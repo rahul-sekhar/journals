@@ -62,5 +62,8 @@ class Ability
 
     # Everyone can edit their own profile
     can :update, profile
+
+    # Everyone can create images
+    can :create, Image
   end
 end

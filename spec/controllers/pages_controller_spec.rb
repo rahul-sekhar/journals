@@ -38,40 +38,138 @@ describe PagesController do
       response.status.should == 200
     end
 
-    it "assigns any students and teachers into a people collection" do
-      student1 = create(:student)
-      student2 = create(:student)
-      teacher1 = create(:teacher)
-      teacher2 = create(:teacher)
-      get :people, format: :json
-      assigns(:people).should =~ [student1, student2, teacher1, teacher2]
-    end
+    describe "filtering" do
+      before do
+        @student1 = create(:student, name: "Some Student")
+        @student2 = create(:student, name: "Other Student")
+        @student3 = create(:student, name: "Archived Student", archived: true)
+        @teacher1 = create(:teacher, name: "A Teacher")
+        @teacher2 = create(:teacher, name: "Rahul Sekhar")
+        @teacher3 = create(:teacher, name: "Archived Teacher", archived: true)
+      end
 
-    it "does not assign archived students and teachers" do
-      student1 = create(:student, archived: true)
-      student2 = create(:student)
-      teacher1 = create(:teacher)
-      teacher2 = create(:teacher, archived: true)
-      get :people, format: :json
-      assigns(:people).should =~ [student2, teacher1]
-    end
+      describe "with no filter parameter" do
+        it "assigns any non archived students and teachers alphabetically into a people collection" do
+          get :people, format: :json
+          assigns(:people).should == [@teacher1, @student2, @teacher2, @student1]
+        end
 
-    it "assigns students and teachers alphabetically" do
-      student1 = create(:student, first_name: "Some", last_name: "Student")
-      student2 = create(:student, first_name: "Other", last_name: "Student")
-      teacher1 = create(:teacher, first_name: "A", last_name: "Teacher")
-      teacher2 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
-      get :people, format: :json
-      assigns(:people).should == [teacher1, student2, teacher2, student1]
-    end
+        it "searches if a search parameter is passed" do
+          get :people, search: "ther stu", format: :json
+          assigns(:people).should == [@student2]
+        end
+      end
 
-    it "searches if a search parameter is passed" do
-      student1 = create(:student, first_name: "Some", last_name: "Student")
-      student2 = create(:student, first_name: "Other", last_name: "Student")
-      teacher1 = create(:teacher, first_name: "A", last_name: "Teacher")
-      teacher2 = create(:teacher, first_name: "Rahul", last_name: "Sekhar")
-      get :people, search: "ther stu", format: :json
-      assigns(:people).should == [student2]
+      describe "with an unknown filter parameter" do
+        it "assigns any non archived students and teachers alphabetically into a people collection" do
+          get :people, filter: "unknown", format: :json
+          assigns(:people).should == [@teacher1, @student2, @teacher2, @student1]
+        end
+
+        it "searches if a search parameter is passed" do
+          get :people, filter: "unknown", search: "ther stu", format: :json
+          assigns(:people).should == [@student2]
+        end
+      end
+
+      describe "archived filter" do
+        it "assigns archived students and teachers" do
+          get :people, filter: "archived", format: :json
+          assigns(:people).should == [@student3, @teacher3]
+        end
+
+        it "searches if a search parameter is passed" do
+          get :people, filter: "archived", search: "te", format: :json
+          assigns(:people).should == [@teacher3]
+        end
+      end
+
+      describe "students filter" do
+        it "assigns current students" do
+          get :people, filter: "students", format: :json
+          assigns(:people).should == [@student2, @student1]
+        end
+
+        it "searches if a search parameter is passed" do
+          get :people, filter: "students", search: "some student", format: :json
+          assigns(:people).should == [@student1]
+        end
+      end
+
+      describe "teachers filter" do
+        it "assigns current teachers" do
+          get :people, filter: "teachers", format: :json
+          assigns(:people).should == [@teacher1, @teacher2]
+        end
+
+        it "searches if a search parameter is passed" do
+          get :people, filter: "teachers", search: "ra", format: :json
+          assigns(:people).should == [@teacher2]
+        end
+      end
+
+      describe "mentees filter" do
+        context "when logged in as a student" do
+          before{ user.stub(:profile).and_return(create(:student)) }
+
+          it "assigns an empty array to people" do
+            get :people, filter: "mentees", format: :json
+            assigns(:people).should be_empty
+          end
+        end
+
+        context "when logged in as a guardian" do
+          before{ user.stub(:profile).and_return(create(:guardian)) }
+
+          it "assigns an empty array to people" do
+            get :people, filter: "mentees", format: :json
+            assigns(:people).should be_empty
+          end
+        end
+
+        context "when logged in as a teacher" do
+          let(:teacher){ create(:teacher) }
+          before do
+            user.stub(:profile).and_return(teacher)
+            teacher.mentees = [@student2, @student3]
+          end
+
+          it "assigns the teachers mentees" do
+            get :people, filter: "mentees", format: :json
+            assigns(:people).should == [@student3, @student2]
+          end
+
+          it "searches if a search parameter is passed" do
+            get :people, filter: "mentees", search: "arch", format: :json
+            assigns(:people).should == [@student3]
+          end
+        end
+      end
+
+      describe "for a non-existing group" do
+        it "assigns an empty people array" do
+          get :people, filter: "group-67", format: :json
+          assigns(:people).should be_empty
+        end
+      end
+
+      describe "for a group" do
+        before do
+          @group = Group.create(name: "Group")
+          @student4 = create(:student, name: "A Student")
+          @group.students = [@student2, @student3, @student4]
+        end
+
+        it "assigns the groups current students" do
+          get :people, filter: "group-#{@group.id}", format: :json
+          assigns(:people).should == [@student4, @student2]
+        end
+
+        it "searches if a search parameter is passed" do
+          get :people, filter: "group-#{@group.id}", search: "a st", format: :json
+          assigns(:people).should == [@student4]
+        end
+      end
     end
 
     describe "pagination" do
@@ -92,127 +190,6 @@ describe PagesController do
       it_behaves_like "a paginated page"
     end
   end
-
-
-  describe "GET archived" do
-    it "has a status of 200" do
-      get :archived, format: :json
-      response.status.should == 200
-    end
-
-    it "assigns any archived students and teachers into a profiles collection" do
-      student1 = create(:student, archived: true)
-      student2 = create(:student, archived: true)
-      teacher1 = create(:teacher, archived: true)
-      teacher2 = create(:teacher, archived: true)
-      get :archived, format: :json
-      assigns(:people).should =~ [student1, student2, teacher1, teacher2]
-    end
-
-    it "does not assign archived students and teachers" do
-      student1 = create(:student, archived: true)
-      student2 = create(:student)
-      teacher1 = create(:teacher)
-      teacher2 = create(:teacher, archived: true)
-      get :archived, format: :json
-      assigns(:people).should =~ [student1, teacher2]
-    end
-
-    it "assigns students and teachers alphabetically" do
-      student1 = create(:student, archived: true, first_name: "Some", last_name: "Student")
-      student2 = create(:student, archived: true, first_name: "Other", last_name: "Student")
-      teacher1 = create(:teacher, archived: true, first_name: "A", last_name: "Teacher")
-      teacher2 = create(:teacher, archived: true, first_name: "Rahul", last_name: "Sekhar")
-      get :archived, format: :json
-      assigns(:people).should == [teacher1, student2, teacher2, student1]
-    end
-
-    it "searches if a search parameter is passed" do
-      student1 = create(:student, archived: true, first_name: "Some", last_name: "Student")
-      student2 = create(:student, archived: true, first_name: "Other", last_name: "Student")
-      teacher1 = create(:teacher, archived: true, first_name: "A", last_name: "Teacher")
-      teacher2 = create(:teacher, archived: true, first_name: "Rahul", last_name: "Sekhar")
-      get :archived, search: "ther stu", format: :json
-      assigns(:people).should == [student2]
-    end
-
-    describe "pagination" do
-      def create_items(num)
-        create_list(:student, num, archived: true)
-      end
-
-      def make_request(page=nil)
-        if page
-          get :archived, page: page, format: :json
-        else
-          get :archived, format: :json
-        end
-      end
-
-      let(:item_list_name){ :people }
-
-      it_behaves_like "a paginated page"
-    end
-  end
-
-
-  describe "GET mentees" do
-    context "when logged in as a student" do
-      before{ user.stub(:profile).and_return(create(:student)) }
-
-      it "assigns an empty array to people" do
-        get :mentees, format: :json
-        assigns(:people).should be_empty
-      end
-    end
-
-    context "when logged in as a guardian" do
-      before{ user.stub(:profile).and_return(create(:guardian)) }
-
-      it "assigns an empty array to people" do
-        get :mentees, format: :json
-        assigns(:people).should be_empty
-      end
-    end
-
-    context "when logged in as a teacher" do
-      let(:teacher){ create(:teacher) }
-      before{ user.stub(:profile).and_return(teacher) }
-
-      it "has a status of 200" do
-        get :mentees, format: :json
-        response.status.should == 200
-      end
-
-      it "assigns any mentees into a people collection" do
-        student1 = create(:student)
-        student2 = create(:student)
-        student3 = create(:student)
-        teacher.mentees = [student1, student3]
-        get :mentees, format: :json
-        assigns(:people).should =~ [student1, student3]
-      end
-
-      it "assigns mentees alphabetically" do
-        student1 = create(:student, first_name: "Some", last_name: "Student")
-        student2 = create(:student, first_name: "Other", last_name: "Student")
-        student3 = create(:student, first_name: "A", last_name: "Student")
-        teacher.mentees = [student1, student2, student3]
-        get :mentees, format: :json
-        assigns(:people).should == [student3, student2, student1]
-      end
-
-      it "searches if a search parameter is passed" do
-        student1 = create(:student, first_name: "Some", last_name: "Student")
-        student2 = create(:student, first_name: "Other", last_name: "Student")
-        student3 = create(:student, first_name: "A", last_name: "Student")
-        teacher.mentees = [student1, student2, student3]
-        get :mentees, search: "oth", format: :json
-        assigns(:people).should == [student2]
-      end
-    end
-  end
-
 
   describe "PUT update_password" do
     let(:user){ create(:teacher_with_user, email: "test@mail.com").user }

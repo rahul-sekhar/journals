@@ -17,16 +17,6 @@ describe('People module', function () {
       peopleBaseCtrl(scope);
     }));
 
-    it('loads data initially', function () {
-      expect(scope.load).toHaveBeenCalled();
-    });
-
-    it('reloads data on a route update', function () {
-      scope.load.reset();
-      scope.$broadcast('$routeUpdate');
-      expect(scope.load).toHaveBeenCalled();
-    });
-
     // Delete a profile
     describe('delete(profile)', function () {
       var profile;
@@ -301,44 +291,202 @@ describe('People module', function () {
     });
   });
 
-  /*------------------ people collection mixin -----------------*/
+  /*------------------- Profile controller ----------------------*/
+  describe('ProfileCtrl', function () {
+    var scope, peopleBaseCtrl, deferred, peopleInterface, location;
 
-  describe('peopleCollectionMixin', function () {
-    var scope, peopleInterface, location, deferred, Groups;
-
-    beforeEach(inject(function ($rootScope, peopleBaseCtrl, _peopleInterface_, $q, $location, peopleCollectionMixin, _Groups_) {
+    beforeEach(inject(function ($rootScope, $controller, _peopleInterface_, $q, $location) {
       deferred = $q.defer();
 
+      peopleInterface = _peopleInterface_;
+      spyOn(peopleInterface, 'loadProfile').andReturn(deferred.promise);
+
+      location = $location;
+      location.url('/some/path');
+
+      scope = $rootScope.$new();
+      peopleBaseCtrl = jasmine.createSpy();
+
+      $controller('ProfileCtrl', {
+        $scope: scope,
+        peopleBaseCtrl: peopleBaseCtrl
+      });
+    }));
+
+    it('sets the page title', function () {
+      expect(scope.pageTitle).toEqual('Profile');
+    });
+
+    it('sets profile', function () {
+      expect(scope.profile).toEqual(true);
+    });
+
+    it('includes the base controller', function () {
+      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
+    });
+
+    it('loads people through the interface', function () {
+      expect(peopleInterface.loadProfile).toHaveBeenCalledWith('/some/path');
+    });
+
+    it('initially has people undefined', function () {
+      expect(scope.people).toBeUndefined();
+    });
+
+    describe('when the promise is resolved', function () {
+      beforeEach(function () {
+        deferred.resolve({
+          name: 'Some name',
+          people: 'people array'
+        });
+        scope.$apply();
+      });
+
+      it('sets people', function () {
+        expect(scope.people).toEqual('people array');
+      });
+
+      it('sets the page title', function () {
+        expect(scope.pageTitle).toEqual('Profile: Some name');
+      });
+    });
+
+    describe('when the promise is rejected', function () {
+      beforeEach(function () {
+        deferred.reject();
+        scope.$apply();
+      });
+
+      it('sets people to an empty array', function () {
+        expect(scope.people).toEqual([]);
+      });
+
+      it('sets the page title', function () {
+        expect(scope.pageTitle).toEqual('Profile: Not found');
+      });
+    });
+  });
+
+  /*------------------- People controllers -----------------------*/
+
+  describe('PeopleCtrl', function () {
+    var scope, peopleBaseCtrl, peopleInterface, location, deferred, Groups, searchFiltersFactory, searchFilters;
+
+    beforeEach(inject(function ($rootScope, $controller, _peopleInterface_, $q, $location, _Groups_) {
+      deferred = $q.defer();
       peopleInterface = _peopleInterface_;
       spyOn(peopleInterface, 'load').andReturn(deferred.promise);
 
       location = $location;
       location.url('/some/path');
 
+      searchFilters = {
+        filter: jasmine.createSpy(),
+        getCurrentValues: jasmine.createSpy().andReturn({ search: 'some_val', other_filter: 'other val' })
+      };
+      searchFiltersFactory = jasmine.createSpy().andReturn(searchFilters);
+
       Groups = _Groups_;
       spyOn(Groups, 'all').andReturn('group array');
 
       scope = $rootScope.$new();
-      peopleCollectionMixin(scope);
+      peopleBaseCtrl = jasmine.createSpy();
+
+      $controller('PeopleCtrl', {
+        $scope: scope,
+        peopleBaseCtrl: peopleBaseCtrl,
+        searchFilters: searchFiltersFactory
+      });
     }));
 
-    it('sets the scope search to the location search value', inject(function($rootScope, peopleCollectionMixin) {
-      location.url('/some/path?search=blah');
-      scope = $rootScope.$new();
-      peopleCollectionMixin(scope);
-      expect(scope.search).toEqual('blah');
-    }));
+    it('sets the page title', function () {
+      expect(scope.pageTitle).toEqual('People');
+    });
 
-    describe('doSearch()', function () {
-      it('updates the location param', function () {
-        scope.doSearch('some value');
-        expect(location.search().search).toEqual('some value');
+    it('includes the base controller', function () {
+      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
+    });
+
+    it('initializes filters', function () {
+      expect(searchFiltersFactory).toHaveBeenCalledWith('search', 'filter');
+    });
+
+    it('initializes current filter values to the scope', function () {
+      expect(searchFilters.getCurrentValues).toHaveBeenCalled();
+      expect(scope.filters).toEqualData({ search: 'some_val', other_filter: 'other val' });
+    });
+
+    it('initializes filterName to the default', function () {
+      scope.$apply();
+      expect(scope.filterName).toEqual('Students and teachers');
+    });
+
+    describe('when the filter value changes', function () {
+      it('sets values for standard filter values', function () {
+        scope.filters.filter = 'archived'
+        scope.$apply();
+        expect(scope.filterName).toEqual('Archived students and teachers');
+        scope.filters.filter = 'students'
+        scope.$apply();
+        expect(scope.filterName).toEqual('Students');
+        scope.filters.filter = 'teachers'
+        scope.$apply();
+        expect(scope.filterName).toEqual('Teachers');
+        scope.filters.filter = 'mentees'
+        scope.$apply();
+        expect(scope.filterName).toEqual('Your mentees');
       });
 
-      it('resets the page param', function () {
-        location.search('page', 2);
+      it('sets a default for an unkown filter', function () {
+        scope.filters.filter = 'something'
+        scope.$apply();
+        expect(scope.filterName).toEqual('Students and teachers');
+      });
+
+      describe('for grooup filters', function () {
+        var deferred;
+
+        beforeEach(inject(function ($q) {
+          deferred = $q.defer();
+          Groups.get = jasmine.createSpy().andReturn(deferred.promise);
+
+          scope.filters.filter = 'group-16'
+          scope.$apply();
+        }));
+
+        it('calls the Groups get function', function () {
+          expect(Groups.get).toHaveBeenCalledWith(16);
+        });
+
+        it('sets the value to nothing initially', function () {
+          expect(scope.filterName).toEqual('');
+        });
+
+        it('sets the value to nothing for a non existant group', function () {
+          deferred.reject();
+          scope.$apply();
+          expect(scope.filterName).toEqual('');
+        });
+
+        it('returns the group name for a group', function () {
+          deferred.resolve({name: 'Some group'});
+          scope.$apply();
+          expect(scope.filterName).toEqual('Some group');
+        });
+      });
+    });
+
+    describe('doSearch()', function () {
+      it('applies the search filter', function () {
         scope.doSearch('some value');
-        expect(location.search().page).toBeUndefined();
+        expect(searchFilters.filter).toHaveBeenCalledWith('search', 'some value');
+      });
+    });
+
+    describe('applyFilter()', function () {
+      it('applies a filter', function () {
+        scope.applyFilter('value');
+        expect(searchFilters.filter).toHaveBeenCalledWith('filter', 'value');
       });
     });
 
@@ -355,47 +503,56 @@ describe('People module', function () {
       });
     });
 
-    describe('scope.load()', function () {
+    it('loads people through the interface', function () {
+      expect(peopleInterface.load).toHaveBeenCalledWith('/some/path');
+    });
+
+    it('initially has people undefined', function () {
+      expect(scope.people).toBeUndefined();
+    });
+
+    describe('when the promise is resolved', function () {
+      var listener;
+
       beforeEach(function () {
-        scope.load();
+        listener = jasmine.createSpy();
+        scope.$on('peopleLoaded', listener);
+
+        deferred.resolve({
+          metadata: { current_page: 1, total_pages: 3 },
+          people: 'people array'
+        });
+        scope.$apply();
       });
 
-      it('loads people through the interface', function () {
+      it('sets people', function () {
+        expect(scope.people).toEqual('people array');
+      });
+
+      it('sets the page data', function () {
+        expect(scope.totalPages).toEqual(3);
+        expect(scope.currentPage).toEqual(1);
+      });
+
+      it('fires a peopleLoaded event', function () {
+        expect(listener).toHaveBeenCalled();
+      });
+
+      it('reloads the posts when $routeUpdate is fired', function () {
+        peopleInterface.load.reset();
+        scope.$broadcast('$routeUpdate');
         expect(peopleInterface.load).toHaveBeenCalledWith('/some/path');
       });
+    });
 
-      it('initially has people undefined', function () {
+    describe('when the promise is rejected', function () {
+      beforeEach(function () {
+        deferred.reject();
+        scope.$apply();
+      });
+
+      it('leaves people as it is', function () {
         expect(scope.people).toBeUndefined();
-      });
-
-      describe('when the promise is resolved', function () {
-        beforeEach(function () {
-          deferred.resolve({
-            metadata: { current_page: 1, total_pages: 3 },
-            people: 'people array'
-          });
-          scope.$apply();
-        });
-
-        it('sets people', function () {
-          expect(scope.people).toEqual('people array');
-        });
-
-        it('sets the page data', function () {
-          expect(scope.totalPages).toEqual(3);
-          expect(scope.currentPage).toEqual(1);
-        });
-      });
-
-      describe('when the promise is rejected', function () {
-        beforeEach(function () {
-          deferred.reject();
-          scope.$apply();
-        });
-
-        it('leaves people as it is', function () {
-          expect(scope.people).toBeUndefined();
-        });
       });
     });
 
@@ -403,15 +560,45 @@ describe('People module', function () {
       beforeEach(function () {
         scope.people = [1, 2, 3];
         spyOn(peopleInterface, 'addTeacher').andReturn(6);
-        scope.addTeacher();
       });
 
-      it('adds a teacher through peopleInterface', function () {
-        expect(peopleInterface.addTeacher).toHaveBeenCalledWith({ _edit: 'name' });
+      describe('with no filters', function () {
+        beforeEach(function () {
+          scope.addTeacher();
+        });
+
+        it('adds a teacher through peopleInterface', function () {
+          expect(peopleInterface.addTeacher).toHaveBeenCalledWith({ _edit: 'name' });
+        });
+
+        it('adds the result to the people array', function () {
+          expect(scope.people).toEqual([6, 1, 2, 3]);
+        });
       });
 
-      it('adds the result to the people array', function () {
-        expect(scope.people).toEqual([6, 1, 2, 3]);
+      describe('with filters', function () {
+        beforeEach(function () {
+          location.search({param: 'value'});
+          scope.addTeacher();
+        });
+
+        it('clears any parameters', function () {
+          expect(location.search()).toEqual({});
+        });
+
+        describe('after a peopleLoaded event', function () {
+          beforeEach(function () {
+            scope.$broadcast('peopleLoaded');
+          });
+
+          it('adds a teacher through peopleInterface', function () {
+            expect(peopleInterface.addTeacher).toHaveBeenCalledWith({ _edit: 'name' });
+          });
+
+          it('adds the result to the people array', function () {
+            expect(scope.people).toEqual([6, 1, 2, 3]);
+          });
+        });
       });
     });
 
@@ -419,398 +606,46 @@ describe('People module', function () {
       beforeEach(function () {
         scope.people = [1, 2, 3];
         spyOn(peopleInterface, 'addStudent').andReturn(7);
-        scope.addStudent();
       });
 
-      it('adds a teacher through peopleInterface', function () {
-        expect(peopleInterface.addStudent).toHaveBeenCalledWith({ _edit: 'name' });
-      });
-
-      it('adds the result to the people array', function () {
-        expect(scope.people).toEqual([7, 1, 2, 3]);
-      });
-    });
-  });
-
-  /*------------------ Load profile service -----------------*/
-
-  describe('loadProfile', function () {
-    var scope, peopleInterface, location, deferred;
-
-    beforeEach(inject(function ($rootScope, peopleBaseCtrl, _peopleInterface_, $q, $location, loadProfile) {
-      deferred = $q.defer();
-
-      peopleInterface = _peopleInterface_;
-      spyOn(peopleInterface, 'loadProfile').andReturn(deferred.promise);
-
-      location = $location;
-      location.url('/some/path');
-
-      scope = $rootScope.$new();
-      loadProfile(scope);
-    }));
-
-    describe('scope.load()', function () {
-      beforeEach(function () {
-        scope.load();
-      });
-
-      it('loads people through the interface', function () {
-        expect(peopleInterface.loadProfile).toHaveBeenCalledWith('/some/path');
-      });
-
-      it('initially has people undefined', function () {
-        expect(scope.people).toBeUndefined();
-      });
-
-      describe('when the promise is resolved', function () {
+      describe('with no filters', function () {
         beforeEach(function () {
-          deferred.resolve({
-            name: 'Some name',
-            people: 'people array'
+          scope.addStudent();
+        });
+
+        it('adds a teacher through peopleInterface', function () {
+          expect(peopleInterface.addStudent).toHaveBeenCalledWith({ _edit: 'name' });
+        });
+
+        it('adds the result to the people array', function () {
+          expect(scope.people).toEqual([7, 1, 2, 3]);
+        });
+      });
+
+      describe('with filters', function () {
+        beforeEach(function () {
+          location.search({param: 'value'});
+          scope.addStudent();
+        });
+
+        it('clears any parameters', function () {
+          expect(location.search()).toEqual({});
+        });
+
+        describe('after a peopleLoaded event', function () {
+          beforeEach(function () {
+            scope.$broadcast('peopleLoaded');
           });
-          scope.$apply();
-        });
 
-        it('sets people', function () {
-          expect(scope.people).toEqual('people array');
-        });
+          it('adds a teacher through peopleInterface', function () {
+            expect(peopleInterface.addStudent).toHaveBeenCalledWith({ _edit: 'name' });
+          });
 
-        it('sets the page title', function () {
-          expect(scope.pageTitle).toEqual('Profile: Some name');
-        });
-      });
-
-      describe('when the promise is rejected', function () {
-        beforeEach(function () {
-          deferred.reject();
-          scope.$apply();
-        });
-
-        it('sets people to an empty array', function () {
-          expect(scope.people).toEqual([]);
-        });
-
-        it('sets the page title', function () {
-          expect(scope.pageTitle).toEqual('Profile: Not found');
+          it('adds the result to the people array', function () {
+            expect(scope.people).toEqual([7, 1, 2, 3]);
+          });
         });
       });
-    });
-  });
-
-  /*------------------- Profile controller ----------------------*/
-  describe('ProfileCtrl', function () {
-    var scope, peopleBaseCtrl, loadProfile;
-
-    beforeEach(inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      peopleBaseCtrl = jasmine.createSpy();
-      loadProfile = jasmine.createSpy();
-
-      $controller('ProfileCtrl', {
-        $scope: scope,
-        peopleBaseCtrl: peopleBaseCtrl,
-        loadProfile: loadProfile
-      });
-    }));
-
-    it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('Profile');
-    });
-
-    it('sets profile', function () {
-      expect(scope.profile).toEqual(true);
-    });
-
-    it('includes loadProfile', function () {
-      expect(loadProfile).toHaveBeenCalledWith(scope);
-    });
-
-    it('includes the base controller', function () {
-      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
-    });
-  });
-
-  /*------------------- People controllers -----------------------*/
-
-  describe('PeopleCtrl', function () {
-    var scope, peopleBaseCtrl, peopleCollectionMixin;
-
-    beforeEach(inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      peopleBaseCtrl = jasmine.createSpy();
-      peopleCollectionMixin = jasmine.createSpy();
-
-      $controller('PeopleCtrl', {
-        $scope: scope,
-        peopleBaseCtrl: peopleBaseCtrl,
-        peopleCollectionMixin: peopleCollectionMixin
-      });
-    }));
-
-    it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('People');
-    });
-
-    it('sets canAddStudent', function () {
-      expect(scope.canAddStudent).toEqual(true);
-    });
-
-    it('sets canAddTeacher', function () {
-      expect(scope.canAddTeacher).toEqual(true);
-    });
-
-    it('sets the filterName', function () {
-      expect(scope.filterName).toEqual('Students and teachers');
-    });
-
-    it('includes peopleCollectionMixin', function () {
-      expect(peopleCollectionMixin).toHaveBeenCalledWith(scope);
-    });
-
-    it('includes the base controller', function () {
-      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
-    });
-  });
-
-  describe('ArchivedPeopleCtrl', function () {
-    var scope, peopleBaseCtrl, peopleCollectionMixin;
-
-    beforeEach(inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      peopleBaseCtrl = jasmine.createSpy();
-      peopleCollectionMixin = jasmine.createSpy();
-
-      $controller('ArchivedPeopleCtrl', {
-        $scope: scope,
-        peopleBaseCtrl: peopleBaseCtrl,
-        peopleCollectionMixin: peopleCollectionMixin
-      });
-    }));
-
-    it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('Archive');
-    });
-
-    it('sets canAddStudent', function () {
-      expect(scope.canAddStudent).toEqual(false);
-    });
-
-    it('sets canAddTeacher', function () {
-      expect(scope.canAddTeacher).toEqual(false);
-    });
-
-    it('sets the filterName', function () {
-      expect(scope.filterName).toEqual('Archived students and teachers');
-    });
-
-    it('includes peopleCollectionMixin', function () {
-      expect(peopleCollectionMixin).toHaveBeenCalledWith(scope);
-    });
-
-    it('includes the base controller', function () {
-      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
-    });
-  });
-
-  describe('TeachersCtrl', function () {
-    var scope, peopleBaseCtrl, peopleCollectionMixin;
-
-    beforeEach(inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      peopleBaseCtrl = jasmine.createSpy();
-      peopleCollectionMixin = jasmine.createSpy();
-
-      $controller('TeachersCtrl', {
-        $scope: scope,
-        peopleBaseCtrl: peopleBaseCtrl,
-        peopleCollectionMixin: peopleCollectionMixin
-      });
-    }));
-
-    it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('Teachers');
-    });
-
-    it('sets canAddStudent', function () {
-      expect(scope.canAddStudent).toEqual(false);
-    });
-
-    it('sets canAddTeacher', function () {
-      expect(scope.canAddTeacher).toEqual(true);
-    });
-
-    it('sets the filterName', function () {
-      expect(scope.filterName).toEqual('Teachers');
-    });
-
-    it('includes peopleCollectionMixin', function () {
-      expect(peopleCollectionMixin).toHaveBeenCalledWith(scope);
-    });
-
-    it('includes the base controller', function () {
-      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
-    });
-  });
-
-  describe('StudentsCtrl', function () {
-    var scope, peopleBaseCtrl, peopleCollectionMixin;
-
-    beforeEach(inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      peopleBaseCtrl = jasmine.createSpy();
-      peopleCollectionMixin = jasmine.createSpy();
-
-      $controller('StudentsCtrl', {
-        $scope: scope,
-        peopleBaseCtrl: peopleBaseCtrl,
-        peopleCollectionMixin: peopleCollectionMixin
-      });
-    }));
-
-    it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('Students');
-    });
-
-    it('sets canAddStudent', function () {
-      expect(scope.canAddStudent).toEqual(true);
-    });
-
-    it('sets canAddTeacher', function () {
-      expect(scope.canAddTeacher).toEqual(false);
-    });
-
-    it('sets the filterName', function () {
-      expect(scope.filterName).toEqual('Students');
-    });
-
-    it('includes peopleCollectionMixin', function () {
-      expect(peopleCollectionMixin).toHaveBeenCalledWith(scope);
-    });
-
-    it('includes the base controller', function () {
-      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
-    });
-  });
-
-  describe('MenteesCtrl', function () {
-    var scope, peopleBaseCtrl, peopleCollectionMixin;
-
-    beforeEach(inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      peopleBaseCtrl = jasmine.createSpy();
-      peopleCollectionMixin = jasmine.createSpy();
-
-      $controller('MenteesCtrl', {
-        $scope: scope,
-        peopleBaseCtrl: peopleBaseCtrl,
-        peopleCollectionMixin: peopleCollectionMixin
-      });
-    }));
-
-    it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('Mentees');
-    });
-
-    it('sets canAddStudent', function () {
-      expect(scope.canAddStudent).toEqual(false);
-    });
-
-    it('sets canAddTeacher', function () {
-      expect(scope.canAddTeacher).toEqual(false);
-    });
-
-    it('sets the filterName', function () {
-      expect(scope.filterName).toEqual('Your mentees');
-    });
-
-    it('includes peopleCollectionMixin', function () {
-      expect(peopleCollectionMixin).toHaveBeenCalledWith(scope);
-    });
-
-    it('includes the base controller', function () {
-      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
-    });
-  });
-
-  /*--------------- GroupsPage controller --------------------*/
-
-  describe('GroupsPageCtrl', function () {
-    var scope, peopleBaseCtrl, peopleCollectionMixin, Groups, deferred;
-
-    beforeEach(inject(function ($rootScope, $controller, _Groups_, $q) {
-      scope = $rootScope.$new();
-      peopleBaseCtrl = jasmine.createSpy();
-      peopleCollectionMixin = jasmine.createSpy();
-
-      deferred = $q.defer();
-      Groups = _Groups_;
-      spyOn(Groups, 'get').andReturn(deferred.promise)
-
-      $controller('GroupsPageCtrl', {
-        $scope: scope,
-        peopleBaseCtrl: peopleBaseCtrl,
-        peopleCollectionMixin: peopleCollectionMixin,
-        $routeParams: { id: '4' }
-      });
-    }));
-
-    it('sets the page title', function () {
-      expect(scope.pageTitle).toEqual('Group');
-    });
-
-    it('sets the filterName', function () {
-      expect(scope.filterName).toEqual('Group');
-    });
-
-    it('gets the group from the Groups collection', function () {
-      expect(Groups.get).toHaveBeenCalledWith(4);
-    });
-
-    describe('when the group is found', function () {
-      beforeEach(function () {
-        deferred.resolve({id: 4, name: 'Some group'});
-        scope.$apply();
-      });
-
-      it('sets the page title', function () {
-        expect(scope.pageTitle).toEqual('Group: Some group');
-      });
-
-      it('sets the filterName', function () {
-        expect(scope.filterName).toEqual('Some group');
-      });
-    });
-
-    describe('when the group is not found', function () {
-      beforeEach(function () {
-        deferred.reject();
-        scope.$apply();
-      });
-
-      it('sets the page title', function () {
-        expect(scope.pageTitle).toEqual('Group: Not found');
-      });
-
-      it('sets the filterName', function () {
-        expect(scope.filterName).toEqual('Unknown group');
-      });
-    });
-
-    it('sets canAddStudent', function () {
-      expect(scope.canAddStudent).toEqual(false);
-    });
-
-    it('sets canAddTeacher', function () {
-      expect(scope.canAddTeacher).toEqual(false);
-    });
-
-    it('includes peopleCollectionMixin', function () {
-      expect(peopleCollectionMixin).toHaveBeenCalledWith(scope);
-    });
-
-    it('includes the base controller', function () {
-      expect(peopleBaseCtrl).toHaveBeenCalledWith(scope);
     });
   });
 });

@@ -21,7 +21,7 @@ angular.module('journals.posts.models', ['journals.model', 'journals.collection'
           postExtension()
         ],
         saveFields: ['title', 'content', 'tag_names', 'teacher_ids', 'student_ids',
-          'visible_to_guardians', 'visible_to_students', 'student_observations_attributes']
+          'visible_to_guardians', 'visible_to_students', 'student_observations_attributes', 'image_ids']
       });
 
       return collection(postModel);

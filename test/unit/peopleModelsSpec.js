@@ -59,7 +59,7 @@ describe('people models module', function () {
       });
 
       it('calls the collection with the model object', function () {
-        expect(collection).toHaveBeenCalledWith('model', { url: '/students/all' });
+        expect(collection).toHaveBeenCalledWith('model');
       });
 
       it('returns the collection object', function () {
@@ -98,7 +98,7 @@ describe('people models module', function () {
       });
 
       it('calls the collection with the model object', function () {
-        expect(collection).toHaveBeenCalledWith('model', { url: '/teachers/all' });
+        expect(collection).toHaveBeenCalledWith('model');
       });
 
       it('returns the collection object', function () {
@@ -136,7 +136,7 @@ describe('people models module', function () {
       });
 
       it('calls the collection with the model object', function () {
-        expect(collection).toHaveBeenCalledWith('model', { url: '/guardians/all' });
+        expect(collection).toHaveBeenCalledWith('model');
       });
 
       it('returns the collection object', function () {

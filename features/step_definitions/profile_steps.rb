@@ -86,6 +86,9 @@ end
 # Adding
 When /^I add the (teacher|student) "(.*?)"$/ do |p_type, p_name|
   step 'I select "Add ' + p_type + '" from the add menu'
+  step 'take a screenshot'
+  page.should have_css('h3 .editor', visible: true)
+  step 'take a screenshot'
   @viewing = page.first('.profile')
   fill_input_inside @viewing.find('h3'), p_name
 end

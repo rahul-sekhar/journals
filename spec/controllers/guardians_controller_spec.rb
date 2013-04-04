@@ -12,14 +12,15 @@ describe GuardiansController do
     ability.can :manage, Guardian
   end
 
-  describe "GET all" do
+  describe "GET index" do
+    let(:make_request) { get :index, format: :json }
     it "raises an exception if the user cannot view guardians" do
       ability.cannot :read, Guardian
-      expect{ get :all, format: :json }.to raise_exception(CanCan::AccessDenied)
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
     it "has a status of 200" do
-      get :all, format: :json
+      make_request
       response.status.should == 200
     end
 
@@ -28,7 +29,7 @@ describe GuardiansController do
       student = create(:student)
       guardian1 = create(:guardian, students: [create(:student), student])
       guardian2 = create(:guardian, students: [student])
-      get :all, format: :json
+      make_request
       assigns(:guardians).should =~ [guardian1, guardian2]
     end
   end

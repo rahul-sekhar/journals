@@ -10,24 +10,46 @@ class PagesController < ApplicationController
   end
 
   def people
-    filter_and_display_people( People.current, true )
-  end
+    if params[:filter] == 'students'
+      @people = Student.current
 
-  def archived
-    filter_and_display_people( People.archived, true )
-  end
+    elsif params[:filter] == 'teachers'
+      @people = Teacher.current
 
-  def mentees
-    if current_profile.is_a? Teacher
-      mentees = current_profile.mentees
+    elsif params[:filter] == 'mentees'
+      if current_profile.is_a? Teacher
+        @people = current_profile.mentees
+      else
+        @people = Student.where("1 = 0")
+      end
+
+    elsif params[:filter] == 'archived'
+      map_profiles = true
+      @people = People.archived
+
+    elsif params[:filter].to_s[0..5] == 'group-'
+      group = Group.find_by_id(params[:filter][6..-1])
+      if (group)
+        @people = group.students.current
+      else
+        @people = Student.where("1 = 0")
+      end
+
     else
-      mentees = Student.where("1 = 0")
+      map_profiles = true
+      @people = People.current
     end
-    filter_and_display_people( mentees )
+
+    @people = @people.alphabetical.load_associations
+    @people = @people.search(params[:search]) if params[:search]
+
+    @people = paginate(@people)
+    @people = @people.map{ |person| person.profile } if map_profiles
+
+    render "pages/people"
   end
 
   def update_password
-
     if params['user']
       @current_pass = params['user']['current_password']
       @new_pass = params['user']['new_password']
