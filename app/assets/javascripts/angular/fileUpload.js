@@ -13,7 +13,9 @@ angular.module('journals.fileUpload', []).
       template:
         '<div class="file-upload">' +
           '<p class="notification">{{message}}</p>' +
-          '<input type="file" ng-hide="uploading" />' +
+          '<div ng-hide="uploading">' +
+            '<input type="file" />' +
+          '</div>' +
           '<div class="progress" ng-show="uploading">' +
             '<span class="bar" ng-style="{width: progress + \'%\'}"></span>' +
             '<span class="text">{{progress + \'%\'}}</span>' +
