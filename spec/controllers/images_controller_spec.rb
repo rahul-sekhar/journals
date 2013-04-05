@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ImagesController, :focus do
+describe ImagesController do
   let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new

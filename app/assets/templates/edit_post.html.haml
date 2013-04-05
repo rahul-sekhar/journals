@@ -13,7 +13,7 @@
         %input#post-title{ "ng-model"=>"post.title", "placeholder"=>"Title" }
       %li.text.input
         %label{ "for"=>"post-content" } Content
-        %tinymce{ "ng-model-attr"=>"post.content", "editor-id"=>"post-content" }
+        %textarea#post-content{ "ng-model"=>"post.content", "tinymce"=>true }
       %li.string.input
         %label{ "for"=>"post-tags" } Tags
         %input#post-tags{ "ng-model"=>"post.tag_names", "placeholder"=>"Tags"}

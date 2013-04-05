@@ -89,12 +89,14 @@ angular.module('journals.posts.directives', ['journals.posts', 'journals.assets'
 
   directive('observationEditor', [function () {
     return function(scope, elem, attrs) {
-      var checkHeightFn, obsIframe, buttonList;
+      var editor, checkHeightFn, obsIframe, buttonList;
+
+      editor = elem.find('textarea');
 
       // get elements on editor initialization
-      elem.on('editorInit', function () {
-        obsIframe = elem.parent().find('#' + elem.attr('id') + '_ifr');
-        buttonList = elem.parent().find('#observation-buttons');
+      editor.on('editorInit', function () {
+        obsIframe = editor.parent().find('#' + editor.attr('id') + '_ifr');
+        buttonList = editor.parent().find('#observation-buttons');
         checkHeightFn();
       });
 

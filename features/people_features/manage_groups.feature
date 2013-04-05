@@ -143,7 +143,7 @@ Scenario: Manage a group and view the reflected changes in each student
   Given a student Parvathy exists
   And that student belongs to the groups "group a, group b, group c"
   And the groups "group d, group e" exist
-  And I am on the students page
+  And I am on the people page
   And I look at the profile for "Parvathy Manjunath"
 
   When I open the groups menu

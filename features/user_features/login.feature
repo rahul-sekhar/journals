@@ -28,11 +28,12 @@ Scenario: Log in with a valid email and password
   Then I should be on the posts page
   And I should see "You are signed in as Rahul Sekhar"
 
+
 Scenario: Log in when accessing a page other than the home page
   Given a teacher Rahul exists
-  When I am on the teachers page
+  When I am on the people page
   Then I should be on the login page
   When I log in with "rahul@mail.com" and "pass"
-  Then I should be on the teachers page
-  And the page heading should be "Teachers"
+  Then I should be on the people page
+  And the page heading should be "People"
   And I should see "You are signed in as Rahul Sekhar"

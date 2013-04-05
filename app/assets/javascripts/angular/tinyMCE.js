@@ -2,49 +2,15 @@
 
 angular.module('journals.tinymce', ['journals.fileUpload']).
 
-  directive('tinymce', [function () {
+  directive('tinymce', ['imageDialog', function (imageDialog) {
     tinyMCE.baseURL = '/tinymce/';
-    // Image upload function
-    tinymce.create('tinymce.plugins.ngImage', {
-      init: function (editor, url) {
-        editor.addCommand('ngImage', function() {
-          $('#' + editor.editorId).trigger('ngImageClick');
-        });
-
-        editor.addButton('ngimage', {
-          title : 'Insert image',
-          cmd : 'ngImage',
-          class: 'mce_image'
-        });
-      }
-    });
-
-    tinymce.PluginManager.add('ngimage', tinymce.plugins.ngImage);
 
     return {
-      restrict: 'E',
-      scope: {
-        ngModelAttr: '='
-      },
-      template: '<div class="tinymce-wrapper">' +
-        '<textarea ng-model="ngModelAttr"></textarea>' +
-        '<modal class="image-dialog" show-on="imageDialogShown">' +
-          '<p>Upload an image</p>' +
-          '<file-upload url="/images.json" on-upload="imageUploaded(imageData)"></file-upload>' +
-          '<button ng-click="cancelImage()">Cancel</button>' +
-        '</modal>' +
-        '</div>',
-      replace: true,
+      require: 'ngModel',
+      link: function(scope, elem, attrs, ngModel) {
+        var saveFn;
 
-      link: function(scope, elem, attrs) {
-        var saveFn, editor;
-        editor = elem.find('textarea:first');
-
-        if (attrs.editorId) {
-          editor.attr('id', attrs.editorId);
-        }
-
-        editor.tinymce({
+        elem.tinymce({
           popup_css : "/tinymce/themes/advanced/skins/default/dialog.css",
           width: 474,
           theme : "advanced",
@@ -68,37 +34,68 @@ angular.module('journals.tinymce', ['journals.fileUpload']).
             }
           },
           oninit: function() {
-            editor.trigger('editorInit');
+            elem.trigger('editorInit');
           }
         });
 
         saveFn = function() {
-          editor.tinymce().save();
-          scope.ngModelAttr = editor.val();
+          elem.tinymce().save();
+          ngModel.$setViewValue(elem.val());
         };
 
         scope.$on('saveText', function () {
           saveFn();
         });
-
-        // Image upload hooks
-        editor.on('ngImageClick', function () {
-          scope.$apply(function () {
-            scope.$broadcast('resetUpload');
-            scope.imageDialogShown = true;
-          });
-        });
-
-        scope.cancelImage = function () {
-          scope.$broadcast('cancelUpload');
-          scope.imageDialogShown = false;
-        };
-
-        scope.imageUploaded = function (imageData) {
-          scope.imageDialogShown = false;
-          editor.tinymce().execCommand('mceInsertContent', false, '<img src="' + imageData.url + '" alt="" />');
-          scope.$emit('imageUploaded', imageData);
-        };
       }
     };
+  }]).
+
+  factory('imageDialog', ['$compile', '$rootScope', function ($compile, $rootScope) {
+    var modal, scope, currentEditor;
+
+    // Set up dialog
+    modal = angular.element('<modal id="image-upload-dialog" show-on="imageDialogShown">' +
+      '<p>Upload an image</p>' +
+      '<file-upload url="/images.json" on-upload="uploaded(imageData)"></file-upload>' +
+      '<button ng-click="cancel()">Cancel</button>' +
+    '</modal>');
+
+    modal.appendTo('body')
+    scope = $rootScope.$new();
+    modal = $compile(modal)(scope);
+
+    scope.cancel = function () {
+      scope.imageDialogShown = false;
+    };
+
+    scope.$watch('imageDialogShown', function (value) {
+      if (value === false) {
+        scope.$broadcast('cancelUpload');
+      }
+    });
+
+    scope.uploaded = function (imageData) {
+      scope.imageDialogShown = false;
+      currentEditor.execCommand('mceInsertContent', false, '<img src="' + imageData.url + '" alt="" />');
+      $rootScope.$broadcast('imageUploaded', imageData);
+    };
+
+    // Set up plugin
+    tinymce.create('tinymce.plugins.ngImage', {
+      init: function (editor, url) {
+        editor.addCommand('ngImage', function() {
+          scope.$broadcast('resetUpload');
+          currentEditor = editor;
+          scope.imageDialogShown = true;
+        });
+
+        editor.addButton('ngimage', {
+          title : 'Insert image',
+          cmd : 'ngImage',
+          class: 'mce_image'
+        });
+      }
+    });
+
+    tinymce.PluginManager.add('ngimage', tinymce.plugins.ngImage);
   }]);

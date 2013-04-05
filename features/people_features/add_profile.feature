@@ -1,4 +1,3 @@
-@current
 Feature: Add profiles
 
 Students, teachers and guardians are added by entering their first and last name.
