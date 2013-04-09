@@ -11,12 +11,13 @@ Background:
   And an archived student for each alphabet exists
   And I am on the people page
 
+
 Scenario: View pages of people
   Then I should see a profile for "A"
   And I should see a profile for "E"
   And I should not see a profile for "F"
   And the selected page should be 1
-  And the pages 1-6 should be visible
+  And the pages 1-5 should be visible
 
   When I select page 2
   And I should not see a profile for "E"
@@ -25,6 +26,8 @@ Scenario: View pages of people
   And I should see a profile for "J"
   And the selected page should be 2
 
+  When I select page 4
+  Then the pages 2-6 should be visible
   When I select page 6
   Then I should not see a profile for "F"
   And I should see a profile for "Z"

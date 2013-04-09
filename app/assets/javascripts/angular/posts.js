@@ -58,8 +58,6 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
       ajax({ url: '/posts/' + $routeParams.id }).
         then(function (response) {
           $scope.posts = [Posts.update(response.data)];
-
-          console.log($scope.posts[0])
         }, function () {
           $scope.posts = [];
           $scope.pageTitle = 'Post not found';
