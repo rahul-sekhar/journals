@@ -106,7 +106,7 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
     };
 
     $scope.$watch('instance._edit', function(value) {
-      if (value && value === $scope.field) {
+      if (value && $scope.instance.isNew() && value === $scope.field) {
         $scope.editMode = true;
       }
     });

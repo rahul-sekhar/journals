@@ -47,6 +47,9 @@ class Post < ActiveRecord::Base
     posts = posts.search(params[:search]) if params[:search]
     posts = posts.has_group(params[:group]) if params[:group].to_i > 0
     posts = posts.has_student(params[:student]) if params[:student].to_i > 0
+    posts = posts.has_tag(params[:tag]) if params[:tag].to_i > 0
+    posts = posts.date_from(params[:date_from]) if params[:date_from]
+    posts = posts.date_to(params[:date_to]) if params[:date_to]
     return posts
   end
 
@@ -161,11 +164,35 @@ class Post < ActiveRecord::Base
     where { title.like query }
   end
 
+  def self.has_tag(tag_id)
+    where{ id.in( Post.select{id}.joins{ tags }.where{ tags.id == tag_id } ) }
+  end
+
   def self.has_student(student_id)
     where{ id.in( Post.select{id}.joins{ students }.where{ students.id == student_id } ) }
   end
 
   def self.has_group(group_id)
     where{ id.in( Post.select{id}.joins{ students.groups }.where{ groups.id == group_id } ) }
+  end
+
+  def self.date_from(date)
+    begin
+      date = DateTime.strptime( "#{date}+5:30", '%d-%m-%Y%z' )
+    rescue
+      return self.scoped
+    end
+
+    where{ created_at >= date }
+  end
+
+  def self.date_to(date)
+    begin
+      date = DateTime.strptime( "#{date}+5:30", '%d-%m-%Y%z' ) + 1.day
+    rescue
+      return self.scoped
+    end
+
+    where{ created_at < date }
   end
 end
