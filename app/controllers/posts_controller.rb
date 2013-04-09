@@ -12,6 +12,10 @@ class PostsController < ApplicationController
   def show
   end
 
+  def new
+    raise ActiveRecord::RecordNotFound
+  end
+
   def create
     # Fix for rails bug with an empty association attributes array
     params[:post][:student_observations_attributes] ||= [];
@@ -23,6 +27,10 @@ class PostsController < ApplicationController
     else
       render text: @post.errors.full_messages.first, status: :unprocessable_entity
     end
+  end
+
+  def edit
+    raise ActiveRecord::RecordNotFound
   end
 
   def update

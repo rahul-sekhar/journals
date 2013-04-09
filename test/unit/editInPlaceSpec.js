@@ -179,25 +179,48 @@ describe('editInPlace module', function () {
     });
 
     describe('when the instances _edit attribute is set', function () {
-      describe('with the correct field', function() {
+      describe('with a new instance', function () {
         beforeEach(function () {
-          scope.instance._edit = 'attr';
-          scope.$apply();
+          scope.instance.isNew = function () { return true; }
         });
 
-        it('sets editMode to true', function() {
-          expect(scope.editMode).toEqual(true);
+        describe('with the correct field', function() {
+          beforeEach(function () {
+            scope.instance._edit = 'attr';
+            scope.$apply();
+          });
+
+          it('sets editMode to true', function() {
+            expect(scope.editMode).toEqual(true);
+          });
+        });
+
+        describe('with a different field', function() {
+          beforeEach(function () {
+            scope.instance._edit = 'attr1';
+            scope.$apply();
+          });
+
+          it('does not set editMode', function() {
+            expect(scope.editMode).toBeUndefined();
+          });
         });
       });
 
-      describe('with a different field', function() {
+      describe('with an existing instance', function () {
         beforeEach(function () {
-          scope.instance._edit = 'attr1';
-          scope.$apply();
+          scope.instance.isNew = function () { return false; }
         });
 
-        it('does not set editMode', function() {
-          expect(scope.editMode).toBeUndefined();
+        describe('with the correct field', function() {
+          beforeEach(function () {
+            scope.instance._edit = 'attr';
+            scope.$apply();
+          });
+
+          it('does not change editMode', function() {
+            expect(scope.editMode).toBeUndefined();
+          });
         });
       });
     });

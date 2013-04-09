@@ -90,6 +90,11 @@ angular.module('journals.model', ['journals.ajax', 'journals.model.associations'
           angular.forEach(options.extensions, function (extension) {
             extension(instance);
           });
+
+          // Remove deleted attribute
+          if (data && data.id && instance.deleted) {
+            delete instance.deleted;
+          }
         };
 
         // Save instance

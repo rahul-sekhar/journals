@@ -86,17 +86,45 @@ describe('Model module', function () {
       });
 
       describe('load()', function () {
-        beforeEach(function () {
-          instance = model.create({id: 5, name: 'Something', field: 'Some value'})
-          instance.load({id: 5, name: 'Something different', other_field: 67, func: function () {}});
+        describe('without deleted set', function () {
+          beforeEach(function () {
+            instance = model.create({id: 5, name: 'Something', field: 'Some value'});
+            instance.load({id: 5, name: 'Something different', other_field: 67, func: function () {}});
+          });
+
+          it('copies passed data', function () {
+            expect(instance).toEqualData({id: 5, name: 'Something different', other_field: 67, field: 'Some value'});
+          });
+
+          it('ignores functions', function () {
+            expect(instance.func).toBeUndefined();
+          });
         });
 
-        it('copies passed data', function () {
-          expect(instance).toEqualData({id: 5, name: 'Something different', other_field: 67, field: 'Some value'});
-        });
+        describe('with deleted set', function () {
+          beforeEach(function () {
+            instance = model.create({name: 'Something', field: 'Some value', deleted: true});
+          });
 
-        it('ignores functions', function () {
-          expect(instance.func).toBeUndefined();
+          describe('when data with an id is loaded', function () {
+            beforeEach(function () {
+              instance.load({id: 8, name: 'Something different', other_field: 67, func: function () {}});
+            });
+
+            it('removes deleted', function () {
+              expect(instance).toEqualData({id: 8, name: 'Something different', other_field: 67, field: 'Some value'});
+            });
+          });
+
+          describe('when data without an id is loaded', function () {
+            beforeEach(function () {
+              instance.load({name: 'Something different', other_field: 67, func: function () {}});
+            });
+
+            it('does not remove deleted', function () {
+              expect(instance).toEqualData({name: 'Something different', other_field: 67, field: 'Some value', deleted: true});
+            });
+          });
         });
       });
 
