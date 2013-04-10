@@ -1,6 +1,10 @@
 #upper-bar {
   line-height: 22px;
 
+  .inner-wrapper {
+    width: 1000%;
+  }
+
   form {
     float: left;
   }
@@ -26,13 +30,37 @@
   .title {
     margin: 0;
     background: image-url('small-icons.png') no-repeat right -528px;
-    padding-right: 20px;
+    padding-right: 15px;
     cursor: pointer;
-    padding-left: 10px;
+    margin-left: 10px;
     color: $cream;
+    white-space: nowrap;
+    position: relative;
 
     &:hover { background-position: right -578px; }
+
+    a {
+      color: $cream;
+      display: block;
+      overflow: hidden;
+      position: relative;
+      padding-right: 8px;
+
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 8px;
+
+        @include background-image(linear-gradient(right, rgba(102,144,119, 1), rgba(102,144,119, 0)));
+      }
+    }
   }
+
+  a.title { padding-right: 20px; }
 
   .menu, .click-menu {
     color: $cream;
@@ -40,6 +68,16 @@
     text-transform: lowercase;
     font-weight: bold;
     float: left;
+    max-width: 120px;
+    @include transition(max-width ease 1000ms, margin-left ease 1000ms);
+
+    &:hover, &.selected {
+      .title, .title a { color: lighten($cream, 20); }
+    }
+
+    &.selected {
+      max-width: 250px;
+    }
 
     ul {
       background-color: $teal;
@@ -62,15 +100,9 @@
       margin-top: 2px;
     }
 
-    &:hover {
-      .title { color: lighten($cream, 20); }
-    }
-
-    .title.selected { color: lighten($cream, 20); }
-
     .clear {
       margin-left: 10px;
-      margin-top: 10px;
+      display: block;
       font-size: 14px;
       font-weight: normal;
       color: $grey-2;
@@ -80,7 +112,14 @@
       @include link-colors($cream, lighten($cream, 20));
     }
 
+    .current {
+      display: block;
+      margin-left: 10px;
+      line-height: 100%;
+    }
+
     .container {
+      padding-top: 10px;
       width: 148px;
       position: absolute;
       z-index: 20;
@@ -125,20 +164,43 @@
     }
   }
 
-  .date-placeholder, .tag-placeholder {
+  .groups.click-menu {
+    &.selected {
+      max-width: 380px;
+    }
+  }
+
+  .tags.click-menu {
+    .title {
+      float: left;
+      display: block;
+      height: 22px;
+      width: 40px;
+      background: image-url('large-icons.png') no-repeat -10px -844px;
+      margin-left: 20px;
+    }
+
+    .current, .clear {
+      text-align: right;
+      margin-right: 10px;
+    }
+
+    &.selected .title, .title:hover {
+      background-position: -10px -874px;
+    }
+
+    .container {
+      right: 0;
+      left: auto;
+    }
+  }
+
+  .date, .tag-placeholder {
     float: left;
     display: block;
     width: 40px;
     height: 22px;
-    margin-left: 20px;
-    background: image-url('large-icons.png') no-repeat -10px -723px;
-  }
-
-  .date-placeholder {
     margin-left: 30px;
-  }
-
-  .tag-placeholder {
-    background-position: -10px -844px;
+    background: image-url('large-icons.png') no-repeat -10px -723px;
   }
 }

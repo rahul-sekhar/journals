@@ -134,7 +134,9 @@ h2 {
 
 #main-content {
   width: 648px;
+  min-height: 300px;
   padding-bottom: 40px;
+  overflow: hidden;
   @include new-clearfix;
 }
 

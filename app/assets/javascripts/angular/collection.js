@@ -9,7 +9,8 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax']).
 
         defaults = {
           reloadInterval: 30000,
-          url: model.getPath()
+          url: model.getPath(),
+          reload: false
         };
         options = angular.extend(defaults, options);
 
@@ -60,7 +61,7 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax']).
 
         // Returns a reference to the entire collection
         collectionObj.all = function () {
-          if (!promise) {
+          if (!promise || options.reload) {
             queryFn();
           }
           return collection;

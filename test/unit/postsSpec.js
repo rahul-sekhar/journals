@@ -6,8 +6,8 @@ describe('posts module', function () {
   /*------------------- Posts controller ------------------*/
 
   describe('PostsCtrl', function () {
-    var scope, httpBackend, controller, Posts, location, createHelpPost, helpPost,
-      searchFiltersFactory, searchFilters, Students, Groups;
+    var scope, httpBackend, controller, Posts, location,
+      searchFiltersFactory, searchFilters, Students, Groups, Tags;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, $location) {
       httpBackend = $httpBackend;
@@ -31,9 +31,10 @@ describe('posts module', function () {
 
       Students = { all: jasmine.createSpy().andReturn('student list') };
       Groups = { all: jasmine.createSpy().andReturn('group list') };
+      Tags = { all: jasmine.createSpy().andReturn('tag list') };
 
-      helpPost = { setStep: jasmine.createSpy() }
-      createHelpPost = jasmine.createSpy().andReturn(helpPost);
+      // helpPost = { setStep: jasmine.createSpy() }
+      // createHelpPost = jasmine.createSpy().andReturn(helpPost);
     }));
 
     describe('on success', function () {
@@ -45,10 +46,11 @@ describe('posts module', function () {
         });
         controller('PostsCtrl', {
           $scope: scope,
-          createHelpPost: createHelpPost,
+          // createHelpPost: createHelpPost,
           searchFilters: searchFiltersFactory,
           Students: Students,
-          Groups: Groups
+          Groups: Groups,
+          Tags: Tags
         });
       });
 
@@ -91,23 +93,23 @@ describe('posts module', function () {
         });
       });
 
-      describe('helpPost', function () {
-        it('creates a help post instance', function () {
-          expect(createHelpPost).toHaveBeenCalled();
-          expect(scope.helpPost).toBe(helpPost);
-        });
+      // describe('helpPost', function () {
+      //   it('creates a help post instance', function () {
+      //     expect(createHelpPost).toHaveBeenCalled();
+      //     expect(scope.helpPost).toBe(helpPost);
+      //   });
 
-        it('sets the helpPost step to 1 when help is shown', function () {
-          expect(helpPost.setStep).not.toHaveBeenCalled();
-          scope.help.shown = true;
-          scope.$apply();
-          expect(helpPost.setStep).toHaveBeenCalledWith(1);
-        });
-      });
+      //   it('sets the helpPost step to 1 when help is shown', function () {
+      //     expect(helpPost.setStep).not.toHaveBeenCalled();
+      //     scope.help.shown = true;
+      //     scope.$apply();
+      //     expect(helpPost.setStep).toHaveBeenCalledWith(1);
+      //   });
+      // });
 
       describe('filters', function () {
         it('initializes filters', function () {
-          expect(searchFiltersFactory).toHaveBeenCalledWith(['search', 'student', 'group']);
+          expect(searchFiltersFactory).toHaveBeenCalledWith(['search', 'student', 'group', 'tag']);
         });
 
         it('initializes current filter values to the scope', function () {
@@ -123,6 +125,11 @@ describe('posts module', function () {
         it('initializes groups', function () {
           expect(Groups.all).toHaveBeenCalled();
           expect(scope.groups).toEqual('group list');
+        });
+
+        it('initializes tags', function () {
+          expect(Tags.all).toHaveBeenCalled();
+          expect(scope.tags).toEqual('tag list');
         });
 
         describe('filter(filter, val)', function () {
@@ -217,6 +224,31 @@ describe('posts module', function () {
             expect(searchFilters.filter).toHaveBeenCalledWith('group', null);
           });
         });
+
+        describe('tagName', function () {
+          beforeEach(inject(function ($q) {
+            Tags.get = jasmine.createSpy().andReturn($q.when({name: 'name'}));
+          }));
+
+          it('is initialized to all tags', function () {
+            scope.$apply();
+            expect(scope.tagName).toEqual('All tags');
+          });
+
+          it('is set to all tags with the filter set to null', function () {
+            scope.filters.tag = null;
+            scope.$apply();
+            expect(scope.tagName).toEqual('All tags');
+            expect(Tags.get).not.toHaveBeenCalled();
+          });
+
+          it('is set to the tag name', function () {
+            scope.filters.tag = 4;
+            scope.$apply();
+            expect(scope.tagName).toEqual('name');
+            expect(Tags.get).toHaveBeenCalledWith(4);
+          });
+        });
       });
 
       describe('on response', function () {
@@ -256,10 +288,11 @@ describe('posts module', function () {
         httpBackend.expectGET('/path/to/posts.json').respond(400);
         controller('PostsCtrl', {
           $scope: scope,
-          createHelpPost: createHelpPost,
+          // createHelpPost: createHelpPost,
           searchFilters: searchFiltersFactory,
           Students: Students,
-          Groups: Groups
+          Groups: Groups,
+          Tags: Tags
         });
         httpBackend.flush();
       });

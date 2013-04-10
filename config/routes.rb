@@ -50,5 +50,7 @@ Journals::Application.routes.draw do
 
   resources :groups, except: [:new, :edit, :show]
 
+  resources :tags, only: [:index]
+
   match "*not_found", :to => "errors#not_found"
 end

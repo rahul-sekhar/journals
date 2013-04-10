@@ -20,11 +20,7 @@ article.post {
       height: 25px;
       width: 100%;
 
-      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255,255,255, 1)), to(rgba(255,255,255, 0)));
-      background: -webkit-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
-      background: -moz-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
-      background: -ms-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
-      background: -o-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
+      @include background-image(linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1)));
     }
   }
 

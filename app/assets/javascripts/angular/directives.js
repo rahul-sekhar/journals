@@ -16,7 +16,7 @@ angular.module('journals.directives', []).
           '<div class="list" ng-show="alwaysShown || listShown">' +
             '<input ng-model="filter" focus-on="listShown" />' +
             '<ul>' +
-              '<li ng-repeat="item in list | filter: filterObj">' +
+              '<li ng-repeat="item in list | filter: filterObj | orderBy: showProperty">' +
                 '<a href="" ng-hide="item.deleted" internal-click="select(item)">{{item[showProperty]}}</a>' +
               '</li>' +
             '</ul>' +
@@ -75,7 +75,7 @@ angular.module('journals.directives', []).
         title.click(function() {
           scope.$apply(function () {
             container.toggleClass('shown');
-            title.toggleClass('selected');
+            elem.toggleClass('selected');
 
             if (!container.hasClass('shown')) {
               scope.$broadcast('menuClosed');
@@ -99,7 +99,7 @@ angular.module('journals.directives', []).
 
         closeFn = function() {
           container.removeClass('shown');
-          title.removeClass('selected');
+          elem.removeClass('selected');
           scope.$broadcast('menuClosed');
         }
 

@@ -257,9 +257,9 @@ article.profile {
       background: image-url('small-icons.png') no-repeat right -176px;
       padding-right: 20px;
       cursor: pointer;
-
-      &:hover,&.selected { color: lighten($off-black, 30); }
     }
+
+    h4:hover, &.selected h4 { color: lighten($off-black, 30); }
 
     .container {
       top: 25px;

@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts.models', 'journals.confirm',
-  'journals.help', 'journals.posts.directives', 'journals.searchFilters', 'journals.people.models',
-  'journals.groups']).
+  'journals.posts.directives', 'journals.searchFilters', 'journals.people.models',
+  'journals.groups', 'journals.tags']).
 
-  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'createHelpPost', 'searchFilters',
-    'Students', 'Groups',
-    function ($scope, ajax, Posts, $location, createHelpPost, searchFilters, Students, Groups) {
+  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'searchFilters',
+    'Students', 'Groups', 'Tags',
+    function ($scope, ajax, Posts, $location, searchFilters, Students, Groups, Tags) {
       var loadFn, searchFiltersObj;
 
       $scope.pageTitle = 'Viewing posts';
@@ -30,6 +30,7 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
       // Filter lists
       $scope.students = Students.all();
       $scope.groups = Groups.all();
+      $scope.tags = Tags.all();
 
       $scope.hideMenus = function () {
         $scope.$broadcast('hideMenus', []);
@@ -61,8 +62,21 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
         }
       });
 
+      $scope.$watch('filters.tag', function (id) {
+        if (id) {
+          if (angular.isString(id)) {
+            id = parseInt(id, 10);
+          }
+          Tags.get(id).then(function (tag) {
+              $scope.tagName = tag.name;
+            });
+        } else {
+          $scope.tagName = 'All tags';
+        }
+      });
+
       // Handle filters
-      searchFiltersObj = searchFilters(['search', 'student', 'group']);
+      searchFiltersObj = searchFilters(['search', 'student', 'group', 'tag']);
 
       $scope.filter = function (filter, value) {
         $scope.filters[filter] = value;
@@ -92,14 +106,14 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
       loadFn();
 
       // Load help post
-      $scope.helpPost = createHelpPost();
-      $scope.$watch('help.shown', function (value) {
-        if (value) {
-          $scope.helpPost.setStep(1);
-        } else {
-          $scope.helpPost.setStep(null);
-        }
-      });
+      // $scope.helpPost = createHelpPost();
+      // $scope.$watch('help.shown', function (value) {
+      //   if (value) {
+      //     $scope.helpPost.setStep(1);
+      //   } else {
+      //     $scope.helpPost.setStep(null);
+      //   }
+      // });
     }]).
 
   controller('ViewPostCtrl', ['$scope', '$routeParams', 'ajax', 'Posts',
