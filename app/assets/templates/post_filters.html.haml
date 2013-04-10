@@ -19,10 +19,15 @@
       %span.clear.disabled{"ng-hide"=>"filters.student"} Clear
       %filtered-list{ "list"=>"students", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"filterStudent(value); hideMenus()" }
 
-  .date
+  .date.click-menu{ "ng-show"=>"isTeacher" }
+    %p.title{ "ng-class"=>"{ active: filters.dateFrom || filters.dateTo }" }
+    .container
+      %p{ "edit-in-place"=>true, "instance"=>"filters", "type"=>"date", "field"=>"dateFrom", "no-age" => "true", "blank-date"=>"true" }
+      %p to
+      %p{ "edit-in-place"=>true, "instance"=>"filters", "type"=>"date", "field"=>"dateTo", "no-age" => "true", "blank-date"=>"true" }
 
   .tags.click-menu{ "ng-show"=>"isTeacher" }
-    %p.title
+    %p.title{ "ng-class"=>"{ active: filters.tag }" }
     .container
       %span.current{ "ng-show"=>"filters.tag" } {{tagName}}
       %a.clear{ "href"=>"", "ng-show"=>"filters.tag", "ng-click"=>"filter('tag', null)" } Clear

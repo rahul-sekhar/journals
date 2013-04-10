@@ -177,7 +177,9 @@
       height: 22px;
       width: 40px;
       background: image-url('large-icons.png') no-repeat -10px -844px;
-      margin-left: 20px;
+      margin-left: 10px;
+
+      &.active { background-position: -10px -904px; }
     }
 
     .current, .clear {
@@ -187,6 +189,8 @@
 
     &.selected .title, .title:hover {
       background-position: -10px -874px;
+
+      &.active { background-position: -10px -934px; }
     }
 
     .container {
@@ -195,12 +199,65 @@
     }
   }
 
-  .date, .tag-placeholder {
-    float: left;
-    display: block;
-    width: 40px;
-    height: 22px;
-    margin-left: 30px;
-    background: image-url('large-icons.png') no-repeat -10px -723px;
+  .date.click-menu {
+    .title {
+      float: left;
+      display: block;
+      width: 40px;
+      height: 22px;
+      margin-left: 20px;
+      background: image-url('large-icons.png') no-repeat -10px -723px;
+
+      &.active { background-position: -10px -783px; }
+    }
+
+    &.selected .title, .title:hover {
+      background-position: -10px -753px;
+
+      &.active { background-position: -10px -813px; }
+    }
+
+    div.container {
+      padding: 10px;
+      width: 120px;
+      text-align: center;
+    }
+
+    .value {
+      display: block;
+      font-weight: normal;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      border: none;
+      background-color: transparent;
+      text-align: center;
+      font-size: 14px;
+      color: $cream;
+    }
+
+    span.container {
+      padding: 0;
+      width: auto;
+      visibility: visible;
+      position: relative;
+      left: 0;
+      top: 0;
+    }
+
+    .clear-date {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      background: image-url('small-icons.png') no-repeat 0 -274px;
+      width: 20px;
+      height: 22px;
+
+      &:hover {
+        background-position: 0 -315px;
+      }
+    }
   }
 }

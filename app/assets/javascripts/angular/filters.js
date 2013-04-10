@@ -63,6 +63,15 @@ angular.module('journals.filters', []).
     };
   }]).
 
+  filter('blankDate', function () {
+    return function (text) {
+      if (!text) {
+        return '\u2014';
+      }
+      return text;
+    };
+  }).
+
   /**
    * Truncate Filter
    * @Param text

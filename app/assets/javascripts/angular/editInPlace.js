@@ -8,8 +8,10 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
         instance: '=',
         field: '@',
         type: '@',
-        editMode: '=',
-        placeholder: '@'
+        editMode: '=?',
+        placeholder: '@',
+        noAge: '@',
+        blankDate: '@'
       },
       template:
         '<span class="container">' +
@@ -31,8 +33,10 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
           if (val === undefined || val === null || val === 'text' || val === 'date') {
             input = angular.element('<input class="editor" placeholder="{{placeholder}}" ng-show="editMode" focus-on="editMode" ng-model="editorValue" />');
             scope.filter = null;
-            if (val === 'date') {
+            if (val === 'date' && !scope.noAge) {
               scope.filter = 'dateWithAge';
+            } else if (scope.blankDate) {
+              scope.filter = 'blankDate';
             }
 
           } else if (val === 'textarea') {
@@ -72,6 +76,11 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
                   }
                 });
               }
+            });
+
+            // Prevent datepicker clicks from propagating
+            input.datepicker('widget').bind('click', function(event) {
+              event.stopPropagation();
             });
 
             scope.clearDate = function () {

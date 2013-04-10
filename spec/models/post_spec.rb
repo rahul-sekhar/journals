@@ -540,34 +540,34 @@ describe Post do
 
     describe "date" do
       it "returns posts filtered by the from date" do
-        Post.filter_by_params({date_from: "05-05-2010"}).should =~ [@post3, @post4]
+        Post.filter_by_params({dateFrom: "05-05-2010"}).should =~ [@post3, @post4]
       end
 
       it "returns posts filtered by the to date" do
-        Post.filter_by_params({date_to: "05-05-2010"}).should =~ [@post1, @post2]
+        Post.filter_by_params({dateTo: "05-05-2010"}).should =~ [@post1, @post2]
       end
 
       it "returns posts filtered by the from date and to date" do
-        Post.filter_by_params({date_from: "05-05-2010", date_to: "12-12-2010"}).should == [@post4]
+        Post.filter_by_params({dateFrom: "05-05-2010", dateTo: "12-12-2010"}).should == [@post4]
       end
 
       it "returns posts from a single day" do
-        Post.filter_by_params({date_from: "05-02-2010", date_to: "05-02-2010"}).should == [@post1]
+        Post.filter_by_params({dateFrom: "05-02-2010", dateTo: "05-02-2010"}).should == [@post1]
       end
 
       it "filters tags and dates" do
-        Post.filter_by_params({date_from: "05-05-2010", tag: @tag3.id}).should == [@post4]
+        Post.filter_by_params({dateFrom: "05-05-2010", tag: @tag3.id}).should == [@post4]
       end
 
       it "filters search and dates" do
-        Post.filter_by_params({date_to: "05-05-2010", search: "post"}).should == [@post2]
+        Post.filter_by_params({dateTo: "05-05-2010", search: "post"}).should == [@post2]
       end
     end
 
     it "filters everything together" do
       Post.filter_by_params({
-        date_from: "01-02-2010",
-        date_to: "30-12-2010",
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
         search: "last",
         group: @group1.id,
         student: @student2.id,
@@ -576,8 +576,8 @@ describe Post do
 
       # Check each filter, to make sure if it is changed, we get a blank result
       Post.filter_by_params({
-        date_from: "01-12-2010",
-        date_to: "30-12-2010",
+        dateFrom: "01-12-2010",
+        dateTo: "30-12-2010",
         search: "last",
         group: @group1.id,
         student: @student2.id,
@@ -585,8 +585,8 @@ describe Post do
       }).should be_empty
 
       Post.filter_by_params({
-        date_from: "01-02-2010",
-        date_to: "01-04-2010",
+        dateFrom: "01-02-2010",
+        dateTo: "01-04-2010",
         search: "last",
         group: @group1.id,
         student: @student2.id,
@@ -594,8 +594,8 @@ describe Post do
       }).should be_empty
 
       Post.filter_by_params({
-        date_from: "01-02-2010",
-        date_to: "30-12-2010",
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
         search: "title",
         group: @group1.id,
         student: @student2.id,
@@ -603,8 +603,8 @@ describe Post do
       }).should be_empty
 
       Post.filter_by_params({
-        date_from: "01-02-2010",
-        date_to: "30-12-2010",
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
         search: "last",
         group: @group2.id,
         student: @student2.id,
@@ -612,8 +612,8 @@ describe Post do
       }).should be_empty
 
       Post.filter_by_params({
-        date_from: "01-02-2010",
-        date_to: "30-12-2010",
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
         search: "last",
         group: @group1.id,
         student: @student1.id,
@@ -621,8 +621,8 @@ describe Post do
       }).should be_empty
 
       Post.filter_by_params({
-        date_from: "01-02-2010",
-        date_to: "30-12-2010",
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
         search: "last",
         group: @group1.id,
         student: @student2.id,

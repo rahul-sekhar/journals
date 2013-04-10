@@ -48,8 +48,8 @@ class Post < ActiveRecord::Base
     posts = posts.has_group(params[:group]) if params[:group].to_i > 0
     posts = posts.has_student(params[:student]) if params[:student].to_i > 0
     posts = posts.has_tag(params[:tag]) if params[:tag].to_i > 0
-    posts = posts.date_from(params[:date_from]) if params[:date_from]
-    posts = posts.date_to(params[:date_to]) if params[:date_to]
+    posts = posts.date_from(params[:dateFrom]) if params[:dateFrom]
+    posts = posts.date_to(params[:dateTo]) if params[:dateTo]
     return posts
   end
 

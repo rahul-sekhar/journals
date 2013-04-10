@@ -31,6 +31,14 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
       $scope.students = Students.all();
       $scope.groups = Groups.all();
       $scope.tags = Tags.all();
+      $scope.editing = {};
+
+      // $scope.$watch('editing', function (val) {
+      //   console.log(val);
+      // });
+      // $scope.$watch('filters', function (val) {
+      //   console.log(val);
+      // });
 
       $scope.hideMenus = function () {
         $scope.$broadcast('hideMenus', []);
@@ -76,12 +84,13 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
       });
 
       // Handle filters
-      searchFiltersObj = searchFilters(['search', 'student', 'group', 'tag']);
+      searchFiltersObj = searchFilters(['search', 'student', 'group', 'tag', 'dateFrom', 'dateTo']);
 
       $scope.filter = function (filter, value) {
         $scope.filters[filter] = value;
         searchFiltersObj.filter(filter, value);
       };
+      $scope.filters.updateField = $scope.filter;
 
       $scope.filterStudent = function (student) {
         if ($location.search().group) {
