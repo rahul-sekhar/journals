@@ -6,13 +6,13 @@
       .students{ "ng-show"=>"post.students.length" }
         %h4 Students
         %ul
-          %li{ "ng-repeat"=>"student in post.students" }
+          %li{ "ng-repeat"=>"student in post.students | orderBy: 'name'" }
             %span{ "profile-name"=>"student" }
 
       .teachers{ "ng-show"=>"post.teachers.length" }
         %h4 Teachers
         %ul
-          %li{ "ng-repeat"=>"teacher in post.teachers" }
+          %li{ "ng-repeat"=>"teacher in post.teachers | orderBy: 'name'" }
             %span{ "profile-name"=>"teacher" }
 
   %h3 {{post.title}}
