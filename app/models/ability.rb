@@ -65,5 +65,8 @@ class Ability
 
     # Everyone can create images
     can :create, Image
+
+    # Everyone can view tags
+    can :read, Tag
   end
 end
