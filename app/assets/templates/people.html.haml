@@ -17,8 +17,6 @@
 
   %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }
 
-  %ng-switch{ "on"=>"isTeacher" }
+  %ng-switch{ "on"=>"!!isTeacher" }
     %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('manage_groups.html')}'" }
-
-  %ng-switch{ "on"=>"isTeacher" }
     %div{ "ng-switch-when"=>"true", "ng-controller"=>"DuplicateGuardiansCtrl", "ng-include"=>"'#{asset_path('guardian_duplicates.html')}'" }

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('journals.people', ['journals.people.models', 'journals.people.directives', 'journals.confirm',
-  'journals.searchFilters']).
+  'journals.searchFilters', 'journals.assets']).
 
   /*--------- People base controller ---------*/
 
@@ -110,9 +110,16 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
   /*--------- People page ---------*/
 
-  controller('PeopleCtrl', ['$scope', 'peopleBaseCtrl', '$location', 'Groups', 'peopleInterface', 'searchFilters',
-    function ($scope, peopleBaseCtrl, $location, Groups, peopleInterface, searchFilters) {
+  controller('PeopleCtrl', ['$scope', 'peopleBaseCtrl', '$location', 'Groups', 'peopleInterface',
+    'searchFilters', 'assets',
+    function ($scope, peopleBaseCtrl, $location, Groups, peopleInterface, searchFilters, assets) {
       var loadFn, searchFiltersObj;
+
+      if ($scope.isTeacher) {
+        assets.preload(['editable_profile.html', 'profile_fields_template.html', 'editable_guardian.html']);
+      } else {
+        assets.preload(['non_editable_profile.html', 'profile_fields_view_template.html', 'non_editable_guardian.html']);
+      }
 
       $scope.pageTitle = 'People';
       $scope.filters = {};
