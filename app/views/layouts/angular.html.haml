@@ -21,7 +21,7 @@
         %navigation#page-navigation= render "general/navigation"
 
         #main-content
-          .ng-view
+          .ng-view{ "ng-animate"=>"'view-fade'" }
 
       %div{ "ng-include"=>"'#{asset_path('change_password.html')}'" }
 

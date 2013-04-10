@@ -1,84 +1,85 @@
-%h2 {{pageTitle}}
+.ng-view-container
+  %h2 {{pageTitle}}
 
-.notice
+  .notice
 
-%section#upper-bar
-  .clear-left
+  %section#upper-bar
+    .clear-left
 
-.post-fields{ "ng-show"=>"post" }
-  .main
-    %ol
-      %li.string.input
-        %label{ "for"=>"post-title" } Title
-        %input#post-title{ "ng-model"=>"post.title", "placeholder"=>"Title" }
-      %li.text.input
-        %label{ "for"=>"post-content" } Content
-        %textarea#post-content{ "ng-model"=>"post.content", "tinymce"=>true }
-      %li.string.input
-        %label{ "for"=>"post-tags" } Tags
-        %input#post-tags{ "ng-model"=>"post.tag_names", "placeholder"=>"Tags"}
+  .post-fields{ "ng-show"=>"post" }
+    .main
+      %ol
+        %li.string.input
+          %label{ "for"=>"post-title" } Title
+          %input#post-title{ "ng-model"=>"post.title", "placeholder"=>"Title" }
+        %li.text.input
+          %label{ "for"=>"post-content" } Content
+          %textarea#post-content{ "ng-model"=>"post.content", "tinymce"=>true }
+        %li.string.input
+          %label{ "for"=>"post-tags" } Tags
+          %input#post-tags{ "ng-model"=>"post.tag_names", "placeholder"=>"Tags"}
 
-  .student-observations-offset{ "ng-show"=>"isTeacher && post.students.length" }
+    .student-observations-offset{ "ng-show"=>"isTeacher && post.students.length" }
 
-  .people-tags
-    .students
-      %label Student tags
-      %ul.tag-list
-        %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'" }
-          {{student.short_name}}
-          %a.remove{ "href"=>"", "ng-click"=>"post.removeStudent(student, true)" }
-      %p{ "ng-hide"=>"post.students.length" } None
-
-      .click-menu
-        %a.title.add{ "href"=>"", "ng-show"=>"post.remainingStudents().length" }
-          Add student
-        .container
-          %filtered-list{ "list"=>"post.remainingStudents()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addStudent(value, true); hideMenus()" }
-
-    .teachers
-      %label Teacher tags
-      %ul.tag-list
-        %li{ "ng-repeat"=>"teacher in post.teachers | orderBy:'short_name'" }
-          {{teacher.short_name}}
-          %a.remove{ "href"=>"", "ng-click"=>"post.removeTeacher(teacher, true)" }
-      %p{ "ng-hide"=>"post.teachers.length" } None
-
-      .click-menu
-        %a.title.add{ "href"=>"", "ng-show"=>"post.remainingTeachers().length" }
-          Add teacher
-        .container
-          %filtered-list{ "list"=>"post.remainingTeachers()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addTeacher(value, true); hideMenus()" }
-
-  %ng-switch{ "on"=>"(post.author.type == 'Teacher') || (post.isNew() && isTeacher)" }
-    .student-observations{ "ng-switch-when"=>"true", "ng-controller"=>"StudentObservationsCtrl", "ng-show"=>"post.students.length" }
-      %p Individual student observations
-
-      %ul#observation-buttons
-        %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'", "ng-class"=>"{selected: (student == selectedStudent)}" }
-          %a{ "href"=>"", "ng-click"=>"selectStudent(student)" }
+    .people-tags
+      .students
+        %label Student tags
+        %ul.tag-list
+          %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'" }
             {{student.short_name}}
+            %a.remove{ "href"=>"", "ng-click"=>"post.removeStudent(student, true)" }
+        %p{ "ng-hide"=>"post.students.length" } None
 
-      %label{ "for"=>"observation-editor" } Student Observation
-      %textarea#observation-editor{ "ng-model"=>"post.observationContent[selectedStudent.id]", "tinymce"=>true, "observation-editor"=>true }
+        .click-menu
+          %a.title.add{ "href"=>"", "ng-show"=>"post.remainingStudents().length" }
+            Add student
+          .container
+            %filtered-list{ "list"=>"post.remainingStudents()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addStudent(value, true); hideMenus()" }
 
-  %ng-switch{ "on"=>"isTeacher || isGuardian" }
-    .permissions{ "ng-switch-when"=>"true" }
-      %p
-        %strong Permissions:
-        Visible to&hellip;
-      .options
-        %ol
-          %li.input.boolean{ "ng-show"=>"isTeacher" }
-            %label
-              %input{ "type"=>"checkbox", "ng-model"=>"post.visible_to_guardians" }
-              Guardians
-          %li.input.boolean
-            %label
-              %input{ "type"=>"checkbox", "ng-model"=>"post.visible_to_students" }
-              Students
+      .teachers
+        %label Teacher tags
+        %ul.tag-list
+          %li{ "ng-repeat"=>"teacher in post.teachers | orderBy:'short_name'" }
+            {{teacher.short_name}}
+            %a.remove{ "href"=>"", "ng-click"=>"post.removeTeacher(teacher, true)" }
+        %p{ "ng-hide"=>"post.teachers.length" } None
 
-  .actions
-    %button.save{ "ng-click"=>"save()" }
-      {{post.isNew() && 'Create post' || 'Save post'}}
-    %button.delete{ "ng-click"=>"delete()", "ng-hide"=>"post.isNew()" }
-      Delete post
+        .click-menu
+          %a.title.add{ "href"=>"", "ng-show"=>"post.remainingTeachers().length" }
+            Add teacher
+          .container
+            %filtered-list{ "list"=>"post.remainingTeachers()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addTeacher(value, true); hideMenus()" }
+
+    %ng-switch{ "on"=>"(post.author.type == 'Teacher') || (post.isNew() && isTeacher)" }
+      .student-observations{ "ng-switch-when"=>"true", "ng-controller"=>"StudentObservationsCtrl", "ng-show"=>"post.students.length" }
+        %p Individual student observations
+
+        %ul#observation-buttons
+          %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'", "ng-class"=>"{selected: (student == selectedStudent)}" }
+            %a{ "href"=>"", "ng-click"=>"selectStudent(student)" }
+              {{student.short_name}}
+
+        %label{ "for"=>"observation-editor" } Student Observation
+        %textarea#observation-editor{ "ng-model"=>"post.observationContent[selectedStudent.id]", "tinymce"=>true, "observation-editor"=>true }
+
+    %ng-switch{ "on"=>"isTeacher || isGuardian" }
+      .permissions{ "ng-switch-when"=>"true" }
+        %p
+          %strong Permissions:
+          Visible to&hellip;
+        .options
+          %ol
+            %li.input.boolean{ "ng-show"=>"isTeacher" }
+              %label
+                %input{ "type"=>"checkbox", "ng-model"=>"post.visible_to_guardians" }
+                Guardians
+            %li.input.boolean
+              %label
+                %input{ "type"=>"checkbox", "ng-model"=>"post.visible_to_students" }
+                Students
+
+    .actions
+      %button.save{ "ng-click"=>"save()" }
+        {{post.isNew() && 'Create post' || 'Save post'}}
+      %button.delete{ "ng-click"=>"delete()", "ng-hide"=>"post.isNew()" }
+        Delete post

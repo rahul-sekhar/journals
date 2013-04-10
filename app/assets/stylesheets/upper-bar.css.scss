@@ -131,8 +131,15 @@
     .filtered-list {
       padding: 2px;
 
-      li a {
-        padding: 2px 5px;
+      li {
+        a {
+          padding: 2px 5px;
+        }
+
+        &.fade-leave-setup.fade-leave-start a {
+          padding-top: 0;
+          padding-bottom: 0;
+        }
       }
     }
   }

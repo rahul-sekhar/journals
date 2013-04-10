@@ -21,6 +21,28 @@
 
       &:hover { background-color: lighten($teal, 10); }
     }
+
+    &.fade-enter-setup a {
+      @include transition(all ease 400ms);
+      line-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    &.fade-enter-setup.fade-enter-start a {
+      line-height: 12px;
+      padding: 2px 0;
+    }
+
+    &.fade-leave-setup a {
+      @include transition(all ease 400ms);
+    }
+
+    &.fade-leave-setup.fade-leave-start a {
+      line-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
   }
 
   .list {

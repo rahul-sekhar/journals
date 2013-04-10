@@ -16,7 +16,7 @@ angular.module('journals.directives', []).
           '<div class="list" ng-show="alwaysShown || listShown">' +
             '<input ng-model="filter" focus-on="listShown" />' +
             '<ul>' +
-              '<li ng-repeat="item in list | filter: filterObj | orderBy: showProperty">' +
+              '<li ng-repeat="item in list | filter: filterObj | orderBy: showProperty" ng-animate="\'fade\'">' +
                 '<a href="" ng-hide="item.deleted" internal-click="select(item)">{{item[showProperty]}}</a>' +
               '</li>' +
             '</ul>' +
