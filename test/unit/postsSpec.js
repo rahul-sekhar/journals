@@ -6,7 +6,8 @@ describe('posts module', function () {
   /*------------------- Posts controller ------------------*/
 
   describe('PostsCtrl', function () {
-    var scope, httpBackend, controller, Posts, location, createHelpPost, helpPost;
+    var scope, httpBackend, controller, Posts, location, createHelpPost, helpPost,
+      searchFiltersFactory, searchFilters, Students, Groups;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _Posts_, $location) {
       httpBackend = $httpBackend;
@@ -22,21 +23,18 @@ describe('posts module', function () {
         return 'post instance ' + data.id;
       });
 
+      searchFilters = {
+        filter: jasmine.createSpy(),
+        getCurrentValues: jasmine.createSpy().andReturn({ search: 'some_val', other_filter: 'other val' })
+      };
+      searchFiltersFactory = jasmine.createSpy().andReturn(searchFilters);
+
+      Students = { all: jasmine.createSpy().andReturn('student list') };
+      Groups = { all: jasmine.createSpy().andReturn('group list') };
+
       helpPost = { setStep: jasmine.createSpy() }
       createHelpPost = jasmine.createSpy().andReturn(helpPost);
     }));
-
-    describe('when the search param is pre-set', function () {
-      beforeEach(function () {
-        location.url('/some/path?search=blahblah');
-        httpBackend.expectGET('/some/path.json?search=blahblah').respond(200);
-        controller('PostsCtrl', { $scope: scope, createHelpPost: createHelpPost });
-      });
-
-      it('sets the scope seach val', function () {
-        expect(scope.search).toEqual('blahblah');
-      })
-    });
 
     describe('on success', function () {
       beforeEach(function () {
@@ -45,7 +43,13 @@ describe('posts module', function () {
           total_pages: 4,
           items: [{ id: 1, title: 'Some post' }, {id: 2}, {id: 7}]
         });
-        controller('PostsCtrl', { $scope: scope, createHelpPost: createHelpPost });
+        controller('PostsCtrl', {
+          $scope: scope,
+          createHelpPost: createHelpPost,
+          searchFilters: searchFiltersFactory,
+          Students: Students,
+          Groups: Groups
+        });
       });
 
       it('sends a request', function () {
@@ -68,6 +72,25 @@ describe('posts module', function () {
         expect(scope.search).toBeUndefined();
       });
 
+      describe('hideMenus()', function () {
+        var childScope, listener;
+
+        beforeEach(function () {
+          childScope = scope.$new();
+          listener = jasmine.createSpy();
+          childScope.$on('hideMenus', listener);
+          scope.hideMenus();
+        });
+
+        it('broadcasts a hideMenus event', function () {
+          expect(listener).toHaveBeenCalled();
+        });
+
+        it('passes an empty array with the event', function () {
+          expect(listener.mostRecentCall.args[1]).toEqual([]);
+        });
+      });
+
       describe('helpPost', function () {
         it('creates a help post instance', function () {
           expect(createHelpPost).toHaveBeenCalled();
@@ -82,16 +105,117 @@ describe('posts module', function () {
         });
       });
 
-      describe('doSearch()', function () {
-        it('updates the location param', function () {
-          scope.doSearch('some value');
-          expect(location.search().search).toEqual('some value');
+      describe('filters', function () {
+        it('initializes filters', function () {
+          expect(searchFiltersFactory).toHaveBeenCalledWith(['search', 'student', 'group']);
         });
 
-        it('resets the page param', function () {
-          location.search('page', 2);
-          scope.doSearch('some value');
-          expect(location.search().page).toBeUndefined();
+        it('initializes current filter values to the scope', function () {
+          expect(searchFilters.getCurrentValues).toHaveBeenCalled();
+          expect(scope.filters).toEqualData({ search: 'some_val', other_filter: 'other val' });
+        });
+
+        it('initializes students', function () {
+          expect(Students.all).toHaveBeenCalled();
+          expect(scope.students).toEqual('student list');
+        });
+
+        it('initializes groups', function () {
+          expect(Groups.all).toHaveBeenCalled();
+          expect(scope.groups).toEqual('group list');
+        });
+
+        describe('filter(filter, val)', function () {
+          it('applies a filter', function () {
+            scope.filter('some filter', 'some value');
+            expect(searchFilters.filter).toHaveBeenCalledWith('some filter', 'some value');
+          });
+        });
+
+        describe('studentName', function () {
+          beforeEach(inject(function ($q) {
+            Students.get = jasmine.createSpy().andReturn($q.when({name: 'name'}));
+          }));
+
+          it('is initialized to all students', function () {
+            scope.$apply();
+            expect(scope.studentName).toEqual('All students');
+          });
+
+          it('is set to all students with the filter set to null', function () {
+            scope.filters.student = null;
+            scope.$apply();
+            expect(scope.studentName).toEqual('All students');
+            expect(Students.get).not.toHaveBeenCalled();
+          });
+
+          it('is set to the student name', function () {
+            scope.filters.student = 4;
+            scope.$apply();
+            expect(scope.studentName).toEqual('name');
+            expect(Students.get).toHaveBeenCalledWith(4);
+          });
+        });
+
+        describe('filterStudent(student)', function () {
+          it('removes a group filter if present', function () {
+            location.search('group', 5);
+            scope.filterStudent({id: 5});
+            expect(location.search().group).toBeUndefined();
+          });
+
+          it('applies a student filter', function () {
+            scope.filterStudent({id: 5});
+            expect(searchFilters.filter).toHaveBeenCalledWith('student', 5);
+          });
+
+          it('clears a student filter', function () {
+            scope.filterStudent(null);
+            expect(searchFilters.filter).toHaveBeenCalledWith('student', null);
+          });
+        });
+
+        describe('groupName', function () {
+          beforeEach(inject(function ($q) {
+            Groups.get = jasmine.createSpy().andReturn($q.when({name: 'name'}));
+          }));
+
+          it('is initialized to all groups', function () {
+            scope.$apply();
+            expect(scope.groupName).toEqual('All groups');
+          });
+
+          it('is set to all groups with the filter set to null', function () {
+            scope.filters.group = null;
+            scope.$apply();
+            expect(scope.groupName).toEqual('All groups');
+            expect(Groups.get).not.toHaveBeenCalled();
+          });
+
+          it('is set to the group name', function () {
+            scope.filters.group = 4;
+            scope.$apply();
+            expect(scope.groupName).toEqual('name');
+            expect(Groups.get).toHaveBeenCalledWith(4);
+          });
+        });
+
+        describe('filterGroup(group)', function () {
+          it('removes a student filter if present', function () {
+            location.search('student', 5);
+            scope.filterGroup({id: 5});
+            expect(location.search().student).toBeUndefined();
+          });
+
+          it('applies a group filter', function () {
+            scope.filterGroup({id: 5});
+            expect(searchFilters.filter).toHaveBeenCalledWith('group', 5);
+          });
+
+          it('clears a group filter', function () {
+            scope.filterGroup(null);
+            expect(searchFilters.filter).toHaveBeenCalledWith('group', null);
+          });
         });
       });
 
@@ -130,7 +254,13 @@ describe('posts module', function () {
     describe('on failure', function () {
       beforeEach(function () {
         httpBackend.expectGET('/path/to/posts.json').respond(400);
-        controller('PostsCtrl', { $scope: scope, createHelpPost: createHelpPost });
+        controller('PostsCtrl', {
+          $scope: scope,
+          createHelpPost: createHelpPost,
+          searchFilters: searchFiltersFactory,
+          Students: Students,
+          Groups: Groups
+        });
         httpBackend.flush();
       });
 

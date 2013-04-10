@@ -2,10 +2,12 @@ angular.module('journals.searchFilters', []).
 
   factory('searchFilters', ['$location', function ($location) {
 
-    // Accepts filtergroups as arguments - arrays of filter names that are linked to each other.
+    // Accepts filterGroups as arguments - arrays of filter names that are linked to each other.
     // Each group is considered independent of the other arguments passed
     return function () {
-      var filterGroups = arguments, getGroup;
+      var filterGroups, getGroup;
+
+      filterGroups = arguments;
 
       getGroup = function (param) {
         var paramGroup;
@@ -30,10 +32,16 @@ angular.module('journals.searchFilters', []).
           currentParams = $location.search();
           if (angular.isArray(paramGroup)) {
             angular.forEach (paramGroup, function (linkedParam) {
-              searchData[linkedParam] = currentParams[linkedParam];
+              if (currentParams[linkedParam]) {
+                searchData[linkedParam] = currentParams[linkedParam];
+              }
             });
           }
-          searchData[param] = value;
+          if (value) {
+            searchData[param] = value;
+          } else if (searchData[param]) {
+            delete searchData[param];
+          }
 
           $location.search(searchData).replace();
         },

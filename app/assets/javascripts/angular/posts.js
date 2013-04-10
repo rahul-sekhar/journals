@@ -1,13 +1,16 @@
 'use strict';
 
 angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts.models', 'journals.confirm',
-  'journals.help', 'journals.posts.directives']).
+  'journals.help', 'journals.posts.directives', 'journals.searchFilters', 'journals.people.models',
+  'journals.groups']).
 
-  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'createHelpPost',
-    function ($scope, ajax, Posts, $location, createHelpPost) {
-      var loadFn;
+  controller('PostsCtrl', ['$scope', 'ajax', 'Posts', '$location', 'createHelpPost', 'searchFilters',
+    'Students', 'Groups',
+    function ($scope, ajax, Posts, $location, createHelpPost, searchFilters, Students, Groups) {
+      var loadFn, searchFiltersObj;
 
       $scope.pageTitle = 'Viewing posts';
+      $scope.filters = {};
 
       loadFn = function () {
         ajax({ url: $location.url() }).
@@ -20,14 +23,64 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
             $scope.currentPage = null;
             $scope.totalPages = null;
           });
+
+        angular.extend($scope.filters, searchFiltersObj.getCurrentValues());
       };
 
-      // Handle searching
-      $scope.search = $location.search().search;
-      $scope.doSearch = function (value) {
-        $location.search('search', value).
-          search('page', null).
-          replace();
+      // Filter lists
+      $scope.students = Students.all();
+      $scope.groups = Groups.all();
+
+      $scope.hideMenus = function () {
+        $scope.$broadcast('hideMenus', []);
+      };
+
+      $scope.$watch('filters.student', function (id) {
+        if (id) {
+          if (angular.isString(id)) {
+            id = parseInt(id, 10);
+          }
+          Students.get(id).then(function (student) {
+              $scope.studentName = student.name;
+            });
+        } else {
+          $scope.studentName = 'All students';
+        }
+      });
+
+      $scope.$watch('filters.group', function (id) {
+        if (id) {
+          if (angular.isString(id)) {
+            id = parseInt(id, 10);
+          }
+          Groups.get(id).then(function (group) {
+              $scope.groupName = group.name;
+            });
+        } else {
+          $scope.groupName = 'All groups';
+        }
+      });
+
+      // Handle filters
+      searchFiltersObj = searchFilters(['search', 'student', 'group']);
+
+      $scope.filter = function (filter, value) {
+        $scope.filters[filter] = value;
+        searchFiltersObj.filter(filter, value);
+      };
+
+      $scope.filterStudent = function (student) {
+        if ($location.search().group) {
+          $location.search('group', null);
+        }
+        $scope.filter('student', (student ? student.id : null));
+      };
+
+      $scope.filterGroup = function (group) {
+        if ($location.search().student) {
+          $location.search('student', null);
+        }
+        $scope.filter('group', (group ? group.id : null));
       };
 
       // Handle parameter changes

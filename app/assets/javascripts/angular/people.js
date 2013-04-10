@@ -132,13 +132,9 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
       searchFiltersObj = searchFilters('search', 'filter');
 
-      $scope.doSearch = function (value) {
-        searchFiltersObj.filter('search', value);
-      };
-
-      $scope.applyFilter = function (value) {
-        $scope.filters.filter = value;
-        searchFiltersObj.filter('filter', value);
+      $scope.filter = function (filter, value) {
+        $scope.filters[filter] = value;
+        searchFiltersObj.filter(filter, value);
       };
 
       $scope.$watch('filters.filter', function (filterVal) {

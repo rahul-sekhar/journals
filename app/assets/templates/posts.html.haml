@@ -4,7 +4,7 @@
 
 %section#upper-bar
   %ng-switch{ "on"=>"!single_post" }
-    .people-filters{ "ng-switch-when" => "true", "ng-include"=>"'#{asset_path('post_filters.html')}'" }
+    .post-filters{ "ng-switch-when" => "true", "ng-include"=>"'#{asset_path('post_filters.html')}'" }
   .clear-left
 
 .help-container{ "ng-class"=>"{shown: help.shown == true}" }

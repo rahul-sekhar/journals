@@ -443,7 +443,7 @@ describe('People module', function () {
         expect(scope.filterName).toEqual('Students and teachers');
       });
 
-      describe('for grooup filters', function () {
+      describe('for group filters', function () {
         var deferred;
 
         beforeEach(inject(function ($q) {
@@ -476,17 +476,10 @@ describe('People module', function () {
       });
     });
 
-    describe('doSearch()', function () {
-      it('applies the search filter', function () {
-        scope.doSearch('some value');
-        expect(searchFilters.filter).toHaveBeenCalledWith('search', 'some value');
-      });
-    });
-
-    describe('applyFilter()', function () {
+    describe('filter(filter, val)', function () {
       it('applies a filter', function () {
-        scope.applyFilter('value');
-        expect(searchFilters.filter).toHaveBeenCalledWith('filter', 'value');
+        scope.filter('some filter', 'some value');
+        expect(searchFilters.filter).toHaveBeenCalledWith('some filter', 'some value');
       });
     });
 

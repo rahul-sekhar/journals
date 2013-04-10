@@ -65,6 +65,37 @@
     &:hover {
       .title { color: lighten($cream, 20); }
     }
+
+    .title.selected { color: lighten($cream, 20); }
+
+    .clear {
+      margin-left: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: normal;
+      color: $grey-2;
+    }
+
+    a.clear {
+      @include link-colors($cream, lighten($cream, 20));
+    }
+
+    .container {
+      width: 148px;
+      position: absolute;
+      z-index: 20;
+      top: 24px;
+      left: 0;
+      background-color: $teal;
+    }
+
+    .filtered-list {
+      padding: 2px;
+
+      li a {
+        padding: 2px 5px;
+      }
+    }
   }
 
   .add.click-menu ul{
@@ -78,11 +109,11 @@
     text-transform: lowercase;
     margin-left: 28px;
     margin-right: 16px;
+  }
 
-    &.posts {
-      margin-left: -8px;
-      margin-right: 23px;
-    }
+  .post-filters .label {
+    margin-left: -8px;
+    margin-right: 23px;
   }
 
   .viewing.click-menu {

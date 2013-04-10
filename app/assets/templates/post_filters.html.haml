@@ -1,1 +1,17 @@
-%input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"search", "on-type"=>"doSearch(search)", "autocomplete"=>"off"}
+%input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"filters.search", "on-type"=>"filter('search', filters.search)", "autocomplete"=>"off"}
+
+%p.label Filters
+
+.click-menu{ "ng-show"=>"isTeacher" }
+  %a.title{ href: "" } {{studentName}}
+  .container
+    %a.clear{ "href"=>"", "ng-show"=>"filters.student", "ng-click"=>"filterStudent(null)" } Clear
+    %span.clear.disabled{"ng-hide"=>"filters.student"} Clear
+    %filtered-list{ "list"=>"students", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"filterStudent(value); hideMenus()" }
+
+.click-menu{ "ng-show"=>"isTeacher" }
+  %a.title{ href: "" } {{groupName}}
+  .container
+    %a.clear{ "href"=>"", "ng-show"=>"filters.group", "ng-click"=>"filterGroup(null)" } Clear
+    %span.clear.disabled{"ng-hide"=>"filters.group"} Clear
+    %filtered-list{ "list"=>"groups", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"filterGroup(value); hideMenus()" }
