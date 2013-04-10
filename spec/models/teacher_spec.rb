@@ -7,17 +7,17 @@ describe Teacher do
 
   it_behaves_like "a profile"
 
-  describe "#name_with_type" do
-    it "returns the full name along with the profile type" do
+  describe "#name_with_info" do
+    it "returns the full name along with the profile info" do
       profile.first_name = "Rahul"
       profile.last_name = "Sekhar"
-      profile.name_with_type.should == "Rahul Sekhar (teacher)"
+      profile.name_with_info.should == "Rahul Sekhar (teacher)"
     end
   end
 
   describe "#toggle_archive" do
     context "if archived" do
-      before do 
+      before do
         profile.archived = true
         profile.save!
       end
@@ -29,7 +29,7 @@ describe Teacher do
     end
 
     context "if not archived" do
-      before do 
+      before do
         profile.email = "test@mail.com"
         profile.save!
       end
@@ -62,37 +62,8 @@ describe Teacher do
     end
   end
 
-  describe "#remaining_students" do
-    it "returns an empty array when no students exist" do
-      profile.remaining_students.should be_empty
-    end
-
-    context "when some students exist" do
-      before do
-        @student1 = create(:student)
-        @student2 = create(:student)
-        @student3 = create(:student)
-        @student4 = create(:student, archived: true)
-      end
-
-      it "returns all unarchived students when the student has no mentees" do
-        profile.remaining_students.should =~ [@student1, @student2, @student3]
-      end
-
-      it "returns an empty array when the student has all existing mentees" do
-        profile.mentees = [@student1, @student2, @student3]
-        profile.remaining_students.should be_empty
-      end
-
-      it "returns only students that are not added to the student already" do
-        profile.mentees = [@student2]
-        profile.remaining_students.should =~ [@student1, @student3]
-      end
-    end
-  end
-
   describe "permissions:" do
-    before do 
+    before do
       profile.email = "test@mail.com"
       profile.save!
     end
@@ -121,7 +92,7 @@ describe Teacher do
       it "can manage posts created by a guardian" do
         post = create(:post, author: create(:guardian) )
         ability.should be_able_to :manage, post
-      end  
+      end
     end
 
     describe "comments:" do

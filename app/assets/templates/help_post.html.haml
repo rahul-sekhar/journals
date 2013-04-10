@@ -1,0 +1,74 @@
+%article.post.help{ "ng-hide"=>"post.deleted", "ng-class"=>"{ expanded: expanded }" }
+
+  .help-pointer.step-1{ "ng-class"=>"{shown: post.step == 1}" }
+  %help-step{ "step"=>"1", "section"=>"viewPost", "object"=>"post", "before"=>"compact()" }
+    %h4 Read the latest posts
+    %p Browse through the posts and click anywhere in the white box to read the whole post.
+
+  %header.post-header
+    %span.restrictions{ "title"=>"{{post.restrictions()}}", "ng-show"=>"post.restrictions()" }
+
+    .tagged-people
+      .students{ "ng-show"=>"post.students.length" }
+        %h4 Students
+        %ul
+          %li{ "ng-repeat"=>"student in post.students" }
+            %span{ "profile-name"=>"student" }
+
+        .help-pointer.step-2-1{ "ng-class"=>"{shown: post.step == 2}" }
+        .help-pointer.step-2-2{ "ng-class"=>"{shown: post.step == 2}" }
+        %help-step{ "step"=>"2", "section"=>"viewPost", "object"=>"post" }
+          %h4 Student and Teacher tags
+          %p Each post is tagged with the students it concerns and the teachers involved.
+
+      .teachers{ "ng-show"=>"post.teachers.length" }
+        %h4 Teachers
+        %ul
+          %li{ "ng-repeat"=>"teacher in post.teachers" }
+            %span{ "profile-name"=>"teacher" }
+
+  %h3 {{post.title}}
+
+  .post-content{ "watch-height"=>true, "expanded"=>"expanded" }
+    .content{ "ng-bind-html"=>"post.content" }
+
+    .student-observations{ "ng-show"=>"post.student_observations.length" }
+      %section{ "ng-repeat"=>"observation in post.student_observations" }
+        %h4 {{observation.student.name}}
+        .observation-content{ "ng-bind-html"=>"observation.content" }
+
+  .comments{ "watch-height"=>true, "expanded"=>"expanded" }
+    %h4 Comments
+    %ng-switch{ "ng-repeat"=>"comment in post.comments", "on"=>"!!comment.editable" }
+      %div{  "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_comment.html')}'" }
+      %div{  "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('comment.html')}'" }
+
+    .new-comment
+      %textarea{ "ng-model"=>"newComment", "placeholder"=>"Enter comment" }
+      %a.add.button{ "href"=>"", "ng-click"=>"addComment(newComment)" } Comment
+
+  %footer.post-footer
+    .help-pointer.step-3{ "ng-class"=>"{shown: post.step == 3}" }
+    %help-step{ "step"=>"3", "section"=>"viewPost", "object"=>"post", "before"=>"expand()" }
+      %h4 Add to the discussion
+      %p Leave a comment.
+
+    %a.comments-link{ "href"=>"", "ng-pluralize"=>true, "count"=>"(post.comments | filterDeleted).length", "when"=>"{'0': 'No comments', 'one': '1 comment', 'other':'{} comments'}", "ng-click"=>"scrollToComments()", "ng-hide"=>"expanded" }
+
+    .info
+      %p.date {{post.created_at}}
+
+      %p.author
+        Posted by
+        %span{ "profile-name"=>"post.author" }
+
+      %p.tags{ "ng-show"=>"post.tag_names" }
+        Tags: {{post.tag_names}}
+
+    .options
+      %p{ "ng-show"=>"expanded" }
+        %a{ "href"=>"", "ng-click"=>"compact()" } Read less
+      %p{ "ng-hide"=>"expanded" }
+        %a{ "href"=>"", "ng-click"=>"expand()" } Read more
+      %p{ "ng-show"=>"post.editable" }
+        %a{ "href"=>"", "ng-click"=>"post.edit()" } Edit post

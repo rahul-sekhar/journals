@@ -1,10 +1,51 @@
-# General post things
-Then /^that post should be destroyed$/ do
-  Post.should_not exist(@post)
+Then /^I should see the post "(.*?)"$/ do |p_name|
+  page.should have_css(".post h3", text: /#{Regexp.escape(p_name)}/, visible: true)
+end
+
+Then /^I should not see the post "(.*?)"$/ do |p_name|
+  page.should have_no_css(".post h3", text: /#{Regexp.escape(p_name)}/, visible: true)
+end
+
+When /^I look at the post "(.*?)"$/ do |p_name|
+  @viewing = page.find(".post h3", text: /#{Regexp.escape(p_name)}/, visible: true).
+    first(:xpath, ".//..")
+end
+
+Then(/^(.*) in the posts (\S*)$/) do |p_step, p_section|
+  within @viewing.find(".#{p_section}") do
+    step p_step
+  end
+end
+
+Then(/^its restriction should be "(.*?)"$/) do |p_text|
+  restrictions = @viewing.find('.restrictions', visible: true)
+  restrictions[:title].should eq(p_text)
+end
+
+Then(/^it should have no restrictions$/) do
+  @viewing.should have_no_css('.restrictions', visible: true)
+end
+
+When(/^I tag the (student|teacher) "(.*?)" in the post$/) do |p_type, p_name|
+  within ".people-tags .#{p_type}s" do
+    click_on "Add #{p_type}" if page.has_no_css?('.container', text: /.+/, visible: true)
+    page.should have_css('.container', text: /.+/, visible: true)
+    page.find('.container').click_on p_name
+  end
+end
+
+When(/^I untag the (student|teacher) "(.*?)" in the post$/) do |p_type, p_name|
+  within ".people-tags .#{p_type}s" do
+    page.find('.tag-list li', text: p_name).find('.remove').click
+  end
+end
+
+When(/^I look at the (student|teacher) tags section$/) do |p_type|
+  @viewing = page.find(".people-tags .#{p_type}s")
 end
 
 Given /^a post titled "(.*?)" created by me exists$/ do |p_title|
-  @post = FactoryGirl.build(:post, title: p_title, author: @logged_in_user.profile)
+  @post = FactoryGirl.build(:post, title: p_title, author: @logged_in_profile)
   @post.initialize_tags
   @post.save!
 end
@@ -18,8 +59,7 @@ end
 
 Given /^that post has the students? "(.*?)" tagged$/ do |p_student_names|
   p_student_names.split(",").each do |student_name|
-    first_name, last_name = split_name(student_name)
-    student = Student.where(first_name: first_name, last_name: last_name).first
+    student = Student.where(first_name: student_name).first
 
     @post.students << student
   end
@@ -36,99 +76,12 @@ Given /^that post is (visible|not visible) to students$/ do |p_visible|
 end
 
 
-# Creation of specific posts
-Given /^a post about an ice cream factory visit exists$/ do
-  @post = shalini.posts.build(
-    title: 'Ice cream factory visit',
-    content: 'The whole school went to the Daily Dairy factory for a visit. It was a very small factory and a quick quick quick visit...'
-  )
-  @post.created_at = Date.new(2012, 10, 25)
-  @post.save!
+# Student observations
+Then(/^I should see "(.*?)" in the student observation buttons$/) do |p_content|
+  page.find('#observation-buttons').should have_content p_content
 end
 
-Given /^a post about an ice cream factory visit with extended information exists$/ do
-  step 'a post about an ice cream factory visit exists'
-
-  @post.update_attributes!(
-    tag_names: "icecream, visits",
-    teacher_ids: [angela.id, aditya.id],
-    student_ids: [ansh.id, sahana.id],
-    visible_to_students: true
-  )
-end
-
-Given /^a (student|guardian) post about an ice cream factory visit with extended information exists$/ do |p_type|
-  step 'a post about an ice cream factory visit with extended information exists'
-
-  @post.author = FactoryGirl.create(p_type)
-  @post.initialize_tags
-  @post.save!
-end
-
-Given /^a post about an ice cream factory visit with student observations exists$/ do
-  step 'a post about an ice cream factory visit with extended information exists'
-
-  @post.student_observations.create!(student_id: sahana.id, content: "Some observations about Sahana")
-  @post.save!
-end
-
-
-# Testing of the existence of specific posts
-Then /^a minimal test post should exist$/ do
-  @post = Post.where(title: "Test Post").first
-  @post.should be_present
-
-  Tag.find_by_name("Test posts").should be_present
-  Tag.find_by_name("Minimal").should be_present
-  
-  @post.content.should == "<p>Some <em>HTML</em> content</p>"
-  @post.tags.map{ |tag| tag.name }.should =~ ["Test posts", "Minimal"]
-  @post.author.full_name.should == "Rahul Sekhar"
-end
-
-Then /^a post with student and teacher tags should exist$/ do
-  @post = Post.where(title: "Tagged Post").first
-  @post.should be_present
-
-  @post.students.should =~ [ansh, sahana]
-  @post.teachers.should =~ [Teacher.where(first_name:"Rahul").first, angela]
-end
-
-Then /^a post with permissions should exist$/ do
-  @post = Post.where(title: "Permissions Post").first
-  @post.should be_present
-
-  @post.visible_to_guardians.should == true
-  @post.visible_to_students.should == false
-end
-
-Then /^a student post with student and teacher tags should exist$/ do
-  @post = Post.where(title: "Tagged Student Post").first
-  @post.should be_present
-
-  @post.students.should =~ [ansh, Student.where(first_name: "Rahul").first]
-  @post.teachers.should =~ [angela]
-end
-
-Then /^a guardian post with student and teacher tags should exist$/ do
-  @post = Post.where(title: "Tagged Guardian Post").first
-  @post.should be_present
-
-  @post.students.should =~ [ansh, Student.where(first_name: "Roly").first]
-  @post.teachers.should =~ [angela]
-end
-
-Then /^a guardian post with permissions should exist$/ do
-  @post = Post.where(title: "Guardian Permissions Post").first
-  @post.should be_present
-
-  @post.visible_to_guardians.should == true
-  @post.visible_to_students.should == true
-end
-
-Then /^a guardian post with lucky should exist$/ do
-  @post = Post.where(title: "Guardian Post with Lucky").first
-  @post.should be_present
-
-  @post.students.should == [Student.where(first_name: "Lucky").first]
+When(/^I fill in the observation for "(.*?)" with "(.*?)"$/) do |p_name, p_text|
+  page.find('#observation-buttons').click_on p_name
+  step 'I fill in the "Student Observation" editor with "' + p_text +'"'
 end

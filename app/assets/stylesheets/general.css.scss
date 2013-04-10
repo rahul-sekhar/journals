@@ -1,6 +1,7 @@
 html {
   height: 100%;
   overflow-y: scroll;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -10,17 +11,19 @@ body {
   background-image: image-url('bg.jpg');
   background-attachment: fixed;
   color: $off-black;
+  text-rendering: optimizeLegibility;
   @include myriad;
 }
 
 // Link color transition
+$color-transition-time: 200ms;
 a {
   text-decoration: none;
-  @include transition(color 200ms ease);
+  @include transition(color $color-transition-time ease);
 }
 
-input.button {
-  @include transition(background-color 200ms ease, color 200ms ease);
+input.button, button {
+  @include transition(background-color $color-transition-time ease, color $color-transition-time ease);
 }
 
 // Style input placeholders
@@ -39,6 +42,12 @@ input.button {
 }
 :-ms-input-placeholder {
   @include placeholder-style;
+}
+
+#page-wrapper {
+  min-height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 #page-header {
@@ -66,7 +75,7 @@ input.button {
     }
   }
 
-  .user {
+  #user {
     float: right;
     padding-top: 10px;
 
@@ -78,41 +87,26 @@ input.button {
       margin-top: 20px;
     }
 
-    .menu-icon {
-      width: 60px;
-      height: 54px;
-      background: image-url('large-icons.png') no-repeat 0 -415px;
-      cursor: pointer;
-
-      &:hover { background-position: 0 -495px; }
-    }
-
     .menu {
       float: left;
       margin-left: 20px;
-      position: relative;
 
-      &:hover {
-        ul{
-          visibility: visible;
-          opacity: 1;
-          @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
-        }
-
-        .menu-icon { background-position: 0 -495px; }
+      .icon {
+        width: 60px;
+        height: 54px;
+        background: image-url('large-icons.png') no-repeat 0 -415px;
+        cursor: pointer;
       }
-    }
 
-    ul {
-      position: absolute;
-      top: 54px;
-      right: 0;
-      width: 150px;
-      background-color: $brown;
-      padding: 5px;
-      visibility: hidden;
-      opacity: 0;
-      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
+      &:hover .icon { background-position: 0 -495px; }
+
+      ul {
+        top: 54px;
+        right: 0;
+        width: 150px;
+        background-color: $brown;
+        padding: 5px;
+      }
     }
 
     li {
@@ -121,16 +115,13 @@ input.button {
       line-height: 28px;
       margin-left: 15px;
 
-      a {
-        display: block;
-        text-decoration: none;
-        @include link-colors($light-cream, darken($light-cream, 20));
-      }
+      a { @include link-colors($light-cream, darken($light-cream, 20)); }
     }
   }
 }
 
 .wrapper {
+  min-height: 100%;
   width: 940px;
   margin: 0 auto;
 }
@@ -144,7 +135,9 @@ h2 {
 
 #main-content {
   width: 648px;
+  min-height: 300px;
   padding-bottom: 40px;
+  overflow: hidden;
   @include new-clearfix;
 }
 
@@ -201,6 +194,10 @@ h2 {
       &#people_link {
         background-position: 8px -249px;
       }
+
+      &#help_link {
+        background-position: 8px -329px;
+      }
     }
   }
 }
@@ -211,7 +208,7 @@ h2 {
   margin-bottom: 26px;
 }
 
-.pagination {
+#pagination {
   float: right;
   @include semibold;
 
@@ -219,7 +216,7 @@ h2 {
     color: $brown;
   }
 
-  span {
+  span, a {
     margin-left: 8px;
   }
 

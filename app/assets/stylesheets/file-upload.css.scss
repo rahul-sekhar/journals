@@ -1,0 +1,32 @@
+.file-upload {
+  background-color: white;
+  clear: both;
+
+  .progress {
+    height: 20px;
+    position: relative;
+    padding: 3px;
+    background-color: $grey-3;
+    @include border-radius(10px);
+
+    .bar {
+      display: block;
+      height: 100%;
+      @include background-image(linear-gradient(lighten($dark-green, 10), darken($dark-green, 5)));
+      @include border-radius(8px);
+    }
+
+    .text {
+      display: block;
+      color: $cream;
+      font-size: 12px;
+      letter-spacing: 1px;
+      position:absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      line-height: 20px + 3px * 2;
+      text-align: center;
+    }
+  }
+}

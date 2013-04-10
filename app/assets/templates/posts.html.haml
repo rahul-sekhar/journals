@@ -1,0 +1,19 @@
+.ng-view-container
+  %h2 {{pageTitle}}
+
+  .notice
+
+  %section#upper-bar
+    %ng-switch{ "on"=>"!single_post" }
+      .post-filters{ "ng-switch-when" => "true", "ng-include"=>"'#{asset_path('post_filters.html')}'" }
+    .clear-left
+
+  -#.help-container{ "ng-class"=>"{shown: help.shown == true}" }
+  -#  %help-post{ "post"=>"helpPost" }
+
+  %post{ "ng-repeat"=>"post in posts", "post"=>"post", "ng-animate"=>"'post-fade'" }
+
+  .content-block{ "ng-show"=>"(posts | filterDeleted).length == 0" }
+    %p No matching posts were found.
+
+  %pagination{ "total-pages"=>"totalPages", "current-page"=>"currentPage" }

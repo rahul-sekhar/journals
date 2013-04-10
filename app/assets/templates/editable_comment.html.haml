@@ -1,0 +1,14 @@
+%article.comment{ "ng-hide"=>"comment.deleted", "ng-controller"=>"EditObjectCtrl" }
+  .comment-wrapper
+    .comment-content
+      %p{ "edit-in-place"=>true, "instance"=>"comment", "type"=>"textarea", "field"=>"content", "edit-mode"=>"editing['content']", "no-click-edit"=>true, "placeholder"=>"Enter comment" }
+
+    %footer.comment-footer{"ng-hide"=>"comment.isNew()"}
+      %p
+        Posted by
+        %span{ "long-profile-name"=>"comment.author" }
+        on
+        %span.date {{comment.created_at}}
+
+      %a.edit{ "href"=>"", "ng-click"=>"editing['content'] = true", "ng-hide"=>"editing['content']" }
+      %a.delete{ "href"=>"", "ng-click"=>"deleteComment(comment)", "ng-hide"=>"editing['content']" }

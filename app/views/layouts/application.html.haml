@@ -7,8 +7,9 @@
   = stylesheet_link_tag    "application", media: "all"
   = javascript_include_tag "application"
   = yield :head
-  \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
-  \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  - unless Rails.env.test?
+    \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
+    \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
   = csrf_meta_tags
   %meta{ name: "google-site-verification", content: "LBgQKGzN0ah-lkMOVvRv5f9-HQSWOOJRmVfFwHFBs5o" }
 
@@ -16,9 +17,9 @@
   %header#page-header
     .wrapper
       %h1= link_to Rails.configuration.settings['app_full_name'], root_path
-    
+
       - if logged_in?
-        .user= render "general/user_menu"
+        #user= render "general/user_menu"
 
   .wrapper
     - if logged_in?

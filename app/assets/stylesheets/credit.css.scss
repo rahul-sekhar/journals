@@ -1,0 +1,52 @@
+#credit {
+  position:absolute;
+  bottom: 0;
+  right: 40px;
+  width: 195px;
+
+  .arrow {
+    background: image-url('large-icons.png') no-repeat 0 -960px;
+    width: 23px;
+    height: 26px;
+    cursor: pointer;
+    opacity: 1;
+    @include transition(opacity 600ms ease-out 1.5s);
+  }
+
+  p {
+    position: absolute;
+    opacity: 0;
+    left: -68px;
+    bottom: -44px;
+    cursor: pointer;
+
+    @include transition(bottom 600ms ease-out 1.5s, opacity 600ms ease-out 1.5s, background-color 300ms ease-out);
+    @include border-radius(6px 6px 0px 0px);
+
+    background: rgb(167, 156, 131);
+    background: rgba(167, 156, 131, 0.6);
+    text-transform: lowercase;
+    font-size: 10px;
+    font-weight: normal;
+    line-height: 18px;
+    padding: 4px 12px;
+    letter-spacing: 1px;
+    color: white;
+  }
+
+  &:hover {
+    .arrow {
+      opacity: 0;
+      @include transition(opacity 600ms ease-out);
+    }
+
+    p {
+      bottom: 0;
+      opacity: 1;
+      background: rgb(167, 156, 131);
+      background: rgba(167, 156, 131, 0.8);
+
+      @include transition(bottom 600ms ease-out, opacity 600ms ease-out, background-color 300ms ease-out);
+    }
+  }
+}

@@ -1,0 +1,11 @@
+%div
+  .field{ "ng-repeat"=>"field in fields", "ng-show"=>"person[field.slug] || editing[field.slug]" }
+    %p.field-name {{field.name}}
+    %p{ "edit-in-place"=>true, "instance"=>"person", "type"=>"{{field.type}}",
+      "field"=>"{{field.slug}}", "edit-mode"=>"editing[field.slug]" }
+
+  .add-field.click-menu{ "ng-show"=>"hasRemainingFields() && person.id" }
+    %p.title Add field
+    %ul.container
+      %li{ "ng-repeat"=>"field in fields" }
+        %a{ "href"=>"", "ng-click"=>"addField(field.slug)", "ng-hide"=>"person[field.slug] || editing[field.slug]" } {{field.name}}

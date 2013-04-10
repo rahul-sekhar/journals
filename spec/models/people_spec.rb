@@ -3,7 +3,7 @@ require 'spec_helper'
 describe People do
   before do
     @student = create(:student, first_name: "Some", last_name: "Student")
-    @teacher = create(:teacher, last_name: "Teacher")
+    @teacher = create(:teacher, name: "Teacher")
     @guardian = create(:guardian, first_name: "Mr", last_name: "Guardian", students: [@student])
     @archived_student = create(:student, first_name: "Archived", last_name: "Student", archived: true)
   end

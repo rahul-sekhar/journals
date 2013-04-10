@@ -11,7 +11,7 @@ module Profile
           user.reload
         end
       end
-      
+
       self.user.email = val
     else
       self.user.mark_for_destruction if user
@@ -22,11 +22,25 @@ module Profile
     user.email if user.present?
   end
 
-  def full_name
-    if first_name.present?
+  def name=(val)
+    words = val.split(" ")
+    self.first_name = words.shift
+    self.last_name = words.pop
+
+    while words.length > 0 && ('a'..'z').member?(words.last[0])
+      self.last_name = "#{words.pop} #{last_name}"
+    end
+
+    if words.length > 0
+      self.first_name = "#{first_name} #{words.join(" ")}"
+    end
+  end
+
+  def name
+    if last_name.present?
       "#{first_name} #{last_name}"
     else
-      last_name
+      first_name
     end
   end
 
@@ -42,18 +56,41 @@ module Profile
     return password
   end
 
-  def name
-    if first_name
+  def check_profile_name
+    # Check to see if the name has changed
+    if (short_name != first_name && short_name != name && short_name != name)
+      check_all_short_names
+    end
+  end
 
+  def check_all_short_names
+    [Student, Teacher, Guardian].each do |klass|
+      klass.all.each do |profile|
+        profile.set_short_name
+      end
+    end
+  end
+
+  def set_short_name
+    new_short_name = find_short_name
+
+    if short_name != new_short_name
+      self.short_name = new_short_name
+      save!
+    end
+  end
+
+  def find_short_name
+    if last_name
       initial = last_name[0]
 
       # Check for duplicate first names
       other_profiles = ProfileName.excluding_profile(self)
       if ( other_profiles.where(first_name: first_name).exists? )
 
-        # Check for duplicate last_names
+        # Check for duplicate initials
         if ( other_profiles.where(first_name: first_name, initial: initial).exists? )
-          return full_name
+          return name
 
         else
           return "#{first_name} #{initial}."
@@ -62,14 +99,7 @@ module Profile
         return first_name
       end
     else
-      return last_name
-    end
-  end
-
-  def check_last_name
-    if last_name.blank? && first_name.present?
-      self.last_name = first_name
-      self.first_name = nil
+      return first_name
     end
   end
 
@@ -83,10 +113,6 @@ module Profile
       order(:first_name, :last_name)
     end
 
-    def inputs
-      self.fields.map { |field| field[:input] || field[:function] }
-    end
-
     def name_is(first, last)
       names_are(first, last).first
     end
@@ -94,11 +120,11 @@ module Profile
     def names_are(first, last)
       last = SqlHelper::escapeWildcards(last)
       first = SqlHelper::escapeWildcards(first)
-      
+
       if first.blank?
-        where{ last_name.like last }
+        where{ ( first_name.like last ) & ( last_name == nil ) }
       elsif last.blank?
-        where{ last_name.like first }
+        where{ ( first_name.like first ) & ( last_name == nil ) }
       else
         where{( first_name.like first ) & ( last_name.like last )}
       end
@@ -107,20 +133,23 @@ module Profile
 
   def self.included(base)
     base.extend ClassMethods
-    base.before_validation :check_last_name
 
     base.has_one :user, as: :profile, dependent: :destroy, autosave: true, inverse_of: :profile
     base.has_many :posts, as: :author, dependent: :destroy, inverse_of: :author
     base.has_many :comments, as: :author, dependent: :destroy, inverse_of: :author
 
-    base.validates :last_name, presence: true, length: { maximum: 80 }
-    base.validates :first_name, length: { maximum: 80 }
+    base.after_save :reload
+    base.after_save :check_profile_name
+    base.after_destroy :check_all_short_names
+
+    base.validates :last_name, length: { maximum: 80 }
+    base.validates :first_name, presence: true, length: { maximum: 80 }
     base.validates :mobile, length: { maximum: 40 }
     base.validates :home_phone, length: { maximum: 40 }
     base.validates :office_phone, length: { maximum: 40 }
     base.validates :additional_emails, length: { maximum: 100 }
     base.validates_associated :user
-    
+
     base.strip_attributes
   end
 end

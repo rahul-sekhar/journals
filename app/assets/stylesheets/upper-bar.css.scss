@@ -1,6 +1,10 @@
 #upper-bar {
   line-height: 22px;
 
+  .inner-wrapper {
+    width: 1000%;
+  }
+
   form {
     float: left;
   }
@@ -26,33 +30,61 @@
   .title {
     margin: 0;
     background: image-url('small-icons.png') no-repeat right -528px;
-    padding-right: 20px;
+    padding-right: 15px;
     cursor: pointer;
-    padding-left: 10px;
+    margin-left: 10px;
+    color: $cream;
+    white-space: nowrap;
+    position: relative;
 
     &:hover { background-position: right -578px; }
+
+    a {
+      color: $cream;
+      display: block;
+      overflow: hidden;
+      position: relative;
+      padding-right: 8px;
+
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 8px;
+
+        @include background-image(linear-gradient(right, rgba(102,144,119, 1), rgba(102,144,119, 0)));
+      }
+    }
   }
 
-  .menu {
+  a.title { padding-right: 20px; }
+
+  .menu, .click-menu {
     color: $cream;
     font-size: 16px;
     text-transform: lowercase;
     font-weight: bold;
     float: left;
-    position: relative;
+    max-width: 120px;
+    @include transition(max-width ease 1000ms, margin-left ease 1000ms);
+
+    &:hover, &.selected {
+      .title, .title a { color: lighten($cream, 20); }
+    }
+
+    &.selected {
+      max-width: 250px;
+    }
 
     ul {
-      visibility: hidden;
-      opacity: 0;
-      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
-      position: absolute;
-      z-index: 20;
       background-color: $teal;
       padding: 5px 0;
       font-weight: normal;
       line-height: 25px;
       font-size: 12px;
-
 
       a {
         @include link-colors($cream);
@@ -68,18 +100,51 @@
       margin-top: 2px;
     }
 
-    &:hover {
-      ul{
-        visibility: visible;
-        opacity: 1;
-        @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
-      }
+    .clear {
+      margin-left: 10px;
+      display: block;
+      font-size: 14px;
+      font-weight: normal;
+      color: $grey-2;
+    }
 
-      .title { color: lighten($cream, 20); }
+    a.clear {
+      @include link-colors($cream, lighten($cream, 20));
+    }
+
+    .current {
+      display: block;
+      margin-left: 10px;
+      line-height: 100%;
+    }
+
+    .container {
+      padding-top: 10px;
+      width: 148px;
+      position: absolute;
+      z-index: 20;
+      top: 24px;
+      left: 0;
+      background-color: $teal;
+    }
+
+    .filtered-list {
+      padding: 2px;
+
+      li {
+        a {
+          padding: 2px 5px;
+        }
+
+        &.fade-leave-setup.fade-leave-start a {
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+      }
     }
   }
 
-  .add.menu ul{
+  .add.click-menu ul{
     width: 120px;
   }
 
@@ -90,14 +155,14 @@
     text-transform: lowercase;
     margin-left: 28px;
     margin-right: 16px;
-
-    &.posts {
-      margin-left: -8px;
-      margin-right: 23px;
-    }
   }
 
-  .viewing.menu {
+  .post-filters .label {
+    margin-left: -8px;
+    margin-right: 23px;
+  }
+
+  .viewing.click-menu {
     ul {
       font-size: 16px;
       font-weight: bold;
@@ -106,24 +171,100 @@
     }
   }
 
-  select {
-    float: left;
+  .groups.click-menu {
+    &.selected {
+      max-width: 380px;
+    }
   }
 
-  .date-placeholder, .tag-placeholder {
-    float: left;
-    display: block;
-    width: 40px;
-    height: 22px;
-    margin-left: 20px;
-    background: image-url('large-icons.png') no-repeat -10px -723px;
+  .tags.click-menu {
+    .title {
+      float: left;
+      display: block;
+      height: 22px;
+      width: 40px;
+      background: image-url('large-icons.png') no-repeat -10px -844px;
+      margin-left: 10px;
+
+      &.active { background-position: -10px -904px; }
+    }
+
+    .current, .clear {
+      text-align: right;
+      margin-right: 10px;
+    }
+
+    &.selected .title, .title:hover {
+      background-position: -10px -874px;
+
+      &.active { background-position: -10px -934px; }
+    }
+
+    .container {
+      right: 0;
+      left: auto;
+    }
   }
 
-  .date-placeholder {
-    margin-left: 30px;
-  }
+  .date.click-menu {
+    .title {
+      float: left;
+      display: block;
+      width: 40px;
+      height: 22px;
+      margin-left: 20px;
+      background: image-url('large-icons.png') no-repeat -10px -723px;
 
-  .tag-placeholder {
-    background-position: -10px -844px;
+      &.active { background-position: -10px -783px; }
+    }
+
+    &.selected .title, .title:hover {
+      background-position: -10px -753px;
+
+      &.active { background-position: -10px -813px; }
+    }
+
+    div.container {
+      padding: 10px;
+      width: 120px;
+      text-align: center;
+    }
+
+    .value {
+      display: block;
+      font-weight: normal;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      border: none;
+      background-color: transparent;
+      text-align: center;
+      font-size: 14px;
+      color: $cream;
+    }
+
+    span.container {
+      padding: 0;
+      width: auto;
+      visibility: visible;
+      position: relative;
+      left: 0;
+      top: 0;
+    }
+
+    .clear-date {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      background: image-url('small-icons.png') no-repeat 0 -274px;
+      width: 20px;
+      height: 22px;
+
+      &:hover {
+        background-position: 0 -315px;
+      }
+    }
   }
 }

@@ -1,9 +1,0 @@
-= semantic_form_for profile do |form|
-  = form.inputs do
-    = form.input :first_name
-    = form.input :last_name
-    - profile.class.inputs.each do |input_name|
-      = form.input input_name
-      
-  = form.actions do
-    = form.action :submit, button_html: { class: :button }

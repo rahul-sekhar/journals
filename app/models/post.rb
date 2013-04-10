@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students, :student_observations_attributes
+  attr_accessible :title, :content, :tag_names, :teacher_ids, :student_ids, :visible_to_guardians, :visible_to_students, :student_observations_attributes, :image_ids
 
   before_save :check_permissions
   before_validation :check_student_observations, :check_self_tag, :sanitize_content
@@ -10,25 +10,32 @@ class Post < ActiveRecord::Base
   has_and_belongs_to_many :students, uniq: true
   has_many :comments, dependent: :destroy, order: :created_at
   has_many :student_observations, inverse_of: :post, dependent: :destroy
+  has_many :images, dependent: :destroy
 
   accepts_nested_attributes_for :student_observations
 
-  validates :title, 
+  validates :title,
     presence: true,
     length: { maximum: 255 }
   validates :author, presence: true
 
   strip_attributes
 
+  scope :load_associations, includes(:students, :teachers, :tags, :comments, :student_observations)
+
+  def self.author_is(profile)
+    where { (post.author_id == profile.id) && (post.author_type == profile.class.to_s) }
+  end
+
   # Posts that are either authored by the guardian or that have one of the guardian's students tagged and have guardian permissions allowed
   def self.readable_by_guardian(guardian)
     student_ids = guardian.students.map{ |student| student.id }
-    
+
     where{
-      ( 
-        ( author_id == guardian.id ) & ( author_type == "Guardian" ) 
+      (
+        ( author_id == guardian.id ) & ( author_type == "Guardian" )
       ) |
-      ( 
+      (
         ( visible_to_guardians == true ) &
         ( id.in ( Post.select{id}.joins{ students }.where{ students.id.in( student_ids )}) )
       )
@@ -40,6 +47,9 @@ class Post < ActiveRecord::Base
     posts = posts.search(params[:search]) if params[:search]
     posts = posts.has_group(params[:group]) if params[:group].to_i > 0
     posts = posts.has_student(params[:student]) if params[:student].to_i > 0
+    posts = posts.has_tag(params[:tag]) if params[:tag].to_i > 0
+    posts = posts.date_from(params[:dateFrom]) if params[:dateFrom]
+    posts = posts.date_to(params[:dateTo]) if params[:dateTo]
     return posts
   end
 
@@ -132,14 +142,12 @@ class Post < ActiveRecord::Base
   end
 
   def restriction_message
-    if visible_to_students && visible_to_guardians
-      return "Visible to everyone"
-    else
+    if !visible_to_students || !visible_to_guardians
       restrictions = []
       restrictions << "guardians" if !visible_to_guardians
       restrictions << "students" if !visible_to_students
 
-      return "Not visible to #{restrictions.join(" or ")}"
+      return "Not visible to #{restrictions.join(' or ')}"
     end
   end
 
@@ -156,11 +164,35 @@ class Post < ActiveRecord::Base
     where { title.like query }
   end
 
+  def self.has_tag(tag_id)
+    where{ id.in( Post.select{id}.joins{ tags }.where{ tags.id == tag_id } ) }
+  end
+
   def self.has_student(student_id)
     where{ id.in( Post.select{id}.joins{ students }.where{ students.id == student_id } ) }
   end
 
   def self.has_group(group_id)
     where{ id.in( Post.select{id}.joins{ students.groups }.where{ groups.id == group_id } ) }
+  end
+
+  def self.date_from(date)
+    begin
+      date = DateTime.strptime( "#{date}+5:30", '%d-%m-%Y%z' )
+    rescue
+      return self.scoped
+    end
+
+    where{ created_at >= date }
+  end
+
+  def self.date_to(date)
+    begin
+      date = DateTime.strptime( "#{date}+5:30", '%d-%m-%Y%z' ) + 1.day
+    rescue
+      return self.scoped
+    end
+
+    where{ created_at < date }
   end
 end

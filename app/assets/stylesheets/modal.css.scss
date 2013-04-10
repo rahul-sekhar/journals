@@ -1,0 +1,19 @@
+.ui-dialog-content {
+  @include myriad;
+
+  input, textarea, select, button {
+    @include myriad;
+    color: $off-black;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: $off-black;
+  }
+}

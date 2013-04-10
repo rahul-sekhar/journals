@@ -38,4 +38,10 @@ Journals::Application.configure do
   # Set mailer host
   config.default_host = 'testhost'
   config.action_mailer.default_url_options = { host: 'testhost' }
+
+  if ENV['CUCUMBER']
+    config.handle_exceptions = true
+  else
+    config.handle_exceptions = false
+  end
 end

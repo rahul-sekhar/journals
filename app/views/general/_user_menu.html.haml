@@ -1,7 +1,7 @@
-%p You are signed in as #{current_profile.full_name}
-.menu
-  .menu-icon
+%p You are signed in as #{current_profile.name}
+.user.menu
+  .title.icon
   %ul
     %li= link_to "Your profile", current_profile
-    %li= link_to "Change password", change_password_path
-    %li= link_to "Log out", logout_path
+    %li= link_to "Change password", "", { "ng-click" => "dialogs.changePassword = true" }
+    %li= link_to "Log out", logout_path, target: "_self"

@@ -82,17 +82,13 @@ describe ProfileName do
 
   context "with single named profiles" do
     before do
-      @student = create(:student, first_name: nil)
-      @teacher = create(:teacher, first_name: nil)
-      @guardian = create(:guardian, first_name: nil, students: [@student])
-    end
-    
-    it "returns all the profiles" do
-      ProfileName.all.map{ |profile| profile.profile }.should =~ [@student, @teacher, @guardian]
+      @student = create(:student, name: 'Single')
+      @teacher = create(:teacher, name: 'One')
+      @guardian = create(:guardian, name: 'Un', students: [@student])
     end
 
-    it "returns nil for the first names" do
-      ProfileName.all.all?{ |profile| profile.first_name == nil }.should == true
+    it "returns all the profiles" do
+      ProfileName.all.map{ |profile| profile.profile }.should =~ [@student, @teacher, @guardian]
     end
   end
 

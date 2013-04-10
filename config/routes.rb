@@ -6,42 +6,51 @@ Journals::Application.routes.draw do
   get "logout" => "sessions#destroy"
 
   get "people" => "pages#people"
-  get "people/archived" => "pages#archived", as: "archived_people"
-  get "mentees" => "pages#mentees"
-  get "change_password" => "pages#change_password"
   put "change_password" => "pages#update_password"
 
+  get "user" => "pages#user"
+
   resources :posts do
-    resources :comments, only: [:create, :edit, :update, :destroy]
+    resources :comments, only: [:create, :update, :destroy]
   end
 
-  resources :students do
-    resources :guardians, only: [:new, :create, :destroy]
+  resources :images, only: [:create]
+
+  resources :students, except: [:new, :edit] do
+    resources :guardians, only: [:create, :destroy] do
+      collection do
+        get :check_duplicates
+      end
+    end
 
     member do
       post :reset
       post :archive
-      post :add_group, as: "add_group_to"
-      post :remove_group, as: "remove_group_from"
-      post :add_mentor, as: "add_mentor_to"
-      post :remove_mentor, as: "remove_mentor_from"
+      post "groups/:group_id", action: "add_group"
+      delete "groups/:group_id", action: "remove_group"
+      post "mentors/:teacher_id", action: "add_mentor"
+      delete "mentors/:teacher_id", action: "remove_mentor"
     end
   end
 
-  resources :teachers do
+  resources :teachers, except: [:new, :edit] do
     member do
       post :reset
       post :archive
-      post :add_mentee, as: "add_mentee_to"
-      post :remove_mentee, as: "remove_mentee_from"
+      post "mentees/:student_id", action: "add_mentee"
+      delete "mentees/:student_id", action: "remove_mentee"
     end
   end
 
-  resources :guardians, only: [:show, :edit, :update] do
+  resources :guardians, only: [:index, :show, :update] do
     member do
       post :reset
     end
   end
 
-  resources :groups
+  resources :groups, except: [:new, :edit, :show]
+
+  resources :tags, only: [:index]
+
+  match "*not_found", :to => "errors#not_found"
 end
