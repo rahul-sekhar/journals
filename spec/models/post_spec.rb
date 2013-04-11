@@ -166,7 +166,7 @@ describe Post do
 
     context "if posted by a student" do
       before { post.author = student }
-      
+
       it "automatically sets the self tag" do
         post.students = [other_student]
         post.teachers = []
@@ -250,7 +250,7 @@ describe Post do
     context "with a tagged student" do
       let(:student){ create(:student) }
       before{ post.students << student }
-      
+
       it "creates a student observation when no id is passed" do
         post.student_observations_attributes = {
           '0' => { 'student_id' => student.id, 'content' => "Some content" }
@@ -277,7 +277,7 @@ describe Post do
         post.student_observations.should be_empty
       end
 
-      it "does creates an observation with only an image tag" do
+      it "creates an observation with only an image tag" do
         post.student_observations_attributes = {
           '0' => { 'student_id' => student.id, 'content' => "<img title=\"blahblah\" src=\"http://blahblah.com\">" }
         }
@@ -391,7 +391,7 @@ describe Post do
         post.visible_to_students = true
       end
 
-      it { should == "Visible to everyone" }
+      it { should be_nil }
     end
 
     context "when restricted to students" do
@@ -421,70 +421,213 @@ describe Post do
       @student1 = create(:student)
       @student2 = create(:student)
       @student3 = create(:student)
+
       @group1 = create(:group)
       @group1.students << [@student1, @student2]
       @group2 = create(:group)
       @group2.students << @student3
-      @post1 = create(:post, title: "Some title", content: "Some content", students: [@student1])
-      @post2 = create(:post, title: "Second post", content: "More content")
-      @post3 = create(:post, title: "Some other title", content: "Yada yada yada", students: [@student1, @student2])
-      @post4 = create(:post, title: "Last post", content: "Content", students: [@student2])
+
+      @tag1 = create(:tag)
+      @tag2 = create(:tag)
+      @tag3 = create(:tag)
+      @tag4 = create(:tag)
+
+      @post1 = create(:post, title: "Some title", students: [@student1])
+      @post1.created_at = Date.new(2010, 2, 5)
+      @post1.tags = [@tag1, @tag2]
+      @post1.save!
+
+      @post2 = create(:post, title: "Second post")
+      @post2.created_at = Date.new(2010, 1, 20)
+      @post2.save!
+
+      @post3 = create(:post, title: "Some other title", students: [@student1, @student2])
+      @post3.created_at = Date.new(2011, 5, 10)
+      @post3.tags = [@tag2]
+      @post3.save!
+
+      @post4 = create(:post, title: "Last post", students: [@student2])
+      @post4.created_at = Date.new(2010, 10, 15)
+      @post4.tags = [@tag2, @tag3]
+      @post4.save!
+      @tag
     end
 
     it "returns all posts with no parameters" do
       Post.filter_by_params({}).should =~ [@post1, @post2, @post3, @post4]
     end
-    
-    it "searches for a post if the search parameter is present" do
-      Post.filter_by_params({search: "some"}).should =~ [@post1, @post3]
+
+    describe "search" do
+      it "searches for a post if the search parameter is present" do
+        Post.filter_by_params({search: "some"}).should =~ [@post1, @post3]
+      end
+
+      it "returns all posts with an empty search parameter" do
+        Post.filter_by_params({search: "   "}).should =~ [@post1, @post2, @post3, @post4]
+      end
+
+      it "returns no posts with an unmatched query" do
+        Post.filter_by_params({search: "unmatched query"}).should be_empty
+      end
     end
 
-    it "returns all posts with an empty search parameter" do
-      Post.filter_by_params({search: "   "}).should =~ [@post1, @post2, @post3, @post4]
+    describe "tagged student" do
+      it "filters posts by a tagged student" do
+        Post.filter_by_params({student: @student1.id}).should =~ [@post1, @post3]
+      end
+
+      it "does not filter students if the student parameter is 0" do
+        Post.filter_by_params({student: 0}).should =~ [@post1, @post2, @post3, @post4]
+      end
+
+      it "returns no posts if a student is selected with no tagged posts" do
+        Post.filter_by_params({student: @student3.id}).should be_empty
+      end
+
+      it "combines a search and a student filter" do
+        Post.filter_by_params({student: @student1.id, search: "other"}).should == [@post3]
+      end
     end
 
-    it "returns no posts with an unmatched query" do
-      Post.filter_by_params({search: "unmatched query"}).should be_empty
+    describe "groups" do
+      it "returns posts with tagged students that belong to the group when a group param is present" do
+        Post.filter_by_params({group: @group1.id}).should =~ [@post1, @post3, @post4]
+      end
+
+      it "does not filter groups if the group parameter is 0" do
+        Post.filter_by_params({group: 0}).should =~ [@post1, @post2, @post3, @post4]
+      end
+
+      it "returns no posts when a group with students that are tagged in no posts is passed" do
+        Post.filter_by_params({group: @group2.id}).should be_empty
+      end
+
+      it "filters groups and students within a group" do
+        Post.filter_by_params({group: @group1.id, student: @student2.id}).should =~ [@post3, @post4]
+      end
+
+      it "returns nothing if passed a group and a student not in that group" do
+        Post.filter_by_params({group: @group1.id, student: @student3.id}).should be_empty
+      end
+
+      it "filters groups, students and searches together" do
+        Post.filter_by_params({search: "pos", group: @group1.id, student: @student2.id}).should == [@post4]
+      end
     end
 
-    it "filters posts by a tagged student" do
-      Post.filter_by_params({student: @student1.id}).should =~ [@post1, @post3]
+    describe "tags" do
+      it "returns posts filtered by the tag" do
+        Post.filter_by_params({tag: @tag2.id}).should =~ [@post1, @post3, @post4]
+      end
+
+      it "does not filter groups if the tag parameter is 0" do
+        Post.filter_by_params({tag: 0}).should =~ [@post1, @post2, @post3, @post4]
+      end
+
+      it "returns no posts for a tag with no posts" do
+        Post.filter_by_params({tag: @tag4.id}).should be_empty
+      end
+
+      it "filters tags and a search" do
+        Post.filter_by_params({tag: @tag2.id, search: "tit"}).should =~ [@post1, @post3]
+      end
+
+      it "filters groups, students, tags and searches together" do
+        Post.filter_by_params({search: "pos", group: @group1.id, student: @student2.id, tag: @tag3.id}).should == [@post4]
+        Post.filter_by_params({search: "pos", group: @group1.id, student: @student2.id, tag: @tag1.id}).should be_empty
+      end
     end
 
-    it "does not filter students if the student parameter is 0" do
-      Post.filter_by_params({student: 0}).should =~ [@post1, @post2, @post3, @post4]
+    describe "date" do
+      it "returns posts filtered by the from date" do
+        Post.filter_by_params({dateFrom: "05-05-2010"}).should =~ [@post3, @post4]
+      end
+
+      it "returns posts filtered by the to date" do
+        Post.filter_by_params({dateTo: "05-05-2010"}).should =~ [@post1, @post2]
+      end
+
+      it "returns posts filtered by the from date and to date" do
+        Post.filter_by_params({dateFrom: "05-05-2010", dateTo: "12-12-2010"}).should == [@post4]
+      end
+
+      it "returns posts from a single day" do
+        Post.filter_by_params({dateFrom: "05-02-2010", dateTo: "05-02-2010"}).should == [@post1]
+      end
+
+      it "filters tags and dates" do
+        Post.filter_by_params({dateFrom: "05-05-2010", tag: @tag3.id}).should == [@post4]
+      end
+
+      it "filters search and dates" do
+        Post.filter_by_params({dateTo: "05-05-2010", search: "post"}).should == [@post2]
+      end
     end
 
-    it "returns no posts if a student is selected with no tagged posts" do
-      Post.filter_by_params({student: @student3.id}).should be_empty
-    end
+    it "filters everything together" do
+      Post.filter_by_params({
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
+        search: "last",
+        group: @group1.id,
+        student: @student2.id,
+        tag: @tag2.id
+      }).should == [@post4]
 
-    it "combines a search and a student filter" do
-      Post.filter_by_params({student: @student1.id, search: "other"}).should == [@post3]
-    end
+      # Check each filter, to make sure if it is changed, we get a blank result
+      Post.filter_by_params({
+        dateFrom: "01-12-2010",
+        dateTo: "30-12-2010",
+        search: "last",
+        group: @group1.id,
+        student: @student2.id,
+        tag: @tag2.id
+      }).should be_empty
 
-    it "returns posts with tagged students that belong to the group when a group param is present" do
-      Post.filter_by_params({group: @group1.id}).should =~ [@post1, @post3, @post4]
-    end
+      Post.filter_by_params({
+        dateFrom: "01-02-2010",
+        dateTo: "01-04-2010",
+        search: "last",
+        group: @group1.id,
+        student: @student2.id,
+        tag: @tag2.id
+      }).should be_empty
 
-    it "does not filter groups if the group parameter is 0" do
-      Post.filter_by_params({group: 0}).should =~ [@post1, @post2, @post3, @post4]
-    end
+      Post.filter_by_params({
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
+        search: "title",
+        group: @group1.id,
+        student: @student2.id,
+        tag: @tag2.id
+      }).should be_empty
 
-    it "returns no posts when a group with students that are tagged in no posts is passed" do
-      Post.filter_by_params({group: @group2.id}).should be_empty
-    end
+      Post.filter_by_params({
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
+        search: "last",
+        group: @group2.id,
+        student: @student2.id,
+        tag: @tag2.id
+      }).should be_empty
 
-    it "filters groups and students within a group" do
-      Post.filter_by_params({group: @group1.id, student: @student2.id}).should =~ [@post3, @post4]
-    end
+      Post.filter_by_params({
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
+        search: "last",
+        group: @group1.id,
+        student: @student1.id,
+        tag: @tag2.id
+      }).should be_empty
 
-    it "returns nothing if passed a group and a student not in that group" do
-      Post.filter_by_params({group: @group1.id, student: @student3.id}).should be_empty
-    end
-
-    it "filters groups, students and searches together" do
-      Post.filter_by_params({search: "pos", group: @group1.id, student: @student2.id}).should == [@post4]
+      Post.filter_by_params({
+        dateFrom: "01-02-2010",
+        dateTo: "30-12-2010",
+        search: "last",
+        group: @group1.id,
+        student: @student2.id,
+        tag: @tag1.id
+      }).should be_empty
     end
   end
 end

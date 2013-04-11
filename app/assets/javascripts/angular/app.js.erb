@@ -1,0 +1,78 @@
+'use strict';
+
+angular.module('journals', ['journals.user', 'journals.people', 'journals.posts', 'journals.editInPlace',
+  'journals.filters', 'journals.pagination', 'journals.modal', 'journals.directives', 'journals.changePassword']).
+
+  config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
+    $locationProvider.html5Mode(true);
+
+    $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+  }]).
+
+  run(['User', '$rootScope', function (User, $rootScope) {
+    $rootScope.user = User;
+    $rootScope.$watch('user.type', function (value) {
+      $rootScope.isTeacher = (value === 'Teacher');
+      $rootScope.isGuardian = (value === 'Guardian');
+      $rootScope.isStudent = (value === 'Student');
+    });
+    $rootScope.dialogs = {};
+  }]).
+
+  config(['$routeProvider', function ($routeProvider) {
+
+    var profileParams = {
+      templateUrl: '<%= asset_path("people.html") %>',
+      controller: 'ProfileCtrl',
+      reloadOnSearch: false
+    };
+
+    $routeProvider.
+
+      when('/login', {redirectTo: '/'}).
+
+      when('/', {redirectTo: '/posts'}).
+
+      when('/posts', {
+        templateUrl: '<%= asset_path("posts.html") %>',
+        controller: 'PostsCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/posts/new', {
+        templateUrl: '<%= asset_path("edit_post.html") %>',
+        controller: 'EditPostCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/posts/:id/edit', {
+        templateUrl: '<%= asset_path("edit_post.html") %>',
+        controller: 'EditPostCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/posts/:id', {
+        templateUrl: '<%= asset_path("posts.html") %>',
+        controller: 'ViewPostCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/people', {
+        templateUrl: '<%= asset_path("people.html") %>',
+        controller: 'PeopleCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/teachers/:id', profileParams).
+
+      when('/students/:id', profileParams).
+
+      when('/guardians/:id', profileParams).
+
+      when('/guardians', {redirectTo: '/page-not-found'}).
+
+      when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).
+
+      otherwise({redirectTo: '/page-not-found'});
+  }]);

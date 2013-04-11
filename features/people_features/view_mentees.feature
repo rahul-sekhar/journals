@@ -3,18 +3,35 @@ Feature: View mentees
 A teacher can view their own mentees by going to the mentees page. Students and Guardians should not be able to access this page
 
 Scenario: View mentees as a student
-  When I have logged in as a student "Rahul Sekhar"
-  Then I should get a page not found message when I go to the mentees page
+  Given I have logged in as the student Rahul
+  And I go to the people page
+  Then the viewing menu should not have the option "Your mentees"
 
 Scenario: View mentees as a guardian
-  When I have logged in as a guardian "Rahul Sekhar" to the student "Roly Sekhar"
-  Then I should get a page not found message when I go to the mentees page
+  Given I have logged in as the guardian Rahul
+  And I go to the people page
+  Then the viewing menu should not have the option "Your mentees"
 
 Scenario: View mentees as a teacher
-  Given I have logged in as a teacher "Rahul Sekhar"
-  And the students Roly, Lucky and Jumble exist
-  And I have the mentees "Roly, Lucky"
-  When I am on the mentees page
-  Then I should see the heading "Roly Sekhar"
-  And I should see the heading "Lucky Sekhar"
-  And I should not see the heading "Jumble Sekhar"
+  Given I have logged in as the teacher Rahul
+  And a student "Lucky Sekhar" exists
+  And a student "Roly Sekhar" exists
+  And a student "Jumble Dog" exists
+  And I have the mentees "Roly, Jumble"
+
+  When I am on the people page
+  Then the viewing menu should have the option "Your mentees"
+  When I select "Your mentees" from the viewing menu
+  Then I should see a profile for "Roly Sekhar"
+  And I should not see a profile for "Lucky Sekhar"
+  And I should see a profile for "Jumble Dog"
+
+  And the add menu should have the option "add teacher"
+  And the add menu should have the option "add student"
+  And the add menu should have the option "manage groups"
+  And the viewing menu should have "Your mentees" selected
+
+  When I search for "sek"
+  And I should see a profile for "Roly Sekhar"
+  And I should not see a profile for "Lucky Sekhar"
+  And I should not see a profile for "Jumble Dog"

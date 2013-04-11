@@ -21,3 +21,9 @@
 /db/data*.yml
 /db/data.sql
 /db/data*.sql
+
+# Ignore uploads
+/public/uploads/*
+
+# Ignore cucumber screenshot
+/cucumber-screenshot.png

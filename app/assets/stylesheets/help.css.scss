@@ -1,0 +1,118 @@
+@mixin help-step {
+  p {
+    letter-spacing: 1px;
+    font-weight: normal;
+    text-align: left;
+    margin: 0;
+    color: $light-cream;
+    font-size: 14px;
+  }
+
+  .step {
+    margin-top: 25px;
+  }
+
+  h4 {
+    font-size: 18px;
+    @include semibold;
+    color: $cream;
+    background-color: transparent;
+    line-height: 100%;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 18px;
+    text-align: left;
+  }
+}
+
+$help-fade-in-time: 1000ms;
+$help-fade-out-time: 1000ms;
+
+.help-step {
+  background-color: $grey-3;
+  position:absolute;
+  width: 270px;
+
+  padding: 25px 30px;
+  @include border-radius(5px);
+
+  visibility: hidden;
+  opacity: 0;
+  z-index: -999;
+  @include transition(opacity $help-fade-out-time ease, visibility $help-fade-out-time ease, z-index 0 ease $help-fade-out-time);
+
+  &.shown {
+    opacity: 0.95;
+    visibility: visible;
+    z-index: 100;
+    @include transition(opacity $help-fade-in-time ease, visibility $help-fade-in-time ease);
+  }
+
+  .close {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    width: 12px;
+    height: 12px;
+    background: image-url('small-icons.png') no-repeat -4px -701px;
+    &:hover { background-position: -4px -726px; }
+  }
+
+  .step {
+    position: relative;
+    height: 14px;
+
+    a {
+      background: image-url('small-icons.png') no-repeat 0 -750px;
+      display: block;
+      height: 14px;
+    }
+
+    .prev {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 14px;
+
+      &:hover { background-position: 0 -775px; }
+    }
+
+    .next {
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding-right: 26px;
+      background-position: right -800px;
+      &:hover { background-position: right -825px; }
+
+      @include semibold;
+      @include link-colors($light-cream, $light-grey-brown);
+    }
+
+    span {
+      position: absolute;
+      left: 88px;
+      top: 0;
+      word-spacing: 1px;
+      font-weight: normal;
+    }
+  }
+
+  @include help-step;
+}
+
+.help-pointer {
+  position: absolute;
+
+  visibility: hidden;
+  opacity: 0;
+  z-index: -999;
+  @include transition(opacity $help-fade-out-time ease, visibility $help-fade-out-time ease, z-index 0 ease $help-fade-out-time);
+
+  &.shown {
+    opacity: 0.95;
+    visibility: visible;
+    z-index: 100;
+    @include transition(opacity $help-fade-in-time ease, visibility $help-fade-in-time ease);
+  }
+}

@@ -1,5 +1,6 @@
-input, textarea, select {
+input, textarea, select, button {
   @include myriad;
+  color: $off-black;
 }
 
 .inputs {

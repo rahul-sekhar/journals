@@ -1,0 +1,34 @@
+!!! 5
+%html
+  %head
+    %title= page_title
+    %link{ rel: "shortcut icon", href: "/favicon.ico?v=1" }
+    = stylesheet_link_tag    "application", media: "all"
+    = javascript_include_tag "application"
+    = yield :head
+    - unless Rails.env.test?
+      \<script type="text/javascript" src="//use.typekit.net/fgp2slt.js"></script>
+      \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    = csrf_meta_tags
+
+
+  %body{id: content_for(:page_id)}
+    %header#page-header
+      .wrapper
+        %h1= link_to Rails.configuration.settings['app_full_name'], root_path
+
+        - if logged_in?
+          #user= render "general/user_menu"
+
+    .wrapper
+      - if logged_in?
+        %navigation#page-navigation= render "general/navigation"
+
+      #main-content
+        %h2= content_for :heading
+
+        %section#upper-bar
+          = yield :upper_bar
+          .clear-left
+
+        = yield

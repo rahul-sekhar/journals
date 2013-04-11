@@ -1,26 +1,78 @@
 article.profile {
   background-color: white;
+  @include transition(background-color 500ms ease);
   margin-bottom: 26px;
   position: relative;
   @include new-clearfix;
 
   &.archived {
-    // background-color: #CDCECC;
+    background-color: lighten(#CDCECC, 12);
   }
 
   .profile-header {
     background-color: $grey-brown;
-    padding: 14px 21px 14px 21px;
+    padding: 12px 21px 12px 21px;
     margin-bottom: 20px;
+  }
+
+  // Edit-in-place settings
+  .value {
+    display: block;
+    border: 1px solid transparent;
+  }
+
+  &.editable .value {
+    cursor: text;
+    &:hover { border: 1px solid grey; }
+  }
+
+  .editor {
+    border: 1px solid grey;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    resize: none;
   }
 
   h3 {
     color: $cream;
     float: left;
     font-size: 20px;
-    line-height: 20px;
+    line-height: 22px;
     max-width: 340px;
     @include semibold;
+
+    .value { padding-top: 2px; }
+
+    .editor {
+      width: 340px;
+      font-size: 20px;
+      line-height: 24px;
+      height: 24px;
+      @include semibold;
+      color: $cream;
+      background-color: $grey-brown;
+    }
+  }
+
+  .main-profile-fields {
+    width: 320px;
+    float: left;
+  }
+
+  &.teacher {
+    .main-profile-fields {
+      width: 100%;
+    }
+    .field {
+      p {
+        width: 450px;
+      }
+
+      .field-name {
+        width: 110px;
+      }
+    }
   }
 
   .field {
@@ -28,11 +80,13 @@ article.profile {
     margin-bottom: 7px;
     @include new-clearfix;
     line-height: 120%;
+    position: relative;
 
     p {
       float: left;
       color: $off-black;
       font-size: 14px;
+      min-height: 14px * 1.2;
       width: 180px;
     }
 
@@ -42,33 +96,74 @@ article.profile {
       margin-right: 24px;
       color: $grey-brown;
     }
-  }
 
-  .edit {
-    margin-bottom: 7px;
-    text-align: right;
-    width: 110px;
-    line-height: 14px;
+    .value {
+      width: 100%;
+      line-height: 18px;
+    }
 
-    .edit-link {
-      @include link-colors($grey-brown, lighten($grey-brown, 10));
-      font-size: 12px;
-      text-transform: lowercase;
+    .editor {
+      line-height: 18px;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .clear-date {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      background: image-url('small-icons.png') no-repeat 0 -275px;
+      width: 20px;
+      height: 20px;
+
+      &:hover {
+        background-position: 0 -315px;
+      }
+    }
+
+    textarea.editor {
+      height: 80px;
+      resize: vertical;
     }
   }
 
-  .main-profile-fields {
-    width: 320px;
+  .add-field {
     float: left;
+    margin-left: (96px - 60px);
+    text-transform: lowercase;
+    font-size: 12px;
+
+    .title {
+      width: 60px;
+      color: $grey-brown;
+      text-align: right;
+      padding-right: 20px;
+      background: image-url('small-icons.png') no-repeat right -651px;
+    }
+
+    ul {
+      width: 110px;
+      left: 10px;
+      top: 15px;
+      border: 1px solid grey;
+      padding: 4px 0;
+      font-size: 12px;
+      background-color: $grey-brown;
+    }
+
+    li {
+      line-height: 16px;
+      padding: 0 8px;
+      &:hover{ background-color: lighten($grey-brown, 10) }
+
+      a { @include link-colors($cream, white); }
+    }
   }
+
 
   .guardians {
     float: right;
     width: 315px;
-
-    .guardian-header {
-
-    }
 
     h4 {
       @include semibold;
@@ -80,6 +175,26 @@ article.profile {
       line-height: 120%;
       float: left;
       max-width: 160px;
+
+      .value {
+        border: 1px solid transparent;
+        cursor: auto;
+        padding-top: 1px;
+      }
+
+      &.editable .value {
+        cursor: text;
+        &:hover { border: 1px solid grey; }
+      }
+
+      .editor {
+        width: 160px;
+        font-size: 16px;
+        line-height: 20px;
+        height: 20px;
+        @include semibold;
+        color: $off-black;
+      }
     }
 
     .field {
@@ -88,10 +203,8 @@ article.profile {
       }
     }
 
-    .edit {
-      text-align: left;
-      width: auto;
-      margin-left: 85px + 24px;
+    .add-field {
+      margin-left: (96px - 60px - 25px);
     }
   }
 
@@ -104,6 +217,8 @@ article.profile {
     top: 0;
     left: 439px;
     line-height: 48px;
+    max-height: 48px;
+    overflow: hidden;
     color: $cream;
     @include semibold;
   }
@@ -125,17 +240,15 @@ article.profile {
 
   .profile-footer {
     clear: both;
-    margin-top: 26px;
-    float: left;
+    padding-top: 26px;
   }
 
   .groups, .mentors, .mentees {
-    position: relative;
     float: left;
     margin-left: 28px;
 
     h4 {
-      padding-bottom: 5px;
+      padding-bottom: 10px;
       margin-right: 20px;
       font-size: 14px;
       line-height: 20px;
@@ -144,72 +257,82 @@ article.profile {
       background: image-url('small-icons.png') no-repeat right -176px;
       padding-right: 20px;
       cursor: pointer;
-
-      &:hover,&.selected { color: lighten($off-black, 30); }
     }
 
-    label { display: none; }
-    
-    .remove-link {
-      display: block; 
-      @include hide-text;
-      background: image-url('small-icons.png') no-repeat center -229px;
-      width: 20px;
-      height: 12px;
-      position: absolute;
-      right: 0;
-      top: 0;
+    h4:hover, &.selected h4 { color: lighten($off-black, 30); }
 
-      &:hover{ background-position: center -249px}
-    }
-
-    .menu {
-      position: absolute;
-      display: none;
-      left: -20px;
+    .container {
       top: 25px;
-      clear: left;
-      z-index: 20;
+      left: -20px;
       background-color: $teal;
       text-transform: lowercase;
       font-size: 12px;
-      padding: 8px 16px;
       @include box-shadow(1px 1px 8px #888);
       overflow: hidden;
       min-width: 100px;
       width: 140px;
       color: $cream;
       margin-bottom: 15px;
+      padding: 8px 4px;
 
       a {
-        @include link-colors($cream, lighten($cream, 20));
+        @include link-colors($cream, white);
       }
 
-      li {
-        margin-bottom: 8px;
-        position: relative;
-        padding-right: 20px;
+      ul {
+        visibility: visible;
+        opacity: 1;
       }
-    }
 
-    select { width: 100%; }
+      ul.existing {
+        margin-bottom: 10px;
+        padding: 0 12px;
+        li {
+          margin-bottom: 8px;
+          position: relative;
+          padding-right: 20px;
+        }
+      }
 
-    select, .button {
-      font-size: 12px;
-      margin-top: 5px;
-      text-transform: lowercase;
-    }
+      .remove {
+        display: block;
+        @include hide-text;
+        background: image-url('small-icons.png') no-repeat center -229px;
+        width: 20px;
+        height: 12px;
+        position: absolute;
+        right: 0;
+        top: 0;
 
-    .button {
-      float: right;
-      font-weight: normal;
-      background-color: $light-grey-brown;
-      @include border-radius(8px);
-      padding: 2px 8px;
-      color: $off-black;
-      line-height: 14px;
+        &:hover{ background-position: center -249px}
+      }
 
-      &:hover { background-color: lighten($light-grey-brown, 15); }
+      .add {
+        font-weight: normal;
+        background-color: $light-grey-brown;
+        @include border-radius(8px);
+        padding: 2px 8px;
+        @include link-colors($off-black, lighten($off-black, 10));
+        line-height: 14px;
+        margin: 10px 5px 0 2px;
+        float: right;
+
+        &:hover { background-color: lighten($light-grey-brown, 15); }
+      }
+
+      .filtered-list {
+        li a {
+          display: block;
+          padding-bottom: 1px;
+        }
+
+        li {
+          line-height: 15px;
+          &:hover {
+            background-color: lighten($teal, 10);
+          }
+        }
+      }
     }
   }
 
@@ -229,43 +352,29 @@ article.profile {
 
 
   .manage {
-    position: relative;
     float: left;
 
     .icon {
       width: 30px;
       height: 20px;
-      margin-top: 2px;
+      margin-top: 5px;
       margin-left: 15px;
       background: image-url('large-icons.png') no-repeat -16px -651px;
       cursor: pointer;
     }
 
-    &:hover {
-      ul{
-        visibility: visible;
-        opacity: 1;
-        @include transition(opacity 400ms ease 100ms, visibility 400ms ease 100ms);
-      }
-
-      .icon { background-position: -16px -691px; }
-    }
+    &:hover .icon { background-position: -16px -691px; }
 
     ul {
       width: 100px;
-      visibility: hidden;
-      opacity: 0;
-      @include transition(opacity 300ms ease 200ms, visibility 300ms ease 200ms);
-      top: 20px;
+      top: 23px;
       left: 10px;
-      position: absolute;
       background-color: $grey-brown;
       color: $grey-2;
       font-size: 12px;
       text-transform: lowercase;
       padding: 7px 0;
       border: 1px solid lighten($grey-brown, 5);
-      z-index: 20;
 
       li {
         cursor: default;
@@ -282,31 +391,5 @@ article.profile {
         &:hover{ background-color: lighten($grey-brown, 10); }
       }
     }
-  }
-}
-
-.no-js article.profile{
-  .groups, .mentors, .mentees {
-    h4 {
-      background: none;
-      cursor: default;
-      margin-right: 0;
-
-      &:hover { color: $off-black }
-    }
-
-    .mentors {
-      margin-left: 18px;
-      .menu {
-        float: left;
-      }
-    }
-  }
-
-  .menu {
-    @include box-shadow(none);
-    position: static;
-    display: block;
-    width: auto;
   }
 }

@@ -1,0 +1,35 @@
+'use strict';
+
+angular.module('journals.assets', []).
+
+  factory('assets', ['$templateCache', '$http', function ($templateCache, $http) {
+    var assets = {}, assetList = {};
+
+    assetList['profile_fields_template.html'] = '<%= asset_path("profile_fields_template.html") %>';
+    assetList['profile_fields_view_template.html'] = '<%= asset_path("profile_fields_view_template.html") %>';
+    assetList['post.html'] = '<%= asset_path("post.html") %>';
+    assetList['help_post.html'] = '<%= asset_path("help_post.html") %>';
+    assetList['help_step.html'] = '<%= asset_path("help_step.html") %>';
+    assetList['editable_profile.html'] = '<%= asset_path("editable_profile.html") %>';
+    assetList['non_editable_profile.html'] = '<%= asset_path("non_editable_profile.html") %>';
+    assetList['editable_guardian.html'] = '<%= asset_path("editable_guardian.html") %>';
+    assetList['non_editable_guardian.html'] = '<%= asset_path("non_editable_guardian.html") %>';
+
+    assets.url = function (filename) {
+      var url = assetList[filename];
+
+      if (url === undefined) {
+        throw new Error('Template ' + filename + ' is not defined');
+      }
+
+      return url;
+    };
+
+    assets.preload = function (files) {
+      angular.forEach(files, function (file) {
+        $http.get(assets.url(file), { cache:$templateCache });
+      });
+    }
+
+    return assets;
+  }]);

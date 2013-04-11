@@ -7,82 +7,58 @@ describe Student do
 
   it_behaves_like "a profile"
 
-  it "cannot have a bloodgroup longer than 15 characters" do
-    profile.bloodgroup = "a" * 15
+  it "cannot have a blood_group longer than 15 characters" do
+    profile.blood_group = "a" * 15
     profile.should be_valid
-    profile.bloodgroup = "a" * 16
+    profile.blood_group = "a" * 16
     profile.should be_invalid
   end
 
-  describe "#formatted_birthday" do
+  describe "#birthday" do
     it "returns nil if the birthday is empty" do
-      profile.formatted_birthday.should be_nil
-    end
-
-    it "returns the formatted birthday if present" do
-      profile.birthday = Date.new(1955, 7, 12)
-      profile.formatted_birthday.should == '12-07-1955'
-    end
-  end
-
-  describe "#formatted_birthday=" do
-    it "sets the birthday given a string" do
-      profile.formatted_birthday = "12-10-1980"
-      profile.birthday.should == Date.new(1980, 10, 12)
-    end
-
-    it "sets the birthday to nil if invalid" do
-      profile.formatted_birthday = "asdf"
       profile.birthday.should be_nil
     end
 
+    it "returns the formatted birthday if present" do
+      profile.birthday_raw = Date.new(1955, 7, 12)
+      profile.birthday.should == '12-07-1955'
+    end
+  end
+
+  describe "#birthday=" do
+    it "sets the birthday given a string" do
+      profile.birthday = "12-10-1980"
+      profile.birthday_raw.should == Date.new(1980, 10, 12)
+    end
+
+    it "sets the birthday to nil if invalid" do
+      profile.birthday = "asdf"
+      profile.birthday_raw.should be_nil
+    end
+
     it "invalidates the student if invalid" do
-      profile.formatted_birthday = "asdf"
+      profile.birthday = "asdf"
       profile.should be_invalid
     end
 
     it "sets the birthday to nil if blank" do
-      profile.formatted_birthday = ""
-      profile.birthday.should be_nil
+      profile.birthday = ""
+      profile.birthday_raw.should be_nil
     end
 
     it "does not invalidate the student if blank" do
-      profile.formatted_birthday = " "
+      profile.birthday = " "
       profile.should be_valid
     end
 
     it "sets the birthday to nil if nil" do
-      profile.formatted_birthday = nil
-      profile.birthday.should be_nil
+      profile.birthday = nil
+      profile.birthday_raw.should be_nil
     end
 
     it "does not invalidate the student if nil" do
-      profile.formatted_birthday = nil
+      profile.birthday = nil
       profile.should be_valid
-    end
-  end
-
-  describe "#age" do
-    it "returns nil if the birthday is empty" do
-      profile.age.should be_nil
-    end
-
-    it "returns the age if the profile is present" do
-      profile.birthday = Date.new(1955, 7, 12)
-      Date.stub(:now).and_return(Date.new(2013,1,1))
-      profile.age.should == 57
-    end
-  end
-
-  describe "#birthday_with_age" do
-    it "returns nil if the birthday is empty" do
-      profile.birthday_with_age.should be_nil
-    end
-
-    it "returns the date of birth and age if the profile is present" do
-      profile.birthday = Date.new(1955, 7, 12)
-      Date.stub(:now).and_return(Date.new(2013,1,1))
-      profile.birthday_with_age.should == "12-07-1955 (57 yrs)"
     end
   end
 
@@ -114,11 +90,11 @@ describe Student do
     end
   end
 
-  describe "#name_with_type" do
+  describe "#name_with_info" do
     it "returns the full name along with the profile type" do
       profile.first_name = "Rahul"
       profile.last_name = "Sekhar"
-      profile.name_with_type.should == "Rahul Sekhar (student)"
+      profile.name_with_info.should == "Rahul Sekhar (student)"
     end
   end
 
@@ -126,9 +102,9 @@ describe Student do
     let(:guardian1){ create(:guardian_with_user, students: [profile]) }
     let(:guardian2){ create(:guardian_with_user, students: [profile, create(:student)]) }
     let(:guardian3){ create(:guardian_with_user, students: [profile, create(:student, archived: true)]) }
-    
+
     context "if not archived" do
-      before do 
+      before do
         profile.email = "test@mail.com"
         profile.save!
       end
@@ -193,63 +169,6 @@ describe Student do
     end
   end
 
-  describe "#remaining_groups" do
-    it "returns an empty array when no groups exist" do
-      profile.remaining_groups.should be_empty
-    end
-
-    context "when some groups exist" do
-      before do
-        @group1 = create(:group, name: "Group 1")
-        @group2 = create(:group, name: "Group 2")
-        @group3 = create(:group, name: "Group 3")
-      end
-
-      it "returns all groups when the student has no groups" do
-        profile.remaining_groups.should =~ [@group1, @group2, @group3]
-      end
-
-      it "returns an empty array when the student has all existing groups" do
-        profile.groups = [@group1, @group2, @group3]
-        profile.remaining_groups.should be_empty
-      end
-
-      it "returns only groups that are not added to the student already" do
-        profile.groups = [@group2]
-        profile.remaining_groups.should =~ [@group1, @group3]
-      end
-    end
-  end
-
-  describe "#remaining_teachers" do
-    it "returns an empty array when no teachers exist" do
-      profile.remaining_teachers.should be_empty
-    end
-
-    context "when some teachers exist" do
-      before do
-        @teacher1 = create(:teacher)
-        @teacher2 = create(:teacher)
-        @teacher3 = create(:teacher)
-        @teacher4 = create(:teacher, archived: true)
-      end
-
-      it "returns all unarchived teachers when the student has no mentors" do
-        profile.remaining_teachers.should =~ [@teacher1, @teacher2, @teacher3]
-      end
-
-      it "returns an empty array when the student has all existing mentors" do
-        profile.mentors = [@teacher1, @teacher2, @teacher3]
-        profile.remaining_teachers.should be_empty
-      end
-
-      it "returns only teachers that are not added to the student already" do
-        profile.mentors = [@teacher2]
-        profile.remaining_teachers.should =~ [@teacher1, @teacher3]
-      end
-    end
-  end
-
   describe "##filter_group" do
     before do
       @student1 = create(:student)
@@ -278,10 +197,10 @@ describe Student do
       Student.filter_group(@group3.id).should be_empty
     end
   end
-  
+
 
   describe "permissions:" do
-    before do 
+    before do
       profile.email = "test@mail.com"
       profile.save!
     end
@@ -322,9 +241,9 @@ describe Student do
 
       context "when tagged in the post" do
         let(:post){ create(:post, students: [profile]) }
-        
+
         context "when it has view permissions" do
-          before do 
+          before do
             post.visible_to_students = true
             post.save
           end
@@ -340,7 +259,7 @@ describe Student do
         end
 
         context "when it does not have view permissions" do
-          before do 
+          before do
             post.visible_to_students = false
             post.save
           end

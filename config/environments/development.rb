@@ -39,4 +39,5 @@ Journals::Application.configure do
   config.default_host = 'localhost'
   config.action_mailer.default_url_options = { host: 'localhost' }
 
+  config.handle_exceptions = false
 end

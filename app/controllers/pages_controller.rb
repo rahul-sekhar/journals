@@ -5,31 +5,51 @@ class PagesController < ApplicationController
     redirect_to posts_path
   end
 
+  def user
+    @profile = current_profile
+  end
+
   def people
-    @empty_message = "No current students or teachers found."
-    @filter = "all"
-    filter_and_display_people( People.current, true )
-  end
+    if params[:filter] == 'students'
+      @people = Student.current
 
-  def archived
-    @empty_message = "No archived students or teachers found."
-    @filter = "archived"
-    filter_and_display_people( People.archived, true )
-  end
+    elsif params[:filter] == 'teachers'
+      @people = Teacher.current
 
-  def mentees
-    raise ActiveRecord::RecordNotFound unless current_profile.is_a? Teacher
+    elsif params[:filter] == 'mentees'
+      if current_profile.is_a? Teacher
+        @people = current_profile.mentees
+      else
+        @people = Student.where("1 = 0")
+      end
 
-    @empty_message = "No mentees found."
-    @filter = "mentees"
-    filter_and_display_people( current_profile.mentees )
-  end
+    elsif params[:filter] == 'archived'
+      map_profiles = true
+      @people = People.archived
 
-  def change_password
+    elsif params[:filter].to_s[0..5] == 'group-'
+      group = Group.find_by_id(params[:filter][6..-1])
+      if (group)
+        @people = group.students.current
+      else
+        @people = Student.where("1 = 0")
+      end
+
+    else
+      map_profiles = true
+      @people = People.current
+    end
+
+    @people = @people.alphabetical.load_associations
+    @people = @people.search(params[:search]) if params[:search]
+
+    @people = paginate(@people)
+    @people = @people.map{ |person| person.profile } if map_profiles
+
+    render "pages/people"
   end
 
   def update_password
-
     if params['user']
       @current_pass = params['user']['current_password']
       @new_pass = params['user']['new_password']
@@ -38,19 +58,19 @@ class PagesController < ApplicationController
     if @current_pass.present? && @new_pass.present?
       current_user.current_password = @current_pass
       current_user.new_password = @new_pass
-        
+
       if current_user.save
-        redirect_to posts_path, notice: "Password changed successfully"
+        render text: 'OK', status: :ok
       else
-        redirect_to change_password_path, alert: current_user.errors.full_messages.first
+        render text: current_user.errors.full_messages.first, status: :unprocessable_entity
       end
-    
+
     elsif @current_pass.blank?
-      redirect_to change_password_path, alert: "Please enter your current password"
+      render text: "Please enter your current password", status: :unprocessable_entity
 
     elsif @new_pass.blank?
-      redirect_to change_password_path, alert: "Please enter a new password"
-    
+      render text: "Please enter a new password", status: :unprocessable_entity
+
     end
   end
 end

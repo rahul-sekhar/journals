@@ -11,38 +11,17 @@ module NavigationHelpers
     when /the edit page for that post/
       edit_post_path(@post)
 
-    when /the edit page for that comment/
-      edit_post_comment_path(@comment.post, @comment)
-
     when /the page for that profile/
       profile_path(@profile)
 
     when /the page for my profile/
-      profile_path(@logged_in_user.profile)
+      profile_path(@logged_in_profile)
+
+    when /the page for my student/
+      profile_path(@logged_in_profile.students.first)
 
     when /the page for the guardian/
       profile_path(@guardian)
-
-    when /the edit page for that profile/
-      edit_profile_path(@profile)
-
-    when /the edit page for my profile/
-      edit_profile_path(@logged_in_user.profile)
-
-    when /the edit page for the guardian/
-      edit_profile_path(@guardian)
-
-    when /the page for one of the students/
-      student_path(@student)
-
-    when /the page for that group/
-      group_path(@group)
-
-    when /the create guardian page for that profile/
-      new_student_guardian_path(@profile)
-
-    when /the create guardian page for my profile/
-      new_student_guardian_path(@logged_in_user.profile)
 
     else
       begin
@@ -63,16 +42,6 @@ module NavigationHelpers
       teacher_path(profile)
     elsif profile.is_a? Guardian
       guardian_path(profile)
-    end
-  end
-
-  def edit_profile_path(profile)
-    if profile.is_a? Student
-      edit_student_path(profile)
-    elsif profile.is_a? Teacher
-      edit_teacher_path(profile)
-    elsif profile.is_a? Guardian
-      edit_guardian_path(profile)
     end
   end
 end

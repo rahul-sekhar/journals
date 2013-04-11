@@ -1,27 +1,10 @@
-.comment-fields {
-
-  .inputs {
-    label { display: none; }
-
-    textarea {
-      width: 648px - ((8px + 1px) * 2);
-      height: 90px;
-      border: 1px solid $cream;
-    }
-  }
-
-  .actions {
-    width: 100%;
-  }
-}
-
 article.comment {
   margin: -10px -10px -0 0;
   padding: 10px 10px 10px 0;
   margin-bottom: 20px;
   min-height: 40px;
 
-  .edit-link, .delete-link {
+  .edit, .delete {
     width: 15px;
     height: 15px;
     @include hide-text;
@@ -35,20 +18,19 @@ article.comment {
   }
 
   &:hover {
-    .edit-link, .delete-link {
+    .edit, .delete {
       opacity: 1;
       visibility: visible;
       @include transition(opacity 800ms ease 200ms, visibility 800ms ease 200ms);
     }
   }
 
-  .edit-link {
-    bottom: 0;
+  .edit {    bottom: 0;
     background-position: left -30px;
     &:hover { background-position: left -45px; }
   }
 
-  .delete-link {
+  .delete {
     top: 0;
     background-position: left 0;
     &:hover { background-position: left -15px; }
@@ -63,11 +45,20 @@ article.comment {
 }
 
 .comment-content {
-  p {
+  p, .editor {
     @include chaparral;
     font-size: 16px;
     line-height: 150%;
+  }
+
+  p {
     margin-bottom: 12px;
+  }
+
+  .editor {
+    width: 100%;
+    height: 80px;
+    resize: vertical;
   }
 }
 

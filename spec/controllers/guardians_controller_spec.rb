@@ -6,44 +6,42 @@ describe GuardiansController do
     ability = Object.new
     ability.extend(CanCan::Ability)
   end
-  before do 
+  before do
     controller.stub(:current_user).and_return(user)
     controller.stub(:current_ability).and_return(ability)
     ability.can :manage, Guardian
   end
 
-  describe "GET show" do
-    let(:guardian){ mock_model(Guardian) }
-    before { Guardian.stub(:find).and_return(guardian) }
-
-    it "raises an exception if the user cannot view the guardian" do
-      ability.cannot :read, guardian
-      expect{ get :show, id: 5 }.to raise_exception(CanCan::AccessDenied)
+  describe "GET index" do
+    let(:make_request) { get :index, format: :json }
+    it "raises an exception if the user cannot view guardians" do
+      ability.cannot :read, Guardian
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
-    
+
     it "has a status of 200" do
-      get :show, id: 5
-      response.status.should eq(200)
+      make_request
+      response.status.should == 200
     end
 
-    it "finds the guardian given by the passed ID" do
-      Guardian.should_receive(:find).with("5")
-      get :show, id: 5
-    end
-
-    it "assigns the found guardian" do
-      get :show, id: 5
-      assigns(:guardian).should == guardian
+    it "assigns any guardians into a guardians collection" do
+      teacher = create(:teacher)
+      student = create(:student)
+      guardian1 = create(:guardian, students: [create(:student), student])
+      guardian2 = create(:guardian, students: [student])
+      make_request
+      assigns(:guardians).should =~ [guardian1, guardian2]
     end
   end
 
+  describe "GET show" do
+    let(:student1){ create(:student) }
+    let(:student2){ create(:student) }
+    let(:guardian){ create(:guardian, students: [student1, student2]) }
+    let(:make_request){ get :show, id: guardian.id, format: :json }
 
-  describe "GET new" do
-    let(:student){ create(:student) }
-    let(:make_request){ get :new, student_id: student.id }
-
-    it "raises an exception if the user cannot create a guardian" do
-      ability.cannot :create, Guardian
+    it "raises an exception if the user cannot view the guardian" do
+      ability.cannot :read, guardian
       expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
@@ -52,14 +50,19 @@ describe GuardiansController do
       response.status.should eq(200)
     end
 
-    it "assigns the student" do
+    it "finds the guardian" do
       make_request
-      assigns(:student).should == student
+      assigns(:guardian).should eq(guardian)
     end
 
-    it "assigns an empty guardian" do
+    it "assigns the found guardian" do
       make_request
-      assigns(:guardian).should be_new_record
+      assigns(:guardian).should == guardian
+    end
+
+    it "assigns the guardians students" do
+      make_request
+      assigns(:students).should == [student1, student2]
     end
   end
 
@@ -68,7 +71,7 @@ describe GuardiansController do
     let(:student){ create(:student) }
 
     context "with valid data" do
-      let(:make_request){ post :create, student_id: student.id, guardian: { first_name: "Rahul", last_name: "Sekhar" } }
+      let(:make_request){ post :create, student_id: student.id, guardian: { name: "Rahul Sekhar" }, format: :json }
 
       it "raises an exception if the user cannot create a guardian" do
         ability.cannot :create, Guardian
@@ -90,152 +93,107 @@ describe GuardiansController do
         assigns(:guardian).reload.students.should == [student]
       end
 
-      it "redirects to the student page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to student_path(student)
+        response.status.should eq(200)
       end
     end
 
-    context "with no first name or last name" do
-      let(:make_request){ post :create, student_id: student.id, guardian: { first_name: " " } }
-
-      it "does not create a guardian" do
-        expect{ make_request }.to change{ Guardian.count }.by(0)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
-      end
-
-      it "redirects to the new guardian page" do
-        make_request
-        response.should redirect_to new_student_guardian_path(student)
-      end
-    end
-
-    context "when the student already contains a guardian with the same name" do
-      let(:make_request){ post :create, student_id: student.id, guardian: { first_name: "Rahul", last_name: "Sekhar" } }
-
-      before{ create(:guardian, students: [student], first_name: "Rahul", last_name: "Sekhar") }
-
-      it "does not create a guardian" do
-        expect{ make_request }.to change{ Guardian.count }.by(0)
-      end
-
-      it "sets a flash alert" do
-        make_request
-        flash[:alert].should be_present
-      end
-
-      it "redirects to the student page" do
-        make_request
-        response.should redirect_to student_path(student)
-      end
-    end
-
-
-    context "when another student contains a guardian with the same name" do
-      let(:make_request){ post :create, student_id: student.id, guardian: { first_name: "Rahul", last_name: "Sekhar" } }
+    context "with a guardian id" do
       let(:other_student){ create(:student) }
-      let(:guardian){ create(:guardian, students: [other_student], first_name: "Rahul", last_name: "Sekhar") }
-      before{ guardian }
+      let(:guardian){ create(:guardian, students: [other_student]) }
+      let(:make_request){ post :create, student_id: student.id, guardian_id: guardian.id, format: :json }
 
-      context "if check_duplicates is not set" do
-        it "does not create a guardian" do
-          expect{ make_request }.to change{ Guardian.count }.by(0)
-        end
-
-        it "assigns the duplicate guardians" do
-          make_request
-          assigns(:duplicate_guardians).should == [guardian]
-        end
-
-        it "renders the check duplicates page" do
-          make_request
-          response.should render_template "check_duplicates"
-        end
+      it "assigns the correct guardian" do
+        make_request
+        assigns(:guardian).should eq(guardian)
       end
 
-      context "if use_duplicate is set to 0" do
-        let(:make_request){ post :create, student_id: student.id, guardian: { first_name: "Rahul", last_name: "Sekhar" }, use_duplicate: '0' }
-
-        it "creates a guardian" do
-          expect{ make_request }.to change{ Guardian.count }.by(1)
-        end
-
-        it "creates a guardian with the correct name" do
-          make_request
-          assigns(:guardian).first_name.should == "Rahul"
-          assigns(:guardian).last_name.should == "Sekhar"
-        end
-
-        it "creates a guardian with the student assigned to it" do
-          make_request
-          assigns(:guardian).reload.students.should == [student]
-        end
-
-        it "redirects to the student page" do
-          make_request
-          response.should redirect_to student_path(student)
-        end
+      it "adds the student to that guardian" do
+        make_request
+        guardian.reload.students.should =~ [student, other_student]
       end
 
-      context "if use_duplicate is set to some other number" do
-        let(:make_request){ post :create, student_id: student.id, guardian: { first_name: "Rahul", last_name: "Sekhar" }, use_duplicate: '4' }
+      it "has a status of 200" do
+        make_request
+        response.status.should eq(200)
+      end
+    end
 
-        context "if a guardian exists with that ID" do
-          let(:guardian){ create(:guardian, id: 4) }
+    context "with an invalid guardian id" do
+      let(:make_request){ post :create, student_id: student.id, guardian_id: 7, format: :json }
 
-          it "does not create a guardian" do
-            expect{ make_request }.to change{ Guardian.count }.by(0)
-          end
+      it "has a status of 422" do
+        make_request
+        response.status.should eq(422)
+      end
+    end
 
-          it "assigns the student to the passed guardian" do
-            make_request
-            guardian.reload.students.length.should == 2
-            guardian.students.should include(student)
-          end
+    context "with no name" do
+      let(:make_request){ post :create, student_id: student.id, guardian: { name: " " }, format: :json }
 
-          it "redirects to the student page" do
-            make_request
-            response.should redirect_to student_path(student)
-          end
-        end
+      it "does not create a guardian" do
+        expect{ make_request }.to change{ Guardian.count }.by(0)
+      end
 
-        context "if there is no guardian with that ID" do
-          it "raises an exception" do
-            expect{ make_request }.to raise_exception
-          end
-        end
+      it "has a status of 422" do
+        make_request
+        response.status.should eq(422)
       end
     end
   end
 
 
 
-  describe "GET edit" do
-    let(:guardian){ create(:guardian) }
-    let(:make_request){ get :edit, id: guardian.id }
+  describe "GET check_duplicates" do
+    let(:student){ create(:student) }
 
-    it "raises an exception if the user cannot update a guardian" do
-      ability.cannot :update, guardian
-      expect{ get :edit, id: guardian.id }.to raise_exception(CanCan::AccessDenied)
+    it "raises an exception if the user cannot create a guardian" do
+      ability.cannot :create, Guardian
+      expect{ get :check_duplicates, student_id: student.id, format: :json }.to raise_exception(CanCan::AccessDenied)
     end
 
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
+    context "when a name is not passed" do
+      let(:make_request){ get :check_duplicates, student_id: student.id, format: :json }
+
+      it "has a status of 422" do
+        make_request
+        response.status.should eq(422)
+      end
     end
 
-    it "assigns the guardian to be edited" do
-      make_request
-      assigns(:guardian).should eq(guardian)
+    context "when the student already contains a guardian with the same name" do
+      let(:make_request){ get :check_duplicates, student_id: student.id, name: "Rahul Sekhar", format: :json }
+
+      before{ create(:guardian, students: [student], name: "Rahul Sekhar") }
+
+      it "has a status of 422" do
+        make_request
+        response.status.should eq(422)
+      end
     end
 
-    it "assigns guardian data from the flash if present" do
-      get :edit, { id: guardian.id }, nil, { guardian_data: { mobile: "1234" } }
-      assigns(:guardian).mobile.should == "1234"
+    context "when another student contains a guardian with the same name" do
+      let(:make_request){ get :check_duplicates, student_id: student.id, name: "Rahul Sekhar", format: :json }
+      let(:other_student){ create(:student) }
+      let(:guardian){ create(:guardian, students: [other_student], first_name: "Rahul", last_name: "Sekhar") }
+      let(:guardian1){ create(:guardian, first_name: "Rahul", last_name: "Sekhar1") }
+      let(:guardian2){ create(:guardian, first_name: "Rahul", last_name: "Sekhar") }
+      before do
+        guardian
+        guardian1
+        guardian2
+      end
+
+      it "assigns the duplicate guardians" do
+        make_request
+        assigns(:duplicate_guardians).should =~ [guardian, guardian2]
+      end
+
+      it "has a status of 200" do
+        make_request
+        response.status.should eq(200)
+      end
     end
   end
 
@@ -245,7 +203,7 @@ describe GuardiansController do
     let(:guardian){ create(:guardian) }
 
     context "with valid data" do
-      let(:make_request){ put :update, id: guardian.id, guardian: { first_name: "Rahul", last_name: "Sekhar", email: "rahul@mail.com" } }
+      let(:make_request){ put :update, id: guardian.id, guardian: { name: "Rahul Sekhar", email: "rahul@mail.com" }, format: :json }
 
       it "raises an exception if the user cannot update a guardian" do
         ability.cannot :update, guardian
@@ -259,7 +217,7 @@ describe GuardiansController do
 
       it "edits the guardian name" do
         make_request
-        assigns(:guardian).reload.full_name.should == "Rahul Sekhar"
+        assigns(:guardian).reload.name.should == "Rahul Sekhar"
       end
 
       it "edits the guardian email" do
@@ -267,33 +225,28 @@ describe GuardiansController do
         assigns(:guardian).reload.email.should == "rahul@mail.com"
       end
 
-      it "redirects to the guardian page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to guardian_path(guardian)
+        response.status.should eq(200)
       end
     end
 
     context "with invalid data" do
-      let(:make_request){ put :update, id: guardian.id, guardian: { email: '1234' } }
+      let(:make_request){ put :update, id: guardian.id, guardian: { email: '1234', name: 'Rahul Sekhar' }, format: :json }
 
       it "does not edit the guardian" do
         make_request
-        guardian.reload.first_name.should_not == "Rahul"
-      end
-      
-      it "redirects to the edit page" do
-        make_request
-        response.should redirect_to edit_guardian_path
+        guardian.reload.name.should_not == "Rahul Sekhar"
       end
 
-      it "displays a flash message indicating invalid data" do
+      it "has a status of 422" do
         make_request
-        flash[:alert].should be_present
+        response.status.should eq(422)
       end
 
-      it "stores already filled data in a flash object" do
+      it "returns the error message" do
         make_request
-        flash[:guardian_data].should == { 'email' => '1234' }
+        response.body.should be_present
       end
     end
   end
@@ -304,7 +257,7 @@ describe GuardiansController do
     context "guardian with one student" do
       let(:guardian){ create(:guardian) }
       let(:student){ guardian.students.first }
-      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id }
+      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id, format: :json }
 
       it "raises an exception if the user cannot destroy a guardian" do
         ability.cannot :destroy, guardian
@@ -327,21 +280,16 @@ describe GuardiansController do
         student.guardians.should be_empty
       end
 
-      it "redirects to the student page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash message" do
-        make_request
-        flash[:notice].should be_present
+        response.status.should eq(200)
       end
     end
 
-    context "guardian with multiple student" do
+    context "guardian with multiple students" do
       let(:guardian){ create(:guardian) }
       let(:student){ create(:student) }
-      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id }
+      let(:make_request){ delete :destroy, id: guardian.id, student_id: student.id, format: :json }
       before do
         @other_student = guardian.students.first
         guardian.students << student
@@ -374,14 +322,9 @@ describe GuardiansController do
         @other_student.guardians.should == [guardian]
       end
 
-      it "redirects to the student page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to student_path(student)
-      end
-
-      it "sets a flash message" do
-        make_request
-        flash[:notice].should be_present
+        response.status.should eq(200)
       end
     end
   end
@@ -389,7 +332,7 @@ describe GuardiansController do
 
 
   describe "POST reset" do
-    let(:make_request){ post :reset, id: guardian.id }
+    let(:make_request){ post :reset, id: guardian.id, format: :json }
 
     context "when email is present" do
       let(:guardian){ create(:guardian_with_user) }
@@ -410,9 +353,9 @@ describe GuardiansController do
         guardian.reload.should be_active
       end
 
-      it "redirects to the guardian page" do
+      it "has a status of 200" do
         make_request
-        response.should redirect_to guardian_path(guardian)
+        response.status.should eq(200)
       end
 
       it "should deliver a user activated mail if the user was inactive" do
@@ -431,19 +374,14 @@ describe GuardiansController do
         mock_delay.should_receive(:reset_password_mail)
         make_request
       end
-
-      it "sets a flash message" do
-        make_request
-        flash[:notice].should be_present
-      end
     end
 
     context "when email is not present" do
       let(:guardian){ create(:guardian) }
 
-      it "redirects to the guardian page" do
+      it "has a status of 422" do
         make_request
-        response.should redirect_to guardian_path(guardian)
+        response.status.should eq(422)
       end
 
       it "does not deliver a mail" do
@@ -455,11 +393,6 @@ describe GuardiansController do
         guardian.should_not be_active
         make_request
         guardian.reload.should_not be_active
-      end
-
-      it "sets a flash error" do
-        make_request
-        flash[:alert].should be_present
       end
     end
   end

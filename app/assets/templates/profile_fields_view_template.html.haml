@@ -1,0 +1,5 @@
+%div
+  .field{ "ng-repeat"=>"field in fields", "ng-show"=>"person[field.slug]" }
+    %p.field-name {{field.name}}
+    %p
+      %span.value{ "ng-bind-html"=>"person[field.slug] | escapeHtml | apply:field.filter" }

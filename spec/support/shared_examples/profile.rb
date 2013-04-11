@@ -16,7 +16,7 @@ shared_examples_for "a profile" do
     end
 
     it "can be set on creation of the profile" do
-      prof = profile_class.create!(last_name: "Name", email: "blah@blah.com")
+      prof = profile_class.create!(name: "Name", email: "blah@blah.com")
       prof.user.email.should == "blah@blah.com"
     end
 
@@ -78,6 +78,13 @@ shared_examples_for "a profile" do
       it "destroys the user when set with a nil email" do
         profile.email = nil
         expect{ profile.save! }.to change{ User.count }.by(-1)
+        profile.user.should be_nil
+      end
+
+      it "destroys the user when set with a blank email" do
+        profile.email = " "
+        expect{ profile.save! }.to change{ User.count }.by(-1)
+        profile.user.should be_nil
       end
     end
 
@@ -136,67 +143,162 @@ shared_examples_for "a profile" do
       profile.last_name = "a" * 81
       profile.should be_invalid
     end
-
-    it "is set to the first name if not present" do
-      profile.first_name = "Something"
-      profile.last_name = nil
-      profile.save!
-      profile.reload.first_name.should be_nil
-      profile.reload.last_name.should == "Something"
-    end
   end
 
-  describe "#full_name" do
-    it "joins the first and last names" do
-      profile.first_name = "Rahul"
-      profile.last_name = "Sekhar"
-      profile.full_name.should == "Rahul Sekhar"
+  describe "#name=" do
+    describe "for a single word" do
+      it "sets the first name when capitalized" do
+        profile.first_name = "Something"
+        profile.name = "One"
+        profile.first_name.should == "One"
+        profile.last_name.should be_nil
+      end
+
+      it "sets the first name when uncapitalized" do
+        profile.first_name = "Something"
+        profile.name = "one"
+        profile.first_name.should == "one"
+        profile.last_name.should be_nil
+      end
+
+      it "trims the name" do
+        profile.first_name = "Something"
+        profile.name = "   One     "
+        profile.first_name.should == "One"
+        profile.last_name.should be_nil
+      end
     end
 
-    it "returns the last name if the first name doesn't exist" do
-      profile.first_name = nil
-      profile.last_name = "Sekhar"
-      profile.full_name.should == "Sekhar"
+    describe "for two words" do
+      it "sets the first name and last name when both words are capitalized" do
+        profile.name = "One Two"
+        profile.first_name.should == "One"
+        profile.last_name.should == "Two"
+      end
+
+      it "sets the first name and last name when the first word is capitalized" do
+        profile.name = "one Two"
+        profile.first_name.should == "one"
+        profile.last_name.should == "Two"
+      end
+
+      it "sets the first name and last name when the second word is capitalized" do
+        profile.name = "One two"
+        profile.first_name.should == "One"
+        profile.last_name.should == "two"
+      end
+
+      it "sets the first name and last name when both words are uncapitalized" do
+        profile.name = "one two"
+        profile.first_name.should == "one"
+        profile.last_name.should == "two"
+      end
+
+      it "trims the name" do
+        profile.name = "  Something    Else  "
+        profile.first_name.should == "Something"
+        profile.last_name.should == "Else"
+
+        profile.name = "  Something    else  "
+        profile.first_name.should == "Something"
+        profile.last_name.should == "else"
+
+        profile.name = "  something    Else  "
+        profile.first_name.should == "something"
+        profile.last_name.should == "Else"
+      end
+    end
+
+    describe "for three words" do
+      it "adds the middle name to the first name when it is capitalized" do
+        profile.name = "One Two Three"
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "Three"
+      end
+
+      it "adds the middle name to the last name when uncapitalized" do
+        profile.name = "One two Three"
+        profile.first_name.should == "One"
+        profile.last_name.should == "two Three"
+      end
+
+      it "adds the middle name to the last name when all uncapitalized" do
+        profile.name = "one two three"
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three"
+      end
+
+      it "trims the name" do
+        profile.name = "  One   Two    Three  "
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "Three"
+
+        profile.name = "   One   two   Three   "
+        profile.first_name.should == "One"
+        profile.last_name.should == "two Three"
+
+        profile.name = "   one  two   three   "
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three"
+      end
+    end
+
+    describe "for more than three words" do
+      it "sets the first name to the first word if all are uncapitalized" do
+        profile.name = "one two three four five"
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three four five"
+      end
+
+      it "sets the last name to the last word if all are capitalized" do
+        profile.name = "One Two Three Four Five"
+        profile.first_name.should == "One Two Three Four"
+        profile.last_name.should == "Five"
+      end
+
+      it "sets the last name to the last word along with any previous uncapitalized words" do
+        profile.name = "One Two three four Five"
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "three four Five"
+      end
+
+      it "puts uncapitalized words that are not adjacent to the last word in the first name" do
+        profile.name = "One two Three four Five"
+        profile.first_name.should == "One two Three"
+        profile.last_name.should == "four Five"
+      end
+
+      it "trims the name" do
+        profile.name = "   one two  three  four   five "
+        profile.first_name.should == "one"
+        profile.last_name.should == "two three four five"
+
+        profile.name = "One   Two  Three  Four      Five"
+        profile.first_name.should == "One Two Three Four"
+        profile.last_name.should == "Five"
+
+        profile.name = "One   Two    three four Five"
+        profile.first_name.should == "One Two"
+        profile.last_name.should == "three four Five"
+
+        profile.name = "   One two Three four    Five   "
+        profile.first_name.should == "One two Three"
+        profile.last_name.should == "four Five"
+      end
     end
   end
 
   describe "#name" do
-    subject{ profile.name }
-    before do
+    it "joins the first and last names" do
       profile.first_name = "Rahul"
       profile.last_name = "Sekhar"
-      profile.save!
+      profile.name.should == "Rahul Sekhar"
     end
 
-    context "with no duplicates" do
-      context "if there is no first_name" do
-        before do
-          profile.first_name = " "
-          profile.save!
-        end
-
-        it { should == "Sekhar" }
-      end
-
-      it { should == "Rahul" }
-    end
-
-    context "with a duplicate first name" do
-      before{ create(:student, first_name: "Rahul", last_name: "Raj") }
-
-      it { should == "Rahul S." }
-
-      context "with a duplicate first name and initial" do
-        before{ create(:student, first_name: "Rahul", last_name: "Sharma") }
-
-        it { should == "Rahul Sekhar" }
-      end
-
-      context "with a duplicate full name" do
-        before{ create(:student, first_name: "Rahul", last_name: "Sekhar") }
-
-        it { should == "Rahul Sekhar" }
-      end
+    it "returns the last name if the last name doesn't exist" do
+      profile.last_name = nil
+      profile.first_name = "Sekhar"
+      profile.name.should == "Sekhar"
     end
   end
 
@@ -311,41 +413,17 @@ shared_examples_for "a profile" do
 
   describe "##alphabetical" do
     it "orders alphabetically by the first name followed by the last name" do
-      profile1 = create(profile_type, first_name: "Some", last_name: "Fellow")
-      profile2 = create(profile_type, first_name: "Another", last_name: "Fellow")
-      profile3 = create(profile_type, first_name: "Some", last_name: "Chap")
+      profile1 = create(profile_type, name: "Some Fellow")
+      profile2 = create(profile_type, name: "Another Fellow")
+      profile3 = create(profile_type, name: "Some Chap")
       profile_class.alphabetical.should == [profile2, profile3, profile1]
-    end    
-  end
-
-  describe "##fields" do
-    it "returns an array of hashes of fields" do
-      profile_class.fields.should be_a Array
-      profile_class.fields.first.should be_a Hash
-    end
-
-    it "must include email" do
-      profile_class.fields.find{ |field| field[:name] == "Email" }.should be_present
-    end
-  end
-
-  describe "##inputs" do
-    before do
-      profile_class.stub(:fields).and_return([
-        { name: "Something", function: :something },
-        { name: "Something Else", function: :something_else, input: :some_input }
-      ])
-    end
-
-    it "returns either the function or the input of the field, giving preference to the input" do
-      profile_class.inputs.should == [:something, :some_input]
     end
   end
 
   describe "##name_is" do
     before do
-      @profile1 = profile_class.create(first_name: "First", last_name: "Last")
-      @profile2 = profile_class.create(first_name: "First")
+      @profile1 = profile_class.create(name: "First Last")
+      @profile2 = profile_class.create(name: "First")
     end
 
     it "returns a profile with passed names" do
@@ -372,13 +450,13 @@ shared_examples_for "a profile" do
 
   describe "##names_are" do
     before do
-      @profile1 = profile_class.create(first_name: "First", last_name: "Last")
-      @profile2 = profile_class.create(first_name: "First", last_name: "last")
-      @profile3 = profile_class.create(first_name: "First")
+      @profile1 = profile_class.create(name: "First Last")
+      @profile2 = profile_class.create(name: "First last")
+      @profile3 = profile_class.create(name: "First")
     end
 
     it "returns profiles with passed names" do
-      profile_class.names_are("first", "last").should == [@profile1, @profile2]
+      profile_class.names_are("first", "last").should =~ [@profile1, @profile2]
     end
 
     it "returns an empty array if no match was found" do
@@ -397,9 +475,9 @@ shared_examples_for "a profile" do
 
   describe "##search" do
     before do
-      @profile1 = create(profile_type, first_name: "Some", last_name: "Profile")
-      @profile2 = create(profile_type, first_name: "Other", last_name: "Profile")
-      @profile3 = create(profile_type, first_name: nil, last_name: "Person")
+      @profile1 = create(profile_type, name: "Some Profile")
+      @profile2 = create(profile_type, name: "Other Profile")
+      @profile3 = create(profile_type, name: "Person")
     end
 
     it "searches the first name" do
@@ -407,7 +485,7 @@ shared_examples_for "a profile" do
     end
 
     it "searches the last name" do
-      profile_class.search("Person").should =~ [@profile3]
+      profile_class.search("Person").should == [@profile3]
     end
 
     it "searches case insensitively" do

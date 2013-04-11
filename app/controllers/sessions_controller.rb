@@ -1,10 +1,15 @@
 class SessionsController < ApplicationController
   skip_before_filter :require_login, only: [:new, :create]
+  skip_before_filter :intercept_html
   skip_authorization_check
 
   def new
-    @user = User.new
-    @user.email = flash[:login_email] if flash[:login_email].present?
+    if logged_in?
+      redirect_to root_path
+    else
+      @user = User.new
+      @user.email = flash[:login_email] if flash[:login_email].present?
+    end
   end
 
   def create

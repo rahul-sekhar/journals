@@ -1,0 +1,57 @@
+%article.post{ "ng-hide"=>"post.deleted", "ng-class"=>"{ expanded: expanded }" }
+  %header.post-header
+    %span.restrictions{ "title"=>"{{post.restrictions()}}", "ng-show"=>"post.restrictions()" }
+
+    .tagged-people
+      .students{ "ng-show"=>"post.students.length" }
+        %h4 Students
+        %ul
+          %li{ "ng-repeat"=>"student in post.students | orderBy: 'name'" }
+            %span{ "profile-name"=>"student" }
+
+      .teachers{ "ng-show"=>"post.teachers.length" }
+        %h4 Teachers
+        %ul
+          %li{ "ng-repeat"=>"teacher in post.teachers | orderBy: 'name'" }
+            %span{ "profile-name"=>"teacher" }
+
+  %h3 {{post.title}}
+
+  .post-content{ "watch-height"=>true, "expanded"=>"expanded" }
+    .content{ "ng-bind-html-unsafe"=>"post.content" }
+
+    .student-observations{ "ng-show"=>"post.student_observations.length" }
+      %section{ "ng-repeat"=>"observation in post.student_observations" }
+        %h4 {{observation.student.name}}
+        .observation-content{ "ng-bind-html-unsafe"=>"observation.content" }
+
+  .comments{ "watch-height"=>true, "expanded"=>"expanded" }
+    %h4 Comments
+    %ng-switch{ "ng-repeat"=>"comment in post.comments", "on"=>"!!comment.editable" }
+      %div{  "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_comment.html')}'" }
+      %div{  "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('comment.html')}'" }
+
+    .new-comment
+      %textarea{ "ng-model"=>"newComment", "placeholder"=>"Enter comment" }
+      %a.add.button{ "href"=>"", "ng-click"=>"addComment(newComment)" } Comment
+
+  %footer.post-footer
+    %a.comments-link{ "href"=>"", "ng-pluralize"=>true, "count"=>"(post.comments | filterDeleted).length", "when"=>"{'0': 'No comments', 'one': '1 comment', 'other':'{} comments'}", "ng-click"=>"scrollToComments()", "ng-hide"=>"expanded" }
+
+    .info
+      %p.date {{post.created_at}}
+
+      %p.author
+        Posted by
+        %span{ "profile-name"=>"post.author" }
+
+      %p.tags{ "ng-show"=>"post.tag_names" }
+        Tags: {{post.tag_names}}
+
+    .options
+      %p{ "ng-show"=>"expanded" }
+        %a{ "href"=>"", "ng-click"=>"compact()" } Read less
+      %p{ "ng-hide"=>"expanded" }
+        %a{ "href"=>"", "ng-click"=>"expand()" } Read more
+      %p{ "ng-show"=>"post.editable" }
+        %a{ "href"=>"", "ng-href"=>"{{post.url() + '/edit'}}" } Edit post

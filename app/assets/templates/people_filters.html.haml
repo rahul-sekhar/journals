@@ -1,0 +1,31 @@
+%input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"filters.search", "on-type"=>"filter('search', filters.search)", "autocomplete"=>"off"}
+
+.add.click-menu{ "ng-show"=>"isTeacher" }
+  %a.title{ href: "" } Add
+  %ul.container
+    %li
+      %a{ "href"=>"", "ng-click"=>"addTeacher()" } Add teacher
+    %li
+      %a{ "href"=>"", "ng-click"=>"addStudent()" } Add student
+    %li
+      %a{ "href"=>"", "ng-click"=>"showGroupsDialog()" } Manage groups
+
+%p.label Viewing
+.viewing.click-menu
+  %a.title{ href: "" } {{filterName}}
+
+  %ul.container
+    %li{"ng-hide" => "!filters.filter"}
+      %a{ "href"=>"", "ng-click"=>"filter('filter', null)" } Students and teachers
+    %li{"ng-hide" => "filters.filter == 'students'" }
+      %a{ "href"=>"", "ng-click"=>"filter('filter', 'students')" } Students
+    %li{"ng-hide" => "filters.filter == 'teachers'" }
+      %a{ "href"=>"", "ng-click"=>"filter('filter', 'teachers')" } Teachers
+    %li{ "ng-hide" => "(filters.filter == 'mentees') || (!isTeacher)" }
+      %a{ "href"=>"", "ng-click"=>"filter('filter', 'mentees')" } Your mentees
+    %li{"ng-hide" => "filters.filter == 'archived'"}
+      %a{ "href"=>"", "ng-click"=>"filter('filter', 'archived')" } Archived students and teachers
+
+    %li.divider{"ng-show"=>"groups.length"}
+    %li{"ng-repeat"=>"group in groups | filterDeleted | orderBy:['name']", "ng-hide"=>"filters.filter == 'group-' + group.id"}
+      %a{ "href"=>"", "ng-click"=>"filter('filter', 'group-' + group.id)" } {{group.name}}

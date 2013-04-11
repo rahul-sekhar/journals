@@ -1,0 +1,34 @@
+.inner-wrapper
+  %input#search{ "placeholder"=>"Enter search term", "name"=>"search", "ng-model"=>"filters.search", "on-type"=>"filter('search', filters.search)", "autocomplete"=>"off"}
+
+  %p.label Filters
+
+  .groups.click-menu{ "ng-show"=>"isTeacher" }
+    %p.title
+      %a{ href: "" } {{groupName}}
+    .container
+      %a.clear{ "href"=>"", "ng-show"=>"filters.group", "ng-click"=>"filterGroup(null)" } Clear
+      %span.clear.disabled{"ng-hide"=>"filters.group"} Clear
+      %filtered-list{ "list"=>"groups", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"filterGroup(value); hideMenus()" }
+
+  .click-menu{ "ng-show"=>"isTeacher" }
+    %p.title
+      %a{ href: "" } {{studentName}}
+    .container
+      %a.clear{ "href"=>"", "ng-show"=>"filters.student", "ng-click"=>"filterStudent(null)" } Clear
+      %span.clear.disabled{"ng-hide"=>"filters.student"} Clear
+      %filtered-list{ "list"=>"students", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"filterStudent(value); hideMenus()" }
+
+  .date.click-menu
+    %p.title{ "ng-class"=>"{ active: filters.dateFrom || filters.dateTo }" }
+    .container
+      %p{ "edit-in-place"=>true, "instance"=>"filters", "type"=>"date", "field"=>"dateFrom", "no-age" => "true", "blank-date"=>"true" }
+      %p to
+      %p{ "edit-in-place"=>true, "instance"=>"filters", "type"=>"date", "field"=>"dateTo", "no-age" => "true", "blank-date"=>"true" }
+
+  .tags.click-menu
+    %p.title{ "ng-class"=>"{ active: filters.tag }" }
+    .container
+      %span.current{ "ng-show"=>"filters.tag" } {{tagName}}
+      %a.clear{ "href"=>"", "ng-show"=>"filters.tag", "ng-click"=>"filter('tag', null)" } Clear
+      %filtered-list{ "list"=>"tags", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"filter('tag', value.id); hideMenus()" }

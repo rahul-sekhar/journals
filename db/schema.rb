@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130128114815) do
+ActiveRecord::Schema.define(:version => 20130403110758) do
 
   create_table "academics", :force => true do |t|
     t.string   "name"
@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(:version => 20130128114815) do
   end
 
   create_table "guardians", :force => true do |t|
-    t.string   "first_name",        :limit => 80
-    t.string   "last_name",         :limit => 80,  :null => false
+    t.string   "first_name",        :limit => 80,  :null => false
+    t.string   "last_name",         :limit => 80
     t.string   "mobile",            :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -63,12 +63,13 @@ ActiveRecord::Schema.define(:version => 20130128114815) do
     t.text     "address"
     t.string   "additional_emails", :limit => 100
     t.text     "notes"
+    t.string   "short_name",        :limit => 161
     t.index ["last_name", "first_name"], :name => "index_guardians_on_last_name_and_first_name", :order => {"last_name" => :asc, "first_name" => :asc}
   end
 
   create_table "images", :force => true do |t|
     t.string   "file_name"
-    t.integer  "post_id",    :null => false
+    t.integer  "post_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["post_id"], :name => "index_images_on_post_id", :order => {"post_id" => :asc}
@@ -84,13 +85,17 @@ ActiveRecord::Schema.define(:version => 20130128114815) do
     t.index ["strand_id"], :name => "index_milestones_on_strand_id", :order => {"strand_id" => :asc}
   end
 
+  create_table "null_table", :force => true do |t|
+    t.integer "foreign_id"
+  end
+
   create_table "students", :force => true do |t|
-    t.string   "first_name",            :limit => 80
-    t.string   "last_name",             :limit => 80,                     :null => false
+    t.string   "first_name",            :limit => 80,                     :null => false
+    t.string   "last_name",             :limit => 80
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.date     "birthday"
-    t.string   "bloodgroup",            :limit => 15
+    t.date     "birthday_raw"
+    t.string   "blood_group",           :limit => 15
     t.text     "address"
     t.string   "application_form_file"
     t.string   "home_phone",            :limit => 40
@@ -99,12 +104,13 @@ ActiveRecord::Schema.define(:version => 20130128114815) do
     t.boolean  "archived",                             :default => false, :null => false
     t.string   "additional_emails",     :limit => 100
     t.text     "notes"
+    t.string   "short_name",            :limit => 161
     t.index ["first_name", "last_name"], :name => "student_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
   end
 
   create_table "teachers", :force => true do |t|
-    t.string   "first_name",        :limit => 80
-    t.string   "last_name",         :limit => 80,                     :null => false
+    t.string   "first_name",        :limit => 80,                     :null => false
+    t.string   "last_name",         :limit => 80
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "mobile",            :limit => 40
@@ -114,6 +120,7 @@ ActiveRecord::Schema.define(:version => 20130128114815) do
     t.boolean  "archived",                         :default => false, :null => false
     t.string   "additional_emails", :limit => 100
     t.text     "notes"
+    t.string   "short_name",        :limit => 161
     t.index ["first_name", "last_name"], :name => "teacher_full_name_index", :order => {"first_name" => :asc, "last_name" => :asc}
   end
 
