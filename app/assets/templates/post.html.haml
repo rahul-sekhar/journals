@@ -36,7 +36,7 @@
       %a.add.button{ "href"=>"", "ng-click"=>"addComment(newComment)" } Comment
 
   %footer.post-footer
-    %a.comments-link{ "href"=>"", "ng-pluralize"=>true, "count"=>"(post.comments | filterDeleted).length", "when"=>"{'0': 'No comments', 'one': '1 comment', 'other':'{} comments'}", "ng-click"=>"scrollToComments()", "ng-hide"=>"expanded" }
+    %a.comments-link{ "href"=>"", "ng-pluralize"=>true, "count"=>"(post.comments | filterDeleted).length", "when"=>"{'0': 'No comments', 'one': '1 comment', 'other':'{} comments'}", "ng-click"=>"scrollToComments()", "ng-hide"=>"expanded", "ng-animate"=>"'fade'" }
 
     .info
       %p.date {{post.created_at}}

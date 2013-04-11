@@ -132,6 +132,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
             $scope.currentPage = data.metadata.current_page;
 
             $scope.$broadcast('peopleLoaded');
+            $scope.$emit('loaded');
           });
 
         angular.extend($scope.filters, searchFiltersObj.getCurrentValues());
