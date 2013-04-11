@@ -1,20 +1,20 @@
 // Generic fade
 
-.fade-enter-setup {
+.fade-enter-setup, .fade-show-setup {
   @include transition(all ease 400ms);
   opacity: 0;
 }
 
-.fade-enter-setup.fade-enter-start {
+.fade-enter-setup.fade-enter-start, .fade-show-setup.fade-show-start {
   opacity: 1;
 }
 
-.fade-leave-setup {
+.fade-leave-setup, .fade-hide-setup {
   @include transition(all ease 400ms);
   opacity: 1;
 }
 
-.fade-leave-setup.fade-leave-start {
+.fade-leave-setup.fade-leave-start, .fade-hide-setup.fade-hide-start {
   opacity: 0;
 }
 
