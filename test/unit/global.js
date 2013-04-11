@@ -21,6 +21,8 @@ angular.module('journals.assets', []).
       return 'http://localhost:3000/assets/' + filename
     };
 
+    assets.preload = function () {};
+
     return assets;
   });
 
