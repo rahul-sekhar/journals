@@ -109,7 +109,7 @@ describe('posts module', function () {
 
       describe('filters', function () {
         it('initializes filters', function () {
-          expect(searchFiltersFactory).toHaveBeenCalledWith(['search', 'student', 'group', 'tag']);
+          expect(searchFiltersFactory).toHaveBeenCalledWith(['search', 'student', 'group', 'tag', 'dateFrom', 'dateTo']);
         });
 
         it('initializes current filter values to the scope', function () {
