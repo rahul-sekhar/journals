@@ -54,8 +54,15 @@ angular.module('journals.pagination', []).
     };
   }]).
 
-  controller('PaginationCtrl', ['$scope', '$location', function ($scope, $location) {
+  controller('PaginationCtrl', ['$scope', '$location', '$rootScope', function ($scope, $location, $rootScope) {
     $scope.changePage = function(page) {
+      var topPos, deregister;
+
       $location.search('page', page);
+
+      deregister = $rootScope.$on('loaded', function () {
+        $('body').scrollTop($('#main-content').offset().top);
+        deregister();
+      });
     };
   }]);

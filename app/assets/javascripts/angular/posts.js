@@ -18,6 +18,7 @@ angular.module('journals.posts', ['ngSanitize', 'journals.ajax', 'journals.posts
             $scope.posts = response.data.items.map(Posts.update);
             $scope.currentPage = response.data.current_page;
             $scope.totalPages = response.data.total_pages;
+            $scope.$emit('loaded');
           }, function () {
             $scope.posts = [];
             $scope.currentPage = null;
