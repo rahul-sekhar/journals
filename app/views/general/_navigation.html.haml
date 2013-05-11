@@ -1,4 +1,5 @@
 %ul
-  %li= link_to "View posts", posts_path, id: "view_posts_link"
-  %li= link_to "New post", new_post_path, id: "new_post_link"
+  %li= link_to "View<br />posts".html_safe, posts_path, id: "view_posts_link"
+  %li= link_to "New<br />post".html_safe, new_post_path, id: "new_post_link"
   %li= link_to "People", people_path, id: "people_link"
+  %li= link_to "Academic<br />records".html_safe, people_path, id: "academics_link"
