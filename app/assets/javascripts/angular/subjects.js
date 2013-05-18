@@ -17,7 +17,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
     $scope.subjects = Subjects.all();
 
     $scope.add = function () {
-      Subjects.add({_edit: 'name'});
+      Subjects.add({_edit: 'name'}, true);
     };
 
     $scope.delete = function (subject) {

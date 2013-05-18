@@ -12,7 +12,9 @@
     %ul
       %li{ "ng-repeat"=>"subject in subjects | filterDeleted" }
         %p{ "edit-in-place"=>true, "instance"=>"subject", "field"=>"name", "edit-mode"=>"editing.name" }
-        %a.delete{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"delete(subject)" } Delete
+
+        .links
+          %a.delete{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"delete(subject)" } Delete
 
     .content-block{ "ng-show"=>"(subjects | filterDeleted).length == 0" }
       %p There are no subjects yet.

@@ -1,0 +1,56 @@
+#subjects {
+  h3 {
+    @include semibold;
+    font-size: 20px;
+    margin-bottom: 19px;
+  }
+
+  li {
+    margin-bottom: 11px;
+    background-color: white;
+    padding: 15px 23px;
+    position: relative;
+
+    p {
+      @include semibold;
+      font-size: 14px;
+      width: 300px;
+    }
+  }
+
+  .value {
+    display: block;
+    line-height: 18px;
+    width: 100%;
+    border: 1px solid transparent;
+
+    &:hover {
+      border: 1px solid grey;
+    }
+  }
+
+  .editor {
+    font-size: 14px;
+    @include semibold;
+    line-height: 18px;
+    width: 100%;
+    border: 1px solid grey;
+    outline: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .links {
+    position: absolute;
+    right: 23px;
+    top: 15px;
+    line-height: 20px;
+    font-size: 12px;
+    text-transform: lowercase;
+
+    a {
+      float: left;
+      @include link-colors($off-black, lighten($off-black, 20));
+    }
+  }
+}

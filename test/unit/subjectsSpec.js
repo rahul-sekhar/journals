@@ -63,7 +63,7 @@ describe('subjects module', function () {
     describe('add()', function() {
       beforeEach(function() {
         Subjects.add = jasmine.createSpy('Subjects.add').andReturn('subject');
-        scope.add();
+        scope.add('test');
       });
 
       it('adds alls Subjects.add()', function() {
@@ -71,7 +71,7 @@ describe('subjects module', function () {
       });
 
       it('sets _edit to name for the new object', function() {
-        expect(Subjects.add).toHaveBeenCalledWith({ _edit: 'name' });
+        expect(Subjects.add.mostRecentCall.args[0]).toEqual({ _edit: 'name' });
       });
     });
 
