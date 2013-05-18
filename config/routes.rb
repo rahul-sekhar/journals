@@ -52,5 +52,10 @@ Journals::Application.routes.draw do
 
   resources :tags, only: [:index]
 
+  get "academics" => "pages#home"
+  scope '/academics' do
+    resources :subjects, except: [:new, :edit]
+  end
+
   match "*not_found", :to => "errors#not_found"
 end

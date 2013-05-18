@@ -27,3 +27,6 @@
 
 # Ignore cucumber screenshot
 /cucumber-screenshot.png
+
+# Ignore temporary notes
+/notes

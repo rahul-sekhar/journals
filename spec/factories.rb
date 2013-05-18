@@ -56,4 +56,8 @@ FactoryGirl.define do
     student
     content "Some content"
   end
+
+  factory :subject do
+    sequence(:name){ |n| "subject#{n}"}
+  end
 end

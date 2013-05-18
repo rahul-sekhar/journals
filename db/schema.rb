@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
     t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "position",   :null => false
     t.index ["level"], :name => "index_milestones_on_level", :order => {"level" => :asc}
     t.index ["strand_id"], :name => "index_milestones_on_strand_id", :order => {"strand_id" => :asc}
   end
@@ -155,12 +156,12 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
 
   create_view "profile_names", "(SELECT students.first_name, substr((students.last_name)::text, 1, 1) AS initial, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT teachers.first_name, substr((teachers.last_name)::text, 1, 1) AS initial, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers) UNION ALL SELECT guardians.first_name, substr((guardians.last_name)::text, 1, 1) AS initial, 'Guardian'::text AS profile_type, guardians.id AS profile_id FROM guardians", :force => true
   create_table "strands", :force => true do |t|
-    t.integer  "subject_id",                     :null => false
     t.integer  "parent_strand_id",               :null => false
     t.string   "name",             :limit => 80, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["subject_id"], :name => "index_strands_on_academic_id", :order => {"subject_id" => :asc}
+    t.integer  "subject_id",                     :null => false
+    t.integer  "position",                       :null => false
     t.index ["parent_strand_id"], :name => "index_strands_on_parent_strand_id", :order => {"parent_strand_id" => :asc}
   end
 
@@ -202,10 +203,24 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
     t.index ["student_id", "milestone_id"], :name => "students_milestones_index", :order => {"student_id" => :asc, "milestone_id" => :asc}
   end
 
-  create_table "subjects", :force => true do |t|
-    t.string   "name",       :limit => 50, :null => false
+  create_table "subject_teacher_students", :id => false, :force => true do |t|
+    t.integer  "student_id",         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "subject_teacher_id", :null => false
+  end
+
+  create_table "subject_teachers", :force => true do |t|
+    t.integer  "teacher_id", :null => false
+    t.integer  "subject_id", :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "subjects", :force => true do |t|
+    t.string   "name",       :limit => 50, :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
   end
 
   create_table "tags", :force => true do |t|
@@ -213,14 +228,6 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["name"], :name => "index_tags_on_name", :unique => true, :order => {"name" => :asc}
-  end
-
-  create_table "teacher_subject_students", :id => false, :force => true do |t|
-    t.integer  "student_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "teacher_id", :null => false
-    t.integer  "subject_id", :null => false
   end
 
   create_table "units", :force => true do |t|

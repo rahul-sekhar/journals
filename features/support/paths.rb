@@ -23,6 +23,12 @@ module NavigationHelpers
     when /the page for the guardian/
       profile_path(@guardian)
 
+    when /the subjects page/
+      subjects_path
+
+    when /the page for that subject/
+      subject_path(@subject)
+
     else
       begin
         page_name =~ /the (.*) page/

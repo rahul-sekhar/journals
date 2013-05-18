@@ -38,10 +38,9 @@ describe('Groups module', function() {
 
   /*---------- Groups controller --------------------*/
   describe('GroupsCtrl', function() {
-    var scope, ctrl, Groups, timeout, confirm;
+    var scope, ctrl, Groups, confirm;
 
-    beforeEach(inject(function($rootScope, $controller, $injector, $timeout, _confirm_) {
-      timeout = $timeout;
+    beforeEach(inject(function($rootScope, $controller, $injector, _confirm_) {
       confirm = _confirm_;
 
       Groups = { all: jasmine.createSpy('Groups.all').

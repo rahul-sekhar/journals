@@ -1,0 +1,20 @@
+.ng-view-container
+  %h2 {{pageTitle}}
+
+  .notice
+
+  %section#upper-bar
+    .clear-left
+
+  #subjects
+    %h3 Manage subjects
+
+    %ul
+      %li{ "ng-repeat"=>"subject in subjects | filterDeleted" }
+        %p{ "edit-in-place"=>true, "instance"=>"subject", "field"=>"name", "edit-mode"=>"editing.name" }
+        %a.delete{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"delete(subject)" } Delete
+
+    .content-block{ "ng-show"=>"(subjects | filterDeleted).length == 0" }
+      %p There are no subjects yet.
+
+    %a.add{ "href"=>"", "ng-click"=>"add()" } New subject
