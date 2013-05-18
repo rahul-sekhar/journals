@@ -53,4 +53,20 @@
       @include link-colors($off-black, lighten($off-black, 20));
     }
   }
+
+  .add {
+    float: right;
+    @include link-colors($off-black, lighten($off-black, 20));
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    @include semibold;
+    margin-top: 20px;
+    display: block;
+    background: image-url('small-icons.png') no-repeat 0 -356px;
+    line-height: 18px;
+    padding-left: 30px;
+
+    &:hover { background-position: 0 -396px; }
+  }
 }
