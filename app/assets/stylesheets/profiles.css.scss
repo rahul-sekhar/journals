@@ -23,7 +23,12 @@ article.profile {
 
   &.editable .value {
     cursor: text;
-    &:hover { border: 1px solid grey; }
+    @include transition(border 200ms ease 100ms);
+
+    &:hover {
+      border: 1px solid grey;
+      @include transition(border 400ms ease 200ms);
+    }
   }
 
   .editor {
