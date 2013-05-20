@@ -179,15 +179,15 @@
       opacity: 0;
       z-index: 10;
       @include transition(opacity 400ms ease);
-
-      &:hover {
-        opacity: 0.4;
-      }
     }
 
     &:hover {
       .scroll-left, .scroll-right {
         opacity: 0.2;
+
+        &:hover {
+          opacity: 0.4;
+        }
       }
     }
 

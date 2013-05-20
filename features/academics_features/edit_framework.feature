@@ -4,7 +4,6 @@ Background:
   Given I have logged in as the teacher Rahul
 
 
-@current
 Scenario: Edit a framework
   Given the subject "Math" exists with a framework
   When I am on the subjects page

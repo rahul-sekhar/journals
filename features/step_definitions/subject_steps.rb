@@ -78,7 +78,9 @@ When(/^I change the strand "(.*?)" to "(.*?)"$/) do |p_from, p_to|
 end
 
 When(/^I delete the strand "(.*?)"$/) do |p_strand|
-  page.find('.strands li', text: /^#{Regexp.escape(p_strand)}/i, visible: true).first('.delete').click
+  strand = page.find('.strands li', text: /^#{Regexp.escape(p_strand)}/i, visible: true)
+  strand.first('.title').click
+  strand.first('.delete').click
 end
 
 When(/^I add the root strand "(.*?)"$/) do |p_strand|
@@ -89,6 +91,7 @@ end
 
 When(/^I add the strand "(.*?)" to "(.*?)"$/) do |p_strand, p_parent|
   strand = page.find('li', text: /^#{Regexp.escape(p_parent)}/i)
+  strand.first('.title').click
   strand.first('.add').click
   fill_input_inside strand, p_strand
 end
@@ -100,12 +103,15 @@ When(/^I change the milestone "(.*?)" to "(.*?)"$/) do |p_from, p_to|
 end
 
 When(/^I delete the milestone "(.*?)"$/) do |p_milestone|
-  page.find('table.milestones li', text: /^#{Regexp.escape(p_milestone)}/i, visible: true).find('.delete').click
+  milestone = page.find('table.milestones li', text: /^#{Regexp.escape(p_milestone)}/i, visible: true)
+  milestone.click
+  milestone.find('.delete').click
 end
 
 When(/^I add the milestone "(.*?)" to "(.*?)" in level (\d+)$/) do |p_milestone, p_strand, p_level|
   strand = page.find('li', text: /^#{Regexp.escape(p_strand)}/i)
   level = strand.find(:xpath, ".//tr[position()=2]/td[position()=#{p_level}]")
+  level.click
   level.find('.add').click
   fill_input_inside level, p_milestone
 end
