@@ -237,7 +237,7 @@
     td:hover .add {
       opacity: 1;
       visibility: visible;
-      @include transition(opacity 400ms ease 200ms, visibility 400ms ease 200ms);
+      @include transition(opacity 200ms ease 400ms, visibility 200ms ease 400ms);
     }
   }
 

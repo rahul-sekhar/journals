@@ -199,11 +199,15 @@ angular.module('journals.directives', []).
 
       elem.on('mouseenter', function () {
         timer = setInterval(scrollFn, 15);
+        elem.stop();
       });
 
       elem.on('mouseleave', function () {
         if (timer) {
           clearInterval(timer);
+        }
+        if (elem.scrollLeft() < 150) {
+          elem.animate({scrollLeft: 0}, 1000);
         }
       });
     };

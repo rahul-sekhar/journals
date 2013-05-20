@@ -23,19 +23,18 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       var strandExtension = function () {};
 
       strandExtension.setup = function (instance) {
-        instance.max_level = function () {
-          var milestones, levels;
+        instance.max_level = function (minLevel) {
+          var milestones, levels, maxLevel = 0;
 
           milestones = $filter('filterDeleted')(instance.milestones);
           if (milestones.length > 0) {
             levels = milestones.map(function (milestone) {
               return milestone.level;
             });
-            return Math.max.apply(null, levels);
+            maxLevel = Math.max.apply(null, levels);
           }
-          else {
-            return 0;
-          }
+
+          return Math.max(maxLevel, minLevel || 0);
         };
 
         var oldUrlFn = instance.url;

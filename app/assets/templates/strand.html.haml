@@ -15,11 +15,11 @@
   .milestones-wrapper{ "ng-switch-when"=>"false", "scroll-with-mouse"=>true }
     %table.milestones
       %tr
-        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)", "ng-animate"=>"'fade'" }
+        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level(11) + 1)", "ng-animate"=>"'fade'" }
           Level {{level + 1}}
 
       %tr
-        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)", "ng-animate"=>"'fade'" }
+        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level(11) + 1)", "ng-animate"=>"'fade'" }
           %ul
             %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 } | filterDeleted", "ng-controller"=>"EditObjectCtrl", "ng-animate"=>"'fade'" }
               %p{ "edit-in-place"=>true, "instance"=>"milestone", "type"=>"textarea", "field"=>"content", "placeholder"=>"Enter milestone", "edit-mode"=>"editing.content" }
