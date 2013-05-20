@@ -1,0 +1,263 @@
+#framework {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  left: 0;
+  top: 0;
+  overflow: auto;
+
+  .framework-wrapper {
+    padding: 36px 33px;
+  }
+
+  h3 {
+    font-size: 20px;
+    @include semibold;
+    margin-bottom: 35px;
+  }
+
+  .close {
+    display: block;
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    top: 36px;
+    right: 33px;
+    font-weight: normal;
+    background: image-url('large-icons.png') no-repeat -19px -1009px;
+
+    &:hover {
+      background-position: -19px -1049px;
+    }
+  }
+
+  ol {
+    counter-reset: strand;
+
+    // General strands
+    li {
+      .title {
+        line-height: 34px;
+        padding-left: 48px;
+        position: relative;
+        @include new-clearfix;
+      }
+
+      p {
+        font-size: 16px;
+        @include semibold;
+        float: left;
+
+        .value {
+          border: 1px solid transparent;
+          &:hover {
+            border: 1px solid grey;
+          }
+        }
+
+        .editor {
+          font-size: 16px;
+          @include semibold;
+          border: 1px solid grey;
+          outline: none;
+          padding: 0;
+          margin: 0;
+          width: 600px;
+        }
+
+        &:before {
+          counter-increment: strand;
+          content: counters(strand, ".");
+          margin-right: 5px;
+          float: left;
+        }
+      }
+
+      .manage-links {
+        display: none;
+        float: left;
+        text-transform: lowercase;
+        font-size: 12px;
+        margin-left: 20px;
+
+        a {
+          margin-right: 10px;
+          @include link-colors($off-black, lighten($off-black, 20));
+        }
+      }
+
+      .title:hover .manage-links {
+        display: block;
+      }
+    }
+
+    // Root strands
+    &.strands > li {
+      & > .title {
+        background-color: $brown;
+        color: white;
+
+        & > p {
+          .editor {
+            background-color: $brown;
+            color: white;
+          }
+
+          &:before {
+            content: counters(strand, ".") ". ";
+          }
+        }
+
+        & > .manage-links a {
+          @include link-colors(white, darken(white, 20));
+        }
+      }
+    }
+
+    // Sub-sub-strands
+    li.sub-sub-strand {
+      & > .title {
+        color: $grey-brown;
+        padding-left: 74px;
+        line-height: 24px;
+
+        & > p {
+          font-weight: normal;
+
+          .editor {
+            color: $grey-brown;
+            font-weight: normal;
+          }
+        }
+
+        & > .manage-links a {
+          @include link-colors($grey-brown, darken($grey-brown, 20));
+        }
+      }
+    }
+  }
+
+  // Milestones
+  .milestones-wrapper {
+    padding-left: 74px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    position: relative;
+    overflow-x: hidden;
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      height: 28px;
+      background-color: $grey-brown;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+
+    li {
+      margin: 20px 0;
+      position: relative;
+
+      .delete {
+        width: 15px;
+        height: 15px;
+        @include hide-text;
+        background: image-url('small-icons.png') no-repeat left 0;
+        &:hover { background-position: left -15px; }
+        position: absolute;
+        top: 0;
+        right: 30px;
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        @include transition(opacity 200ms ease 100ms, visibility 200ms ease 100ms);
+      }
+
+      &:hover .delete {
+        opacity: 1;
+        visibility: visible;
+        @include transition(opacity 400ms ease 200ms, visibility 400ms ease 200ms);
+      }
+    }
+
+    p {
+      font-weight: normal;
+      font-size: 14px;
+      width: 180px;
+      line-height: 120%;
+      float: none;
+
+      &:before {content: none;}
+    }
+
+    .value {
+      display: block;
+    }
+
+    .editor {
+      font-size: 14px;
+      font-weight: normal;
+      border: 1px solid grey;
+      outline: none;
+      padding: 0;
+      margin: 0;
+      width: 180px;
+      line-height: 120%;
+      resize: vertical;
+      height: 80px;
+    }
+
+    .add {
+      display: block;
+      visibility: hidden;
+      @include link-colors($off-black, lighten($off-black, 20));
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      @include semibold;
+      margin-top: 20px;
+      background: image-url('small-icons.png') no-repeat 0 -356px;
+      line-height: 18px;
+      padding-left: 25px;
+
+      &:hover { background-position: 0 -396px; }
+    }
+
+    td:hover .add {
+      visibility: visible;
+    }
+  }
+
+  table {
+    z-index: 2;
+    position: relative;
+    table-layout:fixed;
+  }
+
+  td {
+    vertical-align: top;
+    width: 230px;
+
+    ul {
+      width: 230px;
+    }
+  }
+
+  tr:first-child {
+    height: 28px;
+    text-transform: lowercase;
+    background-color: $grey-brown;
+    color: white;
+    font-size: 16px;
+
+    td {
+      padding-left: 5px;
+      vertical-align: middle;
+    }
+  }
+}

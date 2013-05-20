@@ -163,4 +163,48 @@ angular.module('journals.directives', []).
         }
       });
     };
+  }]).
+
+  directive('scrollWithMouse', [function () {
+    return function(scope, elem, attrs) {
+      var targetPos = 0;
+      var timer;
+
+      var scrollFn = function () {
+        var scrollDiff = targetPos - elem.scrollLeft();
+        if (Math.abs(scrollDiff) > 10) {
+          var scrollAmount = (scrollDiff ^ 2) / 30;
+          var maxAmount = 10;
+
+          if (scrollAmount > maxAmount) {
+            scrollAmount = maxAmount
+          } else if (scrollAmount < (-1 * maxAmount)) {
+            scrollAmount = -1 * maxAmount
+          }
+          elem.scrollLeft(elem.scrollLeft() + scrollAmount)
+        }
+      }
+
+      elem.on('mousemove', function(e) {
+        var elemWidth = elem.outerWidth();
+        var scrollWidth = elem.prop('scrollWidth');
+
+        if (scrollWidth > elemWidth) {
+          var hiddenWidth = scrollWidth - elemWidth;
+          var mousePos = e.pageX - elem.offset().left;
+
+          targetPos = hiddenWidth * (mousePos/elemWidth);
+        }
+      });
+
+      elem.on('mouseenter', function () {
+        timer = setInterval(scrollFn, 15);
+      });
+
+      elem.on('mouseleave', function () {
+        if (timer) {
+          clearInterval(timer);
+        }
+      });
+    };
   }]);

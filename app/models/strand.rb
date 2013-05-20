@@ -13,7 +13,6 @@ class Strand < ActiveRecord::Base
 
   validates :name,
     presence: true,
-    uniqueness: { case_sensitive: false },
     length: { maximum: 80 }
 
   validates :subject, presence: true

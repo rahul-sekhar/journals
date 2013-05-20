@@ -1,0 +1,9 @@
+.framework-wrapper
+  %h3 Framework | {{subject.name}}
+
+  %a.close{ "href"=>"", "ng-click"=>"close()" }
+
+  %a.add{ "href"=>"", "ng-click"=>"addStrand(framework)" } Add strand
+
+  %ol.strands
+    %li{ "ng-repeat"=>"strand in framework.strands | filterDeleted", "ng-include"=>"'#{asset_path('strand.html')}'" }

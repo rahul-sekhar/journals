@@ -21,13 +21,3 @@
       %p There are no subjects yet.
 
     %a.add{ "href"=>"", "ng-click"=>"add()" } New subject
-
-  #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"shown" }
-    %h3 Framework | {{subject.name}}
-
-    %a.close{ "href"=>"", "ng-click"=>"close()" } Close
-
-    %a.add{ "href"=>"", "ng-click"=>"addStrand(framework)" } Add strand
-
-    %ol.strands
-      %li{ "ng-repeat"=>"strand in framework.strands | filterDeleted", "ng-include"=>"'#{asset_path('strand.html')}'" }

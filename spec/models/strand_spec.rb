@@ -69,18 +69,6 @@ describe Strand do
       strand.should be_invalid
     end
 
-    it "must be unique" do
-      create(:strand, name: "some-strand")
-      strand.name = "Some-Strand"
-      strand.should be_invalid
-    end
-
-    it "must be unique with whitespace" do
-      create(:strand, name: "some-strand")
-      strand.name = "Some-Strand "
-      strand.should be_invalid
-    end
-
     it "has a maximum length of 80 characters" do
       strand.name = "a" * 80
       strand.should be_valid

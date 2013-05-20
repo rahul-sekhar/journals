@@ -47,6 +47,17 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
             return oldUrlFn();
           }
         };
+
+        instance.nestingLevel = function () {
+          var currentInstance = instance, nestingLevel = 0;
+
+          while(currentInstance._parent !== undefined) {
+            nestingLevel += 1;
+            currentInstance = currentInstance._parent;
+          }
+
+          return nestingLevel;
+        };
       };
 
       var strandsModel = model('strand', '/academics/strands', {
@@ -142,6 +153,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       $scope.close = function () {
         $scope.shown = false;
       };
+
+      $scope.$on('$routeChangeStart', $scope.close);
 
       $scope.deleteMilestone = function (milestone) {
         if (confirm('Are you sure you want to delete this milestone?')) {
