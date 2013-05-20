@@ -75,11 +75,13 @@
       }
 
       .manage-links {
-        display: none;
         float: left;
         text-transform: lowercase;
         font-size: 12px;
         margin-left: 20px;
+        opacity: 0;
+        visibility: hidden;
+        @include transition(opacity 200ms ease 100ms, visibility 200ms ease 100ms);
 
         a {
           margin-right: 10px;
@@ -88,7 +90,9 @@
       }
 
       .title:hover .manage-links {
-        display: block;
+        opacity: 1;
+        visibility: visible;
+        @include transition(opacity 400ms ease 200ms, visibility 400ms ease 200ms);
       }
     }
 
@@ -214,7 +218,6 @@
 
     .add {
       display: block;
-      visibility: hidden;
       @include link-colors($off-black, lighten($off-black, 20));
       font-size: 12px;
       text-transform: uppercase;
@@ -224,12 +227,17 @@
       background: image-url('small-icons.png') no-repeat 0 -356px;
       line-height: 18px;
       padding-left: 25px;
+      opacity: 0;
+      visibility: hidden;
+      @include transition(opacity 200ms ease 100ms, visibility 200ms ease 100ms);
 
       &:hover { background-position: 0 -396px; }
     }
 
     td:hover .add {
+      opacity: 1;
       visibility: visible;
+      @include transition(opacity 400ms ease 200ms, visibility 400ms ease 200ms);
     }
   }
 

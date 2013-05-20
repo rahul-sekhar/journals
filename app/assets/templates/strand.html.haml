@@ -8,21 +8,22 @@
 %ng-switch{ "on"=>"!!(strand.strands | filterDeleted).length" }
   %ol{ "ng-switch-when"=>"true" }
     %li{ "ng-repeat"=>"strand in strand.strands | filterDeleted",
-      "ng-include"=>"'#{asset_path('strand.html')}'",
-      "ng-class"=>"{'sub-sub-strand': strand.nestingLevel() == 3}" }
+      "ng-include"=>"'/assets/strand.html'",
+      "ng-class"=>"{'sub-sub-strand': strand.nestingLevel() == 3}",
+      "ng-animate"=>"'fade'" }
 
   .milestones-wrapper{ "ng-switch-when"=>"false", "scroll-with-mouse"=>true }
     %table.milestones
       %tr
-        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)" }
+        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)", "ng-animate"=>"'fade'" }
           Level {{level + 1}}
 
       %tr
-        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)" }
+        %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)", "ng-animate"=>"'fade'" }
           %ul
-            %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 } | filterDeleted", "ng-controller"=>"EditObjectCtrl" }
+            %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 } | filterDeleted", "ng-controller"=>"EditObjectCtrl", "ng-animate"=>"'fade'" }
               %p{ "edit-in-place"=>true, "instance"=>"milestone", "type"=>"textarea", "field"=>"content", "placeholder"=>"Enter milestone", "edit-mode"=>"editing.content" }
 
               %a.delete{ "href"=>"", "ng-click"=>"deleteMilestone(milestone)", "ng-hide"=>"editing.content && !milestone.id" } Delete
 
-          %a.add{ "href"=>"", "ng-click"=>"addMilestone(level + 1, strand)" } Add milestone
+          %a.add{ "href"=>"", "ng-click"=>"addMilestone(level + 1, strand)", "ng-animate"=>"'fade'" } Add milestone

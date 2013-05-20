@@ -28,7 +28,7 @@
       #notifications{ "ng-controller"=>"messageCtrl", "ng-class"=>"{shown: show}" }
         %p{ "ng-class"=>"message.type" } {{message.text}}
 
-      #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"shown" }
+      #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"shown", "ng-animate"=>"'fade'" }
         %ng-switch{ "on"=>"shown" }
           %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('framework.html')}'" }
 
