@@ -165,50 +165,92 @@ angular.module('journals.directives', []).
     };
   }]).
 
-  directive('scrollWithMouse', [function () {
+  // directive('scrollWithMouse', [function () {
+  //   return function(scope, elem, attrs) {
+  //     var targetPos = 0;
+  //     var timer;
+
+  //     var scrollFn = function () {
+  //       var scrollDiff = targetPos - elem.scrollLeft();
+  //       if (Math.abs(scrollDiff) > 10) {
+  //         var scrollAmount = (scrollDiff ^ 2) / 30;
+  //         var maxAmount = 10;
+
+  //         if (scrollAmount > maxAmount) {
+  //           scrollAmount = maxAmount
+  //         } else if (scrollAmount < (-1 * maxAmount)) {
+  //           scrollAmount = -1 * maxAmount
+  //         }
+  //         elem.scrollLeft(elem.scrollLeft() + scrollAmount)
+  //       }
+  //     }
+
+  //     elem.on('mousemove', function(e) {
+  //       var elemWidth = elem.outerWidth();
+  //       var scrollWidth = elem.prop('scrollWidth');
+
+  //       if (scrollWidth > elemWidth) {
+  //         var hiddenWidth = scrollWidth - elemWidth;
+  //         var mousePos = e.pageX - elem.offset().left;
+
+  //         targetPos = hiddenWidth * (mousePos/elemWidth);
+  //       }
+  //     });
+
+  //     elem.on('mouseenter', function () {
+  //       timer = setInterval(scrollFn, 15);
+  //       elem.stop();
+  //     });
+
+  //     elem.on('mouseleave', function () {
+  //       if (timer) {
+  //         clearInterval(timer);
+  //       }
+  //       if (elem.scrollLeft() < 150) {
+  //         elem.animate({scrollLeft: 0}, 1000);
+  //       }
+  //     });
+  //   };
+  // }]);
+
+  directive('scrollArrows', [function () {
     return function(scope, elem, attrs) {
-      var targetPos = 0;
+
+      elem.wrapInner('<div class="scroll"></div>');
+      var scrollContainer = elem.find('.scroll');
+
+      var scrollLeft = angular.element('<div class="scroll-left"></div>').appendTo(elem);
+      var scrollRight = angular.element('<div class="scroll-right"></div>').appendTo(elem);
+
+      var direction = 1;
       var timer;
+      var interval = 15;
+      var scrollAmount = 8;
 
-      var scrollFn = function () {
-        var scrollDiff = targetPos - elem.scrollLeft();
-        if (Math.abs(scrollDiff) > 10) {
-          var scrollAmount = (scrollDiff ^ 2) / 30;
-          var maxAmount = 10;
-
-          if (scrollAmount > maxAmount) {
-            scrollAmount = maxAmount
-          } else if (scrollAmount < (-1 * maxAmount)) {
-            scrollAmount = -1 * maxAmount
-          }
-          elem.scrollLeft(elem.scrollLeft() + scrollAmount)
-        }
+      function scrollFn() {
+        scrollContainer.scrollLeft(scrollContainer.scrollLeft() + direction * scrollAmount);
       }
 
-      elem.on('mousemove', function(e) {
-        var elemWidth = elem.outerWidth();
-        var scrollWidth = elem.prop('scrollWidth');
+      function startScroll(_direction_) {
+        stopScroll();
+        direction = _direction_;
+        timer = setInterval(scrollFn, interval);
+      }
 
-        if (scrollWidth > elemWidth) {
-          var hiddenWidth = scrollWidth - elemWidth;
-          var mousePos = e.pageX - elem.offset().left;
-
-          targetPos = hiddenWidth * (mousePos/elemWidth);
-        }
-      });
-
-      elem.on('mouseenter', function () {
-        timer = setInterval(scrollFn, 15);
-        elem.stop();
-      });
-
-      elem.on('mouseleave', function () {
+      function stopScroll(direction) {
         if (timer) {
           clearInterval(timer);
         }
-        if (elem.scrollLeft() < 150) {
-          elem.animate({scrollLeft: 0}, 1000);
-        }
+      }
+
+      scrollLeft.on('mouseenter', function () {
+        startScroll(-1);
       });
+      scrollLeft.on('mouseleave', stopScroll);
+
+      scrollRight.on('mouseenter', function () {
+        startScroll(1);
+      });
+      scrollRight.on('mouseleave', stopScroll);
     };
   }]);

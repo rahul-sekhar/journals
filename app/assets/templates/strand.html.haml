@@ -12,7 +12,7 @@
       "ng-class"=>"{'sub-sub-strand': strand.nestingLevel() == 3}",
       "ng-animate"=>"'fade'" }
 
-  .milestones-wrapper{ "ng-switch-when"=>"false", "scroll-with-mouse"=>true }
+  .milestones-wrapper{ "ng-switch-when"=>"false", "scroll-arrows"=>true }
     %table.milestones
       %tr
         %td{ "ng-repeat"=>"level in [] | range:(strand.max_level(11) + 1)", "ng-animate"=>"'fade'" }

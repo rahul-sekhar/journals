@@ -9,6 +9,22 @@
 
   .framework-wrapper {
     padding: 36px 33px;
+
+    & > .add {
+      display: block;
+      @include link-colors($off-black, lighten($off-black, 20));
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      @include semibold;
+      margin-top: 20px;
+      background: image-url('small-icons.png') no-repeat 0 -356px;
+      line-height: 18px;
+      padding-left: 25px;
+      margin-bottom: 20px;
+
+      &:hover { background-position: 0 -396px; }
+    }
   }
 
   h3 {
@@ -144,11 +160,38 @@
 
   // Milestones
   .milestones-wrapper {
-    padding-left: 74px;
-    margin-bottom: 20px;
-    margin-top: 10px;
     position: relative;
-    overflow-x: hidden;
+
+    .scroll {
+      padding: 0 74px;
+      margin-bottom: 20px;
+      margin-top: 10px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .scroll-left, .scroll-right {
+      position: absolute;
+      height: 100%;
+      top: 0;
+      width: 60px;
+      background-color: grey;
+      opacity: 0.2;
+      z-index: 10;
+      @include transition(opacity 400ms ease);
+
+      &:hover {
+        opacity: 0.4;
+      }
+    }
+
+    .scroll-left {
+      left: 0;
+    }
+
+    .scroll-right {
+      right: 0;
+    }
 
     &:before {
       content: '';
