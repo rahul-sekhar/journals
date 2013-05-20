@@ -6,7 +6,17 @@ class Subject < ActiveRecord::Base
     uniqueness: { case_sensitive: false },
     length: { maximum: 50 }
 
+  has_many :strands
+
   strip_attributes
 
   scope :alphabetical, order(:name)
+
+  def add_strand(strand_name)
+    strands.create!(name: strand_name)
+  end
+
+  def root_strands
+    strands.where{ parent_strand_id == nil }
+  end
 end

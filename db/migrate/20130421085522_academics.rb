@@ -20,7 +20,7 @@ class Academics < ActiveRecord::Migration
 
     rename_column :strands, :academic_id, :subject_id
     change_column :strands, :subject_id, :integer, null: false
-    change_column :strands, :parent_strand_id, :integer, null: false
+    change_column :strands, :parent_strand_id, :integer
     change_column :strands, :name, :string, null: false, limit: 80
     add_column :strands, :position, :integer, null: false
 
@@ -57,7 +57,7 @@ class Academics < ActiveRecord::Migration
 
     rename_column :strands, :subject_id, :academic_id
     change_column :strands, :academic_id, :integer, null: true
-    change_column :strands, :parent_strand_id, :integer, null: true
+    change_column :strands, :parent_strand_id, :integer
     change_column :strands, :name, :string, null: true
     remove_column :strands, :position
 

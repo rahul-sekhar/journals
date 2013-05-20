@@ -38,4 +38,30 @@ describe Subject, :focus do
       subject.reload.name.should == "Blah"
     end
   end
+
+  describe "#add_strand" do
+    before do
+      subject.save!
+      @strand = subject.add_strand 'Strand Name'
+    end
+
+    it "adds a strand to the subject" do
+      @strand.name.should eq('Strand Name')
+      @strand.subject.should eq(subject)
+      @strand.should_not be_new_record
+      @strand.parent_strand_id.should be_nil
+    end
+  end
+
+  describe "#root_strands" do
+    before do
+      @strand1 = create(:strand, subject: subject)
+      @strand2 = create(:strand, subject: subject, parent_strand: @strand1)
+      @strand3 = create(:strand, subject: subject)
+    end
+
+    it "returns only root strands" do
+      subject.root_strands.should =~ [@strand1, @strand3]
+    end
+  end
 end

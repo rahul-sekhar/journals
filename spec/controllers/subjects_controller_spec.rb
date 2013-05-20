@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SubjectsController, :focus do
+describe SubjectsController do
   let(:user){ create(:teacher_with_user).user }
   let(:ability) do
     ability = Object.new

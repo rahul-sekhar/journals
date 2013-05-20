@@ -156,7 +156,7 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
 
   create_view "profile_names", "(SELECT students.first_name, substr((students.last_name)::text, 1, 1) AS initial, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT teachers.first_name, substr((teachers.last_name)::text, 1, 1) AS initial, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers) UNION ALL SELECT guardians.first_name, substr((guardians.last_name)::text, 1, 1) AS initial, 'Guardian'::text AS profile_type, guardians.id AS profile_id FROM guardians", :force => true
   create_table "strands", :force => true do |t|
-    t.integer  "parent_strand_id",               :null => false
+    t.integer  "parent_strand_id"
     t.string   "name",             :limit => 80, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"

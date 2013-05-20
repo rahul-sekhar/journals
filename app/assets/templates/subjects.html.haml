@@ -14,9 +14,18 @@
         %p{ "edit-in-place"=>true, "instance"=>"subject", "field"=>"name", "edit-mode"=>"editing.name" }
 
         .links
+          %a.edit{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"edit(subject)" } Edit framework
           %a.delete{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"delete(subject)" } Delete
 
     .content-block{ "ng-show"=>"(subjects | filterDeleted).length == 0" }
       %p There are no subjects yet.
 
     %a.add{ "href"=>"", "ng-click"=>"add()" } New subject
+
+  #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"shown" }
+    %h3 Framework | {{subject.name}}
+
+    %ol.strands
+      %li{ "ng-repeat"=>"strand in framework.strands", "ng-include"=>"'#{asset_path('strand.html')}'" }
+
+    %a.close{ "href"=>"", "ng-click"=>"close()" } Close

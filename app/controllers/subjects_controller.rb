@@ -10,7 +10,7 @@ class SubjectsController < ApplicationController
 
   def create
     if @subject.save
-      render "show"
+      render "show_short"
     else
       render text: @subject.errors.full_messages.first, status: :unprocessable_entity
     end
@@ -18,7 +18,7 @@ class SubjectsController < ApplicationController
 
   def update
     if @subject.update_attributes(params[:subject])
-      render "show"
+      render "show_short"
     else
       render text: @subject.errors.full_messages.first, status: :unprocessable_entity
     end

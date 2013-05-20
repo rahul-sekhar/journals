@@ -1,4 +1,3 @@
-@current
 Feature: Manage subjects
 
 Background:

@@ -60,4 +60,14 @@ FactoryGirl.define do
   factory :subject do
     sequence(:name){ |n| "subject#{n}"}
   end
+
+  factory :strand do
+    subject
+    sequence(:name){ |n| "strand#{n}"}
+  end
+
+  factory :milestone do
+    strand
+    level 1
+  end
 end

@@ -51,6 +51,15 @@
     a {
       float: left;
       @include link-colors($off-black, lighten($off-black, 20));
+
+      &:after {
+        content: '|';
+        margin: 0 5px;
+      }
+
+      &:last-child:after {
+        content: none;
+      }
     }
   }
 
