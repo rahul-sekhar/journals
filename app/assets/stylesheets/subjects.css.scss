@@ -23,9 +23,11 @@
     line-height: 18px;
     width: 100%;
     border: 1px solid transparent;
+    @include transition(border 200ms ease 100ms);
 
     &:hover {
       border: 1px solid grey;
+      @include transition(border 400ms ease 200ms);
     }
   }
 

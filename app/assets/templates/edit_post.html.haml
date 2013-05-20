@@ -51,11 +51,11 @@
             %filtered-list{ "list"=>"post.remainingTeachers()", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"post.addTeacher(value, true); hideMenus()" }
 
     %ng-switch{ "on"=>"(post.author.type == 'Teacher') || (post.isNew() && isTeacher)" }
-      .student-observations{ "ng-switch-when"=>"true", "ng-controller"=>"StudentObservationsCtrl", "ng-show"=>"post.students.length" }
+      .student-observations{ "ng-switch-when"=>"true", "ng-controller"=>"StudentObservationsCtrl", "ng-show"=>"post.students.length", "ng-animate"=>"'fade'" }
         %p Individual student observations
 
         %ul#observation-buttons
-          %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'", "ng-class"=>"{selected: (student == selectedStudent)}" }
+          %li{ "ng-repeat"=>"student in post.students | orderBy:'short_name'", "ng-class"=>"{selected: (student == selectedStudent)}", "ng-animate"=>"'fade'" }
             %a{ "href"=>"", "ng-click"=>"selectStudent(student)" }
               {{student.short_name}}
 
