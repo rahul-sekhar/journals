@@ -149,7 +149,7 @@ angular.module('journals.directives', []).
     };
   }]).
 
-  directive('watchHeight', ['$parse', '$timeout', function ($parse, $timeout) {
+  directive('watchHeight', ['$parse', function ($parse) {
     return function(scope, elem, attrs) {
       var expanded = $parse(attrs.expanded);
 
@@ -165,53 +165,17 @@ angular.module('journals.directives', []).
     };
   }]).
 
-  // directive('scrollWithMouse', [function () {
-  //   return function(scope, elem, attrs) {
-  //     var targetPos = 0;
-  //     var timer;
+  directive('padHeight', ['$parse', function ($parse) {
+    return function(scope, elem, attrs) {
+      var basePadding = parseInt(elem.css('padding-bottom'), 10);
 
-  //     var scrollFn = function () {
-  //       var scrollDiff = targetPos - elem.scrollLeft();
-  //       if (Math.abs(scrollDiff) > 10) {
-  //         var scrollAmount = (scrollDiff ^ 2) / 30;
-  //         var maxAmount = 10;
-
-  //         if (scrollAmount > maxAmount) {
-  //           scrollAmount = maxAmount
-  //         } else if (scrollAmount < (-1 * maxAmount)) {
-  //           scrollAmount = -1 * maxAmount
-  //         }
-  //         elem.scrollLeft(elem.scrollLeft() + scrollAmount)
-  //       }
-  //     }
-
-  //     elem.on('mousemove', function(e) {
-  //       var elemWidth = elem.outerWidth();
-  //       var scrollWidth = elem.prop('scrollWidth');
-
-  //       if (scrollWidth > elemWidth) {
-  //         var hiddenWidth = scrollWidth - elemWidth;
-  //         var mousePos = e.pageX - elem.offset().left;
-
-  //         targetPos = hiddenWidth * (mousePos/elemWidth);
-  //       }
-  //     });
-
-  //     elem.on('mouseenter', function () {
-  //       timer = setInterval(scrollFn, 15);
-  //       elem.stop();
-  //     });
-
-  //     elem.on('mouseleave', function () {
-  //       if (timer) {
-  //         clearInterval(timer);
-  //       }
-  //       if (elem.scrollLeft() < 150) {
-  //         elem.animate({scrollLeft: 0}, 1000);
-  //       }
-  //     });
-  //   };
-  // }]);
+      scope.$watch(function () {
+        return (elem.prop('scrollHeight'));
+      }, function (newVal) {
+        elem.css('padding-bottom', basePadding + newVal - elem.outerHeight() + 'px');
+      });
+    };
+  }]).
 
   directive('scrollArrows', [function () {
     return function(scope, elem, attrs) {

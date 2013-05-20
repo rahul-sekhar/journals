@@ -8,7 +8,7 @@ class Strand < ActiveRecord::Base
 
   belongs_to :subject
   belongs_to :parent_strand, class_name: Strand
-  has_many :child_strands, foreign_key: :parent_strand_id, class_name: Strand, dependent: :destroy
+  has_many :child_strands, foreign_key: :parent_strand_id, class_name: Strand, dependent: :destroy, include: [:child_strands, :milestones]
   has_many :milestones, dependent: :destroy
 
   validates :name,

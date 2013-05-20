@@ -6,7 +6,7 @@ class Subject < ActiveRecord::Base
     uniqueness: { case_sensitive: false },
     length: { maximum: 50 }
 
-  has_many :strands, dependent: :destroy
+  has_many :strands, dependent: :destroy, include: [:child_strands, :milestones]
 
   strip_attributes
 

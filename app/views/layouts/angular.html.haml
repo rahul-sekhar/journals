@@ -20,7 +20,7 @@
       .wrapper
         %navigation#page-navigation= render "general/navigation"
 
-        #main-content
+        #main-content{ "pad-height"=>true }
           .ng-view{ "ng-animate"=>"'view-fade'" }
 
       %div{ "ng-include"=>"'#{asset_path('change_password.html')}'" }
