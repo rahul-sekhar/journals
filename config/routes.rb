@@ -54,7 +54,19 @@ Journals::Application.routes.draw do
 
   get "academics" => "pages#home"
   scope '/academics' do
-    resources :subjects, except: [:new, :edit]
+    resources :subjects, except: [:new, :edit] do
+      member do
+        post :add_strand
+      end
+    end
+
+    resources :strands, only: [:update, :destroy] do
+      member do
+        post :add_milestone
+        post :add_strand
+      end
+    end
+    resources :milestones, only: [:update, :destroy]
   end
 
   match "*not_found", :to => "errors#not_found"

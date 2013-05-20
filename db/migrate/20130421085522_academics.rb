@@ -1,3 +1,31 @@
+class Milestone < ActiveRecord::Base
+  def set_position
+    self.position = siblings.maximum(:position).to_i + 1
+  end
+
+  def siblings
+    Milestone.where{
+      (strand_id == my{strand_id}) &
+      (level == my{level}) &
+      (id != my{id})
+    }
+  end
+end
+
+class Strand < ActiveRecord::Base
+  def siblings
+    Strand.where{
+      (subject_id == my{subject_id}) &
+      (parent_strand_id == my{parent_strand_id}) &
+      (id != my{id})
+    }
+  end
+
+  def set_position
+    self.position = siblings.maximum(:position).to_i + 1
+  end
+end
+
 class Academics < ActiveRecord::Migration
   def up
     rename_table :academics, :subjects
@@ -5,7 +33,16 @@ class Academics < ActiveRecord::Migration
 
     change_column :milestones, :strand_id, :integer, null: false
     change_column :milestones, :level, :integer, null: false
-    add_column :milestones, :position, :integer, null: false
+    change_column :milestones, :content, :text, null: false
+    add_column :milestones, :position, :integer
+
+    Milestone.reset_column_information
+    Milestone.order{created_at.asc}.each do |milestone|
+      milestone.set_position
+      milestone.save!
+    end
+
+    change_column :milestones, :position, :integer, null: false
 
     change_column :students_milestones, :student_id, :integer, null: false
     change_column :students_milestones, :milestone_id, :integer, null: false
@@ -22,7 +59,15 @@ class Academics < ActiveRecord::Migration
     change_column :strands, :subject_id, :integer, null: false
     change_column :strands, :parent_strand_id, :integer
     change_column :strands, :name, :string, null: false, limit: 80
-    add_column :strands, :position, :integer, null: false
+    add_column :strands, :position, :integer
+
+    Strand.reset_column_information
+    Strand.order{created_at.asc}.each do |strand|
+      strand.set_position
+      strand.save!
+    end
+
+    change_column :strands, :position, :integer, null: false
 
     rename_table :teacher_academics, :subject_teachers
     rename_column :subject_teachers, :academic_id, :subject_id
@@ -48,6 +93,7 @@ class Academics < ActiveRecord::Migration
 
     change_column :milestones, :strand_id, :integer, null: true
     change_column :milestones, :level, :integer, null: true
+    change_column :milestones, :content, :text, null: true
     remove_column :milestones, :position
 
     change_column :students_milestones, :student_id, :integer, null: true

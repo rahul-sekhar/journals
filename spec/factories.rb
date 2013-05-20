@@ -69,5 +69,6 @@ FactoryGirl.define do
   factory :milestone do
     strand
     level 1
+    sequence(:content){ |n| "milestone#{n}"}
   end
 end

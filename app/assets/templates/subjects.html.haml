@@ -11,7 +11,7 @@
 
     %ul
       %li{ "ng-repeat"=>"subject in subjects | filterDeleted" }
-        %p{ "edit-in-place"=>true, "instance"=>"subject", "field"=>"name", "edit-mode"=>"editing.name" }
+        %p{ "edit-in-place"=>true, "instance"=>"subject", "field"=>"name" }
 
         .links
           %a.edit{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"edit(subject)" } Edit framework
@@ -25,7 +25,9 @@
   #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"shown" }
     %h3 Framework | {{subject.name}}
 
-    %ol.strands
-      %li{ "ng-repeat"=>"strand in framework.strands", "ng-include"=>"'#{asset_path('strand.html')}'" }
-
     %a.close{ "href"=>"", "ng-click"=>"close()" } Close
+
+    %a.add{ "href"=>"", "ng-click"=>"addStrand(framework)" } Add strand
+
+    %ol.strands
+      %li{ "ng-repeat"=>"strand in framework.strands | filterDeleted", "ng-include"=>"'#{asset_path('strand.html')}'" }

@@ -134,9 +134,10 @@ describe('subjects module', function () {
 
   /*-------------------- Framework Controller -------------------------*/
    describe('FrameworkCtrl', function () {
-    var scope, httpBackend, frameworkService, Framework;
+    var scope, httpBackend, frameworkService, Framework, confirm;
 
-    beforeEach(inject(function ($rootScope, $httpBackend, $controller) {
+    beforeEach(inject(function ($rootScope, $httpBackend, $controller, _confirm_) {
+      confirm = _confirm_;
       scope = $rootScope.$new();
       httpBackend = $httpBackend;
       frameworkService = { register: jasmine.createSpy() };
@@ -214,6 +215,77 @@ describe('subjects module', function () {
 
       it('sets shown to false', function () {
         expect(scope.shown).toEqual(false);
+      });
+    });
+
+    describe('deleteMilestone(milestone)', function () {
+      var milestone;
+
+      beforeEach(function() {
+        milestone = { delete: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.deleteMilestone(milestone)
+        });
+
+        it('sends a delete message to the milestone', function () {
+          expect(milestone.delete).toHaveBeenCalled();
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.deleteMilestone(milestone)
+        });
+
+        it('does not send a delete message to the milestone', function () {
+          expect(milestone.delete).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('deleteStrand(strand)', function () {
+      var strand;
+
+      beforeEach(function() {
+        strand = { delete: jasmine.createSpy() };
+      });
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.deleteStrand(strand)
+        });
+
+        it('sends a delete message to the strand', function () {
+          expect(strand.delete).toHaveBeenCalled();
+        });
+      });
+
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.deleteStrand(strand)
+        });
+
+        it('does not send a delete message to the strand', function () {
+          expect(strand.delete).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('addMilestone(level, strand)', function() {
+      var strand;
+
+      beforeEach(function() {
+        strand = { newMilestone: jasmine.createSpy().andReturn('milestone') };
+        scope.addMilestone(2, strand);
+      });
+
+      it('adds the milestone to the strand', function() {
+        expect(strand.newMilestone).toHaveBeenCalledWith({_edit: 'content', level: 2});
       });
     });
   });

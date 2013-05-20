@@ -9,6 +9,8 @@ class Milestone < ActiveRecord::Base
   belongs_to :strand
 
   validates :strand, presence: true
+  validates :content, presence: true
+  validates :level, presence: true
 
   strip_attributes
 

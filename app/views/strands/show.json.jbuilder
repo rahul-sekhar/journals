@@ -1,0 +1,1 @@
+json.(@strand, :id, :name)

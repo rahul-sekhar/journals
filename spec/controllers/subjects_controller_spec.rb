@@ -166,4 +166,49 @@ describe SubjectsController do
       response.body.should be_present
     end
   end
+
+
+  describe "POST add_strand" do
+    let(:subject){ create(:subject) }
+
+    before do
+      ability.can :manage, Strand
+    end
+
+    context "with valid data" do
+      let(:make_request){ post :add_strand, id: subject.id, strand: { name: "lorem" }, format: :json }
+
+      it "raises an exception if the user cannot add a strand" do
+        ability.cannot :create, Strand
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      it "adds the strand" do
+        expect{ make_request }.to change{ Strand.count }.by(1)
+      end
+
+      it "adds the strand with the correct data" do
+        make_request
+        subject.reload.strands.first.name.should eq("lorem")
+      end
+
+      it "responds with a 200 status" do
+        make_request
+        response.status.should eq(200)
+      end
+    end
+
+    context "with invalid data" do
+      let(:make_request){ post :add_strand, id: subject.id, strand: { name: "" }, format: :json }
+
+      it "does not add the strand" do
+        expect{ make_request }.to change{ Strand.count }.by(0)
+      end
+
+      it "responds with a status of 422" do
+        make_request
+        response.status.should eq(422)
+      end
+    end
+  end
 end

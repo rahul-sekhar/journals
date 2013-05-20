@@ -13,30 +13,49 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
     function (model, association) {
       return model('subject', '/academics/subjects', {
         extensions: [
-          association('Strands', 'strand', { loaded: true }),
+          association('Strands', 'strand', { loaded: true, addToEnd: true }),
         ]
       });
     }]).
 
-  factory('Strands', ['collection', 'model', 'association',
-    function (collection, model, association) {
+  factory('Strands', ['collection', 'model', 'association', '$filter',
+    function (collection, model, association, $filter) {
       var strandExtension = function () {};
 
       strandExtension.setup = function (instance) {
         instance.max_level = function () {
-          var levels = instance.milestones.map(function (milestone) {
-            return milestone.level;
-          });
-          return Math.max.apply(null, levels);
+          var milestones, levels;
+
+          milestones = $filter('filterDeleted')(instance.milestones);
+          if (milestones.length > 0) {
+            levels = milestones.map(function (milestone) {
+              return milestone.level;
+            });
+            return Math.max.apply(null, levels);
+          }
+          else {
+            return 0;
+          }
+        };
+
+        var oldUrlFn = instance.url;
+
+        instance.url = function () {
+          if (instance.isNew()) {
+            return instance._parent.url() + '/add_strand'
+          } else {
+            return oldUrlFn();
+          }
         };
       };
 
-      var strandsModel = model('strands', '/academics/strands', {
+      var strandsModel = model('strand', '/academics/strands', {
         extensions: [
-          association('Strands', 'strand', { loaded: true }),
-          association('Milestones', 'milestone', { loaded: true }),
+          association('Strands', 'strand', { loaded: true, addToEnd: true }),
+          association('Milestones', 'milestone', { loaded: true, addToEnd: true }),
           strandExtension
-        ]
+        ],
+        defaultData: { milestones: [], strands: [] }
       });
 
       return collection(strandsModel);
@@ -44,7 +63,23 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
   factory('Milestones', ['collection', 'model',
     function (collection, model) {
-      var milestonesModel = model('milestones', '/academics/milestones', {
+      var milestoneExtension = function () {};
+
+      milestoneExtension.setup = function (instance) {
+        var oldUrlFn = instance.url;
+
+        instance.url = function () {
+          if (instance.isNew()) {
+            return instance._parent.url() + '/add_milestone'
+          } else {
+            return oldUrlFn();
+          }
+        };
+      };
+
+      var milestonesModel = model('milestone', '/academics/milestones', {
+        extensions: [milestoneExtension],
+        saveFields: ['content', 'level']
       });
 
       return collection(milestonesModel);
@@ -87,8 +122,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       return frameworkService;
     }]).
 
-  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework',
-    function ($scope, frameworkService, ajax, Framework) {
+  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm',
+    function ($scope, frameworkService, ajax, Framework, confirm) {
       $scope.shown = false;
 
       $scope.show = function (subject) {
@@ -99,7 +134,6 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         ajax({ url: subject.url() }).
           then(function (response) {
             $scope.framework = Framework.create(response.data);
-            console.log($scope.framework);
           }, function () {
             $scope.shown = false;
           });
@@ -108,6 +142,26 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       $scope.close = function () {
         $scope.shown = false;
       };
+
+      $scope.deleteMilestone = function (milestone) {
+        if (confirm('Are you sure you want to delete this milestone?')) {
+          milestone.delete();
+        }
+      };
+
+      $scope.deleteStrand = function (strand) {
+        if (confirm('Are you sure you want to delete the strand "' + strand.name + '" and all its sub-strands and milestones?')) {
+          strand.delete();
+        }
+      };
+
+      $scope.addMilestone = function (level, strand) {
+        strand.newMilestone({_edit: 'content', level: level});
+      };
+
+      $scope.addStrand = function (parent) {
+        parent.newStrand({_edit: 'name'});
+      }
 
       frameworkService.register($scope);
     }]);

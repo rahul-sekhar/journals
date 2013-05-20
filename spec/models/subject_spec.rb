@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Subject, :focus do
+describe Subject do
   let(:subject){ build(:subject) }
 
   it "is valid with valid attributes" do
@@ -62,6 +62,14 @@ describe Subject, :focus do
 
     it "returns only root strands" do
       subject.root_strands.should =~ [@strand1, @strand3]
+    end
+  end
+
+  describe "on destruction" do
+    it "destroys any strands" do
+      subject.save!
+      subject.add_strand('Some strand')
+      expect { subject.destroy }.to change { Strand.count }.by(-1)
     end
   end
 end

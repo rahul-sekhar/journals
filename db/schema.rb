@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
   create_table "milestones", :force => true do |t|
     t.integer  "strand_id",  :null => false
     t.integer  "level",      :null => false
-    t.text     "content"
+    t.text     "content",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position",   :null => false

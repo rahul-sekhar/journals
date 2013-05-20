@@ -46,13 +46,66 @@ Given(/^the subject "(.*?)" exists with a framework$/) do |p_name|
 end
 
 Then(/^I should see the root strand "(.*?)"$/) do |p_name|
-  page.should have_xpath('//ol[@class="strands"]/li', text: /^#{Regexp.escape(p_name)}/i)
+  page.should have_xpath('//ol[@class="strands"]/li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
+end
+
+Then(/^I should not see the root strand "(.*?)"$/) do |p_name|
+  page.should have_no_xpath('//ol[@class="strands"]/li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
 end
 
 Then(/^I should see the strand "(.*?)" under "(.*?)"$/) do |p_child, p_parent|
-  page.find('li', text: /^#{Regexp.escape(p_parent)}/i).should have_xpath('.//ol/li', text: /^#{Regexp.escape(p_child)}/i)
+  page.find('li', text: /^#{Regexp.escape(p_parent)}/i).should have_xpath('.//ol/li', text: /^#{Regexp.escape(p_child)}/i, visible: true)
+end
+
+Then(/^I should not see the strand "(.*?)" under "(.*?)"$/) do |p_child, p_parent|
+  page.find('li', text: /^#{Regexp.escape(p_parent)}/i).should have_no_xpath('.//ol/li', text: /^#{Regexp.escape(p_child)}/i, visible: true)
 end
 
 Then(/^I should see the milestone "(.*?)" under "(.*?)" in level (\d+)$/) do |p_milestone, p_strand, p_level|
-  page.find('li', text: /^#{Regexp.escape(p_strand)}/i).should have_xpath(".//tr/td[position()=#{p_level}]/ul/li", text: /^#{Regexp.escape(p_milestone)}/i)
+  strand = page.find('li', text: /^#{Regexp.escape(p_strand)}/i)
+  strand.should have_xpath(".//tr/td[position()=#{p_level}]/ul/li", text: /^#{Regexp.escape(p_milestone)}/i, visible: true)
+end
+
+Then(/^I should not see the milestone "(.*?)" under "(.*?)" in level (\d+)$/) do |p_milestone, p_strand, p_level|
+  strand = page.find('li', text: /^#{Regexp.escape(p_strand)}/i)
+  strand.should have_no_xpath(".//tr/td[position()=#{p_level}]/ul/li", text: /^#{Regexp.escape(p_milestone)}/i, visible: true)
+end
+
+When(/^I change the strand "(.*?)" to "(.*?)"$/) do |p_from, p_to|
+  field = page.find('ol.strands li p', text: /^#{Regexp.escape(p_from)}/i)
+  field.find('.value').click
+  fill_input_inside field, p_to
+end
+
+When(/^I delete the strand "(.*?)"$/) do |p_strand|
+  page.find('.strands li', text: /^#{Regexp.escape(p_strand)}/i, visible: true).first('.delete').click
+end
+
+When(/^I add the root strand "(.*?)"$/) do |p_strand|
+  framework = page.find("#framework")
+  framework.first('.add').click
+  fill_input_inside framework, p_strand
+end
+
+When(/^I add the strand "(.*?)" to "(.*?)"$/) do |p_strand, p_parent|
+  strand = page.find('li', text: /^#{Regexp.escape(p_parent)}/i)
+  strand.first('.add').click
+  fill_input_inside strand, p_strand
+end
+
+When(/^I change the milestone "(.*?)" to "(.*?)"$/) do |p_from, p_to|
+  field = page.find('table.milestones li p', text: /^#{Regexp.escape(p_from)}/i)
+  field.find('.value').click
+  fill_input_inside field, p_to
+end
+
+When(/^I delete the milestone "(.*?)"$/) do |p_milestone|
+  page.find('table.milestones li', text: /^#{Regexp.escape(p_milestone)}/i, visible: true).find('.delete').click
+end
+
+When(/^I add the milestone "(.*?)" to "(.*?)" in level (\d+)$/) do |p_milestone, p_strand, p_level|
+  strand = page.find('li', text: /^#{Regexp.escape(p_strand)}/i)
+  level = strand.find(:xpath, ".//tr[position()=2]/td[position()=#{p_level}]")
+  level.find('.add').click
+  fill_input_inside level, p_milestone
 end

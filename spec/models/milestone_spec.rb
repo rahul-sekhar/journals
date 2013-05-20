@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Milestone, :focus do
+describe Milestone do
   let(:milestone){ build(:milestone) }
 
   it "is valid with valid attributes" do
@@ -9,6 +9,18 @@ describe Milestone, :focus do
 
   it "is invalid without a strand" do
     milestone.strand = nil
+    milestone.should be_invalid
+  end
+
+  it "is invalid without a level" do
+    milestone.level = nil
+    milestone.should be_invalid
+  end
+
+  it "is invalid without content" do
+    milestone.content = nil
+    milestone.should be_invalid
+    milestone.content = ""
     milestone.should be_invalid
   end
 

@@ -1,17 +1,23 @@
-%p {{strand.name}}
+%p{ "edit-in-place"=>true, "instance"=>"strand", "field"=>"name", "placeholder"=>"Strand name" }
 
-%ng-switch{ "on"=>"!!strand.strands.length" }
+%a.add{ "href"=>"", "ng-click"=>"addStrand(strand)" } Add substrand
+%a.delete{ "href"=>"", "ng-click"=>"deleteStrand(strand)", "ng-show"=>"strand.id" } Delete
+
+%ng-switch{ "on"=>"!!(strand.strands | filterDeleted).length" }
   %ol{ "ng-switch-when"=>"true" }
-    %li{ "ng-repeat"=>"strand in strand.strands", "ng-include"=>"'#{asset_path('strand.html')}'" }
+    %li{ "ng-repeat"=>"strand in strand.strands | filterDeleted", "ng-include"=>"'#{asset_path('strand.html')}'" }
 
-%ng-switch{ "on"=>"!!strand.milestones.length" }
-  %table{ "ng-switch-when"=>"true" }
+  %table.milestones{ "ng-switch-when"=>"false" }
     %tr
-      %td{ "ng-repeat"=>"level in [] | range:(strand.max_level())" }
+      %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)" }
         Level {{level + 1}}
 
     %tr
-      %td{ "ng-repeat"=>"level in [] | range:(strand.max_level())" }
+      %td{ "ng-repeat"=>"level in [] | range:(strand.max_level() + 1)" }
         %ul
-          %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 }" }
-            {{milestone.content}}
+          %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 } | filterDeleted", "ng-controller"=>"EditObjectCtrl" }
+            %p{ "edit-in-place"=>true, "instance"=>"milestone", "type"=>"textarea", "field"=>"content", "placeholder"=>"Enter milestone", "edit-mode"=>"editing.content" }
+
+            %a.delete{ "href"=>"", "ng-click"=>"deleteMilestone(milestone)", "ng-hide"=>"editing.content && !strand.id" } Delete
+
+        %a.add{ "href"=>"", "ng-click"=>"addMilestone(level + 1, strand)" } Add milestone

@@ -1,5 +1,6 @@
 class SubjectsController < ApplicationController
   load_and_authorize_resource
+  skip_authorize_resource only: :add_strand
 
   def index
     @subjects = @subjects.alphabetical
@@ -27,5 +28,16 @@ class SubjectsController < ApplicationController
   def destroy
     @subject.destroy
     render text: "OK", status: :ok
+  end
+
+  def add_strand
+    authorize! :create, Strand
+
+    @strand = @subject.add_strand(params[:strand][:name])
+    if @strand.new_record?
+      render text: @strand.errors.full_messages.first, status: :unprocessable_entity
+    else
+      render "strands/show"
+    end
   end
 end

@@ -8,8 +8,8 @@ class Strand < ActiveRecord::Base
 
   belongs_to :subject
   belongs_to :parent_strand, class_name: Strand
-  has_many :child_strands, foreign_key: :parent_strand_id, class_name: Strand
-  has_many :milestones
+  has_many :child_strands, foreign_key: :parent_strand_id, class_name: Strand, dependent: :destroy
+  has_many :milestones, dependent: :destroy
 
   validates :name,
     presence: true,
@@ -25,14 +25,14 @@ class Strand < ActiveRecord::Base
 
     child = child_strands.build(name: strand_name)
     child.subject = subject
-    child.save!
+    child.save
     return child
   end
 
   def add_milestone(level, content)
     raise 'Strand cannot have both milestones and child strands' if child_strands.length > 0
 
-    milestones.create!(level: level, content: content)
+    return milestones.create(level: level, content: content)
   end
 
   private

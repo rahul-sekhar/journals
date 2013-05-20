@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Strand, :focus do
+describe Strand do
   let(:strand){ build(:strand) }
 
   it "is valid with valid attributes" do
@@ -146,6 +146,20 @@ describe Strand, :focus do
       it "raises an error" do
         expect{ strand.add_milestone 3, 'Milestone content' }.to raise_error('Strand cannot have both milestones and child strands')
       end
+    end
+  end
+
+  describe "on destruction" do
+    it "destroys any child strands" do
+      strand.save!
+      strand.add_strand('Child strand')
+      expect { strand.destroy }.to change { Strand.count }.by(-2)
+    end
+
+    it "destroys any milestones" do
+      strand.save!
+      strand.add_milestone(1, 'Some milestone')
+      expect { strand.destroy }.to change { Milestone.count }.by(-1)
     end
   end
 end
