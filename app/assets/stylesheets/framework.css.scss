@@ -5,6 +5,7 @@
   background-color: white;
   left: 0;
   top: 0;
+  opacity: 1;
   overflow: auto;
 
   .framework-wrapper {
@@ -31,6 +32,10 @@
     font-size: 20px;
     @include semibold;
     margin-bottom: 35px;
+
+    img {
+      vertical-align: middle;
+    }
   }
 
   .close {
@@ -300,8 +305,6 @@
 
   td {
     vertical-align: top;
-    width: 230px;
-
     ul {
       width: 230px;
     }

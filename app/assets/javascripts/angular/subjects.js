@@ -95,8 +95,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       return collection(milestonesModel);
     }]).
 
-  controller('SubjectsCtrl', ['$scope', 'Subjects', 'confirm', 'frameworkService',
-    function ($scope, Subjects, confirm, frameworkService) {
+  controller('SubjectsCtrl', ['$scope', 'Subjects', 'confirm', 'frameworkService', '$location',
+    function ($scope, Subjects, confirm, frameworkService, $location) {
 
       $scope.pageTitle = 'Academic records';
 
@@ -107,7 +107,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       };
 
       $scope.edit = function (subject) {
-        frameworkService.showFramework(subject);
+        $location.search('framework', subject.id);
       };
 
       $scope.delete = function (subject) {
@@ -115,6 +115,14 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
           subject.delete();
         }
       };
+
+      function checkFramework() {
+        if ($location.search().framework) {
+          frameworkService.showFramework($location.search().framework);
+        }
+      }
+      $scope.$on("$routeUpdate", checkFramework);
+      checkFramework();
     }]).
 
   factory('frameworkService', [
@@ -125,23 +133,22 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         scope = _scope_;
       };
 
-      frameworkService.showFramework = function (subject) {
-        scope.show(subject);
+      frameworkService.showFramework = function (subjectId) {
+        scope.show(subjectId);
       };
 
       return frameworkService;
     }]).
 
-  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm',
-    function ($scope, frameworkService, ajax, Framework, confirm) {
+  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm', '$location',
+    function ($scope, frameworkService, ajax, Framework, confirm, $location) {
       $scope.shown = false;
 
-      $scope.show = function (subject) {
+      $scope.show = function (subjectId) {
         $scope.shown = true;
-        $scope.subject = subject;
 
         $scope.framework = null;
-        ajax({ url: subject.url() }).
+        ajax({ url: '/academics/subjects/' + subjectId }).
           then(function (response) {
             $scope.framework = Framework.create(response.data);
           }, function () {
@@ -150,10 +157,13 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       };
 
       $scope.close = function () {
+        $location.search('framework', null);
         $scope.shown = false;
       };
 
-      $scope.$on('$routeChangeStart', $scope.close);
+      // $scope.$on('$routeChangeStart', function () {
+      //   $scope.shown = false;
+      // });
 
       $scope.deleteMilestone = function (milestone) {
         if (confirm('Are you sure you want to delete this milestone?')) {

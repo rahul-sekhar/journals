@@ -1,5 +1,7 @@
 .framework-wrapper
-  %h3 Framework | {{subject.name}}
+  %h3
+    Framework | {{framework.name}}
+    =image_tag "loader-small.gif", 'alt'=>'', 'ng-hide'=>'framework'
 
   %a.close{ "href"=>"", "ng-click"=>"close()" }
 

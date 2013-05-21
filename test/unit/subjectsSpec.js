@@ -77,9 +77,32 @@ describe('subjects module', function () {
     });
 
     describe('edit(subject)', function() {
-      it('invokes the frameworkService', function () {
-        scope.edit('test');
-        expect(frameworkService.showFramework).toHaveBeenCalledWith('test');
+      it('changes the location framework parameter', inject(function ($location) {
+        scope.edit({id: 7});
+        expect($location.search().framework).toEqual(7);
+      }));
+    });
+
+    describe('on a route update', function () {
+      describe('with a framework param set', function () {
+        beforeEach(inject(function ($location) {
+          $location.search('framework', 16);
+          scope.$broadcast('$routeUpdate');
+        }));
+
+        it('triggers the framework service', function () {
+          expect(frameworkService.showFramework).toHaveBeenCalledWith(16);
+        });
+      });
+
+      describe('without a framework param set', function () {
+        beforeEach(inject(function ($location) {
+          scope.$broadcast('$routeUpdate');
+        }));
+
+        it('does not trigger the framework service', function () {
+          expect(frameworkService.showFramework).not.toHaveBeenCalled();
+        });
       });
     });
 
@@ -123,11 +146,11 @@ describe('subjects module', function () {
       frameworkService.register(scope);
     }));
 
-    describe('showFramework()', function () {
+    describe('showFramework(subjectId)', function () {
       it('calls the scopes show function, passing the argument', function () {
         expect(scope.show).not.toHaveBeenCalled();
-        frameworkService.showFramework('some subject');
-        expect(scope.show).toHaveBeenCalledWith('some subject');
+        frameworkService.showFramework('some subject id');
+        expect(scope.show).toHaveBeenCalledWith('some subject id');
       });
     });
   });
@@ -155,21 +178,14 @@ describe('subjects module', function () {
     });
 
     describe('show()', function () {
-      var subject;
-
       beforeEach(function () {
-        httpBackend.expectGET('/some/path.json').respond('some subject data')
+        httpBackend.expectGET('/academics/subjects/8.json').respond('some subject data')
 
-        subject = { url: function () { return '/some/path'; } };
-        scope.show(subject);
+        scope.show(8);
       });
 
       it('sets shown to true', function () {
         expect(scope.shown).toEqual(true);
-      });
-
-      it('sets the subject to the passed subject', function () {
-        expect(scope.subject).toBe(subject);
       });
 
       it('sets the subject data to null', function () {
@@ -197,7 +213,7 @@ describe('subjects module', function () {
       describe('on failure', function () {
         beforeEach(function () {
           httpBackend.resetExpectations();
-          httpBackend.expectGET('/some/path.json').respond(400)
+          httpBackend.expectGET('/academics/subjects/8.json').respond(400)
           httpBackend.flush();
         });
 
@@ -208,13 +224,21 @@ describe('subjects module', function () {
     });
 
     describe('close()', function () {
-      beforeEach(function () {
+      var location;
+
+      beforeEach(inject(function ($location) {
+        location = $location;
+        location.search('framework', 2);
         scope.shown = true;
         scope.close();
-      });
+      }));
 
       it('sets shown to false', function () {
         expect(scope.shown).toEqual(false);
+      });
+
+      it('removes the framework param', function () {
+        expect(location.search().framework).toBeUndefined();
       });
     });
 

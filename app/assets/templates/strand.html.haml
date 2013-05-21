@@ -21,9 +21,9 @@
       %tr
         %td{ "ng-repeat"=>"level in [] | range:(strand.max_level(11) + 1)", "ng-animate"=>"'fade'" }
           %ul
-            %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 } | filterDeleted", "ng-controller"=>"EditObjectCtrl", "ng-animate"=>"'fade'" }
-              %p{ "edit-in-place"=>true, "instance"=>"milestone", "type"=>"textarea", "field"=>"content", "placeholder"=>"Enter milestone", "edit-mode"=>"editing.content" }
+            %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 }:true | filterDeleted", "ng-controller"=>"EditObjectCtrl" }
+              %p{ "edit-in-place"=>true, "instance"=>"milestone", "type"=>"textarea", "field"=>"content", "placeholder"=>"Enter milestone" }
 
-              %a.delete{ "href"=>"", "ng-click"=>"deleteMilestone(milestone)", "ng-hide"=>"editing.content && !milestone.id" } Delete
+              %a.delete{ "href"=>"", "ng-click"=>"deleteMilestone(milestone)", "ng-show"=>"milestone.id" } Delete
 
           %a.add{ "href"=>"", "ng-click"=>"addMilestone(level + 1, strand)", "ng-animate"=>"'fade'" } Add milestone
