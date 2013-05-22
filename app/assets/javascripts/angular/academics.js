@@ -10,6 +10,10 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
       $scope.students = Students.all();
       $scope.subjects = Subjects.all();
 
+      $scope.hideMenus = function () {
+        $scope.$broadcast('hideMenus', []);
+      };
+
       function checkFilters() {
         if ($scope.selected.student && $scope.selected.subject) {
           $location.path('/academics/work')

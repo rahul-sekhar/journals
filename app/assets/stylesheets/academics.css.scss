@@ -1,0 +1,13 @@
+#upper-bar .academic-filters {
+  .label {
+    margin-left: 0;
+  }
+
+  .manage {
+    @include link-colors($cream, lighten($cream, 20));
+    font-size: 16px;
+    text-transform: lowercase;
+    font-weight: bold;
+    float: right;
+  }
+}
