@@ -367,8 +367,8 @@ describe('subjects module', function () {
       expect(subjectPeopleService.register).toHaveBeenCalledWith(scope);
     });
 
-    it('sets shown to false initially', function () {
-      expect(scope.shown).toEqual(false);
+    it('dialog shown is initially undefined', function () {
+      expect(scope.dialog.shown).toBeUndefined();
     });
 
     describe('show()', function () {
@@ -377,8 +377,8 @@ describe('subjects module', function () {
         scope.show({ url: function () { return '/some/path' } });
       });
 
-      it('sets shown to true', function () {
-        expect(scope.shown).toEqual(true);
+      it('sets dialog shown to true', function () {
+        expect(scope.dialog.shown).toEqual(true);
       });
 
       it('clears subjectPeople', function () {
@@ -414,8 +414,8 @@ describe('subjects module', function () {
           httpBackend.flush();
         });
 
-        it('sets shown to false', function () {
-          expect(scope.shown).toEqual(false);
+        it('sets dialog shown to false', function () {
+          expect(scope.dialog.shown).toEqual(false);
         });
       });
     });

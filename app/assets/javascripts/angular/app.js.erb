@@ -2,7 +2,7 @@
 
 angular.module('journals', ['journals.user', 'journals.people', 'journals.posts', 'journals.editInPlace',
   'journals.filters', 'journals.pagination', 'journals.modal', 'journals.directives', 'journals.changePassword',
-  'journals.subjects']).
+  'journals.academics']).
 
   config(['$locationProvider', '$httpProvider', function ($locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
@@ -76,6 +76,12 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
       when('/academics/subjects', {
         templateUrl: '<%= asset_path("subjects.html") %>',
         controller: 'SubjectsCtrl',
+        reloadOnSearch: false
+      }).
+
+      when('/academics/work', {
+        templateUrl: '<%= asset_path("academics_work.html") %>',
+        controller: 'AcademicsWorkCtrl',
         reloadOnSearch: false
       }).
 
