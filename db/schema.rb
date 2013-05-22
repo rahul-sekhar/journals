@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130421085522) do
+ActiveRecord::Schema.define(:version => 20130521125627) do
 
   create_table "comments", :force => true do |t|
     t.text     "content"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
     t.datetime "updated_at"
     t.integer  "position",   :null => false
     t.index ["level"], :name => "index_milestones_on_level", :order => {"level" => :asc}
+    t.index ["position"], :name => "index_milestones_on_position", :order => {"position" => :asc}
     t.index ["strand_id"], :name => "index_milestones_on_strand_id", :order => {"strand_id" => :asc}
   end
 
@@ -163,6 +164,8 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
     t.integer  "subject_id",                     :null => false
     t.integer  "position",                       :null => false
     t.index ["parent_strand_id"], :name => "index_strands_on_parent_strand_id", :order => {"parent_strand_id" => :asc}
+    t.index ["position"], :name => "index_strands_on_position", :order => {"position" => :asc}
+    t.index ["subject_id"], :name => "index_strands_on_subject_id", :order => {"subject_id" => :asc}
   end
 
   create_table "student_mentors", :id => false, :force => true do |t|
@@ -215,6 +218,7 @@ ActiveRecord::Schema.define(:version => 20130421085522) do
     t.integer  "subject_id", :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.index ["subject_id", "teacher_id"], :name => "index_subject_teachers_on_subject_id_and_teacher_id", :unique => true, :order => {"subject_id" => :asc, "teacher_id" => :asc}
   end
 
   create_table "subjects", :force => true do |t|

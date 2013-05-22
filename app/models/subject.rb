@@ -7,6 +7,8 @@ class Subject < ActiveRecord::Base
     length: { maximum: 50 }
 
   has_many :strands, dependent: :destroy, include: [:child_strands, :milestones]
+  has_many :subject_teachers, dependent: :destroy
+  has_many :teachers, through: :subject_teachers
 
   strip_attributes
 
@@ -18,5 +20,9 @@ class Subject < ActiveRecord::Base
 
   def root_strands
     strands.where{ parent_strand_id == nil }
+  end
+
+  def add_teacher(teacher)
+    return self.subject_teachers.create(teacher: teacher)
   end
 end

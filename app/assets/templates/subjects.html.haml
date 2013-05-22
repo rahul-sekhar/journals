@@ -11,9 +11,10 @@
 
     %ul
       %li{ "ng-repeat"=>"subject in subjects | filterDeleted" }
-        %p{ "edit-in-place"=>true, "instance"=>"subject", "field"=>"name" }
+        %p{ "edit-in-place"=>true, "instance"=>"subject", "field"=>"name", "placeholder"=>"Subject name" }
 
         .links
+          %a.people{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"showPeople(subject)" } Teachers and students
           %a.edit{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"edit(subject)" } Edit framework
           %a.delete{ "href"=>"", "ng-show"=>"subject.id", "ng-click"=>"delete(subject)" } Delete
 
@@ -21,3 +22,15 @@
       %p There are no subjects yet.
 
     %a.add{ "href"=>"", "ng-click"=>"add()" } New subject
+
+  %div{ "ng-controller"=>"SubjectPeopleCtrl" }
+    %modal#subjects-people{ "show-on"=>"shown" }
+      %h3 {{subjectPeople.name}}
+
+      .teachers
+        %ul
+          %li{ "ng-repeat"=>"subject_teacher in subjectPeople.subject_teachers" }
+            {{subject_teacher.teacher.short_name}}
+            %a.delete{ "href"=>"", "ng-show"=>"subject_teacher.id", "ng-click"=>"deleteTeacher(subject_teacher)" } Delete
+
+        %filtered-list{ "list"=>"subjectPeople.remainingTeachers()", "show-property"=>"short_name", "on-select"=>"addTeacher(value)", "add-text"=>"Add teacher" }

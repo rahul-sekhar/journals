@@ -65,11 +65,37 @@ describe Subject do
     end
   end
 
+  describe "#add_teacher" do
+    let(:teacher) { create(:teacher) }
+    before do
+      subject.save!
+      subject.add_teacher(teacher)
+    end
+
+    it "adds a teacher" do
+      subject.teachers.should == [teacher]
+      subject.subject_teachers.count.should == 1
+      subject.subject_teachers.first.teacher.should == teacher
+    end
+
+    it "does not add the same teacher twice" do
+      subject.add_teacher(teacher)
+      subject.teachers.should == [teacher]
+      subject.subject_teachers.count.should == 1
+    end
+  end
+
   describe "on destruction" do
     it "destroys any strands" do
       subject.save!
       subject.add_strand('Some strand')
-      expect { subject.destroy }.to change { Strand.count }.by(-1)
+      expect{ subject.destroy }.to change{ Strand.count }.by(-1)
+    end
+
+    it "destroys any subject teachers" do
+      subject.save!
+      subject.add_teacher(create(:teacher))
+      expect{ subject.destroy }.to change{ SubjectTeacher.count }.by(-1)
     end
   end
 end

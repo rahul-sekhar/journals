@@ -38,18 +38,24 @@ describe('subjects module', function () {
 
   /*------------------ Subjects controller ----------------------*/
   describe('SubjectsCtrl', function () {
-    var scope, httpBackend, Subjects, confirm, frameworkService;
+    var scope, httpBackend, Subjects, confirm, frameworkService, subjectPeopleService;
 
     beforeEach(inject(function ($rootScope, $httpBackend, $controller, _confirm_) {
       confirm = _confirm_;
       scope = $rootScope.$new();
       httpBackend = $httpBackend;
       frameworkService = { showFramework: jasmine.createSpy() };
+      subjectPeopleService = { show: jasmine.createSpy() };
 
       Subjects = { all: jasmine.createSpy('Subjects.all').
         andReturn([{id: 1, name: 'One'}, {id: 3, name: 'Three'}]) };
 
-      $controller('SubjectsCtrl', { $scope: scope, Subjects: Subjects, frameworkService: frameworkService });
+      $controller('SubjectsCtrl', {
+        $scope: scope,
+        Subjects: Subjects,
+        frameworkService: frameworkService,
+        subjectPeopleService: subjectPeopleService
+      });
     }));
 
     it('sets pageTitle', function () {
@@ -81,6 +87,13 @@ describe('subjects module', function () {
         scope.edit({id: 7});
         expect($location.search().framework).toEqual(7);
       }));
+    });
+
+    describe('showPeople(subject)', function() {
+      it('triggers the show people service', function () {
+        scope.showPeople('subject');
+        expect(subjectPeopleService.show).toHaveBeenCalledWith('subject');
+      });
     });
 
     describe('on a route update', function () {
@@ -310,6 +323,125 @@ describe('subjects module', function () {
 
       it('adds the milestone to the strand', function() {
         expect(strand.newMilestone).toHaveBeenCalledWith({_edit: 'content', level: 2});
+      });
+    });
+  });
+
+  /*------------------ Subject People service -----------------------*/
+  describe('subjectPeopleService', function () {
+    var subjectPeopleService, scope;
+
+    beforeEach(inject(function (_subjectPeopleService_) {
+      subjectPeopleService = _subjectPeopleService_;
+      scope = { show: jasmine.createSpy() };
+      subjectPeopleService.register(scope);
+    }));
+
+    describe('show(subject)', function () {
+      it('calls the scopes show function, passing the argument', function () {
+        expect(scope.show).not.toHaveBeenCalled();
+        subjectPeopleService.show('some subject');
+        expect(scope.show).toHaveBeenCalledWith('some subject');
+      });
+    });
+  });
+
+  /*-------------------- SubjectPeople Controller -------------------------*/
+   describe('SubjectPeopleCtrl', function () {
+    var scope, httpBackend, subjectPeopleService, SubjectPeople;
+
+    beforeEach(inject(function ($rootScope, $httpBackend, $controller) {
+      scope = $rootScope.$new();
+      httpBackend = $httpBackend;
+      subjectPeopleService = { register: jasmine.createSpy() };
+      SubjectPeople = { create: jasmine.createSpy().andReturn('model data') };
+
+      $controller('SubjectPeopleCtrl', {
+        $scope: scope,
+        subjectPeopleService: subjectPeopleService,
+        SubjectPeople: SubjectPeople
+      });
+    }));
+
+    it('registers the subjectPeopleService', function () {
+      expect(subjectPeopleService.register).toHaveBeenCalledWith(scope);
+    });
+
+    it('sets shown to false initially', function () {
+      expect(scope.shown).toEqual(false);
+    });
+
+    describe('show()', function () {
+      beforeEach(function () {
+        httpBackend.expectGET('/some/path/people.json').respond('subject data')
+        scope.show({ url: function () { return '/some/path' } });
+      });
+
+      it('sets shown to true', function () {
+        expect(scope.shown).toEqual(true);
+      });
+
+      it('empties subjectPeople', function () {
+        expect(scope.subjectPeople).toBeNull();
+      });
+
+      it('sends a http request', function () {
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      describe('on response', function () {
+        beforeEach(function () {
+          httpBackend.flush();
+        });
+
+        it('creates a model', function () {
+          expect(SubjectPeople.create).toHaveBeenCalledWith('subject data');
+        });
+
+        it('sets the subject people data', function () {
+          expect(scope.subjectPeople).toEqual('model data');
+        });
+      });
+
+      describe('on failure', function () {
+        beforeEach(function () {
+          httpBackend.resetExpectations();
+          httpBackend.expectGET('/some/path/people.json').respond(400)
+          httpBackend.flush();
+        });
+
+        it('sets shown to false', function () {
+          expect(scope.shown).toEqual(false);
+        });
+      });
+    });
+
+    describe('deleteTeacher(subject_teacher)', function () {
+      beforeEach(function() {
+        scope.subjectPeople = { removeSubjectTeacher: jasmine.createSpy() };
+        scope.deleteTeacher('some subject teacher');
+      });
+
+      it('removes the subject teacher', function () {
+        expect(scope.subjectPeople.removeSubjectTeacher).toHaveBeenCalledWith('some subject teacher');
+      });
+    });
+
+    describe('addTeacher(teacher)', function () {
+      var subjectTeacher;
+
+      beforeEach(function() {
+        subjectTeacher = { save: jasmine.createSpy() };
+        scope.subjectPeople = { newSubjectTeacher: jasmine.createSpy().andReturn(subjectTeacher) };
+        scope.addTeacher('some teacher');
+      });
+
+      it('adds a new subject teacher', function () {
+        expect(scope.subjectPeople.newSubjectTeacher).toHaveBeenCalledWith({teacher: 'some teacher'});
+      });
+
+      it('saves the subject teacher', function () {
+        expect(subjectTeacher.save).toHaveBeenCalled();
       });
     });
   });

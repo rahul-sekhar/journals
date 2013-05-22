@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'journals.model', 'journals.confirm']).
+angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'journals.model', 'journals.confirm',
+  'journals.helpers', 'journals.people.models']).
 
   factory('Subjects', ['collection', 'model',
     function (collection, model) {
@@ -95,8 +96,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       return collection(milestonesModel);
     }]).
 
-  controller('SubjectsCtrl', ['$scope', 'Subjects', 'confirm', 'frameworkService', '$location',
-    function ($scope, Subjects, confirm, frameworkService, $location) {
+  controller('SubjectsCtrl', ['$scope', 'Subjects', 'confirm', 'frameworkService', '$location', 'subjectPeopleService',
+    function ($scope, Subjects, confirm, frameworkService, $location, subjectPeopleService) {
 
       $scope.pageTitle = 'Academic records';
 
@@ -114,6 +115,10 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         if (confirm('Are you sure you want to delete the subject "' + subject.name + '"?')) {
           subject.delete();
         }
+      };
+
+      $scope.showPeople = function (subject) {
+        subjectPeopleService.show(subject);
       };
 
       function checkFramework() {
@@ -161,9 +166,9 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         $scope.shown = false;
       };
 
-      // $scope.$on('$routeChangeStart', function () {
-      //   $scope.shown = false;
-      // });
+      $scope.$on('$routeChangeStart', function () {
+        $scope.shown = false;
+      });
 
       $scope.deleteMilestone = function (milestone) {
         if (confirm('Are you sure you want to delete this milestone?')) {
@@ -186,4 +191,94 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       }
 
       frameworkService.register($scope);
+    }]).
+
+  factory('SubjectPeople', ['model', 'association', 'Teachers', 'arrayHelper',
+    function (model, association, Teachers, arrayHelper) {
+      var subjectPeopleExtension = function () {};
+
+      subjectPeopleExtension.setup = function (instance) {
+        var remaining = []
+        instance.remainingTeachers = function () {
+          var teachers = instance.subject_teachers.map(function (subjectTeacher) {
+            return subjectTeacher.teacher;
+          });
+
+          var diff = arrayHelper.difference(Teachers.all(), teachers)
+          diff = diff.filter(function (object) {
+            return !object.deleted;
+          });
+          arrayHelper.shallowCopy(diff, remaining);
+          return remaining;
+        };
+      };
+
+      return model('subject', '/academics/subjects', {
+        extensions: [
+          association('SubjectTeachers', 'subject_teacher', { loaded: true, addToEnd: true }),
+          subjectPeopleExtension
+        ]
+      });
+    }]).
+
+  factory('SubjectTeachers', ['collection', 'model', 'singleAssociation',
+    function (collection, model, singleAssociation) {
+      var subjectTeachersModel = model('subject_teacher', '/subject_teachers', {
+        extensions: [
+          singleAssociation('Teachers', 'teacher')
+        ],
+        hasParent: true,
+        saveFields: ['teacher_id']
+      });
+
+      return collection(subjectTeachersModel);
+    }]).
+
+  factory('subjectPeopleService', [
+    function () {
+      var subjectPeopleService = {}, scope;
+
+      subjectPeopleService.register = function (_scope_) {
+        scope = _scope_;
+      };
+
+      subjectPeopleService.show = function (subject) {
+        scope.show(subject);
+      };
+
+      return subjectPeopleService;
+    }]).
+
+  controller('SubjectPeopleCtrl', ['$scope', 'subjectPeopleService', 'ajax', 'SubjectPeople',
+    function ($scope, subjectPeopleService, ajax, SubjectPeople) {
+      $scope.shown = false;
+
+      $scope.show = function (subject) {
+        $scope.shown = true;
+        $scope.subjectPeople = null;
+
+        ajax({url: subject.url() + '/people'}).
+          then(function (response) {
+            $scope.subjectPeople = SubjectPeople.create(response.data);
+          }, function () {
+            $scope.shown = false;
+          });
+      };
+
+      $scope.$watch('shown', function (value) {
+        if (!value) {
+          $scope.$broadcast('menuClosed');
+        }
+      });
+
+      $scope.deleteTeacher = function (subject_teacher) {
+        $scope.subjectPeople.removeSubjectTeacher(subject_teacher);
+      };
+
+      $scope.addTeacher = function (teacher) {
+        var newSubjectTeacher = $scope.subjectPeople.newSubjectTeacher({ teacher: teacher });
+        newSubjectTeacher.save();
+      };
+
+      subjectPeopleService.register($scope);
     }]);

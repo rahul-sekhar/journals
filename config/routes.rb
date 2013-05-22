@@ -55,7 +55,9 @@ Journals::Application.routes.draw do
   get "academics" => "pages#home"
   scope '/academics' do
     resources :subjects, except: [:new, :edit] do
+      resources :subject_teachers, only: [:create, :destroy]
       member do
+        get :people
         post :add_strand
       end
     end

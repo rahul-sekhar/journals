@@ -9,7 +9,8 @@ angular.module('journals.directives', []).
         list: '=',
         onSelect: '&',
         showProperty: '@',
-        alwaysShown: '@'
+        alwaysShown: '@',
+        addText: '@'
       },
       template:
         '<div class="filtered-list" ng-show="list.length">' +
@@ -41,11 +42,13 @@ angular.module('journals.directives', []).
 
         $scope.$watch('listShown', function (value) {
           $scope.buttonText = value ? "Cancel" : ($scope.addText || "Add");
+          if (!value) {
+            $scope.filter = '';
+          }
         });
 
         $scope.select = function (item) {
           $scope.listShown = false;
-          $scope.filter = '';
           $scope.onSelect({value: item});
         };
       }]

@@ -35,6 +35,7 @@ describe SubjectsController do
     end
   end
 
+
   describe "GET show" do
     let(:subject){ mock_model(Subject) }
     before { Subject.stub(:find).and_return(subject) }
@@ -60,6 +61,34 @@ describe SubjectsController do
       assigns(:subject).should == subject
     end
   end
+
+
+  describe "GET people", :focus do
+    let(:subject){ mock_model(Subject) }
+    before { Subject.stub(:find).and_return(subject) }
+    let(:make_request) { get :people, id: 5, format: :json }
+
+    it "raises an exception if the user cannot read the subject" do
+      ability.cannot :read, subject
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      make_request
+      response.status.should eq(200)
+    end
+
+    it "finds the subject given by the passed ID" do
+      Subject.should_receive(:find).with("5")
+      make_request
+    end
+
+    it "assigns the found subject" do
+      make_request
+      assigns(:subject).should == subject
+    end
+  end
+
 
   describe "POST create" do
     context "with valid data" do

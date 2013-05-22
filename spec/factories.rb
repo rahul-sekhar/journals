@@ -71,4 +71,9 @@ FactoryGirl.define do
     level 1
     sequence(:content){ |n| "milestone#{n}"}
   end
+
+  factory :subject_teacher do
+    subject
+    teacher
+  end
 end
