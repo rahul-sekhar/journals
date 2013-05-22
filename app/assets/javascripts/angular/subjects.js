@@ -252,23 +252,22 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
   controller('SubjectPeopleCtrl', ['$scope', 'subjectPeopleService', 'ajax', 'SubjectPeople',
     function ($scope, subjectPeopleService, ajax, SubjectPeople) {
-      $scope.shown = false;
+      $scope.dialog = {};
 
       $scope.show = function (subject) {
-        $scope.shown = true;
+        $scope.dialog.shown = true;
         $scope.subjectPeople = null;
         $scope.selected = null;
 
         ajax({url: subject.url() + '/people'}).
           then(function (response) {
             $scope.subjectPeople = SubjectPeople.create(response.data);
-            console.log($scope.subjectPeople);
           }, function () {
-            $scope.shown = false;
+            $scope.dialog.shown = false;
           });
       };
 
-      $scope.$watch('shown', function (value) {
+      $scope.$watch('dialog.shown', function (value) {
         if (!value) {
           $scope.$broadcast('menuClosed');
         }
