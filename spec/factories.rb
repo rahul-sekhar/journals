@@ -76,4 +76,10 @@ FactoryGirl.define do
     subject
     teacher
   end
+
+  factory :unit do
+    subject
+    student
+    sequence(:name){ |n| "unit#{n}"}
+  end
 end

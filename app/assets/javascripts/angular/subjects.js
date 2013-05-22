@@ -98,9 +98,6 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
   controller('SubjectsCtrl', ['$scope', 'Subjects', 'confirm', 'frameworkService', '$location', 'subjectPeopleService',
     function ($scope, Subjects, confirm, frameworkService, $location, subjectPeopleService) {
-
-      $scope.pageTitle = 'Academic records';
-
       $scope.subjects = Subjects.all();
 
       $scope.add = function () {

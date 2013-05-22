@@ -52,10 +52,11 @@ Journals::Application.routes.draw do
 
   resources :tags, only: [:index]
 
-  get "academics" => "pages#home"
   scope '/academics' do
-    resources :subjects, except: [:new, :edit] do
+    root :to => "pages#home"
+    get "work" => "pages#home"
 
+    resources :subjects, except: [:new, :edit] do
       resources :subject_teachers, only: [:create, :destroy] do
         member do
           post "students/:student_id", action: "add_student"
@@ -76,6 +77,8 @@ Journals::Application.routes.draw do
       end
     end
     resources :milestones, only: [:update, :destroy]
+
+    resources :units, only: [:index, :create, :update, :destroy]
   end
 
   match "*not_found", :to => "errors#not_found"

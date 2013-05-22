@@ -58,10 +58,6 @@ describe('subjects module', function () {
       });
     }));
 
-    it('sets pageTitle', function () {
-      expect(scope.pageTitle).toEqual('Academic records');
-    });
-
     it('sets subjects to the value of Subjects.all()', function() {
       expect(Subjects.all).toHaveBeenCalled();
       expect(scope.subjects).toEqual([{id: 1, name: 'One'}, {id: 3, name: 'Three'}]);

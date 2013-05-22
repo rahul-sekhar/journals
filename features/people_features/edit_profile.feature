@@ -135,7 +135,7 @@ Scenario: Clear student birthday
   And I look at the profile for "Parvathy Manjunath"
   Then I should not see the field "Birthday"
 
-@current
+
 Scenario: Add fields for a student
   Given a student Parvathy exists
   And I am on the page for that profile

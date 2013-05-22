@@ -1,0 +1,38 @@
+.ng-view-container
+  %h2 Academic records
+
+  .notice
+
+  %section#upper-bar
+    .academic-filters{ "ng-include"=>"'#{asset_path('academic_filters.html')}'" }
+    .clear-left
+
+  %div{ "ng-hide"=>"insufficientData" }
+    #units
+      %h3 Work log
+
+      %table.academics
+        %tr
+          %th.name Unit of work
+          %th.started.date Started
+          %th.due.date Due
+          %th.completed.date Completed
+          %th.comments Comments
+
+        %tr{ "ng-repeat"=>"unit in units | filterDeleted" }
+          %td.name
+            %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"name" }
+          %td.started.date
+            %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"started_date", "type"=>"date", "no-age" => "true" }
+          %td.due.date
+            %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"due_date", "type"=>"date", "no-age" => "true" }
+          %td.completed.date
+            %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"completed_date", "type"=>"date", "no-age" => "true" }
+          %td.comments
+            %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"comments", "type"=>"textarea" }
+            %a.delete{ "href"=>"", "ng-click"=>"deleteUnit(unit)" }
+
+      %a.add{ "href"=>"", "ng-click"=>"addUnit()", "ng-show"=>"units.length >= 0" } Add unit
+
+  .content-block{ "ng-show"=>"insufficientData" }
+    Please select a student and a subject

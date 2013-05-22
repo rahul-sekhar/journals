@@ -1,18 +1,18 @@
 %div{ "ng-controller"=>"AcademicFiltersCtrl" }
   %p.label Find records
 
-  .click-menu
+  .students.click-menu
     %p.title
       %a{ href: "" } {{selected.student.short_name || 'Student'}}
 
     .container
-      %filtered-list{ "list"=>"students", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"selected.student = value; hideMenus()" }
+      %filtered-list{ "list"=>"students", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"setStudent(value)" }
 
-  .click-menu
+  .subjects.click-menu
     %p.title
       %a{ href: "" } {{selected.subject.name || 'Subject'}}
 
     .container
-      %filtered-list{ "list"=>"subjects", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"selected.subject = value; hideMenus()" }
+      %filtered-list{ "list"=>"subjects", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"setSubject(value)" }
 
   %a.manage{ href: "/academics/subjects" } Manage subjects

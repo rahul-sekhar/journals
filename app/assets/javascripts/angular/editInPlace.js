@@ -63,6 +63,9 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
               changeYear: true,
               yearRange: '-30:+0',
               onClose: function (date) {
+                // Make a blank date null
+                if (date === '') { date = null };
+
                 scope.$apply(function () {
                   // If the mouse is hovering over the clear button, give the user time to click it
                   if (!scope.clearHover) {

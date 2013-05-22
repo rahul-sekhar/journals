@@ -30,56 +30,143 @@ describe('academics module', function () {
       expect(Subjects.all).toHaveBeenCalled();
       expect(scope.subjects).toEqual('subjects');
     });
+  });
 
-    describe('when both subject and student are set', function () {
+
+  /*--------------- Academics work controller -------------------*/
+  describe('AcademicsWorkCtrl', function () {
+    var scope, location, controller, httpBackend;
+
+    beforeEach(inject(function ($rootScope, $controller, $location, $httpBackend) {
+      scope = $rootScope.$new();
+      location = $location;
+      controller = $controller;
+      httpBackend = $httpBackend;
+    }));
+
+    describe('with no student or subject', function () {
       beforeEach(function () {
-        location.path('/some/path');
-        scope.selected.student = { id: 5 };
-        scope.selected.subject = { id: 10 };
-        scope.$apply();
+        controller('AcademicsWorkCtrl', {$scope: scope});
       });
 
-      it('changes the location path', function () {
-        expect(location.path()).toEqual('/academics/work');
-      });
-
-      it('changes the location search', function () {
-        expect(location.search().student_id).toEqual(5);
-        expect(location.search().subject_id).toEqual(10);
-      });
+      it('sets insufficientData to true', function () {
+        expect(scope.insufficientData).toEqual(true);
+      })
     });
 
-    describe('when only the subject is set', function () {
+    describe('with no student', function () {
       beforeEach(function () {
-        location.path('/some/path');
-        scope.selected.subject = { id: 10 };
-        scope.$apply();
+        location.search({ subject_id: 5 })
+        controller('AcademicsWorkCtrl', {$scope: scope});
       });
 
-      it('does not change the location path', function () {
-        expect(location.path()).toEqual('/some/path');
-      });
-
-      it('does not change the location search', function () {
-        expect(location.search().student_id).toBeUndefined();
-        expect(location.search().subject_id).toBeUndefined();
-      });
+      it('sets insufficientData to true', function () {
+        expect(scope.insufficientData).toEqual(true);
+      })
     });
 
-    describe('when only the student is set', function () {
+    describe('with no subject', function () {
       beforeEach(function () {
-        location.path('/some/path');
-        scope.selected.student = { id: 5 };
-        scope.$apply();
+        location.search({ student_id: 2 })
+        controller('AcademicsWorkCtrl', {$scope: scope});
       });
 
-      it('does not change the location path', function () {
-        expect(location.path()).toEqual('/some/path');
+      it('sets insufficientData to true', function () {
+        expect(scope.insufficientData).toEqual(true);
+      })
+    });
+
+    describe('with a student and a subject', function () {
+      var Units;
+
+      beforeEach(function () {
+        location.search({ student_id: 2, subject_id: 5 })
+        httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').
+          respond(['unit1', 'unit2']);
+
+        Units = { update: jasmine.createSpy().andReturn('model') };
+
+        controller('AcademicsWorkCtrl', { $scope: scope, Units: Units });
       });
 
-      it('does not change the location search', function () {
-        expect(location.search().student_id).toBeUndefined();
-        expect(location.search().subject_id).toBeUndefined();
+      it('sets insufficientData to false', function () {
+        expect(scope.insufficientData).toEqual(false);
+      });
+
+      it('sends a http request', function () {
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      describe('on response', function () {
+        beforeEach(function () {
+          httpBackend.flush();
+        });
+
+        it('updates the Units collection', function() {
+          expect(Units.update.callCount).toEqual(2);
+          expect(Units.update.argsForCall[0][0]).toEqual('unit1')
+          expect(Units.update.argsForCall[1][0]).toEqual('unit2')
+        });
+
+        it('sets units to the model data', function () {
+          expect(scope.units).toEqual(['model', 'model']);
+        });
+      });
+
+      describe('on failure', function () {
+        beforeEach(function () {
+          httpBackend.resetExpectations();
+          httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').
+          respond(400);
+          httpBackend.flush();
+        });
+
+        it('sets units to an empty array', function () {
+          expect(scope.units).toEqual([]);
+        });
+      });
+
+      describe('addUnit()', function () {
+        beforeEach(function () {
+          Units.add = jasmine.createSpy().andReturn('new unit');
+          scope.units = ['a', 'b'];
+          scope.addUnit();
+        });
+
+        it('adds the unit', function () {
+          expect(Units.add).toHaveBeenCalled();
+          expect(scope.units).toEqual(['new unit', 'a', 'b'])
+        });
+      });
+
+      describe('deleteUnit(unit)', function () {
+        var unit, confirm;
+
+        beforeEach(inject(function(_confirm_) {
+          confirm = _confirm_;
+          unit = { delete: jasmine.createSpy() };
+        }));
+
+        describe('on confirm', function () {
+          beforeEach(function () {
+            scope.deleteUnit(unit)
+          });
+
+          it('sends a delete message to the unit', function () {
+            expect(unit.delete).toHaveBeenCalled();
+          });
+        });
+
+        describe('on cancel', function () {
+          beforeEach(function () {
+            confirm.set(false);
+            scope.deleteUnit(unit)
+          });
+
+          it('does not send a delete message to the unit', function () {
+            expect(unit.delete).not.toHaveBeenCalled();
+          });
+        });
       });
     });
   });
