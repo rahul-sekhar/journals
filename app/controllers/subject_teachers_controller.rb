@@ -17,4 +17,26 @@ class SubjectTeachersController < ApplicationController
     @subject_teacher.destroy
     render text: "OK", status: :ok
   end
+
+  def add_student
+    @student = Student.find_by_id(params[:student_id])
+
+    if @student
+      @subject_teacher.students << @student unless @subject_teacher.students.exists? @student
+      render text: "OK", status: :ok
+    else
+      render text: "Student does not exist", status: :unprocessable_entity
+    end
+  end
+
+  def remove_student
+    @student = Student.find_by_id(params[:student_id])
+
+    if @student
+      @subject_teacher.students.delete(@student) if @subject_teacher.students.exists? @student
+      render text: 'OK', status: :ok
+    else
+      render text: "Student does not exist", status: :unprocessable_entity
+    end
+  end
 end

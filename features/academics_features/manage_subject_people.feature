@@ -27,7 +27,6 @@ Scenario: Remove a teacher
   And I should see "John" in its teachers
   And I should not see "Bruce" in its teachers
 
-@current
 Scenario: Add a teacher
   When I look at the dialog
   When I open its add teacher list
@@ -48,3 +47,60 @@ Scenario: Add a teacher
   And I should see "Bruce" in its teachers
   When I open its add teacher list
   Then I should not see "bruce" in the list
+
+
+Scenario: View students
+  When I look at the dialog
+  Then I should not see its add student list
+
+  When I select the teacher "John"
+  Then I should see its add student list
+  And I should see "Jimmy" in its students
+  And I should see "Stephen" in its students
+  And I should not see "Craig" in its students
+
+  When I select the teacher "William"
+  Then I should not see "Jimmy" in its students
+  And I should see "Stephen" in its students
+  And I should not see "Craig" in its students
+
+  When I remove the teacher "William" from it
+  Then I should not see its add student list
+  And I should not see "Jimmy" in its students
+  And I should not see "Stephen" in its students
+  And I should not see "Craig" in its students
+
+  When I open its add teacher list
+  And I click "William" in the list
+  Then I should see its add student list
+  And I should not see "Jimmy" in its students
+  And I should not see "Stephen" in its students
+  And I should not see "Craig" in its students
+
+
+Scenario: Add and remove students
+  When I look at the dialog
+  And I select the teacher "John"
+  And I open its add student list
+  Then I should see "craig" in the list
+  And I should not see "jimmy" in the list
+  And I should not see "stephen" in the list
+
+  When I click "Craig" in the list
+  Then I should see "Craig" in its students
+  And I should not see its add student list
+
+  When I remove the student "Jimmy" from it
+  Then I should not see "Jimmy" in its students
+  When I open its add student list
+  Then I should not see "craig" in the list
+  And I should see "jimmy" in the list
+  And I should not see "stephen" in the list
+
+  When I go to the subjects page
+  And I manage people for the subject "Math"
+  And I look at the dialog
+  And I select the teacher "John"
+  Then I should see "Craig" in its students
+  And I should not see "Jimmy" in its students
+  And I should see "Stephen" in its students

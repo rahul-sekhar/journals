@@ -63,7 +63,7 @@ describe SubjectsController do
   end
 
 
-  describe "GET people", :focus do
+  describe "GET people" do
     let(:subject){ mock_model(Subject) }
     before { Subject.stub(:find).and_return(subject) }
     let(:make_request) { get :people, id: 5, format: :json }

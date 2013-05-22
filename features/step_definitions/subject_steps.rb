@@ -32,8 +32,15 @@ Given(/^the subject "(.*?)" exists with teachers and students$/) do |p_name|
   teacher2 = create_profile('teacher', 'William Tell')
   create_profile('teacher', 'Bruce Lee')
 
-  @subject.add_teacher(teacher1)
-  @subject.add_teacher(teacher2)
+  st1 = @subject.add_teacher(teacher1)
+  st2 = @subject.add_teacher(teacher2)
+
+  student1 = create_profile('student', 'Jimmy Fallon')
+  student2 = create_profile('student', 'Stephen Colbert')
+  create_profile('student', 'Craig Ferguson')
+
+  st1.students << [student1, student2]
+  st2.students << student2
 end
 
 When(/^I manage people for the subject "(.*?)"$/) do |p_name|
@@ -50,4 +57,20 @@ end
 
 When(/^I remove the teacher "(.*?)" from it$/) do |p_teacher|
   @viewing.find('.teachers li', text: /^#{Regexp.escape(p_teacher)}/i, visible: true).find('.delete').click
+end
+
+When(/^I select the teacher "(.*?)"$/) do |p_teacher|
+  @viewing.find('.teachers li', text: /^#{Regexp.escape(p_teacher)}/i, visible: true).find('p').click
+end
+
+Then(/^I should see "(.*?)" in its students$/) do |p_student|
+  @viewing.find('.students').should have_content p_student
+end
+
+Then(/^I should not see "(.*?)" in its students$/) do |p_student|
+  @viewing.find('.students').should have_no_content p_student
+end
+
+When(/^I remove the student "(.*?)" from it$/) do |p_teacher|
+  @viewing.find('.students li', text: /^#{Regexp.escape(p_teacher)}/i, visible: true).find('.delete').click
 end

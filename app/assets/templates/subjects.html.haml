@@ -30,7 +30,15 @@
       .teachers
         %ul
           %li{ "ng-repeat"=>"subject_teacher in subjectPeople.subject_teachers" }
-            {{subject_teacher.teacher.short_name}}
+            %p{ "ng-click"=>"selectTeacher(subject_teacher)" } {{subject_teacher.teacher.short_name}}
             %a.delete{ "href"=>"", "ng-show"=>"subject_teacher.id", "ng-click"=>"deleteTeacher(subject_teacher)" } Delete
 
         %filtered-list{ "list"=>"subjectPeople.remainingTeachers()", "show-property"=>"short_name", "on-select"=>"addTeacher(value)", "add-text"=>"Add teacher" }
+
+      .students{ "ng-show"=>"selected" }
+        %ul
+          %li{ "ng-repeat"=>"student in selected.students" }
+            {{student.short_name}}
+            %a.delete{ "href"=>"", "ng-click"=>"selected.removeStudent(student)" } Delete
+
+        %filtered-list{ "list"=>"selected.remainingStudents()", "show-property"=>"short_name", "on-select"=>"selected.addStudent(value)", "add-text"=>"Add student" }

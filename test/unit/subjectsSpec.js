@@ -381,8 +381,12 @@ describe('subjects module', function () {
         expect(scope.shown).toEqual(true);
       });
 
-      it('empties subjectPeople', function () {
+      it('clears subjectPeople', function () {
         expect(scope.subjectPeople).toBeNull();
+      });
+
+      it('clears selected', function () {
+        expect(scope.selected).toBeNull();
       });
 
       it('sends a http request', function () {
@@ -419,11 +423,33 @@ describe('subjects module', function () {
     describe('deleteTeacher(subject_teacher)', function () {
       beforeEach(function() {
         scope.subjectPeople = { removeSubjectTeacher: jasmine.createSpy() };
-        scope.deleteTeacher('some subject teacher');
       });
 
       it('removes the subject teacher', function () {
+        scope.deleteTeacher('some subject teacher');
         expect(scope.subjectPeople.removeSubjectTeacher).toHaveBeenCalledWith('some subject teacher');
+      });
+
+      describe('with the removed teacher selected', function () {
+        beforeEach(function () {
+          scope.selected = 'some subject teacher';
+        });
+
+        it('clears selected', function () {
+          scope.deleteTeacher('some subject teacher');
+          expect(scope.selected).toBeNull();
+        });
+      });
+
+      describe('with another teacher selected', function () {
+        beforeEach(function () {
+          scope.selected = 'some other subject teacher';
+        });
+
+        it('does not clear selected', function () {
+          scope.deleteTeacher('some subject teacher');
+          expect(scope.selected).toEqual('some other subject teacher');
+        });
       });
     });
 
@@ -442,6 +468,20 @@ describe('subjects module', function () {
 
       it('saves the subject teacher', function () {
         expect(subjectTeacher.save).toHaveBeenCalled();
+      });
+
+      it('sets selected', function () {
+        expect(scope.selected).toEqual(subjectTeacher);
+      });
+    });
+
+    describe('selectTeacher(subject_teacher)', function () {
+      beforeEach(function() {
+        scope.selectTeacher('some subject teacher');
+      });
+
+      it('sets selected', function () {
+        expect(scope.selected).toEqual('some subject teacher');
       });
     });
   });

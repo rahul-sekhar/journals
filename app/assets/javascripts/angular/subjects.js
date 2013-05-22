@@ -221,11 +221,12 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       });
     }]).
 
-  factory('SubjectTeachers', ['collection', 'model', 'singleAssociation',
-    function (collection, model, singleAssociation) {
+  factory('SubjectTeachers', ['collection', 'model', 'singleAssociation', 'association',
+    function (collection, model, singleAssociation, association) {
       var subjectTeachersModel = model('subject_teacher', '/subject_teachers', {
         extensions: [
-          singleAssociation('Teachers', 'teacher')
+          singleAssociation('Teachers', 'teacher'),
+          association('Students', 'student', { addToEnd: true })
         ],
         hasParent: true,
         saveFields: ['teacher_id']
@@ -256,10 +257,12 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       $scope.show = function (subject) {
         $scope.shown = true;
         $scope.subjectPeople = null;
+        $scope.selected = null;
 
         ajax({url: subject.url() + '/people'}).
           then(function (response) {
             $scope.subjectPeople = SubjectPeople.create(response.data);
+            console.log($scope.subjectPeople);
           }, function () {
             $scope.shown = false;
           });
@@ -271,13 +274,23 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         }
       });
 
-      $scope.deleteTeacher = function (subject_teacher) {
-        $scope.subjectPeople.removeSubjectTeacher(subject_teacher);
+      $scope.deleteTeacher = function (subjectTeacher) {
+        $scope.subjectPeople.removeSubjectTeacher(subjectTeacher);
+
+        if ($scope.selected === subjectTeacher) {
+          $scope.selected = null;
+        }
       };
 
       $scope.addTeacher = function (teacher) {
         var newSubjectTeacher = $scope.subjectPeople.newSubjectTeacher({ teacher: teacher });
         newSubjectTeacher.save();
+
+        $scope.selected = newSubjectTeacher;
+      };
+
+      $scope.selectTeacher = function (subject_teacher) {
+        $scope.selected = subject_teacher;
       };
 
       subjectPeopleService.register($scope);

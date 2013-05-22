@@ -94,4 +94,102 @@ describe SubjectTeachersController do
       response.body.should be_present
     end
   end
+
+
+
+  describe "POST add_student" do
+    let(:subject_teacher){ create(:subject_teacher) }
+    let(:student){ create(:student, id: 5) }
+    before{ student }
+
+    context "with an invalid student_id" do
+      let(:make_request){ post :add_student, subject_id: subject_teacher.subject.id, id: subject_teacher.id, student_id: 4, format: :json }
+
+      it "has a status of 422" do
+        make_request
+        response.status.should eq(422)
+      end
+    end
+
+    context "with a valid student_id" do
+      let(:make_request){ post :add_student, subject_id: subject_teacher.subject.id, id: subject_teacher.id, student_id: 5, format: :json }
+
+      it "raises an exception if the user cannot add a student to a subject_teacher" do
+        ability.cannot :add_student, subject_teacher
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      context "when the subject_teacher contains that student" do
+        before{ subject_teacher.students = [student] }
+
+        it "has a status of 200" do
+          make_request
+          response.status.should eq(200)
+        end
+
+        it "leaves the subject_teachers students as is" do
+          make_request
+          subject_teacher.reload.students.should == [student]
+        end
+      end
+
+      context "when the subject_teacher does not contain that student" do
+        it "has a status of 200" do
+          make_request
+          response.status.should eq(200)
+        end
+
+        it "adds the student to the subject_teacher" do
+          make_request
+          subject_teacher.reload.students.should == [student]
+        end
+      end
+    end
+  end
+
+
+  describe "DELETE remove_student" do
+    let(:subject_teacher){ create(:subject_teacher) }
+    let(:student){ create(:student, id: 5) }
+    before{ student }
+
+    context "with an invalid student_id" do
+      let(:make_request){ delete :remove_student, subject_id: subject_teacher.subject.id, id: subject_teacher.id, student_id: 4, format: :json }
+
+      it "has a status of 422" do
+        make_request
+        response.status.should eq(422)
+      end
+    end
+
+    context "with a valid student_id" do
+      let(:make_request){ delete :remove_student, subject_id: subject_teacher.subject.id, id: subject_teacher.id, student_id: 5, format: :json }
+
+      it "raises an exception if the user cannot remove a student to a subject_teacher" do
+        ability.cannot :remove_student, subject_teacher
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      context "when the subject_teacher contains that student" do
+        before{ subject_teacher.students = [student] }
+
+        it "has a status of 200" do
+          make_request
+          response.status.should eq(200)
+        end
+
+        it "removes the student from the subject_teacher" do
+          make_request
+          subject_teacher.reload.students.should be_empty
+        end
+      end
+
+      context "when the subject_teacher does not contain that student" do
+        it "has a status of 200" do
+          make_request
+          response.status.should eq(200)
+        end
+      end
+    end
+  end
 end
