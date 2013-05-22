@@ -290,6 +290,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
       $scope.selectTeacher = function (subject_teacher) {
         $scope.selected = subject_teacher;
+        $scope.$broadcast('menuClosed');
       };
 
       subjectPeopleService.register($scope);

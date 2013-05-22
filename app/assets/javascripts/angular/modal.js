@@ -19,7 +19,7 @@ angular.module('journals.modal', []).
           modal: true,
           width: attrs.modalWidth || 300,
           minWidth: attrs.modalWidth || 300,
-          resizable: attrs.resizable || false,
+          resizable: !!attrs.resizable || false,
           show: 300,
           hide: 300,
           close: function () {
