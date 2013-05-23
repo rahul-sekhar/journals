@@ -73,4 +73,12 @@ class PagesController < ApplicationController
 
     end
   end
+
+  def academics
+    if (current_profile.is_a? Teacher)
+      @summarized_academics = SummarizedAcademic.for_teacher(current_profile)
+    else
+      render text: "You must be a teacher to view a summary of academics", status: :unprocessable_entity
+    end
+  end
 end

@@ -73,6 +73,11 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
 
       when('/guardians', {redirectTo: '/page-not-found'}).
 
+      when('/academics', {
+        templateUrl: '<%= asset_path("academics_summary.html") %>',
+        controller: 'AcademicsSummaryCtrl'
+      }).
+
       when('/academics/subjects', {
         templateUrl: '<%= asset_path("subjects.html") %>',
         controller: 'SubjectsCtrl',

@@ -23,7 +23,7 @@ Journals::Application.routes.draw do
       end
     end
 
-    resources :student_milestones, only: [:create]
+    resources :student_milestones, only: [:index, :create]
 
     member do
       post :reset
@@ -55,7 +55,7 @@ Journals::Application.routes.draw do
   resources :tags, only: [:index]
 
   scope '/academics' do
-    root :to => "pages#home"
+    root :to => "pages#academics", as: :academics
     get "work" => "pages#home"
 
     resources :subjects, except: [:new, :edit] do

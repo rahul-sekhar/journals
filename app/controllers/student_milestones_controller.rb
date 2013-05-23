@@ -1,6 +1,11 @@
 class StudentMilestonesController < ApplicationController
   load_and_authorize_resource
-  load_and_authorize_resource :student, only: [:create]
+  load_and_authorize_resource :student, only: [:index, :create]
+
+  def index
+    @subject = Subject.find(params[:subject_id])
+    @student_milestones = @student.student_milestones.from_subject(@subject).order{updated_at.desc}.limit(5)
+  end
 
   def create
     @student_milestone.student = @student

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130523024038) do
+ActiveRecord::Schema.define(:version => 20130523080218) do
 
   create_table "comments", :force => true do |t|
     t.text     "content"
@@ -227,13 +227,6 @@ ActiveRecord::Schema.define(:version => 20130523024038) do
     t.datetime "updated_at",               :null => false
   end
 
-  create_table "tags", :force => true do |t|
-    t.string   "name",       :limit => 50, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["name"], :name => "index_tags_on_name", :unique => true, :order => {"name" => :asc}
-  end
-
   create_table "units", :force => true do |t|
     t.integer  "student_id",               :null => false
     t.integer  "subject_id",               :null => false
@@ -245,6 +238,14 @@ ActiveRecord::Schema.define(:version => 20130523024038) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["student_id", "subject_id"], :name => "student_units_index", :order => {"student_id" => :asc, "subject_id" => :asc}
+  end
+
+  create_view "summarized_academics", "SELECT sts.student_id, st.subject_id, st.teacher_id, u.id AS unit_id, max(sm.updated_at) AS framework_edited FROM ((((((subject_teachers st JOIN subject_teacher_students sts ON ((st.id = sts.subject_teacher_id))) LEFT JOIN units u ON (((u.student_id = sts.student_id) AND (u.subject_id = st.subject_id)))) LEFT JOIN units u2 ON ((((u2.student_id = sts.student_id) AND (u2.subject_id = st.subject_id)) AND (u.created_at < u2.created_at)))) LEFT JOIN strands str ON ((str.subject_id = st.subject_id))) LEFT JOIN milestones m ON ((m.strand_id = str.id))) LEFT JOIN students_milestones sm ON (((sm.student_id = sts.student_id) AND (sm.milestone_id = m.id)))) WHERE (u2.created_at IS NULL) GROUP BY sts.student_id, st.subject_id, st.teacher_id, u.id", :force => true
+  create_table "tags", :force => true do |t|
+    t.string   "name",       :limit => 50, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], :name => "index_tags_on_name", :unique => true, :order => {"name" => :asc}
   end
 
   create_table "users", :force => true do |t|

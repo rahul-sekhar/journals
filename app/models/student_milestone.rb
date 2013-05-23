@@ -29,4 +29,21 @@ class StudentMilestone < ActiveRecord::Base
       destroy
     end
   end
+
+  def mark_date
+    updated_at.strftime( '%d-%m-%Y' )
+  end
+
+  def status_text
+    case status
+    when 1
+      "Learning"
+    when 2
+      "Having difficulty"
+    when 3
+      "Completed"
+    else
+      "No status"
+    end
+  end
 end

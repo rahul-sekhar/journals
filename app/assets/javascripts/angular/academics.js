@@ -77,6 +77,13 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
           }, function () {
             $scope.units = [];
           });
+
+        ajax({ url: '/students/' + student_id + '/student_milestones?subject_id=' + subject_id }).
+          then(function (response) {
+            $scope.milestones = response.data;
+          }, function () {
+            $scope.milestones = [];
+          });
       } else {
         $scope.insufficientData = true;
       }
@@ -125,4 +132,18 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
 
         $scope.dialog.milestone = null;
       };
+    }]).
+
+  controller('AcademicsSummaryCtrl', ['$scope', 'ajax', '$location',
+    function ($scope, ajax, $location) {
+      ajax({ url: '/academics' }).
+        then(function (response) {
+          $scope.academics_items = response.data;
+        }, function () {
+          $scope.academics_items = [];
+        });
+
+      $scope.showWork = function (studentId, subjectId) {
+        $location.url('/academics/work?student_id=' + studentId + '&subject_id=' + subjectId);
+      }
     }]);

@@ -1,0 +1,27 @@
+.ng-view-container
+  %h2 Academic records
+
+  .notice
+
+  %section#upper-bar
+    .academic-filters{ "ng-include"=>"'#{asset_path('academic_filters.html')}'" }
+    .clear-left
+
+  #academics-summary
+    %table.academics
+      %tr
+        %th.student Student
+        %th.subject Subject
+        %th.unit Latest unit
+        %th.due Due
+        %th.framework Framework
+
+      %tr{ "ng-repeat"=>"item in academics_items", "ng-click"=>"showWork(item.student_id, item.subject_id)" }
+        %td.student {{item.student}}
+        %td.subject {{item.subject}}
+        %td.unit {{item.unit}}
+        %td.due {{item.due_date}}
+        %td.framework {{item.framework_edited}}
+
+      %tr{ "ng-show"=>"academics_items.length == 0" }
+        %td{ "colspan"=>"5" } You do not yet have any students assigned

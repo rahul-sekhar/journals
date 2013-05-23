@@ -86,6 +86,9 @@ describe('academics module', function () {
         httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').
           respond(['unit1', 'unit2']);
 
+        // Not testing for milestones
+        httpBackend.expectGET('/students/2/student_milestones.json?subject_id=5').respond([]);
+
         Units = { update: jasmine.createSpy().andReturn('model') };
 
         controller('AcademicsWorkCtrl', { $scope: scope, Units: Units, frameworkService: frameworkService });
@@ -118,8 +121,8 @@ describe('academics module', function () {
       describe('on failure', function () {
         beforeEach(function () {
           httpBackend.resetExpectations();
-          httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').
-          respond(400);
+          httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').respond(400);
+          httpBackend.expectGET('/students/2/student_milestones.json?subject_id=5').respond([]);
           httpBackend.flush();
         });
 

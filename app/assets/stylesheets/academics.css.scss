@@ -15,10 +15,18 @@
 table.academics {
   width: 100%;
   border-collapse:separate;
-  border-spacing:0 10px;
+  border-spacing:0 6px;
 
   td, th {
     padding: 10px;
+
+    &:first-child {
+      padding-left: 20px;
+    }
+
+    &:last-child {
+      padding-right: 20px;
+    }
   }
 
   td {
@@ -83,15 +91,17 @@ table.academics {
 }
 
 #units {
+  @include new-clearfix;
+
   h3 {
     font-size: 20px;
     @include semibold;
+    margin-bottom: 10px;
   }
 
   table.academics {
     td, th {
       &.name {
-        padding-left: 20px;
         width: 150px;
       }
 
@@ -144,5 +154,35 @@ table.academics {
     padding-left: 30px;
 
     &:hover { background-position: 0 -396px; }
+  }
+}
+
+#milestones {
+  margin-top: 20px;
+
+  h3 {
+    font-size: 20px;
+    @include semibold;
+    margin-bottom: 10px;
+  }
+
+  .view {
+    text-transform: lowercase;
+    margin-left: 25px;
+    font-size: 16px;
+    @include link-colors($dark-teal, lighten($dark-teal, 10));
+  }
+
+  td.status {
+    text-transform: lowercase;
+  }
+}
+
+#academics-summary {
+  tbody tr {
+    cursor: pointer;
+    &:hover td{
+      background-color: lighten($light-cream, 2);
+    }
   }
 }
