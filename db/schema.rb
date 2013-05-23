@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130523080218) do
+ActiveRecord::Schema.define(:version => 20130523104848) do
 
   create_table "comments", :force => true do |t|
     t.text     "content"
@@ -158,11 +158,11 @@ ActiveRecord::Schema.define(:version => 20130523080218) do
   create_view "profile_names", "(SELECT students.first_name, substr((students.last_name)::text, 1, 1) AS initial, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT teachers.first_name, substr((teachers.last_name)::text, 1, 1) AS initial, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers) UNION ALL SELECT guardians.first_name, substr((guardians.last_name)::text, 1, 1) AS initial, 'Guardian'::text AS profile_type, guardians.id AS profile_id FROM guardians", :force => true
   create_table "strands", :force => true do |t|
     t.integer  "parent_strand_id"
-    t.string   "name",             :limit => 80, :null => false
+    t.string   "name",             :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "subject_id",                     :null => false
-    t.integer  "position",                       :null => false
+    t.integer  "subject_id",       :null => false
+    t.integer  "position",         :null => false
     t.index ["parent_strand_id"], :name => "index_strands_on_parent_strand_id", :order => {"parent_strand_id" => :asc}
     t.index ["position"], :name => "index_strands_on_position", :order => {"position" => :asc}
     t.index ["subject_id"], :name => "index_strands_on_subject_id", :order => {"subject_id" => :asc}

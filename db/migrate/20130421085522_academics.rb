@@ -26,6 +26,9 @@ class Strand < ActiveRecord::Base
   end
 end
 
+class Unit < ActiveRecord::Base
+end
+
 class Academics < ActiveRecord::Migration
   def up
     rename_table :academics, :subjects
@@ -58,7 +61,7 @@ class Academics < ActiveRecord::Migration
     rename_column :strands, :academic_id, :subject_id
     change_column :strands, :subject_id, :integer, null: false
     change_column :strands, :parent_strand_id, :integer
-    change_column :strands, :name, :string, null: false, limit: 80
+    change_column :strands, :name, :string, null: false
     add_column :strands, :position, :integer
 
     Strand.reset_column_information
@@ -78,6 +81,10 @@ class Academics < ActiveRecord::Migration
     rename_column :subject_teacher_students, :teacher_academic_id, :subject_teacher_id
     change_column :subject_teacher_students, :subject_teacher_id, :integer, null: false
     change_column :subject_teacher_students, :student_id, :integer, null: false
+
+    Unit.all.each do |u|
+      u.destroy if (u.name.blank?)
+    end
 
     change_column :units, :student_id, :integer, null: false
     change_column :units, :academic_id, :integer, null: false

@@ -12,8 +12,8 @@ class Strand < ActiveRecord::Base
   has_many :milestones, dependent: :destroy
 
   validates :name,
-    presence: true,
-    length: { maximum: 80 }
+    presence: true#,
+    #length: { maximum: 80 }
 
   validates :subject, presence: true
 
