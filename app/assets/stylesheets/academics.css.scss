@@ -181,6 +181,11 @@ table.academics {
 #academics-summary {
   tbody tr {
     cursor: pointer;
+
+    td {
+      @include transition(background-color 300ms ease);
+    }
+
     &:hover td{
       background-color: lighten($light-cream, 2);
     }
