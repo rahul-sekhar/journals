@@ -166,6 +166,10 @@
   }
 
   // Milestones
+  .milestone-placeholder {
+    height: 10px;
+  }
+
   .milestones-wrapper {
     position: relative;
 
@@ -321,5 +325,118 @@
       padding-left: 5px;
       vertical-align: middle;
     }
+  }
+
+  .milestones.show li:hover {
+    background-color: #f6f6f6;
+    cursor: pointer;
+  }
+
+  .milestones .student-milestone .status-0 {
+    display: none;
+  }
+
+  .student-milestone {
+    margin-top: 5px;
+
+    .comments {
+      font-size: 12px;
+      font-style: italic;
+      color: $grey-1;
+    }
+  }
+}
+
+// Student milestones
+.student-milestone {
+  .status-0, .status-1,.status-2,.status-3 {
+    padding: 0;
+    line-height: 18px;
+    width: 93px;
+    height: 18px;
+    border: 1px solid transparent;
+    background-color: white;
+    margin-bottom: 5px;
+
+    &:after {
+      font-size: 12px;
+      display: block;
+      height: 100%;
+      text-align: center;
+    }
+  }
+
+  .status-0 {
+    &:after { content: 'no status'; }
+    border: 1px solid $grey-brown;
+  }
+
+  .status-1 {
+    &:after { content: 'learning'; }
+    background-color: #395EA1;
+    color: white;
+  }
+
+  .status-2 {
+    &:after { content: 'having difficulty'; }
+    background-color: #D98C69;
+    color: white;
+  }
+
+  .status-3 {
+    &:after { content: 'completed'; }
+    background-color: #54833D;
+    color: white;
+  }
+}
+
+#modify-student-milestone {
+  padding: 20px 30px;
+
+  .status {
+    float: left;
+    cursor: pointer;
+    margin-left: 10px;
+
+    div {
+      @include transition(opacity 300ms ease);
+      opacity: 0.3;
+    }
+
+    &.selected div {
+      opacity: 1;
+    }
+  }
+
+  ul {
+    @include new-clearfix;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  textarea {
+    resize: none;
+    display: block;
+    width: 390px;
+    margin: 0 10px;
+    border: 1px solid $grey-brown;
+    @include border-radius(5px);
+    padding: 5px 10px;
+    height: 40px;
+
+    font-size: 12px;
+    font-style: italic;
+    color: $grey-1;
+    line-height: 120%;
+  }
+
+  .submit {
+    line-height: 22px;
+    font-size: 14px;
+    margin-top: 20px;
+    margin-right: 10px;
+    float: right;
+    @include link-colors($cream, white);
+    @include border-radius(5px);
   }
 }

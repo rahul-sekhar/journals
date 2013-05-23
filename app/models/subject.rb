@@ -9,6 +9,7 @@ class Subject < ActiveRecord::Base
   has_many :strands, dependent: :destroy, include: [:child_strands, :milestones]
   has_many :subject_teachers, dependent: :destroy
   has_many :teachers, through: :subject_teachers
+  has_many :units, dependent: :destroy
 
   strip_attributes
 

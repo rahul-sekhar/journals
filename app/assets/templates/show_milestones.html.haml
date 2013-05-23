@@ -1,0 +1,15 @@
+.milestones-wrapper{ "scroll-arrows"=>true }
+  %table.milestones.show
+    %tr
+      %td{ "ng-repeat"=>"level in [] | range:(strand.max_level())" }
+        Level {{level + 1}}
+
+    %tr
+      %td{ "ng-repeat"=>"level in [] | range:(strand.max_level())" }
+        %ul
+          %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 }:true",
+            "ng-click"=>"dialog.milestone = milestone" }
+            %p {{milestone.content}}
+            .student-milestone
+              %div{ "ng-class"=>"'status-' + milestone.student_milestone.status" }
+              %p.comments{ "ng-bind-html"=>"milestone.student_milestone.comments | escapeHtml | multiline" }

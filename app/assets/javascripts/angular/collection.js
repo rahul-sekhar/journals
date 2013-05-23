@@ -10,7 +10,8 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax']).
         defaults = {
           reloadInterval: 30000,
           url: model.getPath(),
-          reload: false
+          reload: false,
+          initialLoad: true
         };
         options = angular.extend(defaults, options);
 
@@ -38,7 +39,6 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax']).
           return false;
         };
 
-
         // Updates an instance of the collection
         collectionObj.update = function (data) {
           var match, newInstance;
@@ -61,7 +61,7 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax']).
 
         // Returns a reference to the entire collection
         collectionObj.all = function () {
-          if (!promise || options.reload) {
+          if (options.initialLoad && (!promise || options.reload)) {
             queryFn();
           }
           return collection;
@@ -70,6 +70,10 @@ angular.module('journals.collection', ['journals.model', 'journals.ajax']).
 
         // Returns a promise, which resolves with a single instance by ID
         collectionObj.get = function (id) {
+          if (!options.initialLoad) {
+            return findFn(id);
+          }
+
           if (!promise) {
             queryFn();
           }

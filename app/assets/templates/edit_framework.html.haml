@@ -8,7 +8,7 @@
   %a.add{ "href"=>"", "ng-click"=>"addStrand(framework)" } Add strand
 
   %ol.strands
-    %li{ "ng-repeat"=>"strand in framework.strands | filterDeleted", "ng-include"=>"'#{asset_path('strand.html')}'", "ng-animate"=>"'fade'" }
+    %li{ "ng-repeat"=>"strand in framework.strands | filterDeleted", "ng-include"=>"'#{asset_path('edit_strand.html')}'", "ng-animate"=>"'fade'" }
 
   %a.add{ "href"=>"",
     "ng-click"=>"addStrand(framework)",

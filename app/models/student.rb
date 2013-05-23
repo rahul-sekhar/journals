@@ -12,6 +12,8 @@ class Student < ActiveRecord::Base
   has_and_belongs_to_many :mentors, class_name: Teacher, uniq: true, join_table: :student_mentors
   has_and_belongs_to_many :tagged_posts, class_name: Post, uniq: true
   has_many :student_observations, dependent: :destroy
+  has_many :units, dependent: :destroy
+  has_many :student_milestones, dependent: :destroy
 
   has_many :mentees, class_name: NullAssociation, foreign_key: :foreign_id
 

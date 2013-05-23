@@ -23,6 +23,8 @@ Journals::Application.routes.draw do
       end
     end
 
+    resources :student_milestones, only: [:create]
+
     member do
       post :reset
       post :archive
@@ -79,6 +81,8 @@ Journals::Application.routes.draw do
     resources :milestones, only: [:update, :destroy]
 
     resources :units, only: [:index, :create, :update, :destroy]
+
+    resources :student_milestones, only: :update
   end
 
   match "*not_found", :to => "errors#not_found"

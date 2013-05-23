@@ -10,11 +10,23 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       return collection(subjectModel);
     }]).
 
-  factory('Framework', ['model', 'association',
-    function (model, association) {
+  factory('Framework', ['model', 'association', 'Milestones', 'StudentMilestone',
+    function (model, association, Milestones, StudentMilestone) {
+      var frameworkExtension = function (instance) {
+        if (instance.student_milestones) {
+          angular.forEach(instance.student_milestones, function (studentMilestone) {
+            var milestone = Milestones.get(parseInt(studentMilestone.milestone_id, 10));
+            if (milestone) {
+              milestone.student_milestone = StudentMilestone.create(studentMilestone);
+            }
+          });
+        }
+      };
+
       return model('subject', '/academics/subjects', {
         extensions: [
           association('Strands', 'strand', { loaded: true, addToEnd: true }),
+          frameworkExtension
         ]
       });
     }]).
@@ -72,9 +84,13 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       return collection(strandsModel);
     }]).
 
-  factory('Milestones', ['collection', 'model',
-    function (collection, model) {
-      var milestoneExtension = function () {};
+  factory('Milestones', ['collection', 'model', 'StudentMilestone',
+    function (collection, model, StudentMilestone) {
+      var milestoneExtension = function (instance) {
+        if (!instance.student_milestone) {
+          instance.student_milestone = StudentMilestone.create({milestone_id: instance.id});
+        }
+      };
 
       milestoneExtension.setup = function (instance) {
         var oldUrlFn = instance.url;
@@ -93,7 +109,41 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         saveFields: ['content', 'level']
       });
 
-      return collection(milestonesModel);
+      return collection(milestonesModel, { initialLoad: false });
+    }]).
+
+  factory('StudentMilestone', ['model',
+    function (model) {
+      var studentId = null;
+      var studentMilestoneExtension = function () {};
+
+      studentMilestoneExtension.setup = function (instance) {
+        var oldUrlFn = instance.url;
+
+        instance.url = function () {
+          if (!studentId) {
+            throw new Error('Student ID not set');
+          }
+
+          if (instance.isNew()) {
+            return '/students/' + studentId + '/student_milestones'
+          } else {
+            return oldUrlFn();
+          }
+        };
+      };
+
+      var studentMilestoneModel = model('student_milestone', '/academics/student_milestones', {
+        extensions: [studentMilestoneExtension],
+        saveFields: ['status', 'comments', 'milestone_id'],
+        defaultData: { status: 0 }
+      });
+
+      studentMilestoneModel.setStudent = function (_studentId_) {
+        studentId = _studentId_;
+      };
+
+      return studentMilestoneModel;
     }]).
 
   controller('SubjectsCtrl', ['$scope', 'Subjects', 'confirm', 'frameworkService', '$location', 'subjectPeopleService',
@@ -120,7 +170,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
       function checkFramework() {
         if ($location.search().framework) {
-          frameworkService.showFramework($location.search().framework);
+          frameworkService.editFramework($location.search().framework);
         }
       }
       $scope.$on("$routeUpdate", checkFramework);
@@ -135,36 +185,51 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         scope = _scope_;
       };
 
-      frameworkService.showFramework = function (subjectId) {
-        scope.show(subjectId);
+      frameworkService.editFramework = function (subjectId) {
+        scope.edit(subjectId);
+      };
+
+      frameworkService.showFramework = function (subjectId, studentId) {
+        scope.show(subjectId, studentId);
       };
 
       return frameworkService;
     }]).
 
-  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm', '$location',
-    function ($scope, frameworkService, ajax, Framework, confirm, $location) {
-      $scope.shown = false;
+  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm', '$location', 'StudentMilestone',
+    function ($scope, frameworkService, ajax, Framework, confirm, $location, StudentMilestone) {
+      $scope.mode = false;
 
-      $scope.show = function (subjectId) {
-        $scope.shown = true;
-
+      function loadFramework(url) {
         $scope.framework = null;
-        ajax({ url: '/academics/subjects/' + subjectId }).
+        $scope.dialog = {};
+
+        ajax({ url: url }).
           then(function (response) {
             $scope.framework = Framework.create(response.data);
           }, function () {
-            $scope.shown = false;
+            $scope.mode = false;
           });
+      }
+
+      $scope.edit = function (subjectId) {
+        $scope.mode = 'edit';
+        loadFramework('/academics/subjects/' + subjectId);
+      };
+
+      $scope.show = function (subjectId, studentId) {
+        $scope.mode = 'show';
+        StudentMilestone.setStudent(studentId);
+        loadFramework('/academics/subjects/' + subjectId + '?student_id=' + studentId);
       };
 
       $scope.close = function () {
         $location.search('framework', null);
-        $scope.shown = false;
+        $scope.mode = false;
       };
 
       $scope.$on('$routeChangeStart', function () {
-        $scope.shown = false;
+        $scope.mode = false;
       });
 
       $scope.deleteMilestone = function (milestone) {
@@ -185,7 +250,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
       $scope.addStrand = function (parent) {
         parent.newStrand({_edit: 'name'});
-      }
+      };
 
       frameworkService.register($scope);
     }]).

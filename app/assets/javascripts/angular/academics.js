@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('journals.academics', ['journals.people.models', 'journals.subjects', 'journals.ajax', 'journals.confirm']).
+angular.module('journals.academics', ['journals.people.models', 'journals.subjects', 'journals.ajax',
+  'journals.confirm', 'journals.assets']).
 
   /*----------------- Filters controller -------------------------*/
 
@@ -62,8 +63,8 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
       return collection(unitsModel);
     }]).
 
-  controller('AcademicsWorkCtrl', ['$scope', '$location', 'ajax', 'Units', 'confirm',
-    function ($scope, $location, ajax, Units, confirm) {
+  controller('AcademicsWorkCtrl', ['$scope', '$location', 'ajax', 'Units', 'confirm', 'frameworkService',
+    function ($scope, $location, ajax, Units, confirm, frameworkService) {
       var student_id = $location.search().student_id;
       var subject_id = $location.search().subject_id;
 
@@ -88,5 +89,40 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
         if (confirm('Are you sure you want to delete the unit "' + unit.name + '"?')) {
           unit.delete();
         }
+      };
+
+      $scope.showFramework = function () {
+        frameworkService.showFramework(subject_id, student_id);
+      };
+    }]).
+
+  controller('StudentMilestoneDialogCtrl', ['$scope',
+    function ($scope) {
+      function copyData(from, to) {
+        to.status = from.status;
+        to.comments = from.comments;
+      }
+
+      $scope.newStudentMilestone = {};
+      var studentMilestone;
+
+      $scope.$watch('dialog.milestone', function (milestone) {
+        if (milestone) {
+          studentMilestone = milestone.student_milestone;
+          copyData(studentMilestone, $scope.newStudentMilestone);
+        }
+      });
+
+      $scope.save = function () {
+        var oldData = {};
+        copyData(studentMilestone, oldData);
+        copyData($scope.newStudentMilestone, studentMilestone);
+
+        studentMilestone.save().
+          then(null, function () {
+            copyData(oldData, studentMilestone);
+          });
+
+        $scope.dialog.milestone = null;
       };
     }]);

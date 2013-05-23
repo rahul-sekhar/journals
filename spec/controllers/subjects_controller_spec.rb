@@ -39,26 +39,50 @@ describe SubjectsController do
   describe "GET show" do
     let(:subject){ mock_model(Subject) }
     before { Subject.stub(:find).and_return(subject) }
-    let(:make_request) { get :show, id: 5, format: :json }
 
-    it "raises an exception if the user cannot read the subject" do
-      ability.cannot :read, subject
-      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    describe "without a student_id" do
+      let(:make_request) { get :show, id: 5, format: :json }
+
+      it "raises an exception if the user cannot read the subject" do
+        ability.cannot :read, subject
+        expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+      end
+
+      it "has a status of 200" do
+        make_request
+        response.status.should eq(200)
+      end
+
+      it "finds the subject given by the passed ID" do
+        Subject.should_receive(:find).with("5")
+        make_request
+      end
+
+      it "assigns the found subject" do
+        make_request
+        assigns(:subject).should == subject
+      end
     end
 
-    it "has a status of 200" do
-      make_request
-      response.status.should eq(200)
-    end
+    describe "with a student id" do
+      let(:student){ mock_model(Student) }
+      before { Student.stub(:find).and_return(student) }
+      let(:make_request) { get :show, id: 5, student_id: 10, format: :json }
 
-    it "finds the subject given by the passed ID" do
-      Subject.should_receive(:find).with("5")
-      make_request
-    end
+      it "has a status of 200" do
+        make_request
+        response.status.should eq(200)
+      end
 
-    it "assigns the found subject" do
-      make_request
-      assigns(:subject).should == subject
+      it "finds the student given by the passed ID" do
+        Student.should_receive(:find).with(10)
+        make_request
+      end
+
+      it "assigns the found student" do
+        make_request
+        assigns(:student).should == student
+      end
     end
   end
 

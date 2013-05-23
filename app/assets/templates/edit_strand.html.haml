@@ -1,0 +1,15 @@
+.title
+  %p{ "edit-in-place"=>true, "instance"=>"strand", "field"=>"name", "placeholder"=>"Strand name" }
+  .manage-links
+    %a.add{ "href"=>"", "ng-click"=>"addStrand(strand)",
+      "ng-hide"=>"(strand.nestingLevel() == 3) || ((strand.milestones | filterDeleted).length > 0)" } Add substrand
+    %a.delete{ "href"=>"", "ng-click"=>"deleteStrand(strand)", "ng-show"=>"strand.id" } Delete
+
+%ng-switch{ "on"=>"!!(strand.strands | filterDeleted).length" }
+  %ol{ "ng-switch-when"=>"true" }
+    %li{ "ng-repeat"=>"strand in strand.strands | filterDeleted",
+      "ng-include"=>"'/assets/edit_strand.html'",
+      "ng-class"=>"{'sub-sub-strand': strand.nestingLevel() == 3}",
+      "ng-animate"=>"'fade'" }
+
+  %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('edit_milestones.html')}'" }

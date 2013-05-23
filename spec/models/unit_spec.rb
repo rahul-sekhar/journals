@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Unit, :focus do
+describe Unit do
   let(:unit){ build(:unit) }
 
   it "is valid with valid attributes" do

@@ -1,0 +1,19 @@
+.framework-wrapper
+  %h3
+    Framework | {{framework.name}}
+    =image_tag "loader-small.gif", 'alt'=>'', 'ng-hide'=>'framework'
+
+  %a.close{ "href"=>"", "ng-click"=>"close()" }
+
+  %ol.strands
+    %li{ "ng-repeat"=>"strand in framework.strands", "ng-include"=>"'#{asset_path('show_strand.html')}'", "ng-animate"=>"'fade'" }
+
+  %modal#modify-student-milestone{ "show-on"=>"dialog.milestone", "modal-width"=>"490" }
+    %div.student-milestone{ "ng-controller"=>"StudentMilestoneDialogCtrl" }
+      %ul
+        %li.status{ "ng-repeat"=>"status in [0,1,2,3]", "ng-class"=>"{selected: status == newStudentMilestone.status}" }
+          %div{ "ng-class"=>"'status-' + status", "ng-click"=>"newStudentMilestone.status = status" }
+
+      %textarea{ "ng-model"=>"newStudentMilestone.comments", "placeholder"=>"Comments" }
+
+      %a.submit.button{ "href"=>"", "ng-click"=>"save()" } Save

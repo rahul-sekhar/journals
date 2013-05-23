@@ -92,6 +92,12 @@ describe Subject do
       expect{ subject.destroy }.to change{ Strand.count }.by(-1)
     end
 
+    it "destroys any units" do
+      subject.save!
+      create(:unit, subject: subject)
+      expect{ subject.destroy }.to change{ Unit.count }.by(-1)
+    end
+
     it "destroys any subject teachers" do
       subject.save!
       subject.add_teacher(create(:teacher))

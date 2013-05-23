@@ -7,6 +7,9 @@ class Milestone < ActiveRecord::Base
   after_destroy :set_subsequent_sibling_positions
 
   belongs_to :strand
+  has_one :subject, through: :strand
+
+  has_many :student_milestones, dependent: :destroy
 
   validates :strand, presence: true
   validates :content, presence: true

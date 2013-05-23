@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130521125627) do
+ActiveRecord::Schema.define(:version => 20130523024038) do
 
   create_table "comments", :force => true do |t|
     t.text     "content"
@@ -203,7 +203,7 @@ ActiveRecord::Schema.define(:version => 20130521125627) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "status",       :default => 0, :null => false
-    t.index ["student_id", "milestone_id"], :name => "students_milestones_index", :order => {"student_id" => :asc, "milestone_id" => :asc}
+    t.index ["student_id", "milestone_id"], :name => "students_milestones_index", :unique => true, :order => {"student_id" => :asc, "milestone_id" => :asc}
   end
 
   create_table "subject_teacher_students", :id => false, :force => true do |t|

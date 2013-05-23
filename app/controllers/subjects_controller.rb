@@ -7,6 +7,7 @@ class SubjectsController < ApplicationController
   end
 
   def show
+    @student = Student.find(params[:student_id]) if params[:student_id]
   end
 
   def people

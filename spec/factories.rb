@@ -82,4 +82,10 @@ FactoryGirl.define do
     student
     sequence(:name){ |n| "unit#{n}"}
   end
+
+  factory :student_milestone do
+    milestone
+    student
+    status 1
+  end
 end

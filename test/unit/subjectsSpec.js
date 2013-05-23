@@ -44,7 +44,7 @@ describe('subjects module', function () {
       confirm = _confirm_;
       scope = $rootScope.$new();
       httpBackend = $httpBackend;
-      frameworkService = { showFramework: jasmine.createSpy() };
+      frameworkService = { editFramework: jasmine.createSpy() };
       subjectPeopleService = { show: jasmine.createSpy() };
 
       Subjects = { all: jasmine.createSpy('Subjects.all').
@@ -100,7 +100,7 @@ describe('subjects module', function () {
         }));
 
         it('triggers the framework service', function () {
-          expect(frameworkService.showFramework).toHaveBeenCalledWith(16);
+          expect(frameworkService.editFramework).toHaveBeenCalledWith(16);
         });
       });
 
@@ -110,7 +110,7 @@ describe('subjects module', function () {
         }));
 
         it('does not trigger the framework service', function () {
-          expect(frameworkService.showFramework).not.toHaveBeenCalled();
+          expect(frameworkService.editFramework).not.toHaveBeenCalled();
         });
       });
     });
@@ -151,15 +151,23 @@ describe('subjects module', function () {
 
     beforeEach(inject(function (_frameworkService_) {
       frameworkService = _frameworkService_;
-      scope = { show: jasmine.createSpy() };
+      scope = { edit: jasmine.createSpy(), show: jasmine.createSpy() };
       frameworkService.register(scope);
     }));
 
-    describe('showFramework(subjectId)', function () {
-      it('calls the scopes show function, passing the argument', function () {
+    describe('editFramework(subjectId)', function () {
+      it('calls the scopes edit function, passing the argument', function () {
+        expect(scope.edit).not.toHaveBeenCalled();
+        frameworkService.editFramework('some subject id');
+        expect(scope.edit).toHaveBeenCalledWith('some subject id');
+      });
+    });
+
+    describe('showFramework(subjectId, studentId)', function () {
+      it('calls the scopes edit function, passing the argument', function () {
         expect(scope.show).not.toHaveBeenCalled();
-        frameworkService.showFramework('some subject id');
-        expect(scope.show).toHaveBeenCalledWith('some subject id');
+        frameworkService.showFramework('subject id', 'student id');
+        expect(scope.show).toHaveBeenCalledWith('subject id', 'student id');
       });
     });
   });
@@ -182,19 +190,19 @@ describe('subjects module', function () {
       expect(frameworkService.register).toHaveBeenCalledWith(scope);
     });
 
-    it('sets shown to false initially', function () {
-      expect(scope.shown).toEqual(false);
+    it('sets mode to false initially', function () {
+      expect(scope.mode).toEqual(false);
     });
 
-    describe('show()', function () {
+    describe('edit()', function () {
       beforeEach(function () {
         httpBackend.expectGET('/academics/subjects/8.json').respond('some subject data')
 
-        scope.show(8);
+        scope.edit(8);
       });
 
-      it('sets shown to true', function () {
-        expect(scope.shown).toEqual(true);
+      it('sets mode to edit', function () {
+        expect(scope.mode).toEqual('edit');
       });
 
       it('sets the subject data to null', function () {
@@ -226,8 +234,54 @@ describe('subjects module', function () {
           httpBackend.flush();
         });
 
-        it('sets shown to false', function () {
-          expect(scope.shown).toEqual(false);
+        it('sets mode to false', function () {
+          expect(scope.mode).toEqual(false);
+        });
+      });
+    });
+
+    describe('show()', function () {
+      beforeEach(function () {
+        httpBackend.expectGET('/academics/subjects/8.json?student_id=10').respond('some subject data')
+
+        scope.show(8, 10);
+      });
+
+      it('sets mode to show', function () {
+        expect(scope.mode).toEqual('show');
+      });
+
+      it('sets the subject data to null', function () {
+        expect(scope.framework).toBeNull();
+      });
+
+      it('sends a request for subject data', function () {
+        httpBackend.verifyNoOutstandingExpectation();
+      });
+
+      describe('on response', function () {
+        beforeEach(function () {
+          httpBackend.flush();
+        });
+
+        it('creates a model', function () {
+          expect(Framework.create).toHaveBeenCalledWith('some subject data');
+        });
+
+        it('sets the framework data', function () {
+          expect(scope.framework).toEqual('some framework model data');
+        });
+      });
+
+      describe('on failure', function () {
+        beforeEach(function () {
+          httpBackend.resetExpectations();
+          httpBackend.expectGET('/academics/subjects/8.json?student_id=10').respond(400)
+          httpBackend.flush();
+        });
+
+        it('sets mode to false', function () {
+          expect(scope.mode).toEqual(false);
         });
       });
     });
@@ -238,12 +292,12 @@ describe('subjects module', function () {
       beforeEach(inject(function ($location) {
         location = $location;
         location.search('framework', 2);
-        scope.shown = true;
+        scope.mode = true;
         scope.close();
       }));
 
-      it('sets shown to false', function () {
-        expect(scope.shown).toEqual(false);
+      it('sets mode to false', function () {
+        expect(scope.mode).toEqual(false);
       });
 
       it('removes the framework param', function () {

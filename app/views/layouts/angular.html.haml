@@ -28,9 +28,10 @@
       #notifications{ "ng-controller"=>"messageCtrl", "ng-class"=>"{shown: show}" }
         %p{ "ng-class"=>"message.type" } {{message.text}}
 
-      #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"shown" }
-        %ng-switch{ "on"=>"shown" }
-          %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('framework.html')}'" }
+      #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"mode" }
+        %ng-switch{ "on"=>"mode" }
+          %div{ "ng-switch-when"=>"edit", "ng-include"=>"'#{asset_path('edit_framework.html')}'" }
+          %div{ "ng-switch-when"=>"show", "ng-include"=>"'#{asset_path('show_framework.html')}'" }
 
       %footer#credit
         .arrow

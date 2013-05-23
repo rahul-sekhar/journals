@@ -77,16 +77,18 @@ describe('academics module', function () {
     });
 
     describe('with a student and a subject', function () {
-      var Units;
+      var Units, frameworkService;
 
       beforeEach(function () {
+        frameworkService = { showFramework: jasmine.createSpy() };
+
         location.search({ student_id: 2, subject_id: 5 })
         httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').
           respond(['unit1', 'unit2']);
 
         Units = { update: jasmine.createSpy().andReturn('model') };
 
-        controller('AcademicsWorkCtrl', { $scope: scope, Units: Units });
+        controller('AcademicsWorkCtrl', { $scope: scope, Units: Units, frameworkService: frameworkService });
       });
 
       it('sets insufficientData to false', function () {
@@ -166,6 +168,16 @@ describe('academics module', function () {
           it('does not send a delete message to the unit', function () {
             expect(unit.delete).not.toHaveBeenCalled();
           });
+        });
+      });
+
+      describe('showFramework', function () {
+        beforeEach(function () {
+          scope.showFramework();
+        });
+
+        it('triggers the frameworkService', function () {
+          expect(frameworkService.showFramework).toHaveBeenCalledWith(5, 2);
         });
       });
     });

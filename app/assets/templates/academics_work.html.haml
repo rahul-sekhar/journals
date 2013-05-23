@@ -32,7 +32,14 @@
             %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"comments", "type"=>"textarea" }
             %a.delete{ "href"=>"", "ng-click"=>"deleteUnit(unit)" }
 
+        %tr{ "ng-show"=>"(units | filterDeleted).length == 0" }
+          %td{ "colspan"=>"5" } No work has been added yet
+
       %a.add{ "href"=>"", "ng-click"=>"addUnit()", "ng-show"=>"units.length >= 0" } Add unit
+
+    #milestones
+      %h3 Framework
+      %a.view{ "href"=>"", "ng-click"=>"showFramework()" } View and mark framework
 
   .content-block{ "ng-show"=>"insufficientData" }
     Please select a student and a subject
