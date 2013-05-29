@@ -1,4 +1,4 @@
-Feature: Manage uits and milestones for a student and subject
+Feature: Manage units for a student and subject
 
 Background:
   Given I have logged in as the teacher Rahul

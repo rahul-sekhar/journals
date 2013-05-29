@@ -176,6 +176,10 @@ table.academics {
   td.status {
     text-transform: lowercase;
   }
+
+  td.mark {
+    min-width: 60px;
+  }
 }
 
 #academics-summary {
