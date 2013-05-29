@@ -16,7 +16,7 @@ class CheckMilestones < ActiveRecord::Migration
       milestone.check_if_empty
     end
 
-    number_destroyed = StudentMilestone.count - initial_count
+    number_destroyed = initial_count - StudentMilestone.count
     puts "*** Destroyed #{number_destroyed} student milestones ***"
   end
 
