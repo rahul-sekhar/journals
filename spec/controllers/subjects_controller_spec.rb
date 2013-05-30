@@ -13,15 +13,22 @@ describe SubjectsController do
   end
 
   describe "GET index" do
+    let(:make_request){ get :index, format: :json }
+
     it "has a status of 200" do
-      get :index, format: :json
+      make_request
       response.status.should eq(200)
+    end
+
+    it "raises an exception if the user cannot read subjects" do
+      ability.cannot :read, Subject
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
     it "finds and assigns subjects" do
       subject1 = create(:subject)
       subject2 = create(:subject)
-      get :index, format: :json
+      make_request
       assigns(:subjects).should =~ [subject1, subject2]
     end
 
@@ -30,8 +37,44 @@ describe SubjectsController do
       subject2 = create(:subject, name: "Another Subject")
       subject3 = create(:subject, name: "Subject C")
       subject4 = create(:subject, name: "Another Better Subject")
-      get :index, format: :json
+      make_request
       assigns(:subjects).should == [subject4, subject2, subject1, subject3]
+    end
+  end
+
+
+  describe "GET for_student" do
+    before do
+      ability.can :manage, Student
+      Student.any_instance.stub(:subjects).and_return('some subjects')
+    end
+
+    let(:student){ create(:student) }
+    let(:make_request){ get :for_student, student_id: student.id, format: :json }
+
+    it "raises an exception if the user cannot read subjects" do
+      ability.cannot :read, Subject
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "raises an exception if the user cannot read the student" do
+      ability.cannot :read, student
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "has a status of 200" do
+      make_request
+      response.status.should eq(200)
+    end
+
+    it "finds and assigns the student" do
+      make_request
+      assigns(:student).should eq(student)
+    end
+
+    it "finds and assigns the students subjects" do
+      make_request
+      assigns(:subjects).should == 'some subjects'
     end
   end
 

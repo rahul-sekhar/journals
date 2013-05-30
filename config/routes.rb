@@ -25,6 +25,8 @@ Journals::Application.routes.draw do
 
     resources :student_milestones, only: [:index, :create]
 
+    get "subjects" => "subjects#for_student"
+
     member do
       post :reset
       post :archive

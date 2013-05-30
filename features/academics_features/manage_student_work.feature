@@ -5,6 +5,28 @@ Background:
   And the student John has done some work on Maths
   And I am on the work page
 
+@current
+Scenario: View subjects for a student
+  Given the students Jim exist
+  And John has a few more subjects
+  When I am on the work page
+  Then I should see "Please select a student"
+  And I should see the students menu
+  And I should not see the subjects menu
+
+  When I select "Jim" from the students menu
+  Then I should not see "Please select a student"
+  And I should see "This student does not have any associated subjects yet"
+  And I should not see the subjects menu
+
+  When I select "John" from the students menu
+  Then I should not see "This student does not have any associated subjects yet"
+  And I should see "Please select a subject"
+  And I should see the subjects menu
+  And the subjects menu should have the option "Maths"
+  And the subjects menu should have the option "English"
+  And the subjects menu should not have the option "History"
+
 
 Scenario: View units done
   Then the page heading should be "Academic records"

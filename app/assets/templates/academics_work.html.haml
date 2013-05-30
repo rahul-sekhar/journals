@@ -7,7 +7,7 @@
     .academic-filters{ "ng-include"=>"'#{asset_path('academic_filters.html')}'" }
     .clear-left
 
-  %div{ "ng-hide"=>"insufficientData" }
+  %div{ "ng-show"=>"student_id && subject_id" }
     #units
       %h3 Work log
 
@@ -62,5 +62,11 @@
         %tr{ "ng-show"=>"milestones.length == 0" }
           %td{ "colspan"=>"5" } No work has been added yet
 
-  .content-block{ "ng-show"=>"insufficientData" }
-    Please select a student and a subject
+  .content-block{ "ng-hide"=>"student_id" }
+    Please select a student
+
+  .content-block{ "ng-show"=>"student_id && noStudentSubjects" }
+    This student does not have any associated subjects yet
+
+  .content-block{ "ng-show"=>"student_id && !subject_id && !noStudentSubjects" }
+    Please select a subject

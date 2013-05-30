@@ -1,4 +1,3 @@
-@current
 Feature: View a summary of academic records
 
 Scenario: View academic records summary as a Teacher

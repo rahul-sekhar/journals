@@ -1,9 +1,16 @@
 class SubjectsController < ApplicationController
   load_and_authorize_resource
-  skip_authorize_resource only: [:add_strand, :people]
+  load_and_authorize_resource :student, only: :for_student
+  skip_authorize_resource only: [:add_strand, :people, :for_student]
 
   def index
     @subjects = @subjects.alphabetical
+  end
+
+  def for_student
+    authorize! :read, Subject
+    @subjects = @student.subjects
+    render "index"
   end
 
   def show

@@ -2,6 +2,9 @@ Given(/^the student John has done some work on Maths$/) do
   step 'the subject "Maths" exists'
   student = create_profile('student', 'John Doe')
 
+  st = @subject.add_teacher(@profile)
+  st.students << student
+
   FactoryGirl.create(:unit, student: student, subject: @subject, name: "Unit 1", started: Date.new(2011, 5, 5))
   FactoryGirl.create(:unit, student: student, subject: @subject, name: "Unit 2",
     started: Date.new(2010, 1, 10),
@@ -38,6 +41,15 @@ Given(/^the student John has some milestones set for Maths$/) do
     comments: 'Some comment',
     updated_at: Date.new(2012, 10, 1)
   )
+end
+
+Given(/^John has a few more subjects$/) do
+  student = Student.where(first_name: "John").first
+  Subject.create!(name: "History")
+  subject = Subject.create!(name: "English")
+
+  st = subject.add_teacher(@profile)
+  st.students << student
 end
 
 Then(/^I should see "(.*?)" in row (\d+) of the milestones table$/) do |p_content, p_row|

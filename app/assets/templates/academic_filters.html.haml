@@ -8,7 +8,7 @@
     .container
       %filtered-list{ "list"=>"students", "show-property"=>"short_name", "always-shown"=>'true', "on-select"=>"setStudent(value)" }
 
-  .subjects.click-menu
+  .subjects.click-menu{ "ng-show"=>"subjects.length" }
     %p.title
       %a{ href: "" } {{selected.subject.name || 'Subject'}}
 

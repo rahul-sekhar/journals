@@ -30,7 +30,7 @@
 }
 
 .view-fade-enter-setup {
-  @include transition(all ease 1000ms);
+  @include transition(all ease 500ms);
   opacity: 0;
 }
 
@@ -39,7 +39,7 @@
 }
 
 .view-fade-leave-setup {
-  @include transition(all ease 400ms);
+  @include transition(all ease 200ms);
   opacity: 1;
 
   position: absolute;

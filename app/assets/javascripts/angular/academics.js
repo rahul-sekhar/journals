@@ -5,26 +5,34 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
 
   /*----------------- Filters controller -------------------------*/
 
-  controller('AcademicFiltersCtrl', ['$scope', 'Students', 'Subjects', '$location',
-    function ($scope, Students, Subjects, $location) {
+  controller('AcademicFiltersCtrl', ['$scope', 'Students', '$location', 'ajax', '$rootScope',
+    function ($scope, Students, $location, ajax, $rootScope) {
       $scope.selected = {};
-
+      $rootScope.noStudentSubjects = false;
       $scope.students = Students.all();
-      $scope.subjects = Subjects.all();
 
       // Load already selected filters
       var student_id = parseInt($location.search().student_id, 10);
-      var subject_id = parseInt($location.search().subject_id, 10);
 
       if (student_id) {
         Students.get(student_id).then(function (student) {
           $scope.selected.student = student;
         });
-      }
-      if (subject_id) {
-        Subjects.get(subject_id).then(function (subject) {
-          $scope.selected.subject = subject;
-        });
+
+        var subject_id = parseInt($location.search().subject_id, 10);
+        ajax({ url: '/students/' + student_id + '/subjects' }).
+          then(function(response) {
+            $scope.subjects = response.data;
+            if (subject_id) {
+              $scope.selected.subject = response.data.filter(function(subject) {
+                return (subject.id === subject_id);
+              })[0];
+            }
+
+            if (!response.data.length) {
+              $rootScope.noStudentSubjects = true;
+            }
+          });
       }
 
       function hideMenus () {
@@ -32,12 +40,12 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
       };
 
       function checkFilters() {
-        if ($scope.selected.student && $scope.selected.subject) {
+        if ($scope.selected.student) {
           $location.path('/academics/work')
-          $location.search({
-            student_id: $scope.selected.student.id,
-            subject_id: $scope.selected.subject.id,
-          });
+          $location.search({ student_id: $scope.selected.student.id });
+          if ($scope.selected.subject) {
+            $location.search('subject_id', $scope.selected.subject.id);
+          }
         }
       }
 
@@ -65,31 +73,31 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
 
   controller('AcademicsWorkCtrl', ['$scope', '$location', 'ajax', 'Units', 'confirm', 'frameworkService',
     function ($scope, $location, ajax, Units, confirm, frameworkService) {
-      var student_id = $location.search().student_id;
-      var subject_id = $location.search().subject_id;
+      $scope.student_id = $location.search().student_id;
+      $scope.subject_id = $location.search().subject_id;
 
-      if (student_id && subject_id) {
-        $scope.insufficientData = false;
-
-        ajax({ url: '/academics/units?student_id=' + student_id + '&subject_id=' + subject_id }).
+      if ($scope.student_id && $scope.subject_id) {
+        ajax({ url: '/academics/units?student_id=' + $scope.student_id + '&subject_id=' + $scope.subject_id }).
           then(function (response) {
             $scope.units = response.data.map(Units.update);
           }, function () {
             $scope.units = [];
           });
 
-        ajax({ url: '/students/' + student_id + '/student_milestones?subject_id=' + subject_id }).
+        ajax({ url: '/students/' + $scope.student_id + '/student_milestones?subject_id=' + $scope.subject_id }).
           then(function (response) {
             $scope.milestones = response.data;
           }, function () {
             $scope.milestones = [];
           });
-      } else {
-        $scope.insufficientData = true;
       }
 
       $scope.addUnit = function () {
-        $scope.units.unshift(Units.add({_edit: 'name', subject_id: subject_id, student_id: student_id}, true));
+        $scope.units.unshift(Units.add({
+          _edit: 'name',
+          subject_id: $scope.subject_id,
+          student_id: $scope.student_id
+        }, true));
       };
 
       $scope.deleteUnit = function (unit) {
@@ -99,7 +107,7 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
       };
 
       $scope.showFramework = function () {
-        frameworkService.showFramework(subject_id, student_id);
+        frameworkService.showFramework($scope.subject_id, $scope.student_id);
       };
     }]).
 
