@@ -7,7 +7,7 @@
     .academic-filters{ "ng-include"=>"'#{asset_path('academic_filters.html')}'" }
     .clear-left
 
-  #subjects
+  #subjects{ "ng-show"=>"isTeacher" }
     %h3 Manage subjects
 
     %ul

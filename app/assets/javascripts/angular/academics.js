@@ -7,59 +7,90 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
 
   controller('AcademicFiltersCtrl', ['$scope', 'Students', '$location', 'ajax', '$rootScope',
     function ($scope, Students, $location, ajax, $rootScope) {
-      $scope.selected = {};
-      $rootScope.noStudentSubjects = false;
-      $scope.students = Students.all();
+      var student_id, subject_id;
 
-      // Load already selected filters
-      var student_id = parseInt($location.search().student_id, 10);
+      $scope.selected = {};
+      $scope.students = null;
+      $scope.subjects = null;
+
+      student_id = parseInt($location.search().student_id, 10);
+      subject_id = parseInt($location.search().subject_id, 10);
 
       if (student_id) {
         Students.get(student_id).then(function (student) {
-          $scope.selected.student = student;
+          $scope.setStudent(student);
         });
+      }
 
-        var subject_id = parseInt($location.search().subject_id, 10);
-        ajax({ url: '/students/' + student_id + '/subjects' }).
-          then(function(response) {
-            $scope.subjects = response.data;
-            if (subject_id) {
-              $scope.selected.subject = response.data.filter(function(subject) {
-                return (subject.id === subject_id);
-              })[0];
-            }
-
-            if (!response.data.length) {
-              $rootScope.noStudentSubjects = true;
+      $scope.$watch('user.type', function (type) {
+        if (type === 'Teacher') {
+          $scope.students = Students.all();
+        } else if (type === 'Student') {
+          Students.get($scope.user.id).then(function (student) {
+            $scope.students = [student];
+            if (student_id !== student.id) {
+              $scope.setStudent(student);
             }
           });
-      }
-
-      function hideMenus () {
-        $scope.$broadcast('hideMenus', []);
-      };
-
-      function checkFilters() {
-        if ($scope.selected.student) {
-          $location.path('/academics/work')
-          $location.search({ student_id: $scope.selected.student.id });
-          if ($scope.selected.subject) {
-            $location.search('subject_id', $scope.selected.subject.id);
-          }
         }
-      }
+      });
 
       $scope.setStudent = function (student) {
         $scope.selected.student = student;
+        student_id = student.id;
+        getSubjects();
         checkFilters();
         hideMenus();
       }
 
       $scope.setSubject = function (subject) {
         $scope.selected.subject = subject;
+
+        if (subject) {
+          subject_id = subject.id;
+        } else {
+          subject_id = null;
+        }
+
         checkFilters();
         hideMenus();
       }
+
+      function getSubjects () {
+        $scope.subjects = [];
+
+        ajax({ url: '/students/' + student_id + '/subjects' }).
+          then(function(response) {
+            $scope.subjects = response.data;
+            if (subject_id) {
+              var selected_subject = response.data.filter(function(subject) {
+                return (subject.id === subject_id);
+              })[0];
+
+              $scope.setSubject(selected_subject);
+            }
+
+            if (response.data.length) {
+              $rootScope.hasNoSubjects = false;
+            } else {
+              $rootScope.hasNoSubjects = true;
+            }
+          });
+      }
+
+      function checkFilters() {
+        if (student_id) {
+          $location.path('/academics/work')
+          $location.search({ student_id: student_id });
+          if (subject_id) {
+            $location.search('subject_id', subject_id);
+          }
+        }
+      }
+
+      function hideMenus () {
+        $scope.$broadcast('hideMenus', []);
+      };
     }]).
 
   factory('Units', ['collection', 'model',
@@ -73,24 +104,30 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
 
   controller('AcademicsWorkCtrl', ['$scope', '$location', 'ajax', 'Units', 'confirm', 'frameworkService',
     function ($scope, $location, ajax, Units, confirm, frameworkService) {
-      $scope.student_id = $location.search().student_id;
-      $scope.subject_id = $location.search().subject_id;
+      function getData() {
+        $scope.student_id = parseInt($location.search().student_id, 10);
+        $scope.subject_id = parseInt($location.search().subject_id, 10);
 
-      if ($scope.student_id && $scope.subject_id) {
-        ajax({ url: '/academics/units?student_id=' + $scope.student_id + '&subject_id=' + $scope.subject_id }).
-          then(function (response) {
-            $scope.units = response.data.map(Units.update);
-          }, function () {
-            $scope.units = [];
-          });
+        if ($scope.student_id && $scope.subject_id) {
+          ajax({ url: '/academics/units?student_id=' + $scope.student_id + '&subject_id=' + $scope.subject_id }).
+            then(function (response) {
+              $scope.units = response.data.map(Units.update);
+            }, function () {
+              $scope.units = [];
+            });
 
-        ajax({ url: '/students/' + $scope.student_id + '/student_milestones?subject_id=' + $scope.subject_id }).
-          then(function (response) {
-            $scope.milestones = response.data;
-          }, function () {
-            $scope.milestones = [];
-          });
+          ajax({ url: '/students/' + $scope.student_id + '/student_milestones?subject_id=' + $scope.subject_id }).
+            then(function (response) {
+              $scope.milestones = response.data;
+            }, function () {
+              $scope.milestones = [];
+            });
+        }
       }
+
+      $scope.$on("$routeUpdate", function () {
+        getData();
+      });
 
       $scope.addUnit = function () {
         $scope.units.unshift(Units.add({
@@ -109,6 +146,8 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
       $scope.showFramework = function () {
         frameworkService.showFramework($scope.subject_id, $scope.student_id);
       };
+
+      getData();
     }]).
 
   controller('StudentMilestoneDialogCtrl', ['$scope',

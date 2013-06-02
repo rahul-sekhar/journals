@@ -15,4 +15,4 @@
     .container
       %filtered-list{ "list"=>"subjects", "show-property"=>"name", "always-shown"=>'true', "on-select"=>"setSubject(value)" }
 
-  %a.manage{ href: "/academics/subjects" } Manage subjects
+  %a.manage{ "href"=>"/academics/subjects", "ng-show"=>"isTeacher" } Manage subjects

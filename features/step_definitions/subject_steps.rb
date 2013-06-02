@@ -1,5 +1,5 @@
 Given(/^the subject "(.*)" exists$/) do |p_name|
-  @subject = Subject.create(name: p_name)
+  @subject = Subject.create!(name: p_name)
 end
 
 Then(/^I should see the subject "(.*)"$/) do |p_name|

@@ -57,8 +57,8 @@ describe SubjectsController do
       expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 
-    it "raises an exception if the user cannot read the student" do
-      ability.cannot :read, student
+    it "raises an exception if the user cannot get subjects for the student" do
+      ability.cannot :view_academics, student
       expect{ make_request }.to raise_exception(CanCan::AccessDenied)
     end
 

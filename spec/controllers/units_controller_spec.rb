@@ -12,22 +12,37 @@ describe UnitsController do
     ability.can :manage, Unit
   end
 
-  describe "GET index" do
+  describe "GET index", :focus do
+    let(:student){ create(:student) }
+    let(:subject){ create(:subject) }
+    let(:make_request){ get :index, student_id: student.id, subject_id: subject.id, format: :json }
+    before do
+      ability.can :manage, Student
+    end
+
     it "has a status of 200" do
-      get :index, format: :json
+      make_request
       response.status.should eq(200)
     end
 
+    it "raises an exception if the user cannot read units" do
+      ability.cannot :read, Unit
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
+    it "raises an exception if the user cannot view academics for the student" do
+      ability.cannot :view_academics, student
+      expect{ make_request }.to raise_exception(CanCan::AccessDenied)
+    end
+
     it "finds and assigns units" do
-      student = create(:student)
-      subject = create(:subject)
       unit1 = create(:unit, student: student, subject: subject)
       unit2 = create(:unit, student: student)
       unit3 = create(:unit, subject: subject)
       unit4 = create(:unit, student: student, subject: subject)
       unit5 = create(:unit)
 
-      get :index, format: :json, student_id: student.id, subject_id: subject.id
+      make_request
       assigns(:units).should =~ [unit1, unit4]
     end
   end

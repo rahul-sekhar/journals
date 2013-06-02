@@ -5,7 +5,7 @@ Background:
   And the student John has done some work on Maths
   And I am on the work page
 
-@current
+
 Scenario: View subjects for a student
   Given the students Jim exist
   And John has a few more subjects
@@ -30,13 +30,13 @@ Scenario: View subjects for a student
 
 Scenario: View units done
   Then the page heading should be "Academic records"
-  And I should see "Please select a student and a subject"
+  And I should see "Please select a student"
   And I should not see "Work log"
   And I should not see "Framework"
 
   When I select "John" from the students menu
   And I select "Maths" from the subjects menu
-  Then I should not see "Please select a student and a subject"
+  Then I should not see "Please select a student"
   And I should see "Work log"
   And I should see "Unit 1"
   And I should see "05-05-2011"

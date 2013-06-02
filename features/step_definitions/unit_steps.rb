@@ -41,3 +41,21 @@ end
 When(/^I delete the unit "(.*?)"$/) do |p_unit|
   page.find('#units tr', text: /^#{Regexp.escape(p_unit)}/i, visible: true).find('.delete').click
 end
+
+Then /^I should not be able to change the (\S*) field$/ do |p_field|
+  within @viewing do
+    field = page.find("td.#{p_field}")
+    field.find('.value').click
+    page.should have_no_css('input, textarea', visible: true)
+  end
+end
+
+Then /^I should not be able to delete the unit$/ do
+  within @viewing do
+    page.should have_no_css('.delete')
+  end
+end
+
+Then /^I should not be able to add a unit$/ do
+  page.should have_no_css('#units .add')
+end

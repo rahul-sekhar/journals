@@ -41,10 +41,18 @@ table.academics {
       font-size: 12px;
       line-height: 120%;
       min-height: 14px;
+    }
 
-      &:hover {
-        border: 1px solid grey;
-      }
+    &.date {
+      padding-left: 7px;
+      padding-right: 13px;
+    }
+  }
+
+
+  &.editable td {
+    .value:hover {
+      border: 1px solid grey;
     }
 
     .editor {
@@ -65,8 +73,6 @@ table.academics {
 
     &.date {
       position: relative;
-      padding-left: 7px;
-      padding-right: 13px;
 
       .clear-date {
         position: absolute;

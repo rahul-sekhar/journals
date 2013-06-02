@@ -8,8 +8,8 @@
       %td{ "ng-repeat"=>"level in [] | range:(strand.max_level())" }
         %ul
           %li{ "ng-repeat"=>"milestone in strand.milestones | filter:{ level: level + 1 }:true",
-            "ng-click"=>"dialog.milestone = milestone" }
-            %p {{milestone.content}}
+            "ng-click"=>"dialog.milestone = isTeacher && milestone" }
+            %p{ "ng-bind-html"=>"milestone.content | escapeHtml | multiline" }
             .student-milestone
               %div{ "ng-class"=>"'status-' + milestone.student_milestone.status" }
               %p.comments{ "ng-bind-html"=>"milestone.student_milestone.comments | escapeHtml | multiline" }

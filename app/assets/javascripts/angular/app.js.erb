@@ -86,7 +86,8 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
 
       when('/academics/work', {
         templateUrl: '<%= asset_path("academics_work.html") %>',
-        controller: 'AcademicsWorkCtrl'
+        controller: 'AcademicsWorkCtrl',
+        reloadOnSearch: false
       }).
 
       when('/page-not-found', {templateUrl: '<%= asset_path("404.html") %>'}).

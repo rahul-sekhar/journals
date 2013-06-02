@@ -1,8 +1,11 @@
 class UnitsController < ApplicationController
   load_and_authorize_resource
+  load_resource :student, only: :index
+  load_resource :subject, only: :index
 
   def index
-    @units = @units.where(student_id: params[:student_id], subject_id: params[:subject_id])
+    authorize! :view_academics, @student
+    @units = @units.where(student_id: @student.id, subject_id: @subject.id)
   end
 
   def create

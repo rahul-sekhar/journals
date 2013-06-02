@@ -1,12 +1,27 @@
-Given(/^the student John has done some work on Maths$/) do
+def create_student_john(subject)
+  @student = create_profile('student', 'John Doe')
+
+  st = subject.add_teacher(@profile)
+  st.students << @student
+end
+
+def add_subject_for_self(subject)
+  @student = @profile
+  st = subject.add_teacher(FactoryGirl.create(:teacher))
+  st.students << @student
+end
+
+Given(/^(the student John has|I have) done some work on Maths$/) do |p_protagonist|
   step 'the subject "Maths" exists'
-  student = create_profile('student', 'John Doe')
 
-  st = @subject.add_teacher(@profile)
-  st.students << student
+  if (p_protagonist == 'I have')
+    add_subject_for_self(@subject)
+  else
+    create_student_john(@subject)
+  end
 
-  FactoryGirl.create(:unit, student: student, subject: @subject, name: "Unit 1", started: Date.new(2011, 5, 5))
-  FactoryGirl.create(:unit, student: student, subject: @subject, name: "Unit 2",
+  FactoryGirl.create(:unit, student: @student, subject: @subject, name: "Unit 1", started: Date.new(2011, 5, 5))
+  FactoryGirl.create(:unit, student: @student, subject: @subject, name: "Unit 2",
     started: Date.new(2010, 1, 10),
     due: Date.new(2010, 5, 10),
     completed: Date.new(2010, 5, 6),
@@ -14,28 +29,33 @@ Given(/^the student John has done some work on Maths$/) do
     )
   FactoryGirl.create(:unit, name: "Unwanted Unit")
   FactoryGirl.create(:unit, name: "Unwanted Unit", subject: @subject)
-  FactoryGirl.create(:unit, name: "Unwanted Unit", student: student)
+  FactoryGirl.create(:unit, name: "Unwanted Unit", student: @student)
 end
 
-Given(/^the student John has some milestones set for Maths$/) do
+Given(/^(the student John has|I have) some milestones set for Maths$/) do |p_protagonist|
   step 'the subject "Maths" exists with a framework'
-  student = create_profile('student', 'John Doe')
+
+  if (p_protagonist == 'I have')
+    add_subject_for_self(@subject)
+  else
+    create_student_john(@subject)
+  end
 
   FactoryGirl.create(:student_milestone,
-    student: student,
+    student: @student,
     milestone: Milestone.where(content: 'Some milestone').first,
     status: 2,
     comments: 'Blah blah'
   )
 
   FactoryGirl.create(:student_milestone,
-    student: student,
+    student: @student,
     milestone: Milestone.where(content: 'Third').first,
     status: 3
   )
 
   FactoryGirl.create(:student_milestone,
-    student: student,
+    student: @student,
     milestone: Milestone.where(content: 'Middle milestone').first,
     status: 0,
     comments: 'Some comment',
@@ -44,12 +64,19 @@ Given(/^the student John has some milestones set for Maths$/) do
 end
 
 Given(/^John has a few more subjects$/) do
-  student = Student.where(first_name: "John").first
   Subject.create!(name: "History")
   subject = Subject.create!(name: "English")
 
   st = subject.add_teacher(@profile)
-  st.students << student
+  st.students << @student
+end
+
+Given(/^I have a few more subjects$/) do
+  Subject.create!(name: "History")
+  subject = Subject.create!(name: "English")
+
+  st = subject.add_teacher(FactoryGirl.create(:teacher))
+  st.students << @student
 end
 
 Then(/^I should see "(.*?)" in row (\d+) of the milestones table$/) do |p_content, p_row|
@@ -81,4 +108,9 @@ When(/^I set the milestone "(.*?)" to status (\d+) with the comment "(.*?)"$/) d
     page.find('textarea').set(p_comment)
     page.find('.submit').click
   end
+end
+
+Then(/^I should not be able to set the milestone "(.*?)"$/) do |p_milestone|
+  page.find('li', text: /^#{p_milestone}/i).click
+  page.should have_no_css('#modify-student-milestone', visible: true)
 end

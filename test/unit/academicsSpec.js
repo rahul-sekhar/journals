@@ -5,13 +5,11 @@ describe('academics module', function () {
 
   /*------------------ Academic filters controller ----------------------*/
   describe('AcademicFiltersCtrl', function () {
-    var scope, Students, location, controller, httpBackend, deferred, rootScope;
+    var scope, Students, deferred, AcademicFilters;
 
-    beforeEach(inject(function ($rootScope, $controller, $location, $q, $httpBackend) {
-      rootScope = $rootScope;
+    beforeEach(inject(function ($rootScope, $q) {
       scope = $rootScope.$new();
-      location = $location;
-      httpBackend = $httpBackend;
+      $rootScope.user = { type: 'Teacher' };
 
       deferred = $q.defer();
       Students = {
@@ -19,12 +17,25 @@ describe('academics module', function () {
         get: jasmine.createSpy().andReturn(deferred.promise)
       };
 
-      controller = $controller;
+      AcademicFilters = {
+        reset: jasmine.createSpy(),
+        setStudentId: jasmine.createSpy(),
+        setSubjectId: jasmine.createSpy(),
+        hasNoSubjects: jasmine.createSpy()
+      };
     }));
 
     describe('with no student_id', function () {
-      beforeEach(function () {
-        controller('AcademicFiltersCtrl', {$scope: scope, Students: Students});
+      beforeEach(inject(function ($controller) {
+        $controller('AcademicFiltersCtrl', {
+          $scope: scope,
+          Students: Students,
+          AcademicFilters: AcademicFilters
+        });
+      }));
+
+      it('resets the filter service', function () {
+        expect(AcademicFilters.reset).toHaveBeenCalled();
       });
 
       it('sets selected to an empty object', function () {
@@ -32,146 +43,227 @@ describe('academics module', function () {
       });
 
       it('gets all students', function () {
+        scope.$apply();
         expect(Students.all).toHaveBeenCalled();
         expect(scope.students).toEqual('students');
       });
 
-      it('sets noStudentSubjects to false', function () {
-        expect(rootScope.noStudentSubjects).toEqual(false);
+      describe('for a student', function () {
+        beforeEach(inject(function ($rootScope) {
+          $rootScope.user = {
+            type: 'Student',
+            id: 5
+          }
+          scope.setStudent = jasmine.createSpy();
+          $rootScope.$apply();
+        }));
+
+        it('gets the student from the collection', function () {
+          expect(Students.get).toHaveBeenCalledWith(5);
+        });
+
+        describe('on getting the student', function () {
+          var student;
+
+          beforeEach(function () {
+            student = { name: 'current student', id: 3 }
+            deferred.resolve(student);
+            scope.$apply();
+          });
+
+          it('sets the selected student', function () {
+            expect(scope.setStudent).toHaveBeenCalledWith(student);
+          });
+
+          it('sets students to that student only', function () {
+            expect(scope.students).toEqual([student])
+          });
+        });
       });
     });
 
     describe('with a student_id', function () {
-      beforeEach(function () {
-        httpBackend.expectGET('/students/2/subjects.json').respond(
-          [{id: 1, name: 'One'}, {id: 2, name: 'Two'}, {id: 3, name: 'Three'}]
-        );
-        location.search({student_id: 2})
-        controller('AcademicFiltersCtrl', {$scope: scope, Students: Students});
-      });
+      beforeEach(inject(function ($controller, $location) {
+        $location.search({student_id: 2});
+
+        $controller('AcademicFiltersCtrl', {
+          $scope: scope,
+          Students: Students,
+          AcademicFilters: AcademicFilters
+        });
+      }));
 
       it('gets all students', function () {
+        scope.$apply();
         expect(Students.all).toHaveBeenCalled();
         expect(scope.students).toEqual('students');
       });
 
-      it('sets noStudentSubjects to false', function () {
-        expect(rootScope.noStudentSubjects).toEqual(false);
-      });
-
-      it('gets the selected student', function () {
+      it('gets the student from the collection', function () {
         expect(Students.get).toHaveBeenCalledWith(2);
-        deferred.resolve('some student');
-        scope.$apply();
-        expect(scope.selected).toEqual({ student: 'some student' });
       });
 
-      it('sends a request for subjects', function () {
-        httpBackend.verifyNoOutstandingExpectation();
-      });
+      describe('on getting the student from the collection', function () {
+        var student;
 
-      describe('on response from the server', function () {
-        beforeEach(function () {
-          httpBackend.flush();
-        });
-
-        it('gets the students subjects', function () {
-          expect(scope.subjects).toEqualData(
+        beforeEach(inject(function ($httpBackend) {
+          $httpBackend.expectGET('/students/2/subjects.json').respond(
             [{id: 1, name: 'One'}, {id: 2, name: 'Two'}, {id: 3, name: 'Three'}]
           );
+
+          student = { name: 'some student', id: 2 };
+          deferred.resolve(student);
+          scope.$apply();
+        }));
+
+        it('sets the selected student', function () {
+          expect(scope.selected).toEqual({ student: student });
         });
 
-        it('does not set the selected subject', function () {
-          expect(scope.selected.subject).toBeUndefined();
-        });
+        it('sends a request for subjects', inject(function ($httpBackend) {
+          $httpBackend.verifyNoOutstandingExpectation();
+        }));
 
-        it('does not set noStudentSubjects', function () {
-          expect(rootScope.noStudentSubjects).toEqual(false);
+        describe('on response from the server', function () {
+          beforeEach(inject(function ($httpBackend) {
+            $httpBackend.flush();
+          }));
+
+          it('gets the students subjects', function () {
+            expect(scope.subjects).toEqualData(
+              [{id: 1, name: 'One'}, {id: 2, name: 'Two'}, {id: 3, name: 'Three'}]
+            );
+          });
+
+          it('does not set the selected subject', function () {
+            expect(scope.selected.subject).toBeUndefined();
+          });
+
+          it('sets the service hasNoSubjects to false', function () {
+            expect(AcademicFilters.hasNoSubjects).toHaveBeenCalledWith(false);
+          });
         });
       });
 
       describe('with no student subjects', function () {
-        beforeEach(function () {
-          httpBackend.resetExpectations();
-          httpBackend.expectGET('/students/2/subjects.json').respond([]);
-          httpBackend.flush();
-        });
+        beforeEach(inject(function ($httpBackend) {
+          $httpBackend.expectGET('/students/2/subjects.json').respond([]);
+          deferred.resolve({ name: 'some student', id: 2 });
+          scope.$apply();
+          $httpBackend.flush();
+        }));
 
-        it('sets noStudentSubjects', function () {
-          expect(rootScope.noStudentSubjects).toEqual(true);
+        it('sets the service hasNoSubjects to true', function () {
+          expect(AcademicFilters.hasNoSubjects).toHaveBeenCalledWith(true);
         });
       });
     });
 
     describe('with a student_id and subject_id', function () {
-      beforeEach(function () {
-        httpBackend.expectGET('/students/2/subjects.json').respond(
+      beforeEach(inject(function ($httpBackend, $location, $controller) {
+        $httpBackend.expectGET('/students/2/subjects.json').respond(
           [{id: 1, name: 'One'}, {id: 2, name: 'Two'}, {id: 3, name: 'Three'}]
         );
-        location.search({student_id: 2, subject_id: 3})
-        controller('AcademicFiltersCtrl', {$scope: scope, Students: Students});
-      });
+        $location.search({student_id: 2, subject_id: 3})
+        $controller('AcademicFiltersCtrl', {
+          $scope: scope,
+          Students: Students,
+          AcademicFilters: AcademicFilters
+        });
 
-      it('sets the selected subject', function () {
-        httpBackend.flush();
+        deferred.resolve({ name: 'some student', id: 2 });
+        scope.$apply();
+        $httpBackend.flush();
+      }));
+
+      it('sets the selected subject', inject(function ($httpBackend) {
         expect(scope.selected.subject).toEqualData({id: 3, name: 'Three'});
-      });
+      }));
+
+      it('sets the service subject id', function () {
+        expect(AcademicFilters.setSubjectId).toHaveBeenCalledWith(3);
+      })
     });
   });
 
 
   /*--------------- Academics work controller -------------------*/
   describe('AcademicsWorkCtrl', function () {
-    var scope, location, controller, httpBackend;
+    var scope, AcademicFilters, Units, frameworkService, httpBackend;
 
-    beforeEach(inject(function ($rootScope, $controller, $location, $httpBackend) {
+    beforeEach(inject(function ($rootScope, $controller, $httpBackend) {
       scope = $rootScope.$new();
-      location = $location;
-      controller = $controller;
       httpBackend = $httpBackend;
+      AcademicFilters = { registerScope: jasmine.createSpy() };
+      frameworkService = { showFramework: jasmine.createSpy() };
+      Units = { update: jasmine.createSpy().andReturn('model') };
+
+      $controller('AcademicsWorkCtrl', {
+        $scope: scope,
+        AcademicFilters: AcademicFilters,
+        Units: Units,
+        frameworkService: frameworkService
+      });
     }));
 
-    describe('with no student or subject', function () {
+    it('registers the scope', function () {
+      expect(AcademicFilters.registerScope).toHaveBeenCalledWith(scope);
+    });
+
+    describe('addUnit()', function () {
       beforeEach(function () {
-        controller('AcademicsWorkCtrl', {$scope: scope});
+        Units.add = jasmine.createSpy().andReturn('new unit');
+        scope.units = ['a', 'b'];
+        scope.addUnit();
+      });
+
+      it('adds the unit', function () {
+        expect(Units.add).toHaveBeenCalled();
+        expect(scope.units).toEqual(['new unit', 'a', 'b'])
       });
     });
 
-    describe('with no subject', function () {
-      beforeEach(function () {
-        location.search({ student_id: 2 })
-        controller('AcademicsWorkCtrl', {$scope: scope});
+    describe('deleteUnit(unit)', function () {
+      var unit, confirm;
+
+      beforeEach(inject(function(_confirm_) {
+        confirm = _confirm_;
+        unit = { delete: jasmine.createSpy() };
+      }));
+
+      describe('on confirm', function () {
+        beforeEach(function () {
+          scope.deleteUnit(unit)
+        });
+
+        it('sends a delete message to the unit', function () {
+          expect(unit.delete).toHaveBeenCalled();
+        });
       });
 
-      it('sets the student_id', function () {
-        expect(scope.student_id).toEqual(2);
-      })
+      describe('on cancel', function () {
+        beforeEach(function () {
+          confirm.set(false);
+          scope.deleteUnit(unit)
+        });
+
+        it('does not send a delete message to the unit', function () {
+          expect(unit.delete).not.toHaveBeenCalled();
+        });
+      });
     });
 
-    describe('with a student and a subject', function () {
-      var Units, frameworkService;
-
+    describe('with a student and a subject set', function () {
       beforeEach(function () {
-        frameworkService = { showFramework: jasmine.createSpy() };
-
-        location.search({ student_id: 2, subject_id: 5 })
         httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').
           respond(['unit1', 'unit2']);
 
         // Not testing for milestones
         httpBackend.expectGET('/students/2/student_milestones.json?subject_id=5').respond([]);
 
-        Units = { update: jasmine.createSpy().andReturn('model') };
-
-        controller('AcademicsWorkCtrl', { $scope: scope, Units: Units, frameworkService: frameworkService });
-      });
-
-      it('sets the student id', function () {
-        expect(scope.student_id).toEqual(2);
-      });
-
-      it('sets the subject id', function () {
-        expect(scope.subject_id).toEqual(5);
+        scope.student_id = 2;
+        scope.subject_id = 5;
+        scope.$apply();
       });
 
       it('sends a http request', function () {
@@ -191,62 +283,6 @@ describe('academics module', function () {
 
         it('sets units to the model data', function () {
           expect(scope.units).toEqual(['model', 'model']);
-        });
-      });
-
-      describe('on failure', function () {
-        beforeEach(function () {
-          httpBackend.resetExpectations();
-          httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').respond(400);
-          httpBackend.expectGET('/students/2/student_milestones.json?subject_id=5').respond([]);
-          httpBackend.flush();
-        });
-
-        it('sets units to an empty array', function () {
-          expect(scope.units).toEqual([]);
-        });
-      });
-
-      describe('addUnit()', function () {
-        beforeEach(function () {
-          Units.add = jasmine.createSpy().andReturn('new unit');
-          scope.units = ['a', 'b'];
-          scope.addUnit();
-        });
-
-        it('adds the unit', function () {
-          expect(Units.add).toHaveBeenCalled();
-          expect(scope.units).toEqual(['new unit', 'a', 'b'])
-        });
-      });
-
-      describe('deleteUnit(unit)', function () {
-        var unit, confirm;
-
-        beforeEach(inject(function(_confirm_) {
-          confirm = _confirm_;
-          unit = { delete: jasmine.createSpy() };
-        }));
-
-        describe('on confirm', function () {
-          beforeEach(function () {
-            scope.deleteUnit(unit)
-          });
-
-          it('sends a delete message to the unit', function () {
-            expect(unit.delete).toHaveBeenCalled();
-          });
-        });
-
-        describe('on cancel', function () {
-          beforeEach(function () {
-            confirm.set(false);
-            scope.deleteUnit(unit)
-          });
-
-          it('does not send a delete message to the unit', function () {
-            expect(unit.delete).not.toHaveBeenCalled();
-          });
         });
       });
 

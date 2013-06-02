@@ -7,42 +7,17 @@
     .academic-filters{ "ng-include"=>"'#{asset_path('academic_filters.html')}'" }
     .clear-left
 
-  %div{ "ng-show"=>"student_id && subject_id" }
+  %div{ "ng-show"=>"student_id && subject_id", "ng-switch"=>"!!isTeacher" }
     #units
       %h3 Work log
 
-      %table.academics
-        %thead
-          %tr
-            %th.name Unit of work
-            %th.started.date Started
-            %th.due.date Due
-            %th.completed.date Completed
-            %th.comments Comments
-
-        %tbody
-          %tr{ "ng-repeat"=>"unit in units | filterDeleted" }
-            %td.name
-              %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"name" }
-            %td.started.date
-              %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"started_date", "type"=>"date", "no-age" => "true" }
-            %td.due.date
-              %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"due_date", "type"=>"date", "no-age" => "true" }
-            %td.completed.date
-              %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"completed_date", "type"=>"date", "no-age" => "true" }
-            %td.comments
-              %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"comments", "type"=>"textarea" }
-              %a.delete{ "href"=>"", "ng-click"=>"deleteUnit(unit)" }
-
-          %tr{ "ng-show"=>"(units | filterDeleted).length == 0" }
-            %td{ "colspan"=>"5" } No work has been added yet
-
-      %a.add{ "href"=>"", "ng-click"=>"addUnit()", "ng-show"=>"units.length >= 0" } Add unit
+      %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_units.html')}'" }
+      %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_units.html')}'" }
 
     #milestones
       %h3
         Framework
-        %a.view{ "href"=>"", "ng-click"=>"showFramework()" } View and mark framework
+        %a.view{ "href"=>"", "ng-click"=>"showFramework()" } View{{isTeacher && ' and mark' || ''}} framework
 
       %table.academics
         %tr
@@ -65,8 +40,8 @@
   .content-block{ "ng-hide"=>"student_id" }
     Please select a student
 
-  .content-block{ "ng-show"=>"student_id && noStudentSubjects" }
+  .content-block{ "ng-show"=>"student_id && hasNoSubjects" }
     This student does not have any associated subjects yet
 
-  .content-block{ "ng-show"=>"student_id && !subject_id && !noStudentSubjects" }
+  .content-block{ "ng-show"=>"student_id && !subject_id && !hasNoSubjects" }
     Please select a subject

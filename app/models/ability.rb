@@ -21,6 +21,9 @@ class Ability
       # Can manage posts that they authored
       can :manage, Post, author_id: student.id, author_type: "Student"
 
+      # Can view their own academics
+      can :view_academics, student
+
     elsif user.is_guardian?
       guardian = profile
 
@@ -68,5 +71,10 @@ class Ability
 
     # Everyone can view tags
     can :read, Tag
+
+    # Everyone can view academics
+    can :read, Subject
+    can :read, Unit
+    can :read, StudentMilestone
   end
 end
