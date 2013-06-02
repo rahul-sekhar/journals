@@ -327,7 +327,7 @@
     }
   }
 
-  .milestones.show li:hover {
+  .milestones.show li.editable:hover {
     background-color: #f6f6f6;
     cursor: pointer;
   }
