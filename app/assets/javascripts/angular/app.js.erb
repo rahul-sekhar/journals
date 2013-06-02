@@ -75,7 +75,8 @@ angular.module('journals', ['journals.user', 'journals.people', 'journals.posts'
 
       when('/academics', {
         templateUrl: '<%= asset_path("academics_summary.html") %>',
-        controller: 'AcademicsSummaryCtrl'
+        controller: 'AcademicsSummaryCtrl',
+        reloadOnSearch: false
       }).
 
       when('/academics/subjects', {

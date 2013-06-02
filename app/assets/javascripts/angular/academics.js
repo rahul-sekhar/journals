@@ -18,7 +18,7 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
 
       if (student_id) {
         Students.get(student_id).then(function (student) {
-          $scope.setStudent(student);
+          $scope.setStudent(student, true);
         });
       }
 
