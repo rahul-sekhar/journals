@@ -23,5 +23,6 @@
         %td.due {{item.due_date}}
         %td.framework {{item.framework_edited}}
 
-      %tr{ "ng-show"=>"academics_items.length == 0" }
-        %td{ "colspan"=>"5" } You do not yet have any students assigned
+      %tr{ "ng-show"=>"!academics_items.length" }
+        %td{ "ng-show"=>"isTeacher", "colspan"=>"5" } You do not yet have any students assigned
+        %td{ "ng-hide"=>"isTeacher", "colspan"=>"5" } You do not yet have any subjects assigned

@@ -194,8 +194,21 @@ angular.module('journals.directives', []).
       var interval = 15;
       var scrollAmount = 8;
 
+      scrollLeft.addClass('disabled')
+
       function scrollFn() {
         scrollContainer.scrollLeft(scrollContainer.scrollLeft() + direction * scrollAmount);
+        if (scrollContainer.scrollLeft() === 0) {
+          scrollLeft.addClass('disabled');
+        } else {
+          scrollLeft.removeClass('disabled');
+        }
+
+        if (scrollContainer.scrollLeft() >= scrollContainer.prop('scrollWidth') - scrollContainer.outerWidth()) {
+          scrollRight.addClass('disabled');
+        } else {
+          scrollRight.removeClass('disabled');
+        }
       }
 
       function startScroll(_direction_) {

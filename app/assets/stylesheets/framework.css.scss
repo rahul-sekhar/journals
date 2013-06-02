@@ -173,6 +173,10 @@
   .milestones-wrapper {
     position: relative;
 
+    .milestones {
+      min-height: 140px;
+    }
+
     .scroll {
       padding: 0 74px;
       margin-bottom: 20px;
@@ -186,18 +190,30 @@
       height: 100%;
       top: 0;
       width: 60px;
-      background-color: grey;
+      background: image-url('arrows.png') rgba(80, 80, 80, 0.2) no-repeat;
       opacity: 0;
       z-index: 10;
       @include transition(opacity 400ms ease);
     }
 
+    .scroll-left {
+      background-position: -20px center;
+    }
+
+    .scroll-right {
+      background-position: -120px center;
+    }
+
     &:hover {
       .scroll-left, .scroll-right {
-        opacity: 0.2;
+        opacity: 0.4;
 
         &:hover {
-          opacity: 0.4;
+          opacity: 0.8;
+        }
+
+        &.disabled {
+          opacity: 0;
         }
       }
     }
