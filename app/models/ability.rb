@@ -47,6 +47,11 @@ class Ability
       can :update, Guardian do |other_guardian|
         (guardian.students & other_guardian.students).present?
       end
+
+      # Can view academics for their students
+      can :view_academics, Student do |student|
+        guardian.students.exists? student
+      end
     end
 
     # Everyone can read all comments on posts they can read

@@ -12,7 +12,7 @@ describe UnitsController do
     ability.can :manage, Unit
   end
 
-  describe "GET index", :focus do
+  describe "GET index" do
     let(:student){ create(:student) }
     let(:subject){ create(:subject) }
     let(:make_request){ get :index, student_id: student.id, subject_id: subject.id, format: :json }

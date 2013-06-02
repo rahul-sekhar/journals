@@ -5,7 +5,7 @@ describe('academics module', function () {
 
   /*------------------ Academic filters controller ----------------------*/
   describe('AcademicFiltersCtrl', function () {
-    var scope, Students, deferred, AcademicFilters;
+    var scope, Students, deferred;
 
     beforeEach(inject(function ($rootScope, $q) {
       scope = $rootScope.$new();
@@ -16,13 +16,6 @@ describe('academics module', function () {
         all: jasmine.createSpy().andReturn('students'),
         get: jasmine.createSpy().andReturn(deferred.promise)
       };
-
-      AcademicFilters = {
-        reset: jasmine.createSpy(),
-        setStudentId: jasmine.createSpy(),
-        setSubjectId: jasmine.createSpy(),
-        hasNoSubjects: jasmine.createSpy()
-      };
     }));
 
     describe('with no student_id', function () {
@@ -30,13 +23,8 @@ describe('academics module', function () {
         $controller('AcademicFiltersCtrl', {
           $scope: scope,
           Students: Students,
-          AcademicFilters: AcademicFilters
         });
       }));
-
-      it('resets the filter service', function () {
-        expect(AcademicFilters.reset).toHaveBeenCalled();
-      });
 
       it('sets selected to an empty object', function () {
         expect(scope.selected).toEqual({});
@@ -72,7 +60,7 @@ describe('academics module', function () {
           });
 
           it('sets the selected student', function () {
-            expect(scope.setStudent).toHaveBeenCalledWith(student);
+            expect(scope.setStudent).toHaveBeenCalledWith(student, true);
           });
 
           it('sets students to that student only', function () {
@@ -89,7 +77,6 @@ describe('academics module', function () {
         $controller('AcademicFiltersCtrl', {
           $scope: scope,
           Students: Students,
-          AcademicFilters: AcademicFilters
         });
       }));
 
@@ -139,9 +126,9 @@ describe('academics module', function () {
             expect(scope.selected.subject).toBeUndefined();
           });
 
-          it('sets the service hasNoSubjects to false', function () {
-            expect(AcademicFilters.hasNoSubjects).toHaveBeenCalledWith(false);
-          });
+          it('sets hasNoSubjects to false', inject(function ($rootScope) {
+            expect($rootScope.hasNoSubjects).toEqual(false);
+          }));
         });
       });
 
@@ -153,9 +140,9 @@ describe('academics module', function () {
           $httpBackend.flush();
         }));
 
-        it('sets the service hasNoSubjects to true', function () {
-          expect(AcademicFilters.hasNoSubjects).toHaveBeenCalledWith(true);
-        });
+        it('sets hasNoSubjects to true', inject(function ($rootScope) {
+          expect($rootScope.hasNoSubjects).toEqual(true);
+        }));
       });
     });
 
@@ -168,7 +155,6 @@ describe('academics module', function () {
         $controller('AcademicFiltersCtrl', {
           $scope: scope,
           Students: Students,
-          AcademicFilters: AcademicFilters
         });
 
         deferred.resolve({ name: 'some student', id: 2 });
@@ -179,36 +165,26 @@ describe('academics module', function () {
       it('sets the selected subject', inject(function ($httpBackend) {
         expect(scope.selected.subject).toEqualData({id: 3, name: 'Three'});
       }));
-
-      it('sets the service subject id', function () {
-        expect(AcademicFilters.setSubjectId).toHaveBeenCalledWith(3);
-      })
     });
   });
 
 
   /*--------------- Academics work controller -------------------*/
   describe('AcademicsWorkCtrl', function () {
-    var scope, AcademicFilters, Units, frameworkService, httpBackend;
+    var scope, Units, frameworkService, httpBackend;
 
     beforeEach(inject(function ($rootScope, $controller, $httpBackend) {
       scope = $rootScope.$new();
       httpBackend = $httpBackend;
-      AcademicFilters = { registerScope: jasmine.createSpy() };
       frameworkService = { showFramework: jasmine.createSpy() };
       Units = { update: jasmine.createSpy().andReturn('model') };
 
       $controller('AcademicsWorkCtrl', {
         $scope: scope,
-        AcademicFilters: AcademicFilters,
         Units: Units,
         frameworkService: frameworkService
       });
     }));
-
-    it('registers the scope', function () {
-      expect(AcademicFilters.registerScope).toHaveBeenCalledWith(scope);
-    });
 
     describe('addUnit()', function () {
       beforeEach(function () {
@@ -254,17 +230,19 @@ describe('academics module', function () {
     });
 
     describe('with a student and a subject set', function () {
-      beforeEach(function () {
+      beforeEach(inject(function ($location, $rootScope) {
         httpBackend.expectGET('/academics/units.json?student_id=2&subject_id=5').
           respond(['unit1', 'unit2']);
 
         // Not testing for milestones
         httpBackend.expectGET('/students/2/student_milestones.json?subject_id=5').respond([]);
 
-        scope.student_id = 2;
-        scope.subject_id = 5;
-        scope.$apply();
-      });
+        $location.search({
+          student_id: 2,
+          subject_id: 5
+        })
+        $rootScope.$broadcast('$routeUpdate');
+      }));
 
       it('sends a http request', function () {
         httpBackend.verifyNoOutstandingExpectation();

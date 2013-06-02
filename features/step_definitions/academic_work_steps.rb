@@ -11,11 +11,19 @@ def add_subject_for_self(subject)
   st.students << @student
 end
 
-Given(/^(the student John has|I have) done some work on Maths$/) do |p_protagonist|
+def add_subject_for_roly(subject)
+  @student = Student.where(first_name: "Roly").first
+  st = subject.add_teacher(FactoryGirl.create(:teacher))
+  st.students << @student
+end
+
+Given(/^(the student John has|I have|my student Roly has) done some work on Maths$/) do |p_protagonist|
   step 'the subject "Maths" exists'
 
   if (p_protagonist == 'I have')
     add_subject_for_self(@subject)
+  elsif (p_protagonist == 'my student Roly has')
+    add_subject_for_roly(@subject)
   else
     create_student_john(@subject)
   end
@@ -32,11 +40,13 @@ Given(/^(the student John has|I have) done some work on Maths$/) do |p_protagoni
   FactoryGirl.create(:unit, name: "Unwanted Unit", student: @student)
 end
 
-Given(/^(the student John has|I have) some milestones set for Maths$/) do |p_protagonist|
+Given(/^(the student John has|I have|my student Roly has) some milestones set for Maths$/) do |p_protagonist|
   step 'the subject "Maths" exists with a framework'
 
   if (p_protagonist == 'I have')
     add_subject_for_self(@subject)
+  elsif (p_protagonist == 'my student Roly has')
+    add_subject_for_roly(@subject)
   else
     create_student_john(@subject)
   end
@@ -63,15 +73,7 @@ Given(/^(the student John has|I have) some milestones set for Maths$/) do |p_pro
   )
 end
 
-Given(/^John has a few more subjects$/) do
-  Subject.create!(name: "History")
-  subject = Subject.create!(name: "English")
-
-  st = subject.add_teacher(@profile)
-  st.students << @student
-end
-
-Given(/^I have a few more subjects$/) do
+Given(/^(?:John has|I have|my student Roly has) a few more subjects$/) do
   Subject.create!(name: "History")
   subject = Subject.create!(name: "English")
 

@@ -29,17 +29,24 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
           Students.get($scope.user.id).then(function (student) {
             $scope.students = [student];
             if (student_id !== student.id) {
-              $scope.setStudent(student);
+              $scope.setStudent(student, true);
             }
+          });
+        } else if (type === 'Guardian') {
+          $scope.students = [];
+          angular.forEach($scope.user.student_ids, function (student_id) {
+            Students.get(student_id).then(function (student) {
+              $scope.students.push(student);
+            });
           });
         }
       });
 
-      $scope.setStudent = function (student) {
+      $scope.setStudent = function (student, skipLocationChange) {
         $scope.selected.student = student;
         student_id = student.id;
         getSubjects();
-        checkFilters();
+        checkFilters(skipLocationChange);
         hideMenus();
       }
 
@@ -78,9 +85,12 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
           });
       }
 
-      function checkFilters() {
+      function checkFilters(skipLocationChange) {
         if (student_id) {
-          $location.path('/academics/work')
+          if (!skipLocationChange) {
+            $location.path('/academics/work');
+          }
+
           $location.search({ student_id: student_id });
           if (subject_id) {
             $location.search('subject_id', subject_id);
