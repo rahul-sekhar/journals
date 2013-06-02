@@ -157,12 +157,13 @@ ActiveRecord::Schema.define(:version => 20130529103043) do
 
   create_view "profile_names", "(SELECT students.first_name, substr((students.last_name)::text, 1, 1) AS initial, 'Student'::text AS profile_type, students.id AS profile_id FROM students UNION ALL SELECT teachers.first_name, substr((teachers.last_name)::text, 1, 1) AS initial, 'Teacher'::text AS profile_type, teachers.id AS profile_id FROM teachers) UNION ALL SELECT guardians.first_name, substr((guardians.last_name)::text, 1, 1) AS initial, 'Guardian'::text AS profile_type, guardians.id AS profile_id FROM guardians", :force => true
   create_table "strands", :force => true do |t|
+    t.integer  "subject_id",                     :null => false
     t.integer  "parent_strand_id"
     t.string   "name",             :limit => 80, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "subject_id",                     :null => false
     t.integer  "position",                       :null => false
+    t.index ["subject_id"], :name => "index_strands_on_academic_id", :order => {"subject_id" => :asc}
     t.index ["parent_strand_id"], :name => "index_strands_on_parent_strand_id", :order => {"parent_strand_id" => :asc}
     t.index ["position"], :name => "index_strands_on_position", :order => {"position" => :asc}
     t.index ["subject_id"], :name => "index_strands_on_subject_id", :order => {"subject_id" => :asc}
@@ -207,24 +208,26 @@ ActiveRecord::Schema.define(:version => 20130529103043) do
   end
 
   create_table "subject_teacher_students", :id => false, :force => true do |t|
+    t.integer  "subject_teacher_id", :null => false
     t.integer  "student_id",         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "subject_teacher_id", :null => false
+    t.index ["subject_teacher_id", "student_id"], :name => "academics_students_index", :order => {"subject_teacher_id" => :asc, "student_id" => :asc}
   end
 
   create_table "subject_teachers", :force => true do |t|
-    t.integer  "teacher_id", :null => false
     t.integer  "subject_id", :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "teacher_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["subject_id", "teacher_id"], :name => "academics_teachers_index", :order => {"subject_id" => :asc, "teacher_id" => :asc}
     t.index ["subject_id", "teacher_id"], :name => "index_subject_teachers_on_subject_id_and_teacher_id", :unique => true, :order => {"subject_id" => :asc, "teacher_id" => :asc}
   end
 
   create_table "subjects", :force => true do |t|
     t.string   "name",       :limit => 50, :null => false
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "units", :force => true do |t|
