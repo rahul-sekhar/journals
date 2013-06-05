@@ -175,7 +175,7 @@ h2 {
       @include link-colors($light-cream);
       display: table-cell;
       vertical-align: middle;
-      padding: 10px 40px 10px 70px;
+      padding: 10px 0 10px 70px;
       background: $grey-brown image-url('large-icons.png') no-repeat;
       @include transition(background-color 200ms ease);
 
@@ -197,6 +197,10 @@ h2 {
 
       &#help_link {
         background-position: 8px -329px;
+      }
+
+      &#academics_link {
+        background-position: 8px -169px;
       }
     }
   }

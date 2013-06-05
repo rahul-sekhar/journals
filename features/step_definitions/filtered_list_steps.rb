@@ -1,45 +1,19 @@
-Given /^I should see its add group list$/ do
-  @list = @viewing.should have_css('.groups .filtered-list', visible: true)
+Given /^I should see its add (\S*) list$/ do |p_list|
+  @list = @viewing.should have_css(".#{p_list}s .filtered-list", visible: true)
 end
 
-Given /^I should see its add mentor list$/ do
-  @list = @viewing.should have_css('.mentors .filtered-list', visible: true)
+Given /^I should not see its add (\S*) list$/ do |p_list|
+  @list = @viewing.should have_no_css(".#{p_list}s .filtered-list", visible: true)
 end
 
-Given /^I should see its add mentee list$/ do
-  @list = @viewing.should have_css('.mentees .filtered-list', visible: true)
-end
-
-
-Given /^I should not see its add group list$/ do
-  @list = @viewing.should have_no_css('.groups .filtered-list', visible: true)
-end
-
-Given /^I should not see its add mentor list$/ do
-  @list = @viewing.should have_no_css('.mentors .filtered-list', visible: true)
-end
-
-Given /^I should not see its add mentee list$/ do
-  @list = @viewing.should have_no_css('.mentees .filtered-list', visible: true)
-end
-
-
-Given /^get its add group list$/ do
-  @list = @viewing.find('.groups .filtered-list', visible: true)
-end
-
-Given /^get its add mentor list$/ do
-  @list = @viewing.find('.mentors .filtered-list', visible: true)
-end
-
-Given /^get its add mentee list$/ do
-  @list = @viewing.find('.mentees .filtered-list', visible: true)
+Given /^get its add (\S*) list$/ do |p_list|
+  @list = @viewing.find(".#{p_list}s .filtered-list", visible: true)
 end
 
 When /^I open (.*) list$/ do |p_list|
   step "get #{p_list} list"
   button = @list.find('.add')
-  button.text.should eq('add')
+  button.text.should match(/^add/i)
   button.click
 end
 

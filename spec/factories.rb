@@ -56,4 +56,36 @@ FactoryGirl.define do
     student
     content "Some content"
   end
+
+  factory :subject do
+    sequence(:name){ |n| "subject#{n}"}
+  end
+
+  factory :strand do
+    subject
+    sequence(:name){ |n| "strand#{n}"}
+  end
+
+  factory :milestone do
+    strand
+    level 1
+    sequence(:content){ |n| "milestone#{n}"}
+  end
+
+  factory :subject_teacher do
+    subject
+    teacher
+  end
+
+  factory :unit do
+    subject
+    student
+    sequence(:name){ |n| "unit#{n}"}
+  end
+
+  factory :student_milestone do
+    milestone
+    student
+    status 1
+  end
 end

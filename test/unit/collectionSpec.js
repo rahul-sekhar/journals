@@ -199,19 +199,38 @@ describe('Collection module', function() {
       describe('add()', function() {
         var instances, result;
 
-        beforeEach(function() {
+        beforeEach(function () {
           httpBackend.expectGET('/objects.json').respond([{id: 1, name: "One"}, {id: 2, name: "Two"}]);
           instances = collection.all();
           httpBackend.flush();
-          result = collection.add({data: 'something'});
         });
 
-        it('adds a new instance to the beginning of the collection', function() {
-          expect(instances).toEqualData([{data: 'something', model: true}, {id: 1, name: "One", model: true}, {id: 2, name: "Two", model: true}]);
+        describe('without addToEnd set', function () {
+          beforeEach(function() {
+            result = collection.add({data: 'something'});
+          });
+
+          it('adds a new instance to the beginning of the collection', function() {
+            expect(instances).toEqualData([{data: 'something', model: true}, {id: 1, name: "One", model: true}, {id: 2, name: "Two", model: true}]);
+          });
+
+          it('returns the added instance', function() {
+            expect(result).toBe(instances[0]);
+          });
         });
 
-        it('returns the added instance', function() {
-          expect(result).toBe(instances[0]);
+        describe('with addToEnd set', function () {
+          beforeEach(function() {
+            result = collection.add({data: 'something'}, true);
+          });
+
+          it('adds a new instance to the end of the collection', function() {
+            expect(instances).toEqualData([{id: 1, name: "One", model: true}, {id: 2, name: "Two", model: true}, {data: 'something', model: true}]);
+          });
+
+          it('returns the added instance', function() {
+            expect(result).toBe(instances[2]);
+          });
         });
       });
 
@@ -288,6 +307,58 @@ describe('Collection module', function() {
           httpBackend.expectGET('/custom/path.json').respond([]);
           collection.all();
           httpBackend.verifyNoOutstandingExpectation();
+        });
+      });
+    });
+
+    describe('with initialLoad set to false', function () {
+      beforeEach(inject(function(_collection_) {
+        collection = _collection_(model, {
+          initialLoad: false
+        });
+      }));
+
+
+      describe('all()', function() {
+        var result;
+
+        beforeEach(function () {
+          result = collection.all();
+        });
+
+        it('does not send a request to the server', function () {
+          httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it('sets the result to an empty array', function() {
+          expect(result).toEqual([]);
+        });
+
+        it('updates all if the collection is changed', function () {
+          result.push('new item');
+          expect(collection.all()).toEqual(['new item'])
+        });
+      });
+
+      describe('get(id)', function() {
+        var result;
+
+        beforeEach(function() {
+          result = collection.all();
+          result.push({id: 1, name: 'A'}, {id: 3, name: 'B'}, {id: 4, name: 'C'});
+        });
+
+        it('does not send a request to the server', function () {
+          collection.get(3);
+          httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it('returns the correct item', function () {
+          expect(collection.get(3)).toEqualData({id: 3, name: 'B'});
+        });
+
+        it('returns false if not found', function () {
+          expect(collection.get(2)).toEqual(false);
         });
       });
     });

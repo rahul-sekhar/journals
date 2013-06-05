@@ -1,0 +1,28 @@
+%table.academics.editable
+  %thead
+    %tr
+      %th.name Unit of work
+      %th.started.date Started
+      %th.due.date Due
+      %th.completed.date Completed
+      %th.comments Comments
+
+  %tbody
+    %tr{ "ng-repeat"=>"unit in units | filterDeleted" }
+      %td.name
+        %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"name" }
+      %td.started.date
+        %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"started_date", "type"=>"date", "no-age" => "true" }
+      %td.due.date
+        %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"due_date", "type"=>"date", "no-age" => "true" }
+      %td.completed.date
+        %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"completed_date", "type"=>"date", "no-age" => "true" }
+      %td.comments
+        %p{ "edit-in-place"=>true, "instance"=>"unit", "field"=>"comments", "type"=>"textarea" }
+        %a.delete{ "href"=>"", "ng-click"=>"deleteUnit(unit)" }
+
+    %tr{ "ng-show"=>"(units | filterDeleted).length == 0" }
+      %td{ "colspan"=>"5" } No work has been added yet
+
+%a.add{ "href"=>"", "ng-click"=>"addUnit()", "ng-show"=>"units.length >= 0" } Add unit
+

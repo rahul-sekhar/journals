@@ -9,7 +9,8 @@ angular.module('journals.directives', []).
         list: '=',
         onSelect: '&',
         showProperty: '@',
-        alwaysShown: '@'
+        alwaysShown: '@',
+        addText: '@'
       },
       template:
         '<div class="filtered-list" ng-show="list.length">' +
@@ -41,11 +42,13 @@ angular.module('journals.directives', []).
 
         $scope.$watch('listShown', function (value) {
           $scope.buttonText = value ? "Cancel" : ($scope.addText || "Add");
+          if (!value) {
+            $scope.filter = '';
+          }
         });
 
         $scope.select = function (item) {
           $scope.listShown = false;
-          $scope.filter = '';
           $scope.onSelect({value: item});
         };
       }]
@@ -149,7 +152,7 @@ angular.module('journals.directives', []).
     };
   }]).
 
-  directive('watchHeight', ['$parse', '$timeout', function ($parse, $timeout) {
+  directive('watchHeight', ['$parse', function ($parse) {
     return function(scope, elem, attrs) {
       var expanded = $parse(attrs.expanded);
 
@@ -162,5 +165,72 @@ angular.module('journals.directives', []).
           elem.css('max-height', '')
         }
       });
+    };
+  }]).
+
+  directive('padHeight', ['$parse', function ($parse) {
+    return function(scope, elem, attrs) {
+      var basePadding = parseInt(elem.css('padding-bottom'), 10);
+
+      scope.$watch(function () {
+        return (elem.prop('scrollHeight'));
+      }, function (newVal) {
+        elem.css('padding-bottom', basePadding + newVal - elem.outerHeight() + 'px');
+      });
+    };
+  }]).
+
+  directive('scrollArrows', [function () {
+    return function(scope, elem, attrs) {
+
+      elem.wrapInner('<div class="scroll"></div>');
+      var scrollContainer = elem.find('.scroll');
+
+      var scrollLeft = angular.element('<div class="scroll-left"></div>').appendTo(elem);
+      var scrollRight = angular.element('<div class="scroll-right"></div>').appendTo(elem);
+
+      var direction = 1;
+      var timer;
+      var interval = 15;
+      var scrollAmount = 8;
+
+      scrollLeft.addClass('disabled')
+
+      function scrollFn() {
+        scrollContainer.scrollLeft(scrollContainer.scrollLeft() + direction * scrollAmount);
+        if (scrollContainer.scrollLeft() === 0) {
+          scrollLeft.addClass('disabled');
+        } else {
+          scrollLeft.removeClass('disabled');
+        }
+
+        if (scrollContainer.scrollLeft() >= scrollContainer.prop('scrollWidth') - scrollContainer.outerWidth()) {
+          scrollRight.addClass('disabled');
+        } else {
+          scrollRight.removeClass('disabled');
+        }
+      }
+
+      function startScroll(_direction_) {
+        stopScroll();
+        direction = _direction_;
+        timer = setInterval(scrollFn, interval);
+      }
+
+      function stopScroll(direction) {
+        if (timer) {
+          clearInterval(timer);
+        }
+      }
+
+      scrollLeft.on('mouseenter', function () {
+        startScroll(-1);
+      });
+      scrollLeft.on('mouseleave', stopScroll);
+
+      scrollRight.on('mouseenter', function () {
+        startScroll(1);
+      });
+      scrollRight.on('mouseleave', stopScroll);
     };
   }]);

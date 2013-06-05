@@ -1,0 +1,47 @@
+.ng-view-container
+  %h2 Academic records
+
+  .notice
+
+  %section#upper-bar
+    .academic-filters{ "ng-include"=>"'#{asset_path('academic_filters.html')}'" }
+    .clear-left
+
+  %div{ "ng-show"=>"student_id && subject_id", "ng-switch"=>"!!isTeacher" }
+    #units
+      %h3 Work log
+
+      %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('editable_units.html')}'" }
+      %div{ "ng-switch-when"=>"false", "ng-include"=>"'#{asset_path('non_editable_units.html')}'" }
+
+    #milestones
+      %h3
+        Framework
+        %a.view{ "href"=>"", "ng-click"=>"showFramework()" } View{{isTeacher && ' and mark' || ''}} framework
+
+      %table.academics
+        %tr
+          %th.mark Mark date
+          %th.level Level
+          %th.milestone Milestone
+          %th.status Status
+          %th.comments Comments
+
+        %tr{ "ng-repeat"=>"milestone in milestones" }
+          %td.mark {{milestone.mark_date}}
+          %td.level {{milestone.level}}
+          %td.milestone {{milestone.content}}
+          %td.status {{milestone.status_text}}
+          %td.comments {{milestone.comments}}
+
+        %tr{ "ng-show"=>"milestones.length == 0" }
+          %td{ "colspan"=>"5" } No work has been added yet
+
+  .content-block{ "ng-hide"=>"student_id" }
+    Please select a student
+
+  .content-block{ "ng-show"=>"student_id && hasNoSubjects" }
+    This student does not have any associated subjects yet
+
+  .content-block{ "ng-show"=>"student_id && !subject_id && !hasNoSubjects" }
+    Please select a subject

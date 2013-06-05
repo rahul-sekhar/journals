@@ -1,0 +1,12 @@
+.title
+  %p {{strand.name}}
+
+%ng-switch{ "on"=>"!!(strand.strands).length" }
+  %ol{ "ng-switch-when"=>"true" }
+    %li{ "ng-repeat"=>"strand in strand.strands | filterDeleted",
+      "ng-include"=>"'/assets/show_strand.html'",
+      "ng-class"=>"{'sub-sub-strand': strand.nestingLevel() == 3}" }
+
+%ng-switch{ "on"=>"!!(strand.milestones).length" }
+  %div{ "ng-switch-when"=>"true", "ng-include"=>"'#{asset_path('show_milestones.html')}'" }
+  .milestone-placeholder{ "ng-switch-when"=>"false" }

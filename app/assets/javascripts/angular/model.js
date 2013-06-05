@@ -54,7 +54,7 @@ angular.module('journals.model', ['journals.ajax', 'journals.model.associations'
         instance.url = function () {
           var url = path;
 
-          if (instance.id) {
+          if (!instance.isNew()) {
             url += '/' + instance.id
           }
 

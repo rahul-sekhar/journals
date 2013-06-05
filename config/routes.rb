@@ -23,6 +23,10 @@ Journals::Application.routes.draw do
       end
     end
 
+    resources :student_milestones, only: [:index, :create]
+
+    get "subjects" => "subjects#for_student"
+
     member do
       post :reset
       post :archive
@@ -51,6 +55,37 @@ Journals::Application.routes.draw do
   resources :groups, except: [:new, :edit, :show]
 
   resources :tags, only: [:index]
+
+  scope '/academics' do
+    root :to => "pages#academics", as: :academics
+    get "work" => "pages#home"
+
+    resources :subjects, except: [:new, :edit] do
+      resources :subject_teachers, only: [:create, :destroy] do
+        member do
+          post "students/:student_id", action: "add_student"
+          delete "students/:student_id", action: "remove_student"
+        end
+      end
+
+      member do
+        get :people
+        post :add_strand
+      end
+    end
+
+    resources :strands, only: [:update, :destroy] do
+      member do
+        post :add_milestone
+        post :add_strand
+      end
+    end
+    resources :milestones, only: [:update, :destroy]
+
+    resources :units, only: [:index, :create, :update, :destroy]
+
+    resources :student_milestones, only: :update
+  end
 
   match "*not_found", :to => "errors#not_found"
 end

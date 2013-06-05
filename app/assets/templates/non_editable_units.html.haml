@@ -1,0 +1,29 @@
+%table.academics
+  %thead
+    %tr
+      %th.name Unit of work
+      %th.started.date Started
+      %th.due.date Due
+      %th.completed.date Completed
+      %th.comments Comments
+
+  %tbody
+    %tr{ "ng-repeat"=>"unit in units" }
+      %td.name
+        %p
+          %span.value {{unit.name}}
+      %td.started.date
+        %p
+          %span.value {{unit.started_date}}
+      %td.due.date
+        %p
+          %span.value {{unit.due_date}}
+      %td.completed.date
+        %p
+          %span.value {{unit.completed_date}}
+      %td.comments
+        %p
+          %span.value{ "ng-bind-html"=>"unit.comments | escapeHtml | multiline" }
+
+    %tr{ "ng-show"=>"units.length == 0" }
+      %td{ "colspan"=>"5" } No work has been added yet

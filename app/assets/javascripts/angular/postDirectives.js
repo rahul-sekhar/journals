@@ -91,7 +91,7 @@ angular.module('journals.posts.directives', ['journals.posts', 'journals.assets'
     return function(scope, elem, attrs) {
       var editor, checkHeightFn, obsIframe, buttonList;
 
-      editor = elem.find('textarea');
+      editor = elem;
 
       // get elements on editor initialization
       editor.on('editorInit', function () {
