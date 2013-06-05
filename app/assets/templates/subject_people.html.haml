@@ -1,0 +1,23 @@
+%modal#subjects-people{ "show-on"=>"dialog.shown", "modal-width"=>"400" }
+  %h3 {{subjectPeople.name}}
+  =image_tag "loader-small.gif", 'alt'=>'', 'ng-hide'=>'subjectPeople'
+
+  .container
+    .teachers
+      %ul.current
+        %li{ "ng-repeat"=>"subject_teacher in subjectPeople.subject_teachers",
+          "ng-class"=>"{selected: (selected == subject_teacher)}" }
+
+          %p{ "ng-click"=>"selectTeacher(subject_teacher)" }
+            %span {{subject_teacher.teacher.short_name}}
+          %a.delete{ "href"=>"", "ng-show"=>"subject_teacher.id", "ng-click"=>"deleteTeacher(subject_teacher)" }
+
+      %filtered-list{ "list"=>"subjectPeople.remainingTeachers()", "show-property"=>"short_name", "on-select"=>"addTeacher(value)", "add-text"=>"Add teacher" }
+
+    .students{ "ng-show"=>"selected" }
+      %ul.current
+        %li{ "ng-repeat"=>"student in selected.students" }
+          {{student.short_name}}
+          %a.delete{ "href"=>"", "ng-click"=>"selected.removeStudent(student)" }
+
+      %filtered-list{ "list"=>"selected.remainingStudents()", "show-property"=>"short_name", "on-select"=>"selected.addStudent(value)", "add-text"=>"Add student" }

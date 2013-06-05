@@ -1,0 +1,458 @@
+#framework {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  left: 0;
+  top: 0;
+  opacity: 1;
+  overflow: auto;
+
+  .framework-wrapper {
+    padding: 36px 33px;
+
+    & > .add {
+      display: block;
+      @include link-colors($off-black, lighten($off-black, 20));
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      @include semibold;
+      margin-top: 20px;
+      background: image-url('small-icons.png') no-repeat 0 -356px;
+      line-height: 18px;
+      padding-left: 25px;
+      margin-bottom: 20px;
+
+      &:hover { background-position: 0 -396px; }
+    }
+  }
+
+  h3 {
+    font-size: 20px;
+    @include semibold;
+    margin-bottom: 35px;
+
+    img {
+      vertical-align: middle;
+    }
+  }
+
+  .close {
+    display: block;
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    top: 36px;
+    right: 33px;
+    font-weight: normal;
+    background: image-url('large-icons.png') no-repeat -19px -1009px;
+
+    &:hover {
+      background-position: -19px -1049px;
+    }
+  }
+
+  ol {
+    counter-reset: strand;
+
+    // General strands
+    li {
+      .title {
+        line-height: 34px;
+        padding-left: 48px;
+        position: relative;
+        @include new-clearfix;
+      }
+
+      p {
+        font-size: 16px;
+        @include semibold;
+        float: left;
+
+        .value {
+          border: 1px solid transparent;
+          @include transition(border 200ms ease 100ms);
+          &:hover {
+            border: 1px solid grey;
+            @include transition(border 400ms ease 200ms);
+          }
+        }
+
+        .editor {
+          font-size: 16px;
+          @include semibold;
+          border: 1px solid grey;
+          outline: none;
+          padding: 0;
+          margin: 0;
+          width: 600px;
+        }
+
+        &:before {
+          counter-increment: strand;
+          content: counters(strand, ".");
+          margin-right: 5px;
+          float: left;
+        }
+      }
+
+      .manage-links {
+        float: left;
+        text-transform: lowercase;
+        font-size: 12px;
+        margin-left: 20px;
+        opacity: 0;
+        visibility: hidden;
+        @include transition(opacity 200ms ease 100ms, visibility 200ms ease 100ms);
+
+        a {
+          margin-right: 10px;
+          @include link-colors($off-black, lighten($off-black, 20));
+        }
+      }
+
+      .title:hover .manage-links {
+        opacity: 1;
+        visibility: visible;
+        @include transition(opacity 400ms ease 200ms, visibility 400ms ease 200ms);
+      }
+    }
+
+    // Root strands
+    &.strands > li {
+      & > .title {
+        background-color: $brown;
+        color: white;
+
+        & > p {
+          .editor {
+            background-color: $brown;
+            color: white;
+          }
+
+          &:before {
+            content: counters(strand, ".") ". ";
+          }
+        }
+
+        & > .manage-links a {
+          @include link-colors(white, darken(white, 20));
+        }
+      }
+    }
+
+    // Sub-sub-strands
+    li.sub-sub-strand {
+      & > .title {
+        color: $grey-brown;
+        padding-left: 74px;
+        line-height: 24px;
+
+        & > p {
+          font-weight: normal;
+
+          .editor {
+            color: $grey-brown;
+            font-weight: normal;
+          }
+        }
+
+        & > .manage-links a {
+          @include link-colors($grey-brown, darken($grey-brown, 20));
+        }
+      }
+    }
+  }
+
+  // Milestones
+  .milestone-placeholder {
+    height: 10px;
+  }
+
+  .milestones-wrapper {
+    position: relative;
+
+    .milestones {
+      min-height: 140px;
+    }
+
+    .scroll {
+      padding: 0 74px;
+      margin-bottom: 20px;
+      margin-top: 10px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .scroll-left, .scroll-right {
+      position: absolute;
+      height: 100%;
+      top: 0;
+      width: 60px;
+      background: image-url('arrows.png') rgba(80, 80, 80, 0.2) no-repeat;
+      opacity: 0;
+      z-index: 10;
+      @include transition(opacity 400ms ease);
+    }
+
+    .scroll-left {
+      background-position: -20px center;
+    }
+
+    .scroll-right {
+      background-position: -120px center;
+    }
+
+    &:hover {
+      .scroll-left, .scroll-right {
+        opacity: 0.4;
+
+        &:hover {
+          opacity: 0.8;
+        }
+
+        &.disabled {
+          opacity: 0;
+        }
+      }
+    }
+
+    .scroll-left {
+      left: 0;
+    }
+
+    .scroll-right {
+      right: 0;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      height: 28px;
+      background-color: $grey-brown;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+
+    li {
+      margin: 20px 0;
+      position: relative;
+
+      .delete {
+        width: 15px;
+        height: 15px;
+        @include hide-text;
+        background: image-url('small-icons.png') no-repeat left 0;
+        &:hover { background-position: left -15px; }
+        position: absolute;
+        top: 0;
+        right: 30px;
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        @include transition(opacity 200ms ease 100ms, visibility 200ms ease 100ms);
+      }
+
+      &:hover .delete {
+        opacity: 1;
+        visibility: visible;
+        @include transition(opacity 400ms ease 200ms, visibility 400ms ease 200ms);
+      }
+    }
+
+    p {
+      font-weight: normal;
+      font-size: 14px;
+      width: 180px;
+      line-height: 120%;
+      float: none;
+
+      &:before {content: none;}
+    }
+
+    .value {
+      display: block;
+    }
+
+    .editor {
+      font-size: 14px;
+      font-weight: normal;
+      border: 1px solid grey;
+      outline: none;
+      padding: 0;
+      margin: 0;
+      width: 180px;
+      line-height: 120%;
+      resize: vertical;
+      height: 80px;
+    }
+
+    .add {
+      display: block;
+      @include link-colors($off-black, lighten($off-black, 20));
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      @include semibold;
+      margin-top: 20px;
+      background: image-url('small-icons.png') no-repeat 0 -356px;
+      line-height: 18px;
+      padding-left: 25px;
+      opacity: 0;
+      visibility: hidden;
+      @include transition(opacity 200ms ease 100ms, visibility 200ms ease 100ms);
+
+      &:hover { background-position: 0 -396px; }
+    }
+
+    td:hover .add {
+      opacity: 1;
+      visibility: visible;
+      @include transition(opacity 200ms ease 400ms, visibility 200ms ease 400ms);
+    }
+  }
+
+  table {
+    z-index: 2;
+    position: relative;
+    table-layout:fixed;
+  }
+
+  td {
+    vertical-align: top;
+    ul {
+      width: 230px;
+    }
+  }
+
+  tr:first-child {
+    height: 28px;
+    text-transform: lowercase;
+    background-color: $grey-brown;
+    color: white;
+    font-size: 16px;
+
+    td {
+      padding-left: 5px;
+      vertical-align: middle;
+    }
+  }
+
+  .milestones.show li.editable:hover {
+    background-color: #f6f6f6;
+    cursor: pointer;
+  }
+
+  .milestones .student-milestone .status-0 {
+    display: none;
+  }
+
+  .student-milestone {
+    margin-top: 5px;
+
+    .comments {
+      font-size: 12px;
+      font-style: italic;
+      color: $grey-1;
+    }
+  }
+}
+
+// Student milestones
+.student-milestone {
+  .status-0, .status-1,.status-2,.status-3 {
+    padding: 0;
+    line-height: 18px;
+    width: 93px;
+    height: 18px;
+    border: 1px solid transparent;
+    background-color: white;
+    margin-bottom: 5px;
+
+    &:after {
+      font-size: 12px;
+      display: block;
+      height: 100%;
+      text-align: center;
+    }
+  }
+
+  .status-0 {
+    &:after { content: 'no status'; }
+    border: 1px solid $grey-brown;
+  }
+
+  .status-1 {
+    &:after { content: 'learning'; }
+    background-color: #395EA1;
+    color: white;
+  }
+
+  .status-2 {
+    &:after { content: 'having difficulty'; }
+    background-color: #D98C69;
+    color: white;
+  }
+
+  .status-3 {
+    &:after { content: 'completed'; }
+    background-color: #54833D;
+    color: white;
+  }
+}
+
+#modify-student-milestone {
+  padding: 20px 30px;
+
+  .status {
+    float: left;
+    cursor: pointer;
+    margin-left: 10px;
+
+    div {
+      @include transition(opacity 300ms ease);
+      opacity: 0.3;
+    }
+
+    &.selected div {
+      opacity: 1;
+    }
+  }
+
+  ul {
+    @include new-clearfix;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  textarea {
+    resize: none;
+    display: block;
+    width: 390px;
+    margin: 0 10px;
+    border: 1px solid $grey-brown;
+    @include border-radius(5px);
+    padding: 5px 10px;
+    height: 40px;
+
+    font-size: 12px;
+    font-style: italic;
+    color: $grey-1;
+    line-height: 120%;
+  }
+
+  .submit {
+    line-height: 22px;
+    font-size: 14px;
+    margin-top: 20px;
+    margin-right: 10px;
+    float: right;
+    @include link-colors($cream, white);
+    @include border-radius(5px);
+  }
+}

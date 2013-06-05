@@ -1,0 +1,15 @@
+.framework-wrapper
+  %h3
+    Framework | {{framework.name}}
+    =image_tag "loader-small.gif", 'alt'=>'', 'ng-hide'=>'framework'
+
+  %a.close{ "href"=>"", "ng-click"=>"close()" }
+
+  %a.add{ "href"=>"", "ng-click"=>"addStrand(framework)" } Add strand
+
+  %ol.strands
+    %li{ "ng-repeat"=>"strand in framework.strands | filterDeleted", "ng-include"=>"'#{asset_path('edit_strand.html')}'", "ng-animate"=>"'fade'" }
+
+  %a.add{ "href"=>"",
+    "ng-click"=>"addStrand(framework)",
+    "ng-show"=>"(framework.strands | filterDeleted).length > 0"} Add strand

@@ -88,6 +88,11 @@ describe Student do
       create(:student_observation, student: profile)
       expect { profile.destroy }.to change { StudentObservation.count }.by(-1)
     end
+
+    it "destroys any units" do
+      create(:unit, student: profile)
+      expect{ profile.destroy }.to change{ Unit.count }.by(-1)
+    end
   end
 
   describe "#name_with_info" do

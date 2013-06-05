@@ -10,6 +10,8 @@ class Teacher < ActiveRecord::Base
   has_many :mentors, class_name: NullAssociation, foreign_key: :foreign_id
   has_many :guardians, class_name: NullAssociation, foreign_key: :foreign_id
 
+  has_many :subject_teachers, dependent: :destroy
+
   scope :load_associations, includes(:user, :mentees)
   scope :current, where(archived: false)
   scope :archived, where(archived: true)

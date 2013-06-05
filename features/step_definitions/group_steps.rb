@@ -24,13 +24,6 @@ Given /^I belong to the groups "(.*?)"$/ do |p_groups|
   profile.save!
 end
 
-
-# Given /^that group has the students Roly, Lucky and Jumble$/ do
-#   @group.students << FactoryGirl.create(:student, name: "Roly Sekhar")
-#   @group.students << FactoryGirl.create(:student, name: "Lucky Sekhar")
-#   @group.students << FactoryGirl.create(:student, name: "Jumble Sekhar")
-# end
-
 When /^I delete the group "(.*?)"$/ do |p_group|
   page.find('#groups li', text: /^#{p_group}/i, visible: true).find('.delete').click
 end

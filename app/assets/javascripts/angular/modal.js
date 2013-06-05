@@ -17,7 +17,9 @@ angular.module('journals.modal', []).
         elem.dialog({
           autoOpen: false,
           modal: true,
-          width: attrs.modalWidth || 300,
+          minWidth: attrs.modalWidth || 300,
+          minHeight: attrs.modalHeight || 100,
+          resizable: !!attrs.resizable || false,
           show: 300,
           hide: 300,
           close: function () {

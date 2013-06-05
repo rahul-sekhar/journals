@@ -1,0 +1,1 @@
+json.(unit, :id, :name, :started_date, :due_date, :completed_date, :comments)

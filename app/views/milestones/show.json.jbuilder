@@ -1,0 +1,1 @@
+json.(@milestone, :id, :content)

@@ -71,7 +71,8 @@ angular.module('journals.model.associations', ['journals.ajax', 'journals.helper
 
       var assocName = name + 's';
       var idsName = name + '_ids';
-      var capitalizedName = name.substring(0, 1).toUpperCase() + name.substring(1);
+      var camelCasedName = name.replace(/(_[a-z])/g, function($1){return $1.toUpperCase().replace('_','');});
+      var capitalizedName = camelCasedName.substring(0, 1).toUpperCase() + camelCasedName.substring(1);
       if (options.mirror) {
         var mirrorName = options.mirror.substring(0, 1).toUpperCase() + options.mirror.substring(1);
       }
