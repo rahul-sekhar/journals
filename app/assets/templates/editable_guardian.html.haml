@@ -2,6 +2,11 @@
   %header.guardian-header
     %h4{ "edit-in-place"=>true, "instance"=>"guardian", "field"=>"name", "edit-mode"=>"editing['name']", "placeholder"=>"Enter name" }
 
+    .activated{ "ng-hide"=>"guardian.active" }
+      %p.message
+        %span This user has not been activated. Users need to be activated before they can log into the system.
+        %span{ "ng-hide"=>"guardian.email" } An email address must be entered before the user can be activated.
+
     .manage.click-menu{ "ng-show"=>"isTeacher && guardian.id" }
       .icon.title
       %ul.container
