@@ -1,20 +1,20 @@
 // Generic fade
 
-.fade-enter-setup, .fade-show-setup {
+.fade-enter, .fade-show {
   @include transition(all ease 400ms);
   opacity: 0;
 }
 
-.fade-enter-setup.fade-enter-start, .fade-show-setup.fade-show-start {
+.fade-enter.fade-enter-active, .fade-show.fade-show-active {
   opacity: 1;
 }
 
-.fade-leave-setup, .fade-hide-setup {
+.fade-leave, .fade-hide {
   @include transition(all ease 400ms);
   opacity: 1;
 }
 
-.fade-leave-setup.fade-leave-start, .fade-hide-setup.fade-hide-start {
+.fade-leave.fade-leave-active, .fade-hide.fade-hide-active {
   opacity: 0;
 }
 
@@ -29,16 +29,16 @@
   width: 100%;
 }
 
-.view-fade-enter-setup {
+.view-fade-enter {
   @include transition(all ease 500ms);
   opacity: 0;
 }
 
-.view-fade-enter-setup.view-fade-enter-start {
+.view-fade-enter.view-fade-enter-active {
   opacity: 1;
 }
 
-.view-fade-leave-setup {
+.view-fade-leave {
   @include transition(all ease 200ms);
   opacity: 1;
 
@@ -48,7 +48,7 @@
   width: 100%;
 }
 
-.view-fade-leave-setup.view-fade-leave-start {
+.view-fade-leave.view-fade-leave-active {
   opacity: 0;
 }
 
@@ -56,18 +56,18 @@
 
 // Post fade
 
-.post-fade-enter-setup, .post-fade-leave-setup {
+.post-fade-enter, .post-fade-leave {
   @include transition(all ease 1000ms);
 }
 
-.post-fade-enter-setup article.post {
+.post-fade-enter article.post {
   @include transition(all ease 1000ms);
   opacity: 0;
   max-height: 0;
   overflow: hidden;
 }
 
-.post-fade-enter-setup.post-fade-enter-start article.post {
+.post-fade-enter.post-fade-enter-active article.post {
   opacity: 1;
   max-height: 700px;
 
@@ -76,7 +76,7 @@
   }
 }
 
-.post-fade-leave-setup article.post {
+.post-fade-leave article.post {
   opacity: 1;
   max-height: 700px;
   overflow: hidden;
@@ -86,7 +86,7 @@
   }
 }
 
-.post-fade-leave-setup.post-fade-leave-start article.post {
+.post-fade-leave.post-fade-leave-active article.post {
   @include transition(all ease 1000ms);
   opacity: 0;
   max-height: 0;
@@ -99,29 +99,29 @@
 
 // Profile fade
 
-.profile-fade-enter-setup, .profile-fade-leave-setup {
+.profile-fade-enter, .profile-fade-leave {
   @include transition(all ease 1000ms);
 }
 
-.profile-fade-enter-setup article.profile {
+.profile-fade-enter article.profile {
   @include transition(all ease 1000ms);
   opacity: 0;
   max-height: 0;
   overflow: hidden;
 }
 
-.profile-fade-enter-setup.profile-fade-enter-start article.profile {
+.profile-fade-enter.profile-fade-enter-active article.profile {
   opacity: 1;
   max-height: 500px;
 }
 
-.profile-fade-leave-setup article.profile {
+.profile-fade-leave article.profile {
   opacity: 1;
   max-height: 500px;
   overflow: hidden;
 }
 
-.profile-fade-leave-setup.profile-fade-leave-start article.profile {
+.profile-fade-leave.profile-fade-leave-active article.profile {
   @include transition(all ease 1000ms);
   opacity: 0;
   max-height: 0;
