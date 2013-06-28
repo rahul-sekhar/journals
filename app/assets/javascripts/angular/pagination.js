@@ -41,6 +41,7 @@ angular.module('journals.pagination', []).
             }
           }
           elem.on('click', 'a', function(e) {
+            e.preventDefault();
             scope.$apply(function() {
               scope.changePage($(e.target).data('page'));
             });
