@@ -10,6 +10,8 @@
       \<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     = csrf_meta_tags
 
+    %base{ href: "/" }
+
   %body
     #page-wrapper
       %header#page-header
@@ -28,7 +30,7 @@
       #notifications{ "ng-controller"=>"messageCtrl", "ng-class"=>"{shown: show}" }
         %p{ "ng-class"=>"message.type" } {{message.text}}
 
-      #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"mode" }
+      #framework{ "ng-controller"=>"FrameworkCtrl", "ng-show"=>"mode", "ng-animate"=>"'fade'" }
         %ng-switch{ "on"=>"mode" }
           %div{ "ng-switch-when"=>"edit", "ng-include"=>"'#{asset_path('edit_framework.html')}'" }
           %div{ "ng-switch-when"=>"show", "ng-include"=>"'#{asset_path('show_framework.html')}'" }

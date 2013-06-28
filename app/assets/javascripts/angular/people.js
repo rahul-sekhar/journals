@@ -51,7 +51,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
         var action, message;
 
         action = profile.active ? 'reset the password for' : 'activate';
-        message = 'Are you sure you want to ' + action + ' "' + profile.name +
+        message = 'Are you sure you want to ' + action + ' ' + profile.name +
           '? A randomly generated password will be emailed to ' + profile.email + '.';
 
         if (confirm(message)) {
@@ -61,8 +61,8 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
       // Handle toggling archive
       $scope.toggleArchive = function (profile) {
-        var message = 'Are you sure you want to archive "' + profile.name +
-            '"? Their data will remain but the user will not be able to log in.';
+        var message = 'Are you sure you want to archive ' + profile.name +
+            '? Their data will remain but the user will not be able to log in.';
 
         if (profile.archived || confirm(message)) {
           profile.toggleArchive();
@@ -76,7 +76,7 @@ angular.module('journals.people', ['journals.people.models', 'journals.people.di
 
       // Handle removing guardians
       $scope.removeGuardian = function (profile, guardian) {
-        var message = 'Are you sure you want to delete the guardian "' + guardian.name + '"?' +
+        var message = 'Are you sure you want to delete the guardian ' + guardian.name + '?' +
           'Anything that has been created by that guardian will be lost.';
 
         // Skip confirm if the guardian has more than 1 student

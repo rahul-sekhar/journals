@@ -5,6 +5,11 @@
     %p.type{ "ng-show"=>"person.type == 'Teacher'" }
       {{person.type}}
 
+    .activated{ "ng-hide"=>"person.active" }
+      %p.message
+        %span This user has not been activated. Users need to be activated before they can log into the system.
+        %span{ "ng-hide"=>"person.email" } An email address must be entered before the user can be activated.
+
     %div{ "ng-switch"=>"isTeacher" }
       %div{ "ng-switch-when"=>"true" }
         .manage.click-menu{ "ng-show"=>"isTeacher && person.id" }
