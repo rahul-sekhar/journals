@@ -23,7 +23,7 @@
 /db/data*.sql
 
 # Ignore uploads
-/public/uploads/*
+/public/uploads
 
 # Ignore cucumber screenshot
 /cucumber-screenshot.png
