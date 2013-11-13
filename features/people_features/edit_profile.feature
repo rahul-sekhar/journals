@@ -120,7 +120,7 @@ Scenario: Edit a student profile
   Then I should not see the field "Email"
   And I should not see the field "Mobile"
   And I should see the field "Blood group" with "A-"
-  And I should see the field "Birthday" with "01-08-1980 (32 yrs)"
+  And I should see the field "Birthday" with "01-08-1980 (33 yrs)"
 
 
 Scenario: Clear student birthday
@@ -160,7 +160,7 @@ Scenario: Add fields for a student
   And the add-field menu should have the option "Additional Emails" in it
   And the add-field menu should have the option "Notes" in it
   And the add-field menu should have the option "Blood Group" in it
-  And I should see the field "Birthday" with "11-07-2001 (11 yrs)"
+  And I should see the field "Birthday" with "11-07-2001 (12 yrs)"
 
 
 Scenario: Add an invalid email field
