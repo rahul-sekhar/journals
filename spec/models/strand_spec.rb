@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Strand, :c do
+describe Strand do
   let(:strand){ build(:strand) }
 
   it "is valid with valid attributes" do

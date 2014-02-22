@@ -20,7 +20,7 @@ class StudentMilestone < ActiveRecord::Base
     less_than_or_equal_to: 3
   }
 
-  scope :load_associations, includes(:milestone)
+  scope :load_associations, includes(milestone: [:strand])
 
   def self.from_subject(subject)
     joins{milestone.strand}.where{milestone.strand.subject_id == subject.id}
