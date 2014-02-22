@@ -197,8 +197,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       return frameworkService;
     }]).
 
-  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm', '$location', 'StudentMilestone',
-    function ($scope, frameworkService, ajax, Framework, confirm, $location, StudentMilestone) {
+  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm', '$location', 'StudentMilestone', '$rootScope',
+    function ($scope, frameworkService, ajax, Framework, confirm, $location, StudentMilestone, $rootScope) {
       $scope.mode = false;
 
       function loadFramework(url) {
@@ -227,6 +227,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       $scope.close = function () {
         $location.search('framework', null);
         $scope.mode = false;
+        $rootScope.$broadcast('frameworkClosed');
       };
 
       $scope.$on('$routeChangeStart', function () {
