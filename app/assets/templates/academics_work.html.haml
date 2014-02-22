@@ -30,7 +30,9 @@
         %tr{ "ng-repeat"=>"milestone in milestones" }
           %td.mark {{milestone.mark_date}}
           %td.level {{milestone.level}}
-          %td.milestone {{milestone.content}}
+          %td.milestone
+            .heading{ 'ng-repeat' => 'heading in milestone.headings' } {{ heading }}
+            {{milestone.content}}
           %td.status {{milestone.status_text}}
           %td.comments {{milestone.comments}}
 

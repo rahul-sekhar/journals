@@ -5,7 +5,7 @@ class StudentMilestonesController < ApplicationController
   def index
     authorize! :view_academics, @student
     @subject = Subject.find(params[:subject_id])
-    @student_milestones = @student.student_milestones.from_subject(@subject).order{updated_at.desc}.limit(5)
+    @student_milestones = @student.student_milestones.from_subject(@subject).order{updated_at.desc}.limit(5).load_associations
   end
 
   def create

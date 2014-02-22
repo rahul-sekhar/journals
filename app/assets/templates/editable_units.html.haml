@@ -1,3 +1,5 @@
+%a.add{ "href"=>"", "ng-click"=>"addUnit()", "ng-show"=>"units.length >= 0" } Add unit
+
 %table.academics.editable
   %thead
     %tr
@@ -23,6 +25,4 @@
 
     %tr{ "ng-show"=>"(units | filterDeleted).length == 0" }
       %td{ "colspan"=>"5" } No work has been added yet
-
-%a.add{ "href"=>"", "ng-click"=>"addUnit()", "ng-show"=>"units.length >= 0" } Add unit
 
