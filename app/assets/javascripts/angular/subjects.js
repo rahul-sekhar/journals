@@ -13,6 +13,11 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
   factory('Framework', ['model', 'association', 'Milestones', 'StudentMilestone',
     function (model, association, Milestones, StudentMilestone) {
       var frameworkExtension = function (instance) {
+        // Clear old student milestones
+        angular.forEach(Milestones.all(), function (milestone) {
+          milestone.student_milestone = StudentMilestone.create({milestone_id: milestone.id});
+        });
+
         if (instance.student_milestones) {
           angular.forEach(instance.student_milestones, function (studentMilestone) {
             var milestone = Milestones.get(parseInt(studentMilestone.milestone_id, 10));
@@ -86,11 +91,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
   factory('Milestones', ['collection', 'model', 'StudentMilestone',
     function (collection, model, StudentMilestone) {
-      var milestoneExtension = function (instance) {
-        if (!instance.student_milestone) {
-          instance.student_milestone = StudentMilestone.create({milestone_id: instance.id});
-        }
-      };
+      var milestoneExtension = function (instance) {};
 
       milestoneExtension.setup = function (instance) {
         var oldUrlFn = instance.url;
@@ -196,8 +197,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       return frameworkService;
     }]).
 
-  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm', '$location', 'StudentMilestone',
-    function ($scope, frameworkService, ajax, Framework, confirm, $location, StudentMilestone) {
+  controller('FrameworkCtrl', ['$scope', 'frameworkService', 'ajax', 'Framework', 'confirm', '$location', 'StudentMilestone', '$rootScope',
+    function ($scope, frameworkService, ajax, Framework, confirm, $location, StudentMilestone, $rootScope) {
       $scope.mode = false;
 
       function loadFramework(url) {
@@ -226,6 +227,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       $scope.close = function () {
         $location.search('framework', null);
         $scope.mode = false;
+        $rootScope.$broadcast('frameworkClosed');
       };
 
       $scope.$on('$routeChangeStart', function () {

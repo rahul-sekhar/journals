@@ -12,6 +12,28 @@ describe Strand do
     strand.should be_invalid
   end
 
+  describe 'headings' do
+    before { strand.name = 'Subject' }
+    describe 'for a parent strand' do
+      it 'contains the strand name' do
+        strand.headings.should eq ['Subject']
+      end
+    end
+
+    describe 'for a child strand' do
+      before do
+        @subject = create(:subject)
+        @source = create(:strand, subject: @subject, name: 'Source')
+        @child1 = create(:strand, subject: @subject, parent_strand: @source, name: 'Child 1')
+        @child2 = create(:strand, subject: @subject, parent_strand: @child1, name: 'Child 2')
+      end
+
+      it 'returns an array of strand headings' do
+        @child2.headings.should eq ['Source', 'Child 1', 'Child 2']
+      end
+    end
+  end
+
   describe "position" do
     it "is set to 1 when no other strands exist" do
       create(:strand).position.should eq(1)

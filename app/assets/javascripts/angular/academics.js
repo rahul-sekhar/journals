@@ -139,6 +139,10 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
         getData();
       });
 
+      $scope.$on("frameworkClosed", function () {
+        getData();
+      });
+
       $scope.addUnit = function () {
         $scope.units.unshift(Units.add({
           _edit: 'name',

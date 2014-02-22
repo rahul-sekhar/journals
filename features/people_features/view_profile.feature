@@ -56,7 +56,7 @@ Scenario: View student profile with all information
   And I should see the field "Address" with "Apartment, The hill, Darjeeling - 10"
   And I should see the field "Home Phone" with "5678"
   And I should see the field "Office Phone" with "1432"
-  And I should see the field "Birthday" with "25-12-1996 (16 yrs)"
+  And I should see the field "Birthday" with "25-12-1996 (17 yrs)"
   And I should see the field "Blood Group" with "B+"
 
   And I should not see the search bar

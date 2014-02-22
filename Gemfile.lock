@@ -197,7 +197,7 @@ GEM
       rspec-expectations (~> 2.13.0)
       rspec-mocks (~> 2.13.0)
     rubyzip (0.9.9)
-    rvm-capistrano (1.2.7)
+    rvm-capistrano (1.4.1)
       capistrano (>= 2.0.0)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
