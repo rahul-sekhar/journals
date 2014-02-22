@@ -111,7 +111,7 @@ Scenario: Edit a student profile
   Then I should see the field "Blood group" with "A-"
 
   When I change the date field "Birthday" to "01-08-1980"
-  Then I should see the field "Birthday" with "01-08-1980 (32 yrs)"
+  Then I should see the field "Birthday" with "01-08-1980 (33 yrs)"
 
   When I go to the page for that profile
   Then I should see a profile for "Parvathy"
@@ -120,7 +120,7 @@ Scenario: Edit a student profile
   Then I should not see the field "Email"
   And I should not see the field "Mobile"
   And I should see the field "Blood group" with "A-"
-  And I should see the field "Birthday" with "01-08-1980 (32 yrs)"
+  And I should see the field "Birthday" with "01-08-1980 (33 yrs)"
 
 
 Scenario: Clear student birthday
@@ -149,7 +149,7 @@ Scenario: Add fields for a student
   Then I should not see the field "Birthday"
   And the add-field menu should have the option "Birthday"
   When I add the date field "Birthday" with "11-07-2001"
-  Then I should see the field "Birthday" with "11-07-2001 (11 yrs)"
+  Then I should see the field "Birthday" with "11-07-2001 (12 yrs)"
 
   When I clear the field "Blood Group"
   Then the add-field menu should have the option "blood group"
@@ -160,7 +160,7 @@ Scenario: Add fields for a student
   And the add-field menu should have the option "Additional Emails" in it
   And the add-field menu should have the option "Notes" in it
   And the add-field menu should have the option "Blood Group" in it
-  And I should see the field "Birthday" with "11-07-2001 (11 yrs)"
+  And I should see the field "Birthday" with "11-07-2001 (12 yrs)"
 
 
 Scenario: Add an invalid email field
