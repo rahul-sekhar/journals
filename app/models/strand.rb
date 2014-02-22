@@ -19,6 +19,11 @@ class Strand < ActiveRecord::Base
 
   strip_attributes
 
+  def headings
+    heading_array = parent_strand ? parent_strand.headings : []
+    heading_array << name
+  end
+
   def add_strand(strand_name)
     raise 'Strand cannot have both milestones and child strands' if milestones.length > 0
 

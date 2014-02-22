@@ -17,6 +17,10 @@ class Milestone < ActiveRecord::Base
 
   strip_attributes
 
+  def headings
+    strand.headings
+  end
+
   private
 
   def siblings
