@@ -21,6 +21,9 @@ class Ability
       # Can manage posts that they authored
       can :manage, Post, author_id: student.id, author_type: "Student"
 
+      # Can read student observations that contain them
+      can :read, StudentObservation, student: { id: student.id }
+
       # Can view their own academics
       can :view_academics, student
 
@@ -31,6 +34,11 @@ class Ability
       can :read, Post, Post.readable_by_guardian(guardian) do |post|
         post.author == guardian ||
         (post.visible_to_guardians && (post.students & guardian.students).present?)
+      end
+
+      # Can read student observations for its students
+      can :read, StudentObservation do |obs|
+        guardian.students.exists? obs.student
       end
 
       # Can manage posts that they authored
