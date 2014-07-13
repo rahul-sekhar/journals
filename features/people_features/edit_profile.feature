@@ -149,7 +149,7 @@ Scenario: Add fields for a student
   Then I should not see the field "Birthday"
   And the add-field menu should have the option "Birthday"
   When I add the date field "Birthday" with "11-07-2001"
-  Then I should see the field "Birthday" with "11-07-2001 (12 yrs)"
+  Then I should see the field "Birthday" with "11-07-2001 (13 yrs)"
 
   When I clear the field "Blood Group"
   Then the add-field menu should have the option "blood group"
@@ -160,7 +160,7 @@ Scenario: Add fields for a student
   And the add-field menu should have the option "Additional Emails" in it
   And the add-field menu should have the option "Notes" in it
   And the add-field menu should have the option "Blood Group" in it
-  And I should see the field "Birthday" with "11-07-2001 (12 yrs)"
+  And I should see the field "Birthday" with "11-07-2001 (13 yrs)"
 
 
 Scenario: Add an invalid email field
