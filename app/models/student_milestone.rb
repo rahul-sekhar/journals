@@ -1,7 +1,7 @@
 class StudentMilestone < ActiveRecord::Base
   self.table_name = :students_milestones
 
-  attr_accessible :status, :comments, :milestone_id
+  attr_accessible :status, :comments, :milestone_id, :date
 
   after_save :check_if_empty
 
@@ -32,8 +32,18 @@ class StudentMilestone < ActiveRecord::Base
     end
   end
 
-  def mark_date
-    updated_at.strftime( '%d-%m-%Y' )
+  def date
+    super && super.strftime( '%d-%m-%Y' )
+  end
+
+  def date=(val)
+    str = nil
+    begin
+      str = Date.strptime( val, '%d-%m-%Y' )
+    rescue
+    end
+
+    super(str)
   end
 
   def status_text

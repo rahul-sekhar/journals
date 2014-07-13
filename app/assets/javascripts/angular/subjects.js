@@ -136,7 +136,7 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
 
       var studentMilestoneModel = model('student_milestone', '/academics/student_milestones', {
         extensions: [studentMilestoneExtension],
-        saveFields: ['status', 'comments', 'milestone_id'],
+        saveFields: ['status', 'comments', 'milestone_id', 'date'],
         defaultData: { status: 0 }
       });
 

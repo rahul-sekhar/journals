@@ -233,4 +233,32 @@ angular.module('journals.directives', []).
       });
       scrollRight.on('mouseleave', stopScroll);
     };
-  }]);
+  }]).
+
+  directive('dateField', function () {
+    return {
+      restrict: 'E',
+      scope: {
+        ngModel: '='
+      },
+      template:
+        '<div class="date-field">' +
+          '<input ng-model="ngModel" class="editor" />' +
+        '</div>',
+      replace: true,
+
+      link: function (scope, element, attrs) {
+        element.find('input').datepicker({
+          dateFormat: 'dd-mm-yy',
+          changeMonth: true,
+          changeYear: true,
+          yearRange: '-30:+0',
+          onClose: function (date) {
+            scope.$apply(function() {
+              scope.ngModel = date;
+            });
+          }
+        });
+      }
+    };
+  });

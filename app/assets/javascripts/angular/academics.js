@@ -169,6 +169,7 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
       function copyData(from, to) {
         to.status = from.status;
         to.comments = from.comments;
+        to.date = from.date;
       }
 
       $scope.newStudentMilestone = {};
@@ -178,6 +179,9 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
         if (milestone) {
           studentMilestone = milestone.student_milestone;
           copyData(studentMilestone, $scope.newStudentMilestone);
+          if (!$scope.newStudentMilestone.date) {
+            $scope.newStudentMilestone.date = jQuery.datepicker.formatDate('dd-mm-yy', new Date());
+          }
         }
       });
 
@@ -185,7 +189,6 @@ angular.module('journals.academics', ['journals.people.models', 'journals.subjec
         var oldData = {};
         copyData(studentMilestone, oldData);
         copyData($scope.newStudentMilestone, studentMilestone);
-
         studentMilestone.save().
           then(null, function () {
             copyData(oldData, studentMilestone);

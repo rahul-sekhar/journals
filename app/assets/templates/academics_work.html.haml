@@ -21,14 +21,14 @@
 
       %table.academics
         %tr
-          %th.mark Mark date
+          %th.date Date
           %th.level Level
           %th.milestone Milestone
           %th.status Status
           %th.comments Comments
 
         %tr{ "ng-repeat"=>"milestone in milestones" }
-          %td.mark {{milestone.mark_date}}
+          %td.date {{milestone.date}}
           %td.level {{milestone.level}}
           %td.milestone
             .heading{ 'ng-repeat' => 'heading in milestone.headings' } {{ heading }}

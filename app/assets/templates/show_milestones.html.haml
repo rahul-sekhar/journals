@@ -14,3 +14,4 @@
             .student-milestone
               %div{ "ng-class"=>"'status-' + milestone.student_milestone.status" }
               %p.comments{ "ng-bind-html"=>"milestone.student_milestone.comments | escapeHtml | multiline" }
+              %p.date{ "ng-show"=>"milestone.student_milestone.status || milestone.student_milestone.comments" } {{ milestone.student_milestone.date }}

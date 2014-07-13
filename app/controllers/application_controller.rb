@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_error(status, exception)
-    logger.fatal "ERROR #{status}:\n#{exception.to_yaml}"
+    logger.fatal "ERROR #{status}:\n#{exception.inspect}"
 
     if status == 404
       respond_to do |format|

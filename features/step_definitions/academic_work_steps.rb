@@ -69,7 +69,7 @@ Given(/^(the student John has|I have|my student Roly has) some milestones set fo
     milestone: Milestone.where(content: 'Middle milestone').first,
     status: 0,
     comments: 'Some comment',
-    updated_at: Date.new(2012, 10, 1)
+    date: '01-10-2012'
   )
 end
 
@@ -108,7 +108,18 @@ Then(/^the milestone "(.*?)" should have no comment$/) do |p_milestone|
     find('.student-milestone').text.should eq('')
 end
 
-When(/^I set the milestone "(.*?)" to status (\d+) with the comment "(.*?)"$/) do |p_milestone, p_status, p_comment|
+Then(/^the milestone "(.*?)" should have the date "(.*?)"$/) do |p_milestone, p_text|
+  page.find('li', text: /^#{p_milestone}/i).
+    find('.student-milestone').
+    should have_css '.date', text: p_text
+end
+
+Then(/^the milestone "(.*?)" should have no date$/) do |p_milestone|
+  page.find('li', text: /^#{p_milestone}/i).
+    should have_no_css '.student-milestone .date'
+end
+
+When(/^I set the milestone "(.*?)" to status (\d+) with the comment "([^"]*?)"$/) do |p_milestone, p_status, p_comment|
   page.find('li', text: /^#{p_milestone}/i).click
   dialog = page.find('#modify-student-milestone', visible: true)
   within dialog do
@@ -121,4 +132,17 @@ end
 Then(/^I should not be able to set the milestone "(.*?)"$/) do |p_milestone|
   page.find('li', text: /^#{p_milestone}/i).click
   page.should have_no_css('#modify-student-milestone', visible: true)
+end
+
+When(/^I set the milestone "(.*?)" to status (\d+) with the comment "(.*?)" and the date "(.*?)"$/) do |p_milestone, p_status, p_comment, p_date|
+  page.find('li', text: /^#{p_milestone}/i).click
+  dialog = page.find('#modify-student-milestone', visible: true)
+  within dialog do
+    page.find(".status-#{p_status}").click
+    page.find('textarea').set(p_comment)
+    page.find(".date-field input").click
+    script = "$('.date-field input:not([name]):visible').datepicker('setDate', '#{p_date}').datepicker('hide');"
+    page.execute_script(script)
+    page.find('.submit').click
+  end
 end

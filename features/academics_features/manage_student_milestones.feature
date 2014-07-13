@@ -12,16 +12,16 @@ Background:
 Scenario: View milestones done
   Then I should see "Framework"
   And I should see "Blah blah"
-  And I should see "Blah blah" in row 2 of the milestones table
-  And I should see "Some milestone" in row 2 of the milestones table
-  And I should see "having difficulty" in row 2 of the milestones table
-  And I should see "Third" in row 1 of the milestones table
-  And I should see "completed" in row 1 of the milestones table
+  And I should see "Blah blah" in row 3 of the milestones table
+  And I should see "Some milestone" in row 3 of the milestones table
+  And I should see "having difficulty" in row 3 of the milestones table
+  And I should see "Third" in row 2 of the milestones table
+  And I should see "completed" in row 2 of the milestones table
   And I should not see "Another one"
-  And I should see "Middle milestone" in row 3 of the milestones table
-  And I should see "Some comment" in row 3 of the milestones table
-  And I should see "no status" in row 3 of the milestones table
-  And I should see "01-10-2012" in row 3 of the milestones table
+  And I should see "Middle milestone" in row 1 of the milestones table
+  And I should see "Some comment" in row 1 of the milestones table
+  And I should see "no status" in row 1 of the milestones table
+  And I should see "01-10-2012" in row 1 of the milestones table
 
 
 Scenario: View milestones on the framework
@@ -33,6 +33,7 @@ Scenario: View milestones on the framework
   And the milestone "Third" should have no comment
   And the milestone "Middle milestone" should have no status
   And the milestone "Middle milestone" should have the comment "Some comment"
+  And the milestone "Middle milestone" should have the date "01-10-2012"
   And the milestone "Another one" should have no status
   And the milestone "Another one" should have no comment
 
@@ -43,12 +44,14 @@ Scenario: Edit milestones
   When I set the milestone "Another one" to status 1 with the comment "New comment"
   Then the milestone "Another one" should have the status 1
   And the milestone "Another one" should have the comment "New comment"
-  When I set the milestone "Some milestone" to status 3 with the comment "Changed comment"
+  When I set the milestone "Some milestone" to status 3 with the comment "Changed comment" and the date "04-05-2001"
   Then the milestone "Some milestone" should have the status 3
   And the milestone "Some milestone" should have the comment "Changed comment"
-  When I set the milestone "Middle milestone" to status 0 with the comment ""
+  And the milestone "Some milestone" should have the date "04-05-2001"
+  When I set the milestone "Middle milestone" to status 0 with the comment "" and the date "05-05-2013"
   Then the milestone "Middle milestone" should have no status
   And the milestone "Middle milestone" should have no comment
+  And the milestone "Middle milestone" should have no date
   When I set the milestone "Third" to status 0 with the comment ""
   Then the milestone "Third" should have no status
   And the milestone "Third" should have no comment

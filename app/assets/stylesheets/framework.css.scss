@@ -355,7 +355,7 @@
   .student-milestone {
     margin-top: 5px;
 
-    .comments {
+    .comments, .date {
       font-size: 12px;
       font-style: italic;
       color: $grey-1;
@@ -440,6 +440,22 @@
     padding: 5px 10px;
     height: 40px;
 
+    font-size: 12px;
+    font-style: italic;
+    color: $grey-1;
+    line-height: 120%;
+  }
+
+  .date-field input {
+    display: block;
+    width: 80px;
+    margin: 0 10px;
+    margin-top: 20px;
+    border: 1px solid $grey-brown;
+    @include border-radius(5px);
+    padding: 5px 5px;
+
+    text-align: center;
     font-size: 12px;
     font-style: italic;
     color: $grey-1;
