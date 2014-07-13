@@ -15,7 +15,7 @@ class Unit < ActiveRecord::Base
   validates :due, presence: { message: "is invalid" }, if: "due_date.present?"
   validates :completed, presence: { message: "is invalid" }, if: "completed_date.present?"
 
-  default_scope order{created_at.desc}
+  default_scope order{started.desc}
 
   strip_attributes
 
