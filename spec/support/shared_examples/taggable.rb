@@ -13,7 +13,7 @@ shared_examples_for "a taggable object" do
 
   describe "##name_is" do
     before { @existing_tag = object_class.create!(name: "Some Tag") }
-    
+
     it "returns nil no matching tags exist" do
       returned_tag = object_class.name_is("Other Tag")
       returned_tag.should be_nil
@@ -24,7 +24,7 @@ shared_examples_for "a taggable object" do
       returned_tag.should eq(@existing_tag)
     end
   end
-  
+
   describe "##find_or_build_list" do
     subject(:result) { object_class.find_or_build_list( tag_list ) }
 
@@ -35,7 +35,7 @@ shared_examples_for "a taggable object" do
 
     context "for a single new name" do
       let(:tag_list){ "New Tag" }
-      
+
       it "returns a single tag" do
         result.length.should == 1
         result.first.should be_a object_class
@@ -83,7 +83,7 @@ shared_examples_for "a taggable object" do
 
     context "for multiple names, some of which exist" do
       let(:tag_list){ "  Tag1,  another tag, a new tag, tag4" }
-      before do 
+      before do
         @tag4 = object_class.create!(name: "Tag4")
         @another_tag = object_class.create!(name: "Another Tag")
       end
@@ -98,7 +98,7 @@ shared_examples_for "a taggable object" do
       end
 
       it "returns tags with have the correct names" do
-        result.map{ |tag| tag.name }.should =~ ["Tag1", "Another Tag", "a new tag", "Tag4"]
+        result.map{ |tag| tag.name }.should match_array ["Tag1", "Another Tag", "a new tag", "Tag4"]
       end
     end
 
@@ -115,7 +115,7 @@ shared_examples_for "a taggable object" do
       end
 
       it "returns tags with the correct names" do
-        result.map{ |tag| tag.name }.should =~ ["Tag1", "tag2"]
+        result.map{ |tag| tag.name }.should match_array ["Tag1", "tag2"]
       end
     end
 
@@ -132,7 +132,7 @@ shared_examples_for "a taggable object" do
       end
 
       it "returns tags with the correct names" do
-        result.map{ |tag| tag.name }.should =~ ["TAG1", "Tag2", "tag3"]
+        result.map{ |tag| tag.name }.should match_array ["TAG1", "Tag2", "tag3"]
       end
     end
   end

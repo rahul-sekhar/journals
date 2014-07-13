@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProfileName do
+describe ProfileName, :c do
   context "with a student" do
     let(:student) { create(:student, first_name: "Some", last_name: "Name") }
     before{ student }
@@ -76,7 +76,7 @@ describe ProfileName do
     end
 
     it "returns all three profiles" do
-      ProfileName.all.map{ |profile| profile.profile }.should =~ [student, guardian, teacher]
+      ProfileName.all.map{ |profile| profile.profile }.should match_array [student, guardian, teacher]
     end
   end
 
@@ -88,7 +88,7 @@ describe ProfileName do
     end
 
     it "returns all the profiles" do
-      ProfileName.all.map{ |profile| profile.profile }.should =~ [@student, @teacher, @guardian]
+      ProfileName.all.map{ |profile| profile.profile }.should match_array [@student, @teacher, @guardian]
     end
   end
 
@@ -106,7 +106,7 @@ describe ProfileName do
     end
     it "exludes the passed profile" do
       return_val = ProfileName.excluding_profile(student).all
-      return_val.map{ |profile| profile.profile }.should =~ [student2, guardian, teacher]
+      return_val.map{ |profile| profile.profile }.should match_array [student2, guardian, teacher]
     end
   end
 end

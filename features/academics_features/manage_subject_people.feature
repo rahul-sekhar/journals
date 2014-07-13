@@ -66,9 +66,6 @@ Scenario: View students
 
   When I remove the teacher "William" from it
   Then I should not see its add student list
-  And I should not see "Jimmy" in its students
-  And I should not see "Stephen" in its students
-  And I should not see "Craig" in its students
 
   When I open its add teacher list
   And I click "William" in the list

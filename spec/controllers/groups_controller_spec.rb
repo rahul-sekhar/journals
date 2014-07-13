@@ -22,7 +22,7 @@ describe GroupsController do
       group1 = create(:group)
       group2 = create(:group)
       get :index, format: :json
-      assigns(:groups).should =~ [group1, group2]
+      assigns(:groups).should match_array [group1, group2]
     end
 
     it "orders groups alphabetically" do

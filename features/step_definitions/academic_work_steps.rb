@@ -91,6 +91,12 @@ Then(/^the milestone "(.*?)" should have the status (\d+)$/) do |p_milestone, p_
     should have_css(".status-#{p_status}")
 end
 
+Then(/^the milestone "(.*?)" should have no status$/) do |p_milestone|
+  page.find('li', text: /^#{p_milestone}/i).
+    find('.student-milestone').
+    should have_css(".status-0", visible: false)
+end
+
 Then(/^the milestone "(.*?)" should have the comment "(.*?)"$/) do |p_milestone, p_text|
   page.find('li', text: /^#{p_milestone}/i).
     find('.student-milestone').

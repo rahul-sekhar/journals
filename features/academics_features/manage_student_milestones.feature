@@ -6,6 +6,7 @@ Background:
   When I am on the work page
   And I select "John" from the students menu
   And I select "Maths" from the subjects menu
+  Then the subjects menu should have "Maths" selected
 
 
 Scenario: View milestones done
@@ -30,9 +31,9 @@ Scenario: View milestones on the framework
   And the milestone "Some milestone" should have the comment "Blah blah"
   And the milestone "Third" should have the status 3
   And the milestone "Third" should have no comment
-  And the milestone "Middle milestone" should have the status 0
+  And the milestone "Middle milestone" should have no status
   And the milestone "Middle milestone" should have the comment "Some comment"
-  And the milestone "Another one" should have the status 0
+  And the milestone "Another one" should have no status
   And the milestone "Another one" should have no comment
 
 
@@ -46,10 +47,10 @@ Scenario: Edit milestones
   Then the milestone "Some milestone" should have the status 3
   And the milestone "Some milestone" should have the comment "Changed comment"
   When I set the milestone "Middle milestone" to status 0 with the comment ""
-  Then the milestone "Middle milestone" should have the status 0
+  Then the milestone "Middle milestone" should have no status
   And the milestone "Middle milestone" should have no comment
   When I set the milestone "Third" to status 0 with the comment ""
-  Then the milestone "Third" should have the status 0
+  Then the milestone "Third" should have no status
   And the milestone "Third" should have no comment
 
   When I go to the work page
@@ -72,7 +73,7 @@ Scenario: Edit milestones
   And the milestone "Another one" should have the comment "New comment"
   And the milestone "Some milestone" should have the status 3
   And the milestone "Some milestone" should have the comment "Changed comment"
-  And the milestone "Middle milestone" should have the status 0
+  And the milestone "Middle milestone" should have no status
   And the milestone "Middle milestone" should have no comment
-  And the milestone "Third" should have the status 0
+  And the milestone "Third" should have no status
   And the milestone "Third" should have no comment

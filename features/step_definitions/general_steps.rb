@@ -40,7 +40,10 @@ When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
 end
 
 When(/^I fill in the "(.*?)" editor with "(.*?)"$/) do |p_field, p_text|
-  field = page.find_field(p_field)
+  label = page.find('label', text: p_field, visible: false)
+  id = label['for']
+  field = find("##{id}", visible: false)
+
   page.execute_script('$("#' + field[:id]  + '").tinymce().setContent("' + p_text + '")')
 end
 
@@ -49,7 +52,10 @@ Then /^"(.*?)" should be filled in with "(.*?)"$/ do |p_field, p_value|
 end
 
 Then(/^the "(.*?)" editor should be filled in with "(.*?)"$/) do |p_field, p_text|
-  field = page.find_field(p_field)
+  label = page.find('label', text: p_field, visible: false)
+  id = label['for']
+  field = find("##{id}", visible: false)
+
   text = page.evaluate_script('$("#' + field[:id]  + '").tinymce().getContent()')
   text.should eq(p_text)
 end

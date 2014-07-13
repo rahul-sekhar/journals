@@ -22,7 +22,7 @@ describe TagsController do
       tag1 = create(:tag)
       tag2 = create(:tag)
       get :index, format: :json
-      assigns(:tags).should =~ [tag1, tag2]
+      assigns(:tags).should match_array [tag1, tag2]
     end
 
     it "orders tags alphabetically" do
