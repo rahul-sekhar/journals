@@ -61,16 +61,16 @@ Scenario: View milestones done
   And I select "Roly" from the students menu
   And I select "Maths" from the subjects menu
   And I should see "Blah blah"
-  And I should see "Blah blah" in row 2 of the milestones table
-  And I should see "Some milestone" in row 2 of the milestones table
-  And I should see "having difficulty" in row 2 of the milestones table
-  And I should see "Third" in row 1 of the milestones table
-  And I should see "completed" in row 1 of the milestones table
+  And I should see "Blah blah" in row 3 of the milestones table
+  And I should see "Some milestone" in row 3 of the milestones table
+  And I should see "having difficulty" in row 3 of the milestones table
+  And I should see "Third" in row 2 of the milestones table
+  And I should see "completed" in row 2 of the milestones table
   And I should not see "Another one"
-  And I should see "Middle milestone" in row 3 of the milestones table
-  And I should see "Some comment" in row 3 of the milestones table
-  And I should see "no status" in row 3 of the milestones table
-  And I should see "01-10-2012" in row 3 of the milestones table
+  And I should see "Middle milestone" in row 1 of the milestones table
+  And I should see "Some comment" in row 1 of the milestones table
+  And I should see "no status" in row 1 of the milestones table
+  And I should see "01-10-2012" in row 1 of the milestones table
 
 
 Scenario: View milestones on the framework
