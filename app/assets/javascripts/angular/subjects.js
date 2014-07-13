@@ -32,7 +32,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
         extensions: [
           association('Strands', 'strand', { loaded: true, addToEnd: true }),
           frameworkExtension
-        ]
+        ],
+        saveFields: ['name', 'column_name', 'level_numbers']
       });
     }]).
 
@@ -213,6 +214,10 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
           });
       }
 
+      $scope.settings = function () {
+        $scope.dialog.frameworkSettings = true;
+      };
+
       $scope.edit = function (subjectId) {
         $scope.mode = 'edit';
         loadFramework('/academics/subjects/' + subjectId);
@@ -253,6 +258,8 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       $scope.addStrand = function (parent) {
         parent.newStrand({_edit: 'name'});
       };
+
+      $
 
       frameworkService.register($scope);
     }]).
@@ -358,4 +365,23 @@ angular.module('journals.subjects', ['journals.ajax', 'journals.collection', 'jo
       };
 
       subjectPeopleService.register($scope);
+    }]).
+
+    controller('FrameworkSettingsDialogCtrl', ['$scope',
+    function ($scope) {
+
+      $scope.$watch('dialog.frameworkSettings', function (val) {
+        if (val) {
+          $scope.frameworkSettings = {
+            column_name: $scope.framework.column_name,
+            level_numbers: $scope.framework.level_numbers
+          }
+        }
+      });
+
+      $scope.save = function () {
+        $scope.framework.updateField('column_name', $scope.frameworkSettings.column_name);
+        $scope.framework.updateField('level_numbers', $scope.frameworkSettings.level_numbers);
+        $scope.dialog.frameworkSettings = null;
+      }
     }]);

@@ -36,6 +36,18 @@
     img {
       vertical-align: middle;
     }
+
+    .settings {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-left: 10px;
+      background: image-url('large-icons.png') no-repeat -16px -568px;
+
+      &:hover {
+        background-position:-16px -608px;
+      }
+    }
   }
 
   .close {
@@ -460,6 +472,42 @@
     font-style: italic;
     color: $grey-1;
     line-height: 120%;
+  }
+
+  .submit {
+    line-height: 22px;
+    font-size: 14px;
+    margin-top: 20px;
+    margin-right: 10px;
+    float: right;
+    @include link-colors($cream, white);
+    @include border-radius(5px);
+  }
+}
+
+#framework-settings {
+  padding: 20px 30px;
+
+  input, label {
+    font-size: 12px;
+    font-style: italic;
+    color: $grey-1;
+    line-height: 120%;
+  }
+
+  .string {
+    margin-bottom: 20px;
+
+    label {
+      margin-right: 10px;
+    }
+
+    input {
+      border: 1px solid $grey-brown;
+      @include border-radius(5px);
+      padding: 5px 10px;
+      width: 150px;
+    }
   }
 
   .submit {

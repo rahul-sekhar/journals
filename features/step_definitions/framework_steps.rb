@@ -4,6 +4,10 @@ When(/^I edit the framework for the subject "(.*?)"$/) do |p_name|
   page.find('#subjects li', text: /^#{Regexp.escape(p_name)}/i, visible: true).find('.edit').click
 end
 
+When(/^I close the framework$/) do
+  page.find('#framework .close').click
+end
+
 Given(/^the subject "(.*?)" exists with a framework$/) do |p_name|
   @subject = Subject.create(name: p_name)
   strand1 = @subject.add_strand('Numbers')
@@ -96,4 +100,31 @@ When(/^I add the milestone "(.*?)" to "(.*?)" in level (\d+)$/) do |p_milestone,
   level.click
   level.find('.add').click
   fill_input_inside level, p_milestone
+end
+
+
+# Levels
+Then(/^the first level heading should be "(.*?)"$/) do |p_text|
+  level = page.first('table.milestones').find('tr:first-child td:nth-child(1)')
+  level.text.should eq p_text
+end
+
+Then(/^the second level heading should be "(.*?)"$/) do |p_text|
+  level = page.first('table.milestones').find('tr:first-child td:nth-child(2)')
+  level.text.should eq p_text
+end
+
+When(/^I change the column name to "(.*?)" and (enable|disable) level numbers$/) do |p_column_name, p_level_numbers|
+  p_level_numbers = (p_level_numbers == 'enable')
+  page.find('.settings').click
+  dialog = page.find('#framework-settings', visible: true)
+  within dialog do
+    fill_in 'column_name', with: p_column_name
+    if p_level_numbers
+      check 'level_numbers'
+    else
+      uncheck 'level_numbers'
+    end
+    page.find('.submit').click
+  end
 end

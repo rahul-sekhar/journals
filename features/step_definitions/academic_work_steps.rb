@@ -17,6 +17,18 @@ def add_subject_for_roly(subject)
   st.students << @student
 end
 
+Given(/^(the student John has|I have|my student Roly has) the subject "(.*?)"$/) do |p_protagonist, p_subject|
+  @subject = Subject.find_by_name!(p_subject)
+
+  if (p_protagonist == 'I have')
+    add_subject_for_self(@subject)
+  elsif (p_protagonist == 'my student Roly has')
+    add_subject_for_roly(@subject)
+  else
+    create_student_john(@subject)
+  end
+end
+
 Given(/^(the student John has|I have|my student Roly has) done some work on Maths$/) do |p_protagonist|
   step 'the subject "Maths" exists'
 
