@@ -1,0 +1,28 @@
+!!! 5
+%html
+  %head
+    %meta{"content" => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+  %body
+    %p Dear #{@notifications.guardian.name},
+
+    - @notifications.students.each do |student|
+      %p
+        %strong= student[:student].name
+
+      - if student[:posts].present?
+        %p New posts:
+
+        %ul
+          - student[:posts].each do |post|
+            %li= link_to post.title, post_url(post)
+
+      - if student[:subjects].present?
+        %p Updated subjects:
+
+        %ul
+          - student[:subjects].each do |subject|
+            %li= link_to subject.name, work_url(subject_id: subject.id, student_id: student[:student].id)
+
+    %p Thank you!
+
+    %p= link_to Rails.configuration.settings['app_full_name'], root_url

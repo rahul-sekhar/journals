@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProfileName, :c do
+describe ProfileName do
   context "with a student" do
     let(:student) { create(:student, first_name: "Some", last_name: "Name") }
     before{ student }

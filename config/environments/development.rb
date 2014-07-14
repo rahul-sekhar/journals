@@ -37,7 +37,7 @@ Journals::Application.configure do
 
   # Set mailer host
   config.default_host = 'localhost'
-  config.action_mailer.default_url_options = { host: 'localhost' }
+  config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
   config.handle_exceptions = false
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140713171317) do
+ActiveRecord::Schema.define(:version => 20140714040600) do
 
   create_table "comments", :force => true do |t|
     t.text     "content"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20140713171317) do
     t.string   "additional_emails", :limit => 100
     t.text     "notes"
     t.string   "short_name",        :limit => 161
+    t.datetime "last_notified"
     t.index ["last_name", "first_name"], :name => "index_guardians_on_last_name_and_first_name"
   end
 

@@ -48,4 +48,7 @@ RSpec.configure do |config|
 
   # Load the view helper
   config.include RSpec::CapybaraExtensions, type: :view
+
+  # Clear mail deliveries
+  config.before(:each) { ActionMailer::Base.deliveries.clear }
 end
