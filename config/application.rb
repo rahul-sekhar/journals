@@ -69,5 +69,18 @@ module Journals
     config.assets.version = '1.0'
 
     config.i18n.enforce_available_locales = true
+
+    # Mail settings
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.default :charset => "utf-8"
+    config.action_mailer.smtp_settings = {
+      :address              => config.settings['email_server'],
+      :port                 => config.settings['email_port'],
+      :domain               => config.settings['email_domain'],
+      :user_name            => config.sensitive['email_username'],
+      :password             => config.sensitive['email_password'],
+      :authentication       => config.settings['email_authentication'],
+      :enable_starttls_auto => true
+    }
   end
 end

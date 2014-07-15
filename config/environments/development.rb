@@ -14,6 +14,7 @@ Journals::Application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send
+  config.action_mailer.perform_deliveries = false
   config.action_mailer.raise_delivery_errors = false
 
   # Print deprecation notices to the Rails logger
@@ -40,15 +41,4 @@ Journals::Application.configure do
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
   config.handle_exceptions = false
-
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :domain               => config.settings['email_domain'],
-    :user_name            => config.settings['email_address'],
-    :password             => config.sensitive['email_pass'],
-    :authentication       => 'plain',
-    :enable_starttls_auto => true
-  }
 end
