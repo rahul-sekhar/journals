@@ -7,6 +7,8 @@ class Subject < ActiveRecord::Base
     length: { maximum: 50 }
 
   has_many :strands, dependent: :destroy, include: [:child_strands, :milestones]
+  has_many :milestones, through: :strands
+  has_many :student_milestones, through: :milestones
   has_many :subject_teachers, dependent: :destroy
   has_many :teachers, through: :subject_teachers
   has_many :units, dependent: :destroy
