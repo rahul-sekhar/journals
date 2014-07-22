@@ -9,16 +9,16 @@ every :reboot do
 end
 
 # Daily backup
-every 1.day, :at => '3:00 am' do
+every 1.day, :at => '3:15 am' do
   rake "backups:create:remote:daily"
 end
 
 # Weekly backup
-every :friday, :at => '4:00 am' do
+every :friday, :at => '4:15 am' do
   rake "backups:create:remote:weekly"
 end
 
-# Notifications
-every 1.day, :at => '6:00 pm' do
+# Notifications (6pm GMT)
+every 1.day, :at => '11:30 pm' do
   rake "notifications:send"
 end
