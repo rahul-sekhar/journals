@@ -7,6 +7,9 @@ git_branch: inwoods
 host: inwoodsjournals.org
 email_domain: inwoodsjournals.org
 email_address: admin@inwoodsjournals.org
+email_server: email-smtp.us-west-2.amazonaws.com
+email_port: 587
+email_authentication: login
 
 shared_assets: [ public/uploads, uploads ]
 s3_backups_bucket: inwoods-backups

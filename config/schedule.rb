@@ -17,3 +17,8 @@ end
 every :friday, :at => '4:30 am' do
   rake "backups:create:remote:weekly"
 end
+
+# Notifications
+every 1.day, :at => '7:00 pm' do
+  rake "notifications:send"
+end

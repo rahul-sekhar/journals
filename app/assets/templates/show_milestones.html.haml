@@ -2,7 +2,8 @@
   %table.milestones.show
     %tr
       %td{ "ng-repeat"=>"level in [] | range:(strand.max_level())" }
-        Level {{level + 1}}
+        {{framework.column_name}}
+        %span{ 'ng-show'=>'framework.level_numbers' } {{level + 1}}
 
     %tr
       %td{ "ng-repeat"=>"level in [] | range:(strand.max_level())" }
@@ -14,3 +15,4 @@
             .student-milestone
               %div{ "ng-class"=>"'status-' + milestone.student_milestone.status" }
               %p.comments{ "ng-bind-html"=>"milestone.student_milestone.comments | escapeHtml | multiline" }
+              %p.date{ "ng-show"=>"milestone.student_milestone.status || milestone.student_milestone.comments" } {{ milestone.student_milestone.date }}

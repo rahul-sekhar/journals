@@ -10,8 +10,7 @@ Scenario: View a post without student observations
   Given a post about an ice cream factory visit with extended information exists
   When I am on the page for that post
   And I look at the post "Ice cream factory visit"
-  Then I should not see "Sahana" in the posts student-observations
-  And I should not see "Ansh" in the posts student-observations
+  Then the post should have no student-observations section
 
 
 Scenario: View student observations for a post
@@ -45,8 +44,7 @@ Scenario: Edit a post with an existing student observation and remove it
 
   Then I should see the post "Ice cream factory visit"
   When I look at the post "Ice cream factory visit"
-  Then I should not see "Sahana" in the posts student-observations
-  And I should not see "Ansh" in the posts student-observations
+  Then the post should have no student-observations section
 
 
 Scenario: Remove one observation and add a different one
@@ -73,8 +71,7 @@ Scenario: Remove a student tag and hence the student observation
 
   Then I should see the post "Ice cream factory visit"
   When I look at the post "Ice cream factory visit"
-  Then I should not see "Sahana" in the posts student-observations
-  And I should not see "Ansh" in the posts student-observations
+  Then the post should have no student-observations section
 
 
 Scenario: Edit a student post

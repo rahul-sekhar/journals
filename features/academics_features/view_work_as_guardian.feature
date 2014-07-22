@@ -61,16 +61,16 @@ Scenario: View milestones done
   And I select "Roly" from the students menu
   And I select "Maths" from the subjects menu
   And I should see "Blah blah"
-  And I should see "Blah blah" in row 2 of the milestones table
-  And I should see "Some milestone" in row 2 of the milestones table
-  And I should see "having difficulty" in row 2 of the milestones table
-  And I should see "Third" in row 1 of the milestones table
-  And I should see "completed" in row 1 of the milestones table
+  And I should see "Blah blah" in row 3 of the milestones table
+  And I should see "Some milestone" in row 3 of the milestones table
+  And I should see "having difficulty" in row 3 of the milestones table
+  And I should see "Third" in row 2 of the milestones table
+  And I should see "completed" in row 2 of the milestones table
   And I should not see "Another one"
-  And I should see "Middle milestone" in row 3 of the milestones table
-  And I should see "Some comment" in row 3 of the milestones table
-  And I should see "no status" in row 3 of the milestones table
-  And I should see "01-10-2012" in row 3 of the milestones table
+  And I should see "Middle milestone" in row 1 of the milestones table
+  And I should see "Some comment" in row 1 of the milestones table
+  And I should see "no status" in row 1 of the milestones table
+  And I should see "01-10-2012" in row 1 of the milestones table
 
 
 Scenario: View milestones on the framework
@@ -78,15 +78,16 @@ Scenario: View milestones on the framework
   When I go to the work page
   And I select "Roly" from the students menu
   And I select "Maths" from the subjects menu
+  Then the subjects menu should have "Maths" selected
   And I click "View framework"
   Then I should see "Framework | Maths"
   And the milestone "Some milestone" should have the status 2
   And the milestone "Some milestone" should have the comment "Blah blah"
   And the milestone "Third" should have the status 3
   And the milestone "Third" should have no comment
-  And the milestone "Middle milestone" should have the status 0
+  And the milestone "Middle milestone" should have no status
   And the milestone "Middle milestone" should have the comment "Some comment"
-  And the milestone "Another one" should have the status 0
+  And the milestone "Another one" should have no status
   And the milestone "Another one" should have no comment
 
   And I should not be able to set the milestone "Another one"

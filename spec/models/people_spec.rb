@@ -9,26 +9,26 @@ describe People do
   end
 
   it "returns student and teacher profiles" do
-    People.all.map{ |person| person.profile }.should =~ [@student, @teacher, @archived_student]
+    People.all.map{ |person| person.profile }.should match_array [@student, @teacher, @archived_student]
   end
 
   it "returns full names" do
-    People.all.map{ |person| person.full_name }.should =~ ["Some Student", "Teacher", "Archived Student"]
+    People.all.map{ |person| person.full_name }.should match_array ["Some Student", "Teacher", "Archived Student"]
   end
 
   it "returns the archived status" do
-    People.all.map{ |person| person.archived }.should =~ [true, false, false]
+    People.all.map{ |person| person.archived }.should match_array [true, false, false]
   end
 
   describe "#current" do
     it "does not return archived students" do
-      People.current.map{ |person| person.profile }.should =~ [@student, @teacher]
+      People.current.map{ |person| person.profile }.should match_array [@student, @teacher]
     end
   end
 
   describe "#archived" do
     it "returns only archived students" do
-      People.archived.map{ |person| person.profile }.should =~ [@archived_student]
+      People.archived.map{ |person| person.profile }.should match_array [@archived_student]
     end
   end
 
@@ -47,7 +47,7 @@ describe People do
     end
 
     it "returns everything when passed a blank string" do
-      People.search("").map{ |person| person.profile }.should =~ [@student, @teacher, @archived_student]
+      People.search("").map{ |person| person.profile }.should match_array [@student, @teacher, @archived_student]
     end
   end
 end

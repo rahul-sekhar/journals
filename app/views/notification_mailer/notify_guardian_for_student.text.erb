@@ -1,0 +1,18 @@
+Dear <%= @notifications.guardian.name %>,
+
+There has been activity on <%= Rails.configuration.settings['app_full_name'] %>(<%= root_url %>) about <%= @notifications.student.name %>:
+
+<% @notifications.notifications.each do |notification|
+  object = notification[:object]
+  time = notification[:time].strftime '%-e %b %Y, %-l:%M %p'
+  if object.is_a? Post %>
+<%= time %>: <%= object.author.name %> created a post <%= object.title %>(<%= post_url(object) %>).
+
+<% elsif object.is_a? Comment %>
+<%= time %>: <%= object.author.name %> commented on the post <%= object.post.title %>(<%= post_url(object.post) %>).
+
+<% elsif object.is_a? Subject %>
+<%= time %>: <%= @notifications.student.name %>'s <%= object.name %>(<%= work_url(subject_id: object.id, student_id: @notifications.student.id) %>) records were updated.
+
+<% end %>
+<% end %>

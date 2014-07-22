@@ -6,7 +6,12 @@ branches:
   only:
     - master
 
+before_install:
+  - npm install
+  - gem update bundler
+
 script:
+  - npm test
   - RAILS_ENV=test bundle exec rake db:schema:load > /dev/null 2>&1
   - CUCUMBER_FORMAT=progress bundle exec rake
 

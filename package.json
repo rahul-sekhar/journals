@@ -1,0 +1,22 @@
+{
+  "name": "journals",
+  "version": "1.0.0",
+  "description": "Small school journals",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rahul-sekhar/journals"
+  },
+  "bugs": {
+    "url": "https://github.com/rahul-sekhar/journals/issues"
+  },
+  "devDependencies": {
+    "phantomjs": "latest",
+    "karma": "latest",
+    "karma-cli": "latest",
+    "karma-jasmine": "latest",
+    "karma-phantomjs-launcher": "latest"
+  },
+  "scripts": {
+     "test": "node_modules/.bin/karma start --single-run --reporters=dots"
+  }
+}

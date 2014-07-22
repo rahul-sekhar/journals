@@ -43,7 +43,7 @@ describe UnitsController do
       unit5 = create(:unit)
 
       make_request
-      assigns(:units).should =~ [unit1, unit4]
+      assigns(:units).should match_array [unit1, unit4]
     end
   end
 

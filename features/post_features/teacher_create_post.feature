@@ -31,7 +31,7 @@ Scenario: Create a post without a title
   And I click "Create post"
   Then I should see "Title can't be blank"
   And I should be on the new post page
-  And "Content" should be filled in with "<p>Content without a title</p>"
+  And the "Content" editor should be filled in with "<p>Content without a title</p>"
 
 
 Scenario: Add student and teacher tags to a post

@@ -86,8 +86,8 @@ describe StudentMilestone do
       sm4 = create(:student_milestone, milestone: create(:milestone, strand: sub2.add_strand('Strand 3')))
       sm5 = create(:student_milestone, milestone: create(:milestone, strand: sub1.add_strand('Strand 4').add_strand('Strand 5')))
 
-      StudentMilestone.from_subject(sub1).should =~ [sm1, sm3, sm5]
-      StudentMilestone.from_subject(sub2).should =~ [sm2, sm4]
+      StudentMilestone.from_subject(sub1).should match_array [sm1, sm3, sm5]
+      StudentMilestone.from_subject(sub2).should match_array [sm2, sm4]
       StudentMilestone.from_subject(sub3).should be_empty
     end
   end

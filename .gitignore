@@ -30,3 +30,6 @@
 
 # Ignore temporary notes
 /notes
+
+# Ignore node modules
+/node_modules

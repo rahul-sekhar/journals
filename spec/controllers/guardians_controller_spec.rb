@@ -30,7 +30,7 @@ describe GuardiansController do
       guardian1 = create(:guardian, students: [create(:student), student])
       guardian2 = create(:guardian, students: [student])
       make_request
-      assigns(:guardians).should =~ [guardian1, guardian2]
+      assigns(:guardians).should match_array [guardian1, guardian2]
     end
   end
 
@@ -111,7 +111,7 @@ describe GuardiansController do
 
       it "adds the student to that guardian" do
         make_request
-        guardian.reload.students.should =~ [student, other_student]
+        guardian.reload.students.should match_array [student, other_student]
       end
 
       it "has a status of 200" do
@@ -187,7 +187,7 @@ describe GuardiansController do
 
       it "assigns the duplicate guardians" do
         make_request
-        assigns(:duplicate_guardians).should =~ [guardian, guardian2]
+        assigns(:duplicate_guardians).should match_array [guardian, guardian2]
       end
 
       it "has a status of 200" do

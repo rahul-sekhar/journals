@@ -130,7 +130,9 @@ angular.module('journals.editInPlace', ['ngSanitize', 'journals.filters', 'journ
     });
 
     $scope.finishEdit = function () {
-      $scope.instance.updateField($scope.field, $scope.editorValue);
+      if ($scope.editMode) {
+        $scope.instance.updateField($scope.field, $scope.editorValue);
+      }
       $scope.editMode = false;
     };
 

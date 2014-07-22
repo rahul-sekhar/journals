@@ -375,6 +375,17 @@ describe('subjects module', function () {
         expect(strand.newMilestone).toHaveBeenCalledWith({_edit: 'content', level: 2});
       });
     });
+
+    describe('settings()', function() {
+      beforeEach(function() {
+        scope.dialog = {};
+        scope.settings()
+      });
+
+      it('shows the settings dialog', function() {
+        expect(scope.dialog.frameworkSettings).toBeTruthy();
+      });
+    });
   });
 
   /*------------------ Subject People service -----------------------*/

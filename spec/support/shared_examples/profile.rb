@@ -456,7 +456,7 @@ shared_examples_for "a profile" do
     end
 
     it "returns profiles with passed names" do
-      profile_class.names_are("first", "last").should =~ [@profile1, @profile2]
+      profile_class.names_are("first", "last").should match_array [@profile1, @profile2]
     end
 
     it "returns an empty array if no match was found" do
@@ -493,11 +493,11 @@ shared_examples_for "a profile" do
     end
 
     it "matches partial results" do
-      profile_class.search("so").should =~ [@profile1, @profile3]
+      profile_class.search("so").should match_array [@profile1, @profile3]
     end
 
     it "returns all results when the query is empty" do
-      profile_class.search("").should =~ [@profile1, @profile2, @profile3]
+      profile_class.search("").should match_array [@profile1, @profile2, @profile3]
     end
 
     it "matches the full name" do
