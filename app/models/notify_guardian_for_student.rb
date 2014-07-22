@@ -14,7 +14,7 @@ class NotifyGuardianForStudent
   private
 
   def send_notifications
-    if guardian.email.present? && (posts.present? || subjects.present? || comments.present?)
+    if guardian.email.present? && guardian.active? && (posts.present? || subjects.present? || comments.present?)
       notifications = NotificationSorter.new(self)
       puts "Sending notifications for guardian: #{guardian.name}, student: #{student.name}"
       NotificationMailer.notify_guardian_for_student(notifications).deliver
