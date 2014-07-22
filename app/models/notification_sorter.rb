@@ -34,7 +34,8 @@ class NotificationSorter
     milestone_time = milestones.order(:updated_at).reverse_order.first.try(:updated_at)
     units = subject.units.where(student: student)
     unit_time = units.order(:updated_at).reverse_order.first.try(:updated_at)
-    time = [milestone_time, unit_time].max
+    time = [milestone_time.to_i, unit_time.to_i].max
+    time = Time.zone.at(time)
 
     @notifications.push(
       time: time,
