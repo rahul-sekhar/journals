@@ -11,7 +11,7 @@ Scenario: Delete a comment
   Then I should see "1 comment" in it
   When I click "Read more" in it
   Then I should see "First comment" in it
-  And I click the delete link in the posts comments
+  And I delete the posts comment "First comment"
   Then I should see "Done"
   And I should not see "First Comment" in it
   When I click "Read less" in it

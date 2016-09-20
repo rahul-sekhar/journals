@@ -12,7 +12,7 @@
 
     %base{ href: "/" }
 
-  %body
+  %body{ class: Rails.env.test? ? 'test' : nil } 
     #page-wrapper
       %header#page-header
         .wrapper
@@ -44,3 +44,4 @@
             %br
             Development:
             %span.person Rahul Sekhar
+  }

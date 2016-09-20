@@ -15,6 +15,7 @@ require 'capybara/poltergeist'
 Capybara.default_selector = :css
 Capybara.javascript_driver = :poltergeist
 Capybara.default_driver = Capybara.javascript_driver
+Capybara.ignore_hidden_elements
 
 Delayed::Worker.delay_jobs = false
 
