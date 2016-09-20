@@ -213,6 +213,8 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
+    rvm-capistrano (1.5.3)
+      capistrano (~> 2.15.4)
     sanitize (3.0.0)
       crass (~> 0.2.0)
       nokogiri (>= 1.4.4)
@@ -296,6 +298,7 @@ DEPENDENCIES
   rails (= 3.2.19)
   rmagick
   rspec-rails (= 2.14.1)
+  rvm-capistrano
   sanitize
   sass-rails
   schema_plus

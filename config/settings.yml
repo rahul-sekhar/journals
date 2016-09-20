@@ -12,6 +12,7 @@ email_port: 587
 email_authentication: login
 
 shared_assets: [ public/uploads ]
-s3_backups_bucket: shibumi-journals-backups
+s3_backups_bucket: journals-backups
+
 aws_domain: s3-ap-southeast-1.amazonaws.com
 num_local_backups: 5

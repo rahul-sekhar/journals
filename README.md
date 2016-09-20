@@ -23,6 +23,7 @@ On the front end, a model is defined in `model.js` along with some helpers for a
 - `app/views`: JSON definitions for each route in the backend API
 - `config/sensitive.yml`: Contains authentication info. This does not exist in the repo and should be copied from `config/sensitive.yml.eg` and filled in.
 - `config/settings.yml`: Contains non-sensitive settings.
+- `config/deploy.rb`: Deployment config and tasks.
 
 ## Setup
 Ensure that the following requirements are installed on your system:
@@ -31,7 +32,7 @@ Ensure that the following requirements are installed on your system:
 - ImageMagick
 - openssl
 
-If you are going to run integration tests, you will need the following dependencies. *These is not required for a production setup*.
+If you are going to run integration tests, you will need the following dependencies. **These is not required for a production setup**.
 - NodeJS and NPM
 - PhantomJS
 
@@ -39,9 +40,9 @@ Clone the repository and run `bundle install`.
 
 If you get the error `-bash: bundle: command not found`, run  `gem install bundler` first. If it still does not work, restart your terminal window in case your `PATH` was not updated.
 
-Set up your postgresql database(s). Note that if you set your `db_name` to `sample_school`, the dev, test and production databases will automatically be assumed to be `sample_school_development`, `sample_school_test`, and `sample_school_production`. If you intend to run tests, ensure the user for the test database is a `SUPERUSER` or can create databases. *This should not be the case in production.*
+Set up your postgresql database(s). Note that if you set your `db_name` to `sample_school`, the dev, test and production databases will automatically be assumed to be `sample_school_development`, `sample_school_test`, and `sample_school_production`. If you intend to run tests, ensure the user for the test database is a `SUPERUSER` or can create databases. **This should not be the case in production.**
 
-Ensure that the values in `config/settings.yml` are correct. Copy `config/sensitive.yml.eg` to `config/sensitive.yml` and fill it up with authentication information.
+Ensure that the values in `config/settings.yml` are correct. Copy `config/sensitive.yml.eg` to `config/sensitive.yml` and fill it up with authentication information. **Note that the top level key must be the same as the app_name in `config/settings.yml`.**
 
 Run `bundle exec rake db:schema:load` to initialise the database tables.
 
@@ -61,6 +62,13 @@ To create a initial user, run `bundle exec rake db:seed`. Log in with `user@demo
 
 Run `bundle exec rails s` and view the site at http://localhost:3000.
 
-## Deploy to production
+## Connecting to a remote host
+Capistrano 2 is used both for deployment to production and for maintenance and migration. Before you can use it, you will need to be able to log in to your remote host using an SSH key for authentication. See this for more information: http://capistranorb.com/documentation/getting-started/authentication-and-authorisation/
 
+Look through `config/deploy.rb` for the capistrano setup. Comment out the RVM section if you're not using RVM on the remote host. Running `cap -T` will show you a list of all capistrano tasks - default and custom. Please note that you will have to search for archived documentation for Capistrano 2, not the newer capistrano 3 for more information.
+
+## Deploy to production
 TODO - capistrano instructions
+
+## Maintenance and migration
+To import the database from the production server to the development setup, run `cap db:import_from_remote`. To export it to the production server, run `cap db:export_to_remote`. Be careful with this as it will overwrite current data. You can use this to migrate data from one server to another or view it in development.
