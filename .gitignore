@@ -25,7 +25,8 @@
 /db/data*.sql
 
 # Ignore uploads
-/public/uploads
+/public/uploads/*
+!/public/uploads/.gitkeep
 
 # Ignore cucumber screenshot
 /cucumber-screenshot.png

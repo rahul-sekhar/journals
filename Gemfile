@@ -12,6 +12,7 @@ group :development do
   gem 'guard-livereload'
   gem 'thin'
   gem 'capistrano'
+  gem 'rvm-capistrano', require: false
 end
 
 group :test, :development do

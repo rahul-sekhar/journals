@@ -1,6 +1,6 @@
-# RVM
-# set :rvm_ruby_string, '1.9.3'
-# require "rvm/capistrano"
+# RVM - comment these out if not using RVM on the remote host
+set :rvm_ruby_string, '1.9.3-p551'
+require "rvm/capistrano"
 
 # Bundler
 require "bundler/capistrano"
