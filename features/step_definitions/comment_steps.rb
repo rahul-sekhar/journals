@@ -27,3 +27,22 @@ end
 Then /^the comment editor should be filled with "(.*)"$/ do |p_text|
   @viewing.find('.comment .editor', visible: true).value.should eq(p_text)
 end
+
+When /^I delete the posts comment "(.*)"$/ do |p_text|
+  comment = @viewing.find(".comment", text: p_text)
+  comment.click
+  comment.should have_css "a.delete"
+  comment.find("a.delete").click
+end
+
+When /^I edit the posts comment "(.*)"$/ do |p_text|
+  comment = @viewing.find(".comment", text: p_text)
+  comment.click
+  comment.should have_css "a.edit"
+  comment.find("a.edit").click
+end
+
+When /^I look at the posts first comment$/ do
+  @viewing.find('.comments-link').click
+  @viewing.first(".comment").click
+end

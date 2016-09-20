@@ -29,7 +29,7 @@ describe SubjectsController do
       subject1 = create(:subject)
       subject2 = create(:subject)
       make_request
-      assigns(:subjects).should =~ [subject1, subject2]
+      assigns(:subjects).should match_array [subject1, subject2]
     end
 
     it "orders subjects alphabetically" do

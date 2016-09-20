@@ -17,6 +17,10 @@ Then(/^(.*) in the posts (\S*)$/) do |p_step, p_section|
   end
 end
 
+Then(/^the post should have no (\S*) section$/) do |p_section|
+  @viewing.should have_no_css ".#{p_section}"
+end
+
 Then(/^its restriction should be "(.*?)"$/) do |p_text|
   restrictions = @viewing.find('.restrictions', visible: true)
   restrictions[:title].should eq(p_text)

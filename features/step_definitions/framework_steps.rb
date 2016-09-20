@@ -4,6 +4,10 @@ When(/^I edit the framework for the subject "(.*?)"$/) do |p_name|
   page.find('#subjects li', text: /^#{Regexp.escape(p_name)}/i, visible: true).find('.edit').click
 end
 
+When(/^I close the framework$/) do
+  page.find('#framework .close').click
+end
+
 Given(/^the subject "(.*?)" exists with a framework$/) do |p_name|
   @subject = Subject.create(name: p_name)
   strand1 = @subject.add_strand('Numbers')
@@ -24,11 +28,11 @@ end
 # Strands
 
 Then(/^I should see the root strand "(.*?)"$/) do |p_name|
-  page.should have_xpath('//ol[@class="strands"]/li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
+  page.should have_css('.strands li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
 end
 
 Then(/^I should not see the root strand "(.*?)"$/) do |p_name|
-  page.should have_no_xpath('//ol[@class="strands"]/li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
+  page.should have_no_css('.strands li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
 end
 
 Then(/^I should see the strand "(.*?)" under "(.*?)"$/) do |p_child, p_parent|
@@ -48,6 +52,7 @@ end
 When(/^I delete the strand "(.*?)"$/) do |p_strand|
   strand = page.find('.strands li', text: /^#{Regexp.escape(p_strand)}/i, visible: true)
   strand.first('.title').click
+  strand.should have_css('.delete')
   strand.first('.delete').click
 end
 
@@ -60,6 +65,7 @@ end
 When(/^I add the strand "(.*?)" to "(.*?)"$/) do |p_strand, p_parent|
   strand = page.find('li', text: /^#{Regexp.escape(p_parent)}/i)
   strand.first('.title').click
+  strand.should have_css('.add')
   strand.first('.add').click
   fill_input_inside strand, p_strand
 end
@@ -96,4 +102,31 @@ When(/^I add the milestone "(.*?)" to "(.*?)" in level (\d+)$/) do |p_milestone,
   level.click
   level.find('.add').click
   fill_input_inside level, p_milestone
+end
+
+
+# Levels
+Then(/^the first level heading should be "(.*?)"$/) do |p_text|
+  level = page.first('table.milestones').find('tr:first-child td:nth-child(1)')
+  level.text.should eq p_text
+end
+
+Then(/^the second level heading should be "(.*?)"$/) do |p_text|
+  level = page.first('table.milestones').find('tr:first-child td:nth-child(2)')
+  level.text.should eq p_text
+end
+
+When(/^I change the column name to "(.*?)" and (enable|disable) level numbers$/) do |p_column_name, p_level_numbers|
+  p_level_numbers = (p_level_numbers == 'enable')
+  page.find('.settings').click
+  dialog = page.find('#framework-settings', visible: true)
+  within dialog do
+    fill_in 'column_name', with: p_column_name
+    if p_level_numbers
+      check 'level_numbers'
+    else
+      uncheck 'level_numbers'
+    end
+    page.find('.submit').click
+  end
 end

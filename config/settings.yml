@@ -7,6 +7,9 @@ git_branch: shibumi
 host: shibumijournal.org
 email_domain: shibumijournal.org
 email_address: admin@shibumijournal.org
+email_server: email-smtp.us-west-2.amazonaws.com
+email_port: 587
+email_authentication: login
 
 shared_assets: [ public/uploads, uploads ]
 s3_backups_bucket: shibumi-journals-backups

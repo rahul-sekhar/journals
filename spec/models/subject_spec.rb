@@ -61,7 +61,7 @@ describe Subject do
     end
 
     it "returns only root strands" do
-      subject.root_strands.should =~ [@strand1, @strand3]
+      subject.root_strands.should match_array [@strand1, @strand3]
     end
   end
 

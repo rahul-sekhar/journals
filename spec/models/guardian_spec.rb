@@ -5,6 +5,24 @@ describe Guardian do
   let(:profile_type){ :guardian }
   let(:profile_class){ Guardian }
 
+  describe '#last_notified' do
+    before do
+      allow(Time).to receive(:now){ DateTime.new(2012, 10, 1) }
+    end
+
+    it 'is set to the current time when created' do
+      profile.save!
+      expect(profile.last_notified).to eq DateTime.new(2012, 10, 1)
+    end
+
+    it 'is not changed when updated' do
+      profile.save!
+      allow(Time).to receive(:now){ DateTime.new(2012, 10, 2) }
+      profile.save!
+      expect(profile.last_notified).to eq DateTime.new(2012, 10, 1)
+    end
+  end
+
   it_behaves_like "a profile"
 
   describe "#name_with_info" do

@@ -11,11 +11,19 @@ Given /^all the students are my mentees$/ do
 end
 
 Then /^I should see "(.*?)" in its mentors$/ do |p_content|
-  @viewing.find('.mentors .existing').should have_content p_content
+  mentors = @viewing.find('.mentors')
+  if !mentors[:class].include?('selected')
+    mentors.click
+  end
+  mentors.find('.existing').should have_content p_content
 end
 
 Then /^I should not see "(.*?)" in its mentors$/ do |p_content|
-  @viewing.find('.mentors .existing').should have_no_content p_content
+  mentors = @viewing.find('.mentors')
+  if !mentors[:class].include?('selected')
+    mentors.click
+  end
+  mentors.find('.existing').should have_no_content p_content
 end
 
 When /^I remove the mentor "(.*?)" from it$/ do |p_mentor|
@@ -34,11 +42,19 @@ Given /^I belong to the mentors "(.*?)"$/ do |p_teachers|
 end
 
 Then /^I should see "(.*?)" in its mentees$/ do |p_content|
-  @viewing.find('.mentees .existing').should have_content p_content
+  mentees = @viewing.find('.mentees')
+  if !mentees[:class].include?('selected')
+    mentees.click
+  end
+  mentees.find('.existing').should have_content p_content
 end
 
 Then /^I should not see "(.*?)" in its mentees$/ do |p_content|
-  @viewing.find('.mentees .existing').should have_no_content p_content
+  mentees = @viewing.find('.mentees')
+  if !mentees[:class].include?('selected')
+    mentees.click
+  end
+  mentees.find('.existing').should have_no_content p_content
 end
 
 When /^I remove the mentee "(.*?)" from it$/ do |p_mentee|

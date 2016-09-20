@@ -1,0 +1,29 @@
+!!! 5
+%html
+  %head
+    %meta{"content" => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+  %body
+    %p Dear #{@notifications.guardian.name},
+
+    %p
+      There has been activity on
+      = link_to Rails.configuration.settings['app_full_name'], root_url
+      about #{ @notifications.student.name }:
+
+    %ul
+      - @notifications.notifications.each do |notification|
+        - object = notification[:object]
+        - time = notification[:time].strftime '%-e %b %Y, %-l:%M %p'
+
+        %li
+          - if object.is_a? Post
+            %strong= time + ':'
+            %span #{ object.author.name } created a post #{ link_to object.title, post_url(object) }.
+
+          - elsif object.is_a? Comment
+            %strong= time + ':'
+            %span #{ object.author.name } commented on the post #{ link_to object.post.title, post_url(object.post) }.
+
+          - elsif object.is_a? Subject
+            %strong= time + ':'
+            %span #{ @notifications.student.name }'s #{ link_to object.name, work_url(subject_id: object.id, student_id: @notifications.student.id) } records were updated.

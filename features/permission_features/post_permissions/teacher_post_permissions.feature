@@ -13,6 +13,8 @@ Scenario: A post created by me
   Then I should see "Edit post" in it
   When I am on the edit page for that post
   Then "Title" should be filled in with "A post"
+  And I click "Save post"
+  Then I should not see an error
 
 Scenario: A post created by another teacher
   Given a post titled "A post" created by a teacher exists
@@ -22,6 +24,8 @@ Scenario: A post created by another teacher
   Then I should see "Edit post" in it
   When I am on the edit page for that post
   Then "Title" should be filled in with "A post"
+  And I click "Save post"
+  Then I should not see an error
 
 Scenario: A post created by a student
   Given a post titled "A post" created by a student exists
@@ -31,6 +35,8 @@ Scenario: A post created by a student
   Then I should see "Edit post" in it
   When I am on the edit page for that post
   Then "Title" should be filled in with "A post"
+  And I click "Save post"
+  Then I should not see an error
 
 Scenario: A post created by a guardian
   Given a post titled "A post" created by a guardian exists
@@ -40,6 +46,8 @@ Scenario: A post created by a guardian
   Then I should see "Edit post" in it
   When I am on the edit page for that post
   Then "Title" should be filled in with "A post"
+  And I click "Save post"
+  Then I should not see an error
 
 
 Scenario: View posts page

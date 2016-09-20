@@ -6,6 +6,8 @@ class Guardian < ActiveRecord::Base
 
   has_and_belongs_to_many :students, uniq: true, join_table: :students_guardians
 
+  before_save :check_last_notified
+
   def archived
     if students.all? { |student| student.archived }
       return true
@@ -41,5 +43,11 @@ class Guardian < ActiveRecord::Base
 
   def students_as_sentence
     students.map{ |student| student.short_name }.sort.to_sentence
+  end
+
+  private
+
+  def check_last_notified
+    self.last_notified = Time.now unless self.last_notified.present?
   end
 end

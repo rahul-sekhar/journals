@@ -20,10 +20,10 @@ module Journals
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-    
+
     config.settings = YAML.load_file("#{config.root}/config/settings.yml")
     config.sensitive = YAML.load_file("#{config.root}/config/sensitive.yml")[config.settings['app_name']]
-    
+
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib)
 
@@ -67,5 +67,20 @@ module Journals
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    config.i18n.enforce_available_locales = true
+
+    # Mail settings
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.default :charset => "utf-8"
+    config.action_mailer.smtp_settings = {
+      :address              => config.settings['email_server'],
+      :port                 => config.settings['email_port'],
+      :domain               => config.settings['email_domain'],
+      :user_name            => config.sensitive['email_username'],
+      :password             => config.sensitive['email_password'],
+      :authentication       => config.settings['email_authentication'],
+      :enable_starttls_auto => true
+    }
   end
 end

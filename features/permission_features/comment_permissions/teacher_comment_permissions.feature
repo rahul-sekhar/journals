@@ -11,6 +11,7 @@ Scenario: A comment created by me
 
   When I am on the page for that post
   And I look at the post "A post"
+  When I look at the posts first comment
   Then I should see a edit link in the posts comments
   And I should see a delete link in the posts comments
 
@@ -20,4 +21,6 @@ Scenario: A comment created by someone else
 
   When I am on the page for that post
   And I look at the post "A post"
+  When I look at the posts first comment
+  Then I should see a edit link in the posts comments
   And I should see a delete link in the posts comments

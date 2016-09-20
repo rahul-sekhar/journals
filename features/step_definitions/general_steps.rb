@@ -40,7 +40,10 @@ When /^I fill in "(.*?)" with "(.*?)"$/ do |p_field, p_value|
 end
 
 When(/^I fill in the "(.*?)" editor with "(.*?)"$/) do |p_field, p_text|
-  field = page.find_field(p_field)
+  label = page.find('label', text: p_field, visible: false)
+  id = label['for']
+  field = find("##{id}", visible: false)
+
   page.execute_script('$("#' + field[:id]  + '").tinymce().setContent("' + p_text + '")')
 end
 
@@ -49,7 +52,10 @@ Then /^"(.*?)" should be filled in with "(.*?)"$/ do |p_field, p_value|
 end
 
 Then(/^the "(.*?)" editor should be filled in with "(.*?)"$/) do |p_field, p_text|
-  field = page.find_field(p_field)
+  label = page.find('label', text: p_field, visible: false)
+  id = label['for']
+  field = find("##{id}", visible: false)
+
   text = page.evaluate_script('$("#' + field[:id]  + '").tinymce().getContent()')
   text.should eq(p_text)
 end
@@ -74,6 +80,7 @@ When /^I click "(.*?)"$/ do |p_link|
 end
 
 When /^I click the (\S*) link$/ do |p_link|
+  page.should have_css "a.#{p_link}"
   page.find("a.#{p_link}").click
 end
 
@@ -92,6 +99,16 @@ end
 
 When /^I select the option containing "(.*?)"$/ do |p_option|
   page.choose p_option
+end
+
+
+# Error
+Then /^I should see an error$/ do
+  page.should have_css('#notifications .error', visible: true)
+end
+
+Then /^I should not see an error$/ do
+  page.should have_no_css('#notifications .error', visible: true)
 end
 
 

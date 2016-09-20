@@ -31,14 +31,14 @@ describe TeachersController do
       teacher1 = create(:teacher)
       teacher2 = create(:teacher)
       make_request
-      assigns(:teachers).should =~ [teacher1, teacher2]
+      assigns(:teachers).should match_array [teacher1, teacher2]
     end
 
     it "assigns archived teachers" do
       teacher1 = create(:teacher)
       teacher2 = create(:teacher, archived: true)
       make_request
-      assigns(:teachers).should =~ [teacher1, teacher2]
+      assigns(:teachers).should match_array [teacher1, teacher2]
     end
   end
 

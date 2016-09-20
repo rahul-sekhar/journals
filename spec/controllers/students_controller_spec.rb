@@ -28,14 +28,14 @@ describe StudentsController do
       student1 = create(:student)
       student2 = create(:student)
       get :index, format: :json
-      assigns(:students).should =~ [student1, student2]
+      assigns(:students).should match_array [student1, student2]
     end
 
     it "assigns archived students" do
       student1 = create(:student)
       student2 = create(:student, archived: true)
       get :index, format: :json
-      assigns(:students).should =~ [student1, student2]
+      assigns(:students).should match_array [student1, student2]
     end
   end
 

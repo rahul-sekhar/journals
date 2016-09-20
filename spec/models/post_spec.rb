@@ -48,7 +48,7 @@ describe Post do
     it "sets a tag list" do
       post.tag_names = "tag1, tag2"
       post.save!
-      post.reload.tags.map{ |tag| tag.name }.should =~ ["tag1", "tag2"]
+      post.reload.tags.map{ |tag| tag.name }.should match_array ["tag1", "tag2"]
     end
 
     it "removes and updates tags from an existing tag list" do
@@ -56,7 +56,7 @@ describe Post do
       post.save!
       post.reload.tag_names = "tag2, tag3"
       post.save!
-      post.reload.tags.map{ |tag| tag.name }.should =~ ["tag2", "tag3"]
+      post.reload.tags.map{ |tag| tag.name }.should match_array ["tag2", "tag3"]
     end
 
     it "is invalid when passed an invalid tag" do
@@ -73,7 +73,7 @@ describe Post do
       post.tags.reload
       post.tags.should include @tag1
       post.tags.length.should == 3
-      post.tags.map { |tag| tag.name }.should =~ ["tag1", "tag2", "tag 3"]
+      post.tags.map { |tag| tag.name }.should match_array ["tag1", "tag2", "tag 3"]
     end
   end
 
@@ -147,7 +147,7 @@ describe Post do
 
       it "initializes observations for the correct students" do
         post.initialize_observations
-        post.student_observations.map{ |obs| obs.student }.should =~ [student1, student2]
+        post.student_observations.map{ |obs| obs.student }.should match_array [student1, student2]
       end
 
       it "does not initialize observations that are already present" do
@@ -171,7 +171,7 @@ describe Post do
         post.students = [other_student]
         post.teachers = []
         post.save!
-        post.students.should =~ [other_student, student]
+        post.students.should match_array [other_student, student]
         post.teachers.should be_empty
       end
 
@@ -180,7 +180,7 @@ describe Post do
         post.save!
         post.students = [student, other_student]
         post.save!
-        post.students.should =~ [student, other_student]
+        post.students.should match_array [student, other_student]
       end
     end
 
@@ -194,7 +194,7 @@ describe Post do
         post.students = [third_student, other_student]
         post.should be_valid
         post.save!
-        post.students.should =~ [third_student, other_student]
+        post.students.should match_array [third_student, other_student]
       end
 
       it "is invalid if none of the guardian's students are tagged" do
@@ -327,7 +327,7 @@ describe Post do
         post.student_observations.include?(obs).should == true
         post.student_observations.include?(obs1).should == false
         StudentObservation.exists?(obs1).should == false
-        post.student_observations.map{ |x| x.content }.should =~ ["Some changed content", "New content"]
+        post.student_observations.map{ |x| x.content }.should match_array ["Some changed content", "New content"]
       end
     end
 
@@ -366,7 +366,7 @@ describe Post do
       post5 = create(:post, students: [student])
       post6 = create(:post, students: [third_student], visible_to_guardians: true)
 
-      Post.readable_by_guardian(guardian).should =~ [post2, post4]
+      Post.readable_by_guardian(guardian).should match_array [post2, post4]
     end
   end
 
@@ -454,16 +454,16 @@ describe Post do
     end
 
     it "returns all posts with no parameters" do
-      Post.filter_by_params({}).should =~ [@post1, @post2, @post3, @post4]
+      Post.filter_by_params({}).should match_array [@post1, @post2, @post3, @post4]
     end
 
     describe "search" do
       it "searches for a post if the search parameter is present" do
-        Post.filter_by_params({search: "some"}).should =~ [@post1, @post3]
+        Post.filter_by_params({search: "some"}).should match_array [@post1, @post3]
       end
 
       it "returns all posts with an empty search parameter" do
-        Post.filter_by_params({search: "   "}).should =~ [@post1, @post2, @post3, @post4]
+        Post.filter_by_params({search: "   "}).should match_array [@post1, @post2, @post3, @post4]
       end
 
       it "returns no posts with an unmatched query" do
@@ -473,11 +473,11 @@ describe Post do
 
     describe "tagged student" do
       it "filters posts by a tagged student" do
-        Post.filter_by_params({student: @student1.id}).should =~ [@post1, @post3]
+        Post.filter_by_params({student: @student1.id}).should match_array [@post1, @post3]
       end
 
       it "does not filter students if the student parameter is 0" do
-        Post.filter_by_params({student: 0}).should =~ [@post1, @post2, @post3, @post4]
+        Post.filter_by_params({student: 0}).should match_array [@post1, @post2, @post3, @post4]
       end
 
       it "returns no posts if a student is selected with no tagged posts" do
@@ -491,11 +491,11 @@ describe Post do
 
     describe "groups" do
       it "returns posts with tagged students that belong to the group when a group param is present" do
-        Post.filter_by_params({group: @group1.id}).should =~ [@post1, @post3, @post4]
+        Post.filter_by_params({group: @group1.id}).should match_array [@post1, @post3, @post4]
       end
 
       it "does not filter groups if the group parameter is 0" do
-        Post.filter_by_params({group: 0}).should =~ [@post1, @post2, @post3, @post4]
+        Post.filter_by_params({group: 0}).should match_array [@post1, @post2, @post3, @post4]
       end
 
       it "returns no posts when a group with students that are tagged in no posts is passed" do
@@ -503,7 +503,7 @@ describe Post do
       end
 
       it "filters groups and students within a group" do
-        Post.filter_by_params({group: @group1.id, student: @student2.id}).should =~ [@post3, @post4]
+        Post.filter_by_params({group: @group1.id, student: @student2.id}).should match_array [@post3, @post4]
       end
 
       it "returns nothing if passed a group and a student not in that group" do
@@ -517,11 +517,11 @@ describe Post do
 
     describe "tags" do
       it "returns posts filtered by the tag" do
-        Post.filter_by_params({tag: @tag2.id}).should =~ [@post1, @post3, @post4]
+        Post.filter_by_params({tag: @tag2.id}).should match_array [@post1, @post3, @post4]
       end
 
       it "does not filter groups if the tag parameter is 0" do
-        Post.filter_by_params({tag: 0}).should =~ [@post1, @post2, @post3, @post4]
+        Post.filter_by_params({tag: 0}).should match_array [@post1, @post2, @post3, @post4]
       end
 
       it "returns no posts for a tag with no posts" do
@@ -529,7 +529,7 @@ describe Post do
       end
 
       it "filters tags and a search" do
-        Post.filter_by_params({tag: @tag2.id, search: "tit"}).should =~ [@post1, @post3]
+        Post.filter_by_params({tag: @tag2.id, search: "tit"}).should match_array [@post1, @post3]
       end
 
       it "filters groups, students, tags and searches together" do
@@ -540,11 +540,11 @@ describe Post do
 
     describe "date" do
       it "returns posts filtered by the from date" do
-        Post.filter_by_params({dateFrom: "05-05-2010"}).should =~ [@post3, @post4]
+        Post.filter_by_params({dateFrom: "05-05-2010"}).should match_array [@post3, @post4]
       end
 
       it "returns posts filtered by the to date" do
-        Post.filter_by_params({dateTo: "05-05-2010"}).should =~ [@post1, @post2]
+        Post.filter_by_params({dateTo: "05-05-2010"}).should match_array [@post1, @post2]
       end
 
       it "returns posts filtered by the from date and to date" do

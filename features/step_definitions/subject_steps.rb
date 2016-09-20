@@ -1,5 +1,6 @@
 Given(/^the subject "(.*)" exists$/) do |p_name|
-  @subject = Subject.create!(name: p_name)
+  @subject = Subject.find_by_name(p_name)
+  @subject = Subject.create!(name: p_name) unless @subject.present?
 end
 
 Then(/^I should see the subject "(.*)"$/) do |p_name|
@@ -41,6 +42,14 @@ Given(/^the subject "(.*?)" exists with teachers and students$/) do |p_name|
 
   st1.students << [student1, student2]
   st2.students << student2
+end
+
+Given(/^the subject "(.*?)" has the column name "(.*?)"$/) do |p_subject, p_column_name|
+  Subject.find_by_name!(p_subject).update_attributes!(column_name: p_column_name)
+end
+
+Given(/^the subject "(.*?)" has no level numbers$/) do |p_subject|
+  Subject.find_by_name!(p_subject).update_attributes!(level_numbers: false)
 end
 
 When(/^I manage people for the subject "(.*?)"$/) do |p_name|

@@ -1,4 +1,4 @@
-json.(@subject, :name, :id)
+json.(@subject, :name, :column_name, :level_numbers, :id)
 
 json.strands @subject.root_strands do |strand|
   json.partial! "strand", strand: strand
