@@ -2,9 +2,13 @@
 app_full_name: the Shibumi Journal
 app_name: shibumi-journal
 
-git_branch: shibumi
+git_branch: shibumi # The git branch to deploy from
 
 host: shibumijournal.org
+user: shibumi-journals
+repository: git@github.com:rahul-sekhar/journals.git
+deploy_folder: journals # If using capistrano, the app will be deployed to /home/[user]/[deploy_folder]
+
 email_domain: shibumijournal.org
 email_address: admin@shibumijournal.org
 email_server: email-smtp.us-west-2.amazonaws.com
@@ -12,7 +16,6 @@ email_port: 587
 email_authentication: login
 
 shared_assets: [ public/uploads ]
-s3_backups_bucket: journals-backups
-
-aws_domain: s3-ap-southeast-1.amazonaws.com
+s3_backups_bucket: shibumi-journals-backup
+aws_domain: s3-us-west-2.amazonaws.com
 num_local_backups: 5
