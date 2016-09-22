@@ -94,3 +94,5 @@ To run a ruby console on the remote application, ssh into the host, cd into the 
 Make sure the email SMTP settings are setup in `config/settings.yml` and `config/sensitive.yml` for emails to work. An external SMTP service such as AWS SES should be used.
 
 For automated backups, set up an AWS S3 bucket for the backups and create an IAM user with full access to that bucket. Enter the bucket name in `config/settings.yml` as `s3_backups_bucket`. Make sure `aws_domain` is set to the correct endpoint for the region of your S3 bucket. **For authentication for the database backup, you will need to create a .pgpass file in the home directory of the remote machine.** Follow these instructions to do so: https://www.postgresql.org/docs/current/static/libpq-pgpass.html.
+
+To manually backup the remote database and uploads, run `cap backups:create` from your local setup.
