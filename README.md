@@ -63,12 +63,34 @@ To create a initial user, run `bundle exec rake db:seed`. Log in with `user@demo
 Run `bundle exec rails s` and view the site at http://localhost:3000.
 
 ## Connecting to a remote host
-Capistrano 2 is used both for deployment to production and for maintenance and migration. Before you can use it, you will need to be able to log in to your remote host using an SSH key for authentication. See this for more information: http://capistranorb.com/documentation/getting-started/authentication-and-authorisation/
+Capistrano 2 is used both for deployment to production and for maintenance and migration. Before you can use it, you will need to be able to log in to your remote host using an SSH key for authentication. See this for more information: http://capistranorb.com/documentation/getting-started/authentication-and-authorisation/. For AWS EC2, a `.pem` key file can be used to SSH in.
+
+Make sure `config/settings.yml` and `config/sensitive.yml` have been properly configured. The `host` and `user` parameters in `config/settings.yml` are used to SSH into the remote host. If a `.pem` key file is needed to log into the host, you should specify the path to the file in `config/sensitive.yml` as `ssh_key_path`.
 
 Look through `config/deploy.rb` for the capistrano setup. Comment out the RVM section if you're not using RVM on the remote host. Running `cap -T` will show you a list of all capistrano tasks - default and custom. Please note that you will have to search for archived documentation for Capistrano 2, not the newer capistrano 3 for more information.
 
 ## Deploy to production
-TODO - capistrano instructions
+The simplest way to deploy the application is using Phusion Passenger. Detailed setup instructions for passenger are here: https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/
+
+To deploy the application, you can either use the repository directly or use capistrano.
+
+Instructions for capistrano:
+
+- Run `cap deploy:setup`
+- Fill `config/sensitive.yml` with authentication information for the remote host and run `cap sensitive_data:setup` to copy it to the remote server
+- Restore `config/sensitive.yml` to the development information
+- Make sure you can access github with ssh key authentication. If you run `ssh -T git@github.com`, you should see a welcome message. For more info, see: https://help.github.com/articles/generating-an-ssh-key/
+- Run `cap deploy:cold`. This will fail on the `db:migrate` step
+- Run `cap db:schema_load`
+- Run `cap deploy`
+
+For a code update after this initial deployment, just run `cap deploy`.
 
 ## Maintenance and migration
 To import the database from the production server to the development setup, run `cap db:import_from_remote`. To export it to the production server, run `cap db:export_to_remote`. Be careful with this as it will overwrite current data. You can use this to migrate data from one server to another or view it in development.
+
+To run a ruby console on the remote application, ssh into the host, cd into the current deploy directory and run `RAILS_ENV=production bundle exec rails c`.
+
+Make sure the email SMTP settings are setup in `config/settings.yml` and `config/sensitive.yml` for emails to work. An external SMTP service such as AWS SES should be used.
+
+For automated backups, set up an AWS S3 bucket for the backups and create an IAM user with full access to that bucket. Enter the bucket name in `config/settings.yml` as `s3_backups_bucket`. Make sure `aws_domain` is set to the correct endpoint for the region of your S3 bucket. **For authentication for the database backup, you will need to create a .pgpass file in the home directory of the remote machine.** Follow these instructions to do so: https://www.postgresql.org/docs/current/static/libpq-pgpass.html.

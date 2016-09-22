@@ -2,15 +2,18 @@
 app_full_name: the Small School Journals
 app_name: journals-demo
 
-git_branch: master
+git_branch: master # The git branch to deploy from
 
 host: journals.kairi.in
+user: journals
+repository: git@github.com:rahul-sekhar/journals.git
+deploy_folder: journals-demo # If using capistrano, the app will be deployed to /home/[user]/[deploy_folder]
+
 email_domain: kairi.in
 email_address: contact@kairi.in
 email_server: email-smtp.us-west-2.amazonaws.com
 email_port: 587
 email_authentication: login
-
 
 shared_assets: [ public/uploads ]
 s3_backups_bucket: journals-backups
