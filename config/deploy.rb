@@ -1,5 +1,5 @@
-# RVM
-set :rvm_ruby_string, '1.9.3'
+# RVM - comment these out if not using RVM on the remote host
+set :rvm_ruby_string, '1.9.3-p551'
 require "rvm/capistrano"
 
 # Bundler
@@ -7,18 +7,23 @@ require "bundler/capistrano"
 
 # App config settings
 set :app_settings, YAML::load_file("config/settings.yml")
+set :sensitive, YAML::load_file("config/sensitive.yml")[app_settings['app_name']]
 
 set :application, app_settings['app_name']
 
 default_run_options[:pty] = true
-set :repository,  "git@github.com:rahul-sekhar/journals.git"
+set :repository,  app_settings['repository']
 set :scm, :git
 set :ssh_options, { forward_agent: true }
 set :branch, app_settings['git_branch']
 
-set :user, "journals"
+if sensitive['ssh_key_path']
+  ssh_options[:keys] = [sensitive['ssh_key_path']]
+end
+
+set :user, app_settings['user']
 set :use_sudo, false
-set :deploy_to, "/home/#{user}/#{application}"
+set :deploy_to, "/home/#{user}/#{app_settings['deploy_folder']}"
 set :host_name, app_settings['host']
 server host_name, :app, :web, :db, :primary => true
 
@@ -109,14 +114,22 @@ namespace :shared_assets  do
   desc "Import shared objects from the remote server to the local machine"
   task :import_from_remote, :roles => :app do
     shared_asset_paths.each do |link|
-      system "rsync -rP #{user}@#{host_name}:#{shared_path}/#{link} #{link}/.."
+      if sensitive['ssh_key_path']
+        system "rsync -rP -e 'ssh -i #{sensitive['ssh_key_path']}' #{user}@#{host_name}:#{shared_path}/#{link} #{link}/.."
+      else
+        system "rsync -rP #{user}@#{host_name}:#{shared_path}/#{link} #{link}/.."
+      end
     end
   end
 
   desc "Export shared objects from the local machine to the remote server"
   task :export_to_remote, :roles => :app do
     shared_asset_paths.each do |link|
-      system "rsync -rP #{link} #{user}@#{host_name}:#{shared_path}/#{link}/.."
+      if sensitive['ssh_key_path']
+        system "rsync -rP -e 'ssh -i #{sensitive['ssh_key_path']}' #{link} #{user}@#{host_name}:#{shared_path}/#{link}/.."
+      else
+        system "rsync -rP #{link} #{user}@#{host_name}:#{shared_path}/#{link}/.."
+      end
     end
   end
 end

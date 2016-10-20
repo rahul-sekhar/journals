@@ -44,6 +44,7 @@ Scenario: Edit a framework
   When I change the strand "Child" to "Changed Child"
   Then I should not see the strand "Child" under "Counting"
   And I should see the strand "Changed Child" under "Counting"
+  And I should not see the milestone "Another milestone" under "Changed Child" in level 1
 
   When I delete the strand "Numbers"
   Then I should not see the root strand "Numbers"

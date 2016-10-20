@@ -80,6 +80,7 @@ When /^I click "(.*?)"$/ do |p_link|
 end
 
 When /^I click the (\S*) link$/ do |p_link|
+  page.should have_css "a.#{p_link}"
   page.find("a.#{p_link}").click
 end
 
@@ -98,6 +99,16 @@ end
 
 When /^I select the option containing "(.*?)"$/ do |p_option|
   page.choose p_option
+end
+
+
+# Error
+Then /^I should see an error$/ do
+  page.should have_css('#notifications .error', visible: true)
+end
+
+Then /^I should not see an error$/ do
+  page.should have_no_css('#notifications .error', visible: true)
 end
 
 

@@ -28,11 +28,11 @@ end
 # Strands
 
 Then(/^I should see the root strand "(.*?)"$/) do |p_name|
-  page.should have_xpath('//ol[@class="strands"]/li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
+  page.should have_css('.strands li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
 end
 
 Then(/^I should not see the root strand "(.*?)"$/) do |p_name|
-  page.should have_no_xpath('//ol[@class="strands"]/li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
+  page.should have_no_css('.strands li', text: /^#{Regexp.escape(p_name)}/i, visible: true)
 end
 
 Then(/^I should see the strand "(.*?)" under "(.*?)"$/) do |p_child, p_parent|
@@ -52,6 +52,7 @@ end
 When(/^I delete the strand "(.*?)"$/) do |p_strand|
   strand = page.find('.strands li', text: /^#{Regexp.escape(p_strand)}/i, visible: true)
   strand.first('.title').click
+  strand.should have_css('.delete')
   strand.first('.delete').click
 end
 
@@ -64,6 +65,7 @@ end
 When(/^I add the strand "(.*?)" to "(.*?)"$/) do |p_strand, p_parent|
   strand = page.find('li', text: /^#{Regexp.escape(p_parent)}/i)
   strand.first('.title').click
+  strand.should have_css('.add')
   strand.first('.add').click
   fill_input_inside strand, p_strand
 end

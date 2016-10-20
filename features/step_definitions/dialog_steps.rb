@@ -8,5 +8,6 @@ When /^I open the manage groups dialog$/ do
 end
 
 When /^I look at the dialog$/ do
+  page.should have_css('.dialog, .modal')
   @viewing = page.first('.dialog, .modal', visible: true)
 end

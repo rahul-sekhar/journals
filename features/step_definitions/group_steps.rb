@@ -31,7 +31,10 @@ end
 When /^I change the group "(.*?)" to "(.*?)"$/ do |p_from, p_to|
   field = page.find('#groups li', text: /^#{Regexp.escape(p_from)}/i)
   field.find('.value').click
+
+  page.driver.browser.js_errors = false
   fill_input_inside field, p_to
+  page.driver.browser.js_errors = true
 end
 
 When /^I add the group "(.*?)"$/ do |p_group|

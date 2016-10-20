@@ -10,7 +10,7 @@ Background:
   And I click "Read more" in it
 
 Scenario: Edit comment
-  When I click the edit link in the posts comments
+  When I edit the posts comment "First comment"
   Then the comment editor should be filled with "First comment"
   When I fill in the comment editor with "Changed comment"
 
@@ -19,7 +19,7 @@ Scenario: Edit comment
   And I should see "Changed comment" in the posts comments
 
 Scenario: Edit comment with invalid data
-  When I click the edit link in the posts comments
+  When I edit the posts comment "First comment"
   And I fill in the comment editor with ""
 
   Then I should see "Please enter a comment"

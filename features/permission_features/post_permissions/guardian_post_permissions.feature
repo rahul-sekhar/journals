@@ -15,6 +15,8 @@ Scenario: A post created by me
   Then I should see "Edit post"
   When I am on the edit page for that post
   And "Title" should be filled in with "A post"
+  And I click "Save post"
+  Then I should not see an error
 
 Scenario: A post created by someone else that I am not tagged in, that is visible to guardians
   Given a post titled "A post" created by a teacher exists
@@ -35,7 +37,7 @@ Scenario: A post created by someone else that one of my students is tagged in, t
 
   When I go to the edit page for that post
   And I click "Save post"
-  Then I should see "An error occurred"
+  Then I should see an error
 
 Scenario: A post created by someone else that one of my students is tagged in, that is invisible to guardians
   Given a post titled "A post" created by a teacher exists

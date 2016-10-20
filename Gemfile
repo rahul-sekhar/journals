@@ -9,11 +9,10 @@ group :assets do
 end
 
 group :development do
-  gem 'rb-inotify', '~> 0.9'
   gem 'guard-livereload'
   gem 'thin'
   gem 'capistrano'
-  gem 'rvm-capistrano'
+  gem 'rvm-capistrano', require: false
 end
 
 group :test, :development do
@@ -46,5 +45,6 @@ gem 'schema_plus'
 gem 'aws-s3'
 gem 'whenever', require: false
 gem 'sanitize'
-gem 'rmagick'
+gem 'rmagick', require: false
 gem 'carrierwave'
+gem 'eventmachine', '1.2.0.1'

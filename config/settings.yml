@@ -2,16 +2,20 @@
 app_full_name: the Inwoods Journals
 app_name: inwoods
 
-git_branch: inwoods
+git_branch: inwoods # The git branch to deploy from
 
 host: inwoodsjournals.org
+user: journals
+repository: git@github.com:rahul-sekhar/journals.git
+deploy_folder: inwoods # If using capistrano, the app will be deployed to /home/[user]/[deploy_folder]
+
 email_domain: inwoodsjournals.org
 email_address: admin@inwoodsjournals.org
 email_server: email-smtp.us-west-2.amazonaws.com
 email_port: 587
 email_authentication: login
 
-shared_assets: [ public/uploads, uploads ]
+shared_assets: [ public/uploads ]
 s3_backups_bucket: inwoods-backups
 aws_domain: s3-ap-southeast-1.amazonaws.com
 num_local_backups: 5

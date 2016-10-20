@@ -83,7 +83,9 @@ angular.module('journals.model.associations', ['journals.ajax', 'journals.helper
         // For preloaded objects
         if (options.loaded) {
           if (instance[assocName]) {
-            instance[assocName] = instance[assocName].map(function (assocObj) {
+            instance[assocName] = instance[assocName].filter(function (assocObj) {
+              return !assocObj.deleted;
+            }).map(function (assocObj) {
               assocObj = targetCollection.update(assocObj);
               assocObj._parent = instance;
               return assocObj;

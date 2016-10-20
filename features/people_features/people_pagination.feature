@@ -20,16 +20,20 @@ Scenario: View pages of people
   And the pages 1-5 should be visible
 
   When I select page 2
-  And I should not see a profile for "E"
+  Then I should not see a profile for "E"
   And I should not see a profile for "K"
   And I should see a profile for "F"
   And I should see a profile for "J"
   And the selected page should be 2
 
   When I select page 4
-  Then the pages 2-6 should be visible
-  When I select page 6
   Then I should not see a profile for "F"
+  And I should see a profile for "P"
+  And I should see a profile for "S"
+  And the pages 2-6 should be visible
+  And the selected page should be 4
+  When I select page 6
+  Then I should not see a profile for "P"
   And I should see a profile for "Z"
   And the selected page should be 6
 
@@ -81,8 +85,8 @@ Scenario: View pages of mentees
   And the pages 1-3 should be visible
 
   When I select page 3
-  Then I should not see a profile for "A"
   And I should see a profile for "Z"
+  Then I should not see a profile for "A"
   And the selected page should be 3
 
 Scenario: View pages of a group

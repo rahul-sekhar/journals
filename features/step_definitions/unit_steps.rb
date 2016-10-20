@@ -39,7 +39,10 @@ When /^I add the unit "(.*?)"$/ do |p_name|
 end
 
 When(/^I delete the unit "(.*?)"$/) do |p_unit|
-  page.find('#units tr', text: /^#{Regexp.escape(p_unit)}/i, visible: true).find('.delete').click
+  unit = page.find('#units tr', text: /^#{Regexp.escape(p_unit)}/i, visible: true)
+  unit.click
+  unit.should have_css('.delete')
+  unit.find('.delete').click
 end
 
 Then /^I should not be able to change the (\S*) field$/ do |p_field|
