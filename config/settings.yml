@@ -17,5 +17,5 @@ email_authentication: login
 
 shared_assets: [ public/uploads ]
 s3_backups_bucket: inwoods-journals-backups
-aws_domain: s3-ap-southeast-1.amazonaws.com
+aws_domain: s3-us-west-2.amazonaws.com
 num_local_backups: 5
